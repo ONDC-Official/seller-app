@@ -1,0 +1,10 @@
+{
+  "express": {
+    "protocol": "http://",
+    "useFqdnForApis": false,
+    "ipAddress": "",
+    "fqdn": "",
+    "port": 3005,
+    "apiUrl": ""
+  }
+}

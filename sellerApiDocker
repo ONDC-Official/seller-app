@@ -1,0 +1,22 @@
+FROM node:16.14.0
+
+# Set the working directory to /usr/src/app
+WORKDIR /usr/src/app
+
+#Need to copy utils as well
+
+RUN npm cache verify
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY ./seller-app-api/ .
+
+RUN npm install
+
+#ENV NODE_ENV development
+ENV HOST 0.0.0.0
+ENV PROTOCOL "http://"
+ENV USE_FQDN_FOR_APIS false
+ENV FQDN ""
+
+#CMD [ "npm", "serve", "--port", $PORT]
+CMD ["npm", "start"]

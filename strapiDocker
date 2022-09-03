@@ -1,0 +1,25 @@
+FROM node:16.14.0
+
+# Let WatchTower know to ignore this container for checking
+LABEL com.centurylinklabs.watchtower.enable="false"
+
+WORKDIR /usr/src/app
+
+#COPY ./package*.json ./
+COPY ./seller-app/ .
+
+ENV NODE_ENV production
+
+RUN npm install
+RUN npm run build
+
+
+ENV NODE_ENV production
+ENV HOST 0.0.0.0
+ENV PROTOCOL "http://"
+ENV USE_FQDN_FOR_APIS false
+ENV FQDN ""
+
+EXPOSE 1337
+
+CMD ["npm", "start"]

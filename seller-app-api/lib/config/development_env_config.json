@@ -1,0 +1,70 @@
+{
+  "express": {
+    "protocol": "http://",
+    "useFqdnForApis": false,
+    "ipAddress": "localhost",
+    "fqdn": "",
+    "port": 3001,
+    "apiUrl": ""
+  },
+  "auth": {
+    "token": {
+      "access": {
+        "exp": 8640000,
+        "secret": "wftd3hg5$g67h*fd5h6fbvcy6rtg5wftd3hg5$g67h*fd5xxx"
+      },
+      "resetPasswordLink": {
+        "exp": 86400,
+        "secret": "de$rfdf5$g67*jhu*sdfbvcy3frd6r4e"
+      }
+    }
+  },
+  "email": {
+    "transport": {
+      "SMTP": {
+        "host": "email-smtp.us-east-1.amazonaws.com",
+        "port": 587,
+        "secure": false,
+        "auth": {
+          "user": "AKIAXFYZJE6FIP5LB2VM",
+          "pass": "BNLIHC/hDpI58lRjO/qD4LC8fvQwiAw0nETpn8M5Jwu8"
+        }
+      },
+      "local": {
+        "sendmail": true,
+        "newline": "unix",
+        "path": "/usr/sbin/sendmail"
+      }
+    },
+    "sender": "dev@wemotiveforge.com",
+    "supportEmail": "dev@wemotiveforge.com",
+    "webClientUri": "http://34.123.120.224",
+    "shareUrl": "https://www.google.com"
+  },
+  "cors": {
+    "whitelistUrls": [
+      "http://localhost:3000",
+      "https://localhost:3000"
+    ]
+  },
+  "directory": {
+    "profilePictures": "PROFILE_PICTURES"
+  },
+  "cookieOptions": {
+    "httpOnly": true,
+    "secure": false,
+    "sameSite": false
+  },
+  "general": {
+    "exceptionEmailRecipientList": [
+      "akshay@wemotiveforge.com"
+    ]
+  },
+  "strapi": {
+    "serverUrl": "http://localhost:1337",
+    "apiToken": "1465d1ca50726c39d0a764ba345121bc594f4923367de7d8ce57c779c0b3a3fd64eecbd4268e5e8818a57068f0f48b1b7d3a4ec20cfeb55e48bf902283c318b8b9fbe7f6fd9e86e813eab18acbd38075a2389bd5e5eb73fe1ba9607d3f9e7b00a5cc46c8dcf617734f52ec0e91b90d167a180bba4ed1f0a7d7ad026f28c5aad2"
+  },
+  "firebase": {
+    "account": "lib/config/firebase-service-account.json"
+  }
+}
