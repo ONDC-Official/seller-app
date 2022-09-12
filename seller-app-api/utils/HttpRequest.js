@@ -31,8 +31,11 @@ class HttpRequest {
     {
         try 
         {
+
             let headers = {...this.headers, 'Content-Type': 'application/json'};
 
+            console.log(`sending request to ${this.baseUrl}/${this.url}`)
+            console.log(`sending headers `,headers)
 
             let result
             if (this.method.toLowerCase() == 'get') {
@@ -62,6 +65,20 @@ class HttpRequest {
         } 
         catch (err) 
         {
+
+            if (err.response) {
+                // The client was given an error response (5xx, 4xx)
+                console.log('Error response',err,'\n', err.response);
+            } else if (err.request) {
+                // The client never received a response, and the request was never left
+                console.log('Error request',err,'\n', err.request);
+            } else {
+                // Anything else
+                console.log('Error message',err,'\n', err.message);
+            }
+
+            // console.log('Error err', err);
+
             throw err;
         }
        

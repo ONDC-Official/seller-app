@@ -10,7 +10,7 @@ class CategoryService {
     async list(){
 
         let headers = {};
-        headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
             strapiURI,
@@ -32,7 +32,7 @@ class CategoryService {
         const searchCategory = requestQuery.message.intent.category.descriptor?.name??""
 
         let headers = {};
-        headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
 
         let httpRequest = new HttpRequest(
@@ -45,14 +45,19 @@ class CategoryService {
 
         let result = await httpRequest.send();
 
+        console.log("search result================>",result)
+
         const productData =await getProducts({data:result.data,context:requestQuery.context});
+
+        console.log("search result=======productData=========>",productData);
+
         return productData
     }
 
     async get(id){
 
         let headers = {};
-        headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
             strapiURI,
@@ -70,7 +75,7 @@ class CategoryService {
     async update(data,id){
 
         let headers = {};
-        headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         console.log(data)
         let httpRequest = new HttpRequest(
@@ -89,7 +94,7 @@ class CategoryService {
     async create(data){
 
         let headers = {};
-        headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         console.log(data);
 

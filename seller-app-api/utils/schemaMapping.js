@@ -30,8 +30,11 @@ exports.getProducts = async (data) => {
 
     //set product items to schema
 
+    let context = data.context
+    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.action ='on_search'
     const schema = {
-        "context": {...data.context,"bpp_id": "sandboxapi.signcatch.com/ondc",
+        "context": {...context,
             "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
         "message": {
             "catalog": {
