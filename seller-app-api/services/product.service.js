@@ -45,11 +45,8 @@ class CategoryService {
 
         let result = await httpRequest.send();
 
-        console.log("search result================>",result)
-
         const productData =await getProducts({data:result.data,context:requestQuery.context});
 
-        console.log("search result=======productData=========>",productData);
 
         return productData
     }
