@@ -1,9 +1,9 @@
 exports.getProducts = async (data) => {
 
     let productAvailable = []
-    for(items of data.data.data){
+    for(let items of data?.data?.data){
 
-        let items =  {
+        let item =  {
             "id": items.id,
             "descriptor": {
                 "name": items.attributes.name,
@@ -25,7 +25,7 @@ exports.getProducts = async (data) => {
             "@ondc/org/available_on_cod": true,
             "@ondc/org/time_to_ship": "PT48H"
         }
-        productAvailable.push(items)
+        productAvailable.push(item)
     }
 
     //set product items to schema
