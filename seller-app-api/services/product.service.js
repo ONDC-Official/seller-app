@@ -29,7 +29,7 @@ class CategoryService {
 
         //get search criteria
         const searchProduct = requestQuery.message.intent.item.descriptor.name
-        const searchCategory = requestQuery.message.intent.category.descriptor?.name??""
+        //const searchCategory = requestQuery.message.intent.category.descriptor?.name??""
 
         let headers = {};
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
@@ -45,7 +45,7 @@ class CategoryService {
 
         let result = await httpRequest.send();
 
-        console.log("search result================>",result)
+        console.log("search result================>",result.data)
 
         const productData =await getProducts({data:result.data,context:requestQuery.context});
 
