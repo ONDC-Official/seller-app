@@ -51,7 +51,7 @@ exports.getProducts = async (data) => {
                     {
                         "id": "d7a4ce6b-0168-4e42-8b2f-84688e5f25ab",
                         "descriptor": {
-                            "name": "Dharmpal Store",
+                            "name": "DataOrc",
                             "symbol": "https://awstoazures3.blob.core.windows.net/aws-product-images-prod/images/profile/991/profile_image_477.png1640236184842",
                             "short_desc": "",
                             "long_desc": "",
