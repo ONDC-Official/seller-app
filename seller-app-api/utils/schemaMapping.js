@@ -76,4 +76,87 @@ exports.getProducts = async (data) => {
 
     return schema
 
+
+
+}
+
+
+
+exports.getSelect = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    let context = data.context
+    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.action ='on_select'
+    const schema = {
+        "context": {...context,
+            "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
+        "message": {
+            "order": {
+                "provider": {
+                    "id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"
+                },
+                "fulfillments": [
+                    {
+                        "@ondc/org/provider_name": "The U Shop",
+                        "tracking": true,
+                        "@ondc/org/category": "Immediate Delivery",
+                        "@ondc/org/TAT": "PT45M"
+                    }
+                ],
+                "quote": {
+                    "price":data.totalPrice,
+                    "breakup": data.detailedQoute,
+                    "ttl": "P1D"
+                },
+                "items": data.qouteItems
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+
+exports.getInit = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    console.log("data.message.order.provider",data.message.order)
+    console.log("data.message.order.provider_location",data.message.order.provider_location)
+    console.log("data.message.order.billing",data.message.order.billing)
+    console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.action ='on_init'
+    const schema = {
+        "context": {...context,
+            "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
+        "message":  {
+            "order": {
+                "provider":data.message.order.provider,
+                "provider_location": data.message.order.provider_location,
+                "items": data.qouteItems,
+                "billing": data.message.order.billing,
+                "fulfillments": data.message.order.fulfillments,
+                "quote":{
+                    "price":data.totalPrice,
+                    "breakup": data.detailedQoute,
+                    "ttl": "P1D"
+                },
+                "payment": data.message.order.payment
+            }
+        }
+    }
+
+
+
+    return schema
+
 }

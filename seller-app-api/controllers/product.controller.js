@@ -31,6 +31,24 @@ class ProductController {
             next(err);
         });
     }
+    select(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        productService.select( req.body).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    init(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        productService.init( req.body).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     update(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         let data = req.body
