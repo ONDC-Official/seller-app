@@ -66,5 +66,9 @@
   },
   "firebase": {
     "account": "lib/config/firebase-service-account.json"
+  },
+  "sellerConfig": {
+    "BPP_ID": "sellerapp-staging.datasyndicate.in",
+    "BPP_URI": "https://sellerapp-staging.datasyndicate.in/"
   }
 }

@@ -1,3 +1,8 @@
+const config = require("../lib/config");
+
+const BPP_ID = config.get("sellerConfig").BPP_ID
+const BPP_URI = config.get("sellerConfig").BPP_URI
+
 exports.getProducts = async (data) => {
 
     let productAvailable = []
@@ -31,11 +36,11 @@ exports.getProducts = async (data) => {
     //set product items to schema
 
     let context = data.context
-    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
     context.action ='on_search'
     const schema = {
-        "context": {...context,
-            "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
+        "context": {...context},
         "message": {
             "catalog": {
                 "bpp/descriptor": {
@@ -88,11 +93,11 @@ exports.getSelect = async (data) => {
     //set product items to schema
 
     let context = data.context
-    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
     context.action ='on_select'
     const schema = {
-        "context": {...context,
-            "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
+        "context": {...context},
         "message": {
             "order": {
                 "provider": {
@@ -133,11 +138,11 @@ exports.getInit = async (data) => {
     console.log("data.message.order.fulfillments",data.message.order.fulfillments)
     console.log("data.message.order.payment",data.message.order.payment)
     let context = data.context
-    context.bpp_id ="sandboxapi.signcatch.com/ondc"
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
     context.action ='on_init'
     const schema = {
-        "context": {...context,
-            "bpp_uri": "https://sandboxapi.signcatch.com/ondc/"},
+        "context": {...context},
         "message":  {
             "order": {
                 "provider":data.message.order.provider,
