@@ -54,7 +54,7 @@ exports.getProducts = async (data) => {
                 },
                 "bpp/providers": [
                     {
-                        "id": "d7a4ce6b-0168-4e42-8b2f-84688e5f25ab",
+                        "id": "afe44f35-fb0c-527b-8a80-a1b0b839197e",
                         "descriptor": {
                             "name": "DataOrc",
                             "symbol": "https://awstoazures3.blob.core.windows.net/aws-product-images-prod/images/profile/991/profile_image_477.png1640236184842",
@@ -100,17 +100,8 @@ exports.getSelect = async (data) => {
         "context": {...context},
         "message": {
             "order": {
-                "provider": {
-                    "id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"
-                },
-                "fulfillments": [
-                    {
-                        "@ondc/org/provider_name": "The U Shop",
-                        "tracking": true,
-                        "@ondc/org/category": "Immediate Delivery",
-                        "@ondc/org/TAT": "PT45M"
-                    }
-                ],
+                "provider":data.order.provider,
+                "fulfillments":data.order.fulfillments,
                 "quote": {
                     "price":data.totalPrice,
                     "breakup": data.detailedQoute,

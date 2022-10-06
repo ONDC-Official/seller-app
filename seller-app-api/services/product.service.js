@@ -112,7 +112,7 @@ class CategoryService {
 
         detailedQoute.push(deliveryCharges);
 
-        const productData =await getSelect({qouteItems:qouteItems,totalPrice:totalPriceObj,detailedQoute:detailedQoute,context:requestQuery.context});
+        const productData =await getSelect({qouteItems:qouteItems,order:requestQuery.message.order,totalPrice:totalPriceObj,detailedQoute:detailedQoute,context:requestQuery.context});
 
         return productData
     }
