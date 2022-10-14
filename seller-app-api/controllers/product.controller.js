@@ -40,10 +40,21 @@ class ProductController {
             next(err);
         });
     }
+
     init(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         //  req.params
         productService.init( req.body).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    confirm(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        productService.confirm( req.body).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

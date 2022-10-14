@@ -28,6 +28,9 @@ router.post('/select',
 router.post('/init',
     productController.init);
 
+router.post('/confirm',
+    productController.confirm);
+
 
 
 export default router;
