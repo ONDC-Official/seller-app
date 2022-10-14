@@ -44,6 +44,15 @@
     },
     "availableQty": {
       "type": "biginteger"
+    },
+    "SKUCode": {
+      "type": "string"
+    },
+    "productThumbail": {
+      "type": "json"
+    },
+    "media": {
+      "type": "json"
     }
   }
 }
