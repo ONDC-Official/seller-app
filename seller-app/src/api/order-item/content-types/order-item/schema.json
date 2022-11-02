@@ -20,6 +20,12 @@
     },
     "product_id": {
       "type": "string"
+    },
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "order_items"
     }
   }
 }

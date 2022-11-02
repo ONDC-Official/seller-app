@@ -39,7 +39,8 @@
     "order_items": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::order-item.order-item"
+      "target": "api::order-item.order-item",
+      "mappedBy": "order"
     }
   }
 }

@@ -243,12 +243,13 @@ class CategoryService {
 
         let headers = {};
 
+        let confirmData = requestQuery.message.order
         let confirm = {}
         let httpRequest = new HttpRequest(
             strapiURI,
             `/api/order-details`,
             'POST',
-            {},
+            {data:confirmData},
             headers
         );
 
