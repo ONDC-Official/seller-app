@@ -31,6 +31,9 @@ router.post('/init',
 router.post('/confirm',
     productController.confirm);
 
+router.get('/order',
+    productController.orderList);
+
 
 
 export default router;

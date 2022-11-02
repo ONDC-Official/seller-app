@@ -241,13 +241,28 @@ class CategoryService {
 
         detailedQoute.push(deliveryCharges);
 
-        console.log("qouteItems------------------",qouteItems)
-        console.log("totalPriceObj------------------",totalPriceObj)
-        console.log("detailedQoute------------------",detailedQoute)
+        let headers = {};
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/order-details`,
+            'POST',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("confirm---------result---------",result.data.data)
 
         const productData =await getConfirm({qouteItems:qouteItems,totalPrice:totalPriceObj,detailedQoute:detailedQoute,context:requestQuery.context,message:requestQuery.message});
 
-        console.log("productData------------------",productData)
+        //create order
+
+        //crate order items productId, orderId , qty , fulfillment
+
+        // console.log("productData------------------",productData)
 
         return productData
     }
@@ -260,6 +275,24 @@ class CategoryService {
         let httpRequest = new HttpRequest(
             strapiURI,
             `/api/products/${id}`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
+
+    async orderList(id){
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders?populate=*`,
             'get',
             {},
             headers

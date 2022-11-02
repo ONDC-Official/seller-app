@@ -60,6 +60,17 @@ class ProductController {
             next(err);
         });
     }
+
+    orderList(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        productService.orderList( req.body).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
     update(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         let data = req.body

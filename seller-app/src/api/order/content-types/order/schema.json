@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "order",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order_id": {
+      "type": "text"
+    },
+    "transaction_id": {
+      "type": "string"
+    },
+    "billing": {
+      "type": "json"
+    },
+    "payment": {
+      "type": "json"
+    },
+    "state": {
+      "type": "string"
+    },
+    "fulfillments": {
+      "type": "json"
+    },
+    "provider_id": {
+      "type": "string"
+    },
+    "delivery_info": {
+      "type": "json"
+    },
+    "order_items": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-item.order-item"
+    }
+  }
+}
