@@ -111,14 +111,10 @@ class CategoryService {
         let logisticProvider = {}
         for (let logisticData1 of logisticData) {
 
-            console.log("logisticData---------->", logisticData1);
-
             if (logisticData1.message) {
                 logisticProvider = logisticData1
             }
         }
-
-        console.log("logisticProvider---------->", logisticProvider);
 
         if (Object.keys(logisticProvider).length === 0  ) {
             return {context: {...selectData.context,action:'on_select'},message:{
