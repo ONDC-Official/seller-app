@@ -18,13 +18,10 @@
     "qty": {
       "type": "integer"
     },
-    "product_id": {
-      "type": "string"
-    },
-    "order": {
+    "product": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::order.order",
+      "target": "api::product.product",
       "inversedBy": "order_items"
     }
   }

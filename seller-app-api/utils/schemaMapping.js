@@ -112,8 +112,6 @@ exports.getSelect = async (data) => {
         }
     }
 
-
-
     return schema
 
 }

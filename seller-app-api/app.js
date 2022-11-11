@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import categoryRoutes from './routes/category.routes';
 import productRoutes from './routes/product.routes';
+import logisticRoutes from './routes/logistic.routes';
 import config from './lib/config';
 import Mailer from './lib/mailer';
 import initializeFirebase from './lib/firebase/initializeFirebase.js';
@@ -49,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Application REST APIs
 app.use('/api', cors(corsOptionsDelegate), categoryRoutes);
 app.use('/api', cors(corsOptionsDelegate), productRoutes);
+app.use('/api', cors(corsOptionsDelegate), logisticRoutes);
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}));
 
