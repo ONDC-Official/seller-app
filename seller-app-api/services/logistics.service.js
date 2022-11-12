@@ -14,8 +14,8 @@ class LogisticsService {
                         "city": "std:080",
                         "action": "search",
                         "core_version": "1.0.0",
-                        "bap_id": "sellerapp-staging.datasyndicate.in", //TODO: take it from ENV
-                        "bap_uri": "https://ccfb-103-115-201-50.in.ngrok.io/protocol/v1", //TODO: take it from ENV
+                        "bap_id": process.ENV.LOGISTIC_BAP_ID, //TODO: take it from ENV
+                        "bap_uri": process.ENV.LOGISTIC_BAP_URL, //TODO: take it from ENV
                         "transaction_id": "9fdb667c-76c6-456a-9742-ba9caa5eb765",
                         "message_id": uuidv4(),
                         "timestamp": new Date(),
