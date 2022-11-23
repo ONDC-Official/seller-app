@@ -7,7 +7,7 @@ class LogisticsController {
 
     search(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.search().then(data => {
+        logisticsService.search(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

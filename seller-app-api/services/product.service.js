@@ -44,7 +44,7 @@ class CategoryService {
 
         let httpRequest = new HttpRequest(
             strapiURI,
-            `/api/products?filters[name][$eq]=${searchProduct}`,
+            `/api/products?filters[name][$eq]=${searchProduct}`, //TODO: allow $like query
             'get',
             {},
             headers
@@ -109,7 +109,7 @@ class CategoryService {
         }
 
         let logisticProvider = {}
-        for (let logisticData1 of logisticData) {
+        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
 
             if (logisticData1.message) {
                 logisticProvider = logisticData1
@@ -124,18 +124,18 @@ class CategoryService {
             }}
         }
 
-        //select on logistic based on criteria for now first -
+        //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
-                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items.price.currency,
-                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items.price.value
+                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
+                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
             }
-        }
+        }//TODO: need to map all items in the catalog to find out delivery charges
 
         //added delivery charges in total price
-        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items.price.value
+        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
 
         let fulfillments = [
             {
@@ -248,7 +248,6 @@ class CategoryService {
 
     async confirm(requestQuery) {
 
-        //get search criteria
         const items = requestQuery.message.order.items
 
         let qouteItems = []

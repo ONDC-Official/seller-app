@@ -1,10 +1,13 @@
 import {v4 as uuidv4} from 'uuid';
+import config from "../lib/config";
 
 class LogisticsService {
 
-    async search(context = {}, req = {}) {
+    async search(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
+
+            const order = payload.message.order;
 
             const searchRequest = {
                 "context":
@@ -14,9 +17,9 @@ class LogisticsService {
                         "city": "std:080",
                         "action": "search",
                         "core_version": "1.0.0",
-                        "bap_id": process.ENV.LOGISTIC_BAP_ID, //TODO: take it from ENV
-                        "bap_uri": process.ENV.LOGISTIC_BAP_URL, //TODO: take it from ENV
-                        "transaction_id": "9fdb667c-76c6-456a-9742-ba9caa5eb765",
+                        "bap_id": config.get("sellerConfig").BAP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+                        "transaction_id": payload.context.transaction_id,
                         "message_id": uuidv4(),
                         "timestamp": new Date(),
                         "ttl": "PT30S"
@@ -48,22 +51,8 @@ class LogisticsService {
                         },
                         "fulfillment": {
                             "type": "CoD",
-                            "start": { //TODO: Seller location/pickup location
-                                "location": {
-                                    "gps": "12.4535445,77.9283792",
-                                    "address": {
-                                        "area_code": "560041"
-                                    }
-                                }
-                            },
-                            "end": {
-                                "location": { //select fullfilment
-                                    "gps": "12.4535445,77.9283792",
-                                    "address": {
-                                        "area_code": "560001"
-                                    }
-                                }
-                            }
+                            "start": config.get("sellerConfig").sellerPickupLocation,
+                            "end": order.fulfillments[0].end
                         },
                         "payment": {
                             "@ondc/org/collection_amount": "30000"

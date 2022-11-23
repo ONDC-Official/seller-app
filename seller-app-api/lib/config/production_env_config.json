@@ -26,8 +26,8 @@
         "port": 587,
         "secure": false,
         "auth": {
-          "user": "AKIAXFYZJE6FIP5LB2VM",
-          "pass": "BNLIHC/hDpI58lRjO/qD4LC8fvQwiAw0nETpn8M5Jwu8"
+          "user": "",
+          "pass": ""
         }
       },
       "local": {

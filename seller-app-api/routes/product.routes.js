@@ -19,6 +19,8 @@ router.put('/product/:id',
     authentication(),
     productController.update);
 
+//ONDC specific API
+
 router.post('/search',
     productController.search);
 
