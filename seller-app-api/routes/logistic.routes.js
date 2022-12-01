@@ -4,7 +4,7 @@ import { authentication } from '../middlewares/index.js';
 
 const router = new Router();
 const logisticController = new LogisticController();
-router.post('/logistics/search',
+router.post('/logistics/search-payload-for-retail-select',
     logisticController.search);
 
 router.post('/logistics/init',

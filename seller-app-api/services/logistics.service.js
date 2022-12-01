@@ -1,5 +1,15 @@
 import {v4 as uuidv4} from 'uuid';
 import config from "../lib/config";
+import HttpRequest from "../utils/HttpRequest";
+import {getProducts, getSelect, getInit, getConfirm} from "../utils/schemaMapping";
+import {ProductService} from '../services';
+// import {getSelect} from "../utils/schemaMapping";
+//
+// const productService = new ProductService();
+const strapiAccessToken = config.get("strapi").apiToken
+const strapiURI = config.get("strapi").serverUrl
+const BPP_ID = config.get("sellerConfig").BPP_ID
+const BPP_URI = config.get("sellerConfig").BPP_URI
 
 class LogisticsService {
 
@@ -7,9 +17,13 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            const order = payload.message.order;
+            console.log("payload.context----->",payload.context);
 
-            const searchRequest = {
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const searchRequest = [{
                 "context":
                     {
                         "domain": "nic2004:60232",
@@ -20,7 +34,7 @@ class LogisticsService {
                         "bap_id": config.get("sellerConfig").BAP_ID,
                         "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
                         "transaction_id": payload.context.transaction_id,
-                        "message_id": uuidv4(),
+                        "message_id": logisticsMessageId,
                         "timestamp": new Date(),
                         "ttl": "PT30S"
                     },
@@ -85,8 +99,12 @@ class LogisticsService {
                     }
                 }
 
+            }]
 
-            }
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildSelectRequest(logisticsMessageId,selectMessageId)
+            }, 5000);
 
             return searchRequest
         } catch (err) {
@@ -95,11 +113,208 @@ class LogisticsService {
     }
 
 
+    async buildSelectRequest(logisticsMessageId,selectMessageId){
+
+        try{
+            //1. look up for logistics
+                let logisticsResponse =await this.getLogistics(logisticsMessageId,selectMessageId)
+            //2. if data present then build select response
+
+            let selectResponse = await this.productSelect(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postSelectResponse(selectResponse);
+
+        }catch (e){
+            console.log(e)
+            return e
+        }
+    }
+
+    //get all logistics response from protocol layer
+    async getLogistics(logisticsMessageId,selectMessageId){
+        try{
+
+            console.log(`[getLogistics]==logisticsMessageId ${logisticsMessageId} selectMessageId ${selectMessageId}`)
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BAP_URI,
+                `/protocol/v1/response/network-request-payloads?logisticsOnSearch=${logisticsMessageId}&select=${selectMessageId}`,
+                'get',
+                {},
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            console.log(`[getLogistics]==result.data ${result.data}`)
+
+            return result.data
+
+        }catch(e){
+            console.log("ee----------->",e)
+            return e
+        }
+
+    }
+
+    async productSelect(requestQuery) {
+
+        console.log("requestQuery------------->",requestQuery);
+        console.log("requestQuery-------data------>",requestQuery.data);
+        console.log("requestQuery---------retail_select---->",requestQuery.retail_select);
+        console.log("requestQuery---------logistics_on_search---->",requestQuery.logistics_on_search);
+        //get search criteria
+        const selectData = requestQuery.retail_select[0]//select first select request
+        const items = selectData.message.order.items
+        const logisticData = requestQuery.logistics_on_search
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += price
+                item.price = {value: price, currency: "INR"}
+            }
+
+            //TODO: check if quantity is available
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        let logisticProvider = {}
+        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+
+            if (logisticData1.message) {
+                logisticProvider = logisticData1
+            }
+        }
+
+        if (Object.keys(logisticProvider).length === 0  ) {
+            return {context: {...selectData.context,action:'on_select'},message:{
+                    "type": "CORE-ERROR",
+                    "code": "60001",
+                    "message": "Pickup not servicable"
+                }}
+        }
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
+                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        //added delivery charges in total price
+        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+
+        let fulfillments = [
+            {
+                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
+                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
+                "tracking": false,
+                "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
+                "@ondc/org/TAT": "PT45M",
+                "provider_id": logisticProvider.context.bpp_id,
+                "state":
+                    {
+                        "descriptor":
+                            {
+                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name
+                            }
+                    }, end: selectData.message.order.fulfillments[0].end
+            }]
+
+        //update fulfillment
+        selectData.message.order.fulfillments = fulfillments
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        const productData = await getSelect({
+            qouteItems: qouteItems,
+            order: selectData.message.order,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: selectData.context
+        });
+
+        return productData
+    }
+
+
+    //return select response to protocol layer
+    async postSelectResponse(selectResponse){
+        try{
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BAP_URI,
+                `/protocol/v1/on_select`,
+                'POST',
+                selectResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        }catch(e){
+            console.log("ee----------->",e)
+            return e
+        }
+
+    }
+
+
     async init(context = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            const searchRequest = {
+            /*TODO:
+               1 .store logistics select/onsearch request
+               2. map transaction id with provider id
+               3. use psql db to cache these details
+               4. add cron to remove entries after 1 day - can be taken up in next phase
+               5.
+            *  */
+            const initRequest = {
                 "context":
                     {
                         "domain": "nic2004:60232",
@@ -107,10 +322,10 @@ class LogisticsService {
                         "city": "std:080",
                         "action": "init",
                         "core_version": "1.0.0",
-                        "bap_id": "ondc.gofrugal.com/ondc/18275",
-                        "bap_uri": "https://ondc.gofrugal.com/ondc/seller/adaptor",
-                        "bpp_id": "shiprocket.com/ondc/18275",
-                        "bpp_uri": "https://shiprocket.com/ondc",
+                        "bap_id": "ondc.gofrugal.com/ondc/18275", //CONFIG
+                        "bap_uri": "https://ondc.gofrugal.com/ondc/seller/adaptor",//CONFIG
+                        "bpp_id": "shiprocket.com/ondc/18275",//STORED OBJECT
+                        "bpp_uri": "https://shiprocket.com/ondc", //STORED OBJECT
                         "transaction_id": "9fdb667c-76c6-456a-9742-ba9caa5eb765",
                         "message_id": "1651742565654",
                         "timestamp": "2022-06-13T07:22:45.363Z",
@@ -122,15 +337,15 @@ class LogisticsService {
                             {
                                 "provider":
                                     {
-                                        "id": "18275-Provider-1",
+                                        "id": "18275-Provider-1", //STORED object
                                         "locations":
                                             [
                                                 {
-                                                    "id": "18275-Location-1"
+                                                    "id": "18275-Location-1" //TODO: TBD
                                                 }
                                             ]
                                     },
-                                "items":
+                                "items": //TODO: take it from request
                                     [
                                         {
                                             "id": "18275-Item-1",
@@ -141,7 +356,7 @@ class LogisticsService {
                                     [
                                         {
                                             "id": "Fulfillment1",
-                                            "type": "CoD",
+                                            "type": "CoD", //TODO: type payment check
                                             "start":
                                                 {
                                                     "location":
@@ -158,7 +373,7 @@ class LogisticsService {
                                                                     "area_code": "560041"
                                                                 }
                                                         },
-                                                    "contact":
+                                                    "contact": //TODO: take from config
                                                         {
                                                             "phone": "98860 98860",
                                                             "email": "abcd.efgh@gmail.com"
@@ -208,7 +423,7 @@ class LogisticsService {
                                         "type": "POST-FULFILLMENT",
                                         "collected_by": "BAP",
                                         "@ondc/org/settlement_window": "P2D",
-                                        "@ondc/org/settlement_details":
+                                        "@ondc/org/settlement_details": //TODO: put this in the config
                                             [
                                                 {
                                                     "settlement_counterparty": "buyer-app",

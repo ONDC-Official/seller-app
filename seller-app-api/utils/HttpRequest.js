@@ -32,14 +32,14 @@ class HttpRequest {
         try 
         {
 
-            let headers = {...this.headers, 'Content-Type': 'application/json'};
 
-            console.log(`sending request to ${this.baseUrl}/${this.url}`)
-            console.log(`sending headers `,headers)
+
+            // console.log(`sending request to ${this.baseUrl}/${this.url}`)
+            // console.log(`sending headers `,headers)
 
             let result
             if (this.method.toLowerCase() == 'get') {
-
+                let headers = {...this.headers};
                 result = await axios({
                     baseURL: this.baseUrl,
                     url: this.url,
@@ -48,6 +48,7 @@ class HttpRequest {
                     timeout: 180000, // If the request takes longer than `timeout`, the request will be aborted.
                 });
             } else {
+                let headers = {...this.headers, 'Content-Type': 'application/json'};
                 // Make server request using axios
                 result = await axios({
                     baseURL: this.baseUrl,

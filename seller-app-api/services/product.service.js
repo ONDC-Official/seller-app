@@ -6,13 +6,14 @@ var config = require('../lib/config');
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
+const BPP_URI = config.get("sellerConfig").BPP_URI
 
-import BppSearchService from './logistics.service'
-// const BPP_ID = config.get("sellerConfig").BPP_ID
+// import BppSearchService from './logistics.service'
+// // const BPP_ID = config.get("sellerConfig").BPP_ID
+//
+// let bppSearchService = new BppSearchService()
 
-let bppSearchService = new BppSearchService()
-
-class CategoryService {
+class ProductService {
 
     async list() {
 
@@ -61,12 +62,13 @@ class CategoryService {
         return productData
     }
 
+
     async select(requestQuery) {
 
         //get search criteria
-        const selectData = requestQuery.select
+        const selectData = requestQuery.retail_select
         const items = selectData.message.order.items
-        const logisticData = requestQuery.logistic_on_search
+        const logisticData = requestQuery.logistics_on_search
 
         let qouteItems = []
         let detailedQoute = []
@@ -434,4 +436,4 @@ class CategoryService {
     }
 }
 
-module.exports = CategoryService;
+module.exports = ProductService;
