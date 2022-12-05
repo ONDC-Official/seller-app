@@ -38,6 +38,12 @@ if (env !== 'development') {
     nconf.set('sellerConfig:BPP_URI', process.env.BAP_ID);
     nconf.set('sellerConfig:BPP_ID', process.env.BAP_URI);
 
+    nconf.set('database:host', process.env.DATABASE_HOST);
+    nconf.set('database:username', process.env.DATABASE_USERNAME);
+    nconf.set('database:password', process.env.DATABASE_PASSWORD);
+    nconf.set('database:name', process.env.DATABASE_NAME_SELLER_CLIENT);
+    nconf.set('database:port', process.env.DATABASE_PORT);
+
    // const apiUrl = process.env.PROTOCOL + process.env.HOST + ':' + process.env.PORT + '/';
    // nconf.set('express:apiUrl', apiUrl);
    //
