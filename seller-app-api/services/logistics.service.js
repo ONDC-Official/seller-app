@@ -2,7 +2,8 @@ import {v4 as uuidv4} from 'uuid';
 import config from "../lib/config";
 import HttpRequest from "../utils/HttpRequest";
 import {getProducts, getSelect, getInit, getConfirm} from "../utils/schemaMapping";
-import {sequelize,Sequelize,SelectRequest} from '../models'
+import {sequelize, Sequelize, SelectRequest} from '../models'
+
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
@@ -14,7 +15,7 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->",payload.context);
+            console.log("payload.context----->", payload.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -29,7 +30,7 @@ class LogisticsService {
                         "action": "search",
                         "core_version": "1.0.0",
                         "bap_id": config.get("sellerConfig").BAP_ID,
-                        "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
                         "transaction_id": payload.context.transaction_id,
                         "message_id": logisticsMessageId,
                         "timestamp": new Date(),
@@ -114,7 +115,7 @@ class LogisticsService {
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
-                this.buildSelectRequest(logisticsMessageId,selectMessageId)
+                this.buildSelectRequest(logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
 
             return searchRequest
@@ -124,11 +125,11 @@ class LogisticsService {
     }
 
 
-    async buildSelectRequest(logisticsMessageId,selectMessageId){
+    async buildSelectRequest(logisticsMessageId, selectMessageId) {
 
-        try{
+        try {
             //1. look up for logistics
-                let logisticsResponse =await this.getLogistics(logisticsMessageId,selectMessageId,'select')
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
 
             let selectResponse = await this.productSelect(logisticsResponse)
@@ -136,27 +137,27 @@ class LogisticsService {
             //3. post to protocol layer
             await this.postSelectResponse(selectResponse);
 
-        }catch (e){
+        } catch (e) {
             console.log(e)
             return e
         }
     }
 
     //get all logistics response from protocol layer
-    async getLogistics(logisticsMessageId,retailMessageId,type){
-        try{
+    async getLogistics(logisticsMessageId, retailMessageId, type) {
+        try {
 
             console.log(`[getLogistics]==logisticsMessageId ${logisticsMessageId} selectMessageId ${retailMessageId}`)
             let headers = {};
             let query = ''
-            if(type==='select'){
-                query =`logisticsOnSearch=${logisticsMessageId}&select=${retailMessageId}`
-            }else if(type==='init') {
+            if (type === 'select') {
+                query = `logisticsOnSearch=${logisticsMessageId}&select=${retailMessageId}`
+            } else if (type === 'init') {
                 query = `logisticsOnInit=${logisticsMessageId}&init=${retailMessageId}`
-            }else if(type==='confirm') {
+            } else if (type === 'confirm') {
                 query = `logisticsOnConfirm=${logisticsMessageId}&confirm=${retailMessageId}`
             }
-                let httpRequest = new HttpRequest(
+            let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BAP_URI,
                 `/protocol/v1/response/network-request-payloads?${query}`,
                 'get',
@@ -172,8 +173,8 @@ class LogisticsService {
 
             return result.data
 
-        }catch(e){
-            console.log("ee----------->",e)
+        } catch (e) {
+            console.log("ee----------->", e)
             return e
         }
 
@@ -181,10 +182,10 @@ class LogisticsService {
 
     async productSelect(requestQuery) {
 
-        console.log("requestQuery------------->",requestQuery);
-        console.log("requestQuery-------data------>",requestQuery.data);
-        console.log("requestQuery---------retail_select---->",requestQuery.retail_select);
-        console.log("requestQuery---------logistics_on_search---->",requestQuery.logistics_on_search);
+        console.log("requestQuery------------->", requestQuery);
+        console.log("requestQuery-------data------>", requestQuery.data);
+        console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
+        console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
         //get search criteria
         const selectData = requestQuery.retail_select[0]//select first select request
         const items = selectData.message.order.items
@@ -232,18 +233,21 @@ class LogisticsService {
 
         let logisticProvider = {}
         for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
-
             if (logisticData1.message) {
-                logisticProvider = logisticData1
+                if (logisticData1.context.bpp_id === "flash-api.staging.shadowfax.in") {
+                    logisticProvider = logisticData1
+                }
             }
         }
 
-        if (Object.keys(logisticProvider).length === 0  ) {
-            return {context: {...selectData.context,action:'on_select'},message:{
+        if (Object.keys(logisticProvider).length === 0) {
+            return {
+                context: {...selectData.context, action: 'on_select'}, error: {
                     "type": "CORE-ERROR",
                     "code": "60001",
                     "message": "Pickup not servicable"
-                }}
+                }
+            }
         }
 
         let savedLogistics = new SelectRequest()
@@ -305,8 +309,8 @@ class LogisticsService {
 
 
     //return select response to protocol layer
-    async postSelectResponse(selectResponse){
-        try{
+    async postSelectResponse(selectResponse) {
+        try {
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -323,8 +327,8 @@ class LogisticsService {
 
             return result.data
 
-        }catch(e){
-            console.log("ee----------->",e)
+        } catch (e) {
+            console.log("ee----------->", e)
             return e
         }
 
@@ -335,85 +339,145 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->",payload.context);
+            console.log("payload.context----->", payload.context);
 
-            const selectRequest = await SelectRequest.findOne({where:{
-                    transactionId:payload.context.transaction_id
-                }})
+            const selectRequest = await SelectRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id
+                }
+            })
 
-            console.log("selected logistics--------selectRequest------->",selectRequest);
+            console.log("selected logistics--------selectRequest------->", selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            console.log("selected logistics--------selectRequest-----logistics-->",logistics);
-            console.log("selected logistics--------selectRequest----context--->",logistics.context);
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+            //
+            // const initRequest = [{
+            //     "context":
+            //         {
+            //             "domain": "nic2004:60232",
+            //             "country": "IND",
+            //             "city": "std:080",
+            //             "action": "init",
+            //             "core_version": "1.0.0",
+            //             "bap_id": config.get("sellerConfig").BAP_ID,
+            //             "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+            //             "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+            //             "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+            //             "transaction_id":  payload.context.transaction_id,
+            //             "message_id": logisticsMessageId,
+            //             "timestamp": "2022-06-13T07:22:45.363Z",
+            //             "ttl": "PT30S"
+            //         },
+            //     "message":
+            //         {
+            //             "order":
+            //                 {
+            //                     "provider":
+            //                         {
+            //                             "id": logistics.message.catalog["bpp/providers"][0].id, //STORED object
+            //                             "locations":
+            //                                 [
+            //                                     {
+            //                                         "id": "18275-Location-1" //TODO: TBD
+            //                                     }
+            //                                 ]
+            //                         },
+            //                     "items": order.items,
+            //                     "fulfillments":
+            //                         [
+            //                             {
+            //                                 "id": "Fulfillment1",
+            //                                 "type": "CoD", //TODO: type payment check
+            //                                 "start":
+            //                                     {
+            //                                         "location":config.get("sellerConfig").sellerPickupLocation.location,
+            //                                         "contact":config.get("sellerConfig").sellerPickupLocation.contact
+            //                                     },
+            //                                 "end":order.fulfillments.end
+            //                             }
+            //                         ],
+            //                     "billing":order.billing,
+            //                     "payment":
+            //                         {
+            //                             "type": "POST-FULFILLMENT",
+            //                             "collected_by": "BAP",
+            //                             "@ondc/org/settlement_window": "P2D",
+            //                             "@ondc/org/settlement_details": config.get("sellerConfig").settlement_details
+            //
+            //                         }
+            //                 }
+            //         }
+            // }
+            // ]
+
 
             const initRequest = [{
-                "context":
-                    {
-                        "domain": "nic2004:60232",
-                        "country": "IND",
-                        "city": "std:080",
-                        "action": "init",
-                        "core_version": "1.0.0",
-                        "bap_id": config.get("sellerConfig").BAP_ID,
-                        "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
-                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                        "transaction_id":  payload.context.transaction_id,
-                        "message_id": logisticsMessageId,
-                        "timestamp": "2022-06-13T07:22:45.363Z",
-                        "ttl": "PT30S"
-                    },
-                "message":
-                    {
-                        "order":
-                            {
-                                "provider":
-                                    {
-                                        "id": logistics.message.catalog["bpp/providers"][0].id, //STORED object
-                                        "locations":
-                                            [
-                                                {
-                                                    "id": "18275-Location-1" //TODO: TBD
-                                                }
-                                            ]
-                                    },
-                                "items": order.items,
-                                "fulfillments":
-                                    [
-                                        {
-                                            "id": "Fulfillment1",
-                                            "type": "CoD", //TODO: type payment check
-                                            "start":
-                                                {
-                                                    "location":config.get("sellerConfig").sellerPickupLocation.location,
-                                                    "contact":config.get("sellerConfig").sellerPickupLocation.contact
-                                                },
-                                            "end":order.fulfillments.end
-                                        }
-                                    ],
-                                "billing":order.billing,
-                                "payment":
-                                    {
-                                        "type": "POST-FULFILLMENT",
-                                        "collected_by": "BAP",
-                                        "@ondc/org/settlement_window": "P2D",
-                                        "@ondc/org/settlement_details": config.get("sellerConfig").settlement_details
-
-                                    }
-                            }
+                "context": {
+                    "domain": "nic2004:60232",
+                    "country": "IND",
+                    "city": "std:080",
+                    "action": "init",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BAP_ID,
+                    "bap_uri": config.get("sellerConfig").BAP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "timestamp": "2022-06-13T07:22:45.363Z",
+                    "ttl": "PT30S"
+                },
+                "message": {
+                    "order": {
+                        "provider": {
+                            "id": logistics.message.catalog["bpp/providers"][0].id,
+                            "locations": [{
+                                "id": "18275-Location-1"
+                            }]
+                        },
+                        "items": logistics.message.catalog["bpp/providers"][0].items,
+                        "fulfillments": [{
+                            "id": "Fulfillment1",
+                            "type": "Prepaid",
+                            "start": {
+                                "location": config.get("sellerConfig").sellerPickupLocation.location,
+                                "contact": config.get("sellerConfig").sellerPickupLocation.contact
+                            },
+                            "end": order.fulfillments[0].end
+                        }],
+                        billing:      { //TODO: move to config
+                            "name": "XXXX YYYYY",
+                            "address":
+                                {
+                                    "name": "D000, Prestige Towers",
+                                    "locality": "Bannerghatta Road",
+                                    "city": "Bengaluru",
+                                    "state": "Karnataka",
+                                    "country": "India",
+                                    "area_code": "560076"
+                                },
+                            "tax_number": "29AAACU1901H1ZK",
+                            "phone": "98860 98860",
+                            "email": "abcd.efgh@gmail.com"
+                        },
+                        "payment": {
+                            "type": "POST-FULFILLMENT",
+                            "collected_by": "BAP",
+                            "@ondc/org/settlement_window": "P2D"
+                        }
                     }
-            }
-            ]
-
+                }
+            }]
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
-                this.buildInitRequest(logisticsMessageId,selectMessageId)
+                this.buildInitRequest(logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
 
             return initRequest
@@ -422,22 +486,22 @@ class LogisticsService {
         }
     }
 
-    async buildInitRequest(logisticsMessageId,initMessageId){
+    async buildInitRequest(logisticsMessageId, initMessageId) {
 
-        try{
+        try {
             console.log("buildInitRequest---------->");
             //1. look up for logistics
-            let logisticsResponse =await this.getLogistics(logisticsMessageId,initMessageId,'init')
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'init')
             //2. if data present then build select response
 
-            console.log("logisticsResponse---------->",logisticsResponse);
+            console.log("logisticsResponse---------->", logisticsResponse);
 
             let selectResponse = await this.productInit(logisticsResponse)
 
             //3. post to protocol layer
             await this.postInitResponse(selectResponse);
 
-        }catch (e){
+        } catch (e) {
             console.log(e)
             return e
         }
@@ -490,14 +554,15 @@ class LogisticsService {
             detailedQoute.push(qouteItemsDetails)
         }
 
+        //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
-                "currency": "INR",
-                "value": "0"
+                "currency": '' + logisticData.message.order.quote.price.currency,
+                "value": '' + logisticData.message.order.quote.price.value
             }
-        }
+        }//TODO: need to map all items in the catalog to find out delivery charges
 
         let totalPriceObj = {value: totalPrice, currency: "INR"}
 
@@ -513,7 +578,7 @@ class LogisticsService {
             detailedQoute: detailedQoute,
             context: initData.context,
             message: initData.message,
-            logisticData:initData.logisticData
+            logisticData: initData.logisticData
         });
 
         console.log("productData------------------", productData)
@@ -523,8 +588,8 @@ class LogisticsService {
 
 
     //return init response to protocol layer
-    async postInitResponse(initResponse){
-        try{
+    async postInitResponse(initResponse) {
+        try {
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -541,8 +606,8 @@ class LogisticsService {
 
             return result.data
 
-        }catch(e){
-            console.log("ee----------->",e)
+        } catch (e) {
+            console.log("ee----------->", e)
             return e
         }
 
@@ -553,18 +618,20 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->",payload.context);
+            console.log("payload.context----->", payload.context);
 
-            const selectRequest = await SelectRequest.findOne({where:{
-                    transactionId:payload.context.transaction_id
-                }})
+            const selectRequest = await SelectRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id
+                }
+            })
 
-            console.log("selected logistics--------selectRequest------->",selectRequest);
+            console.log("selected logistics--------selectRequest------->", selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            console.log("selected logistics--------selectRequest-----logistics-->",logistics);
-            console.log("selected logistics--------selectRequest----context--->",logistics.context);
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -573,10 +640,10 @@ class LogisticsService {
             const initRequest = [{
                 "context": {
                     "domain": "nic2004:52110",
-                    "action": "on_confirm",
+                    "action": "confirm",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BAP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+                    "bap_uri": config.get("sellerConfig").BAP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": payload.context.transaction_id,
@@ -588,7 +655,7 @@ class LogisticsService {
                 "message": {
                     "order": {
                         "id": "0799f385-5043-4848-8433-4643ad511a14",
-                        "state": "Accepted",
+                        "state":"Created",
                         "provider": {
                             "id": logistics.message.catalog["bpp/providers"][0].id,
                             "locations": [
@@ -598,23 +665,37 @@ class LogisticsService {
                             ],
                             "rateable": "true"
                         },
-                        "items":order.items,
-                        "billing": order.billing,
+                        "items": logistics.message.catalog["bpp/providers"][0].items,
+                        "billing":      { //TODO: move to config
+                            "name": "XXXX YYYYY",
+                            "address":
+                                {
+                                    "name": "D000, Prestige Towers",
+                                    "locality": "Bannerghatta Road",
+                                    "city": "Bengaluru",
+                                    "state": "Karnataka",
+                                    "country": "India",
+                                    "area_code": "560076"
+                                },
+                            "tax_number": "29AAACU1901H1ZK",
+                            "phone": "98860 98860",
+                            "email": "abcd.efgh@gmail.com"
+                        },
                         "fulfillments": [
                             {
                                 "id": "Fulfillment1",
-                                "@ondc/org/provider_name": "Loadshare",
+                                "@ondc/org/provider_name": "Loadshare",//TODO: find name
                                 "state": {
                                     "descriptor": {
                                         "name": "Pending",
                                         "code": "Pending"
                                     }
                                 },
-                                "type": "Delivery",
+                                "type": "Prepaid",
                                 "tracking": false,
                                 "start": {
-                                    "location":config.get("sellerConfig").sellerPickupLocation.location,
-                                    "contact":config.get("sellerConfig").sellerPickupLocation.contact,
+                                    "location": config.get("sellerConfig").sellerPickupLocation.location,
+                                    "contact": config.get("sellerConfig").sellerPickupLocation.contact,
                                     "time": {
                                         "range": {
                                             "start": "2022-05-10T20:02:19.609Z",
@@ -627,14 +708,14 @@ class LogisticsService {
                                     },
 
                                 },
-                                "end": order.fulfillments.end,
+                                "end": order.fulfillments[0].end,
                                 "rateable": "true"
                             }
                         ],
                         "quote": {
                             "price": {
                                 "currency": "INR",
-                                "value": "5.0"
+                                "value": "5551.0"
                             },
                             "breakup": [
                                 {
@@ -693,98 +774,99 @@ class LogisticsService {
                             "@ondc/org/return_window": "0",
                             "@ondc/org/settlement_basis": "Collection",
                             "@ondc/org/settlement_window": "P2D",
-                            "@ondc/org/settlement_details":config.get("sellerConfig").settlement_details,
-                        "documents": [
-                            {
-                                "url": "https://invoice_url",
-                                "label": "Invoice"
-                            }
-                        ],
-                        "tags": [
-                            {
-                                "code": "bap_terms_fee",
-                                "list": [
-                                    {
-                                        "code": "finder_fee_type",
-                                        "value": "percent"
-                                    },
-                                    {
-                                        "code": "finder_fee_amount",
-                                        "value": "3"
-                                    },
-                                    {
-                                        "code": "accept",
-                                        "value": "Y"
-                                    }
-                                ]
-                            },
-                            {
-                                "code": "bpp_terms_liability",
-                                "list": [
-                                    {
-                                        "code": "max_liability_cap",
-                                        "value": "10000"
-                                    },
-                                    {
-                                        "code": "max_liability",
-                                        "value": "2"
-                                    },
-                                    {
-                                        "code": "accept",
-                                        "value": "Y"
-                                    }
-                                ]
-                            },
-                            {
-                                "code": "bpp_terms_arbitration",
-                                "list": [
-                                    {
-                                        "code": "mandatory_arbitration",
-                                        "value": "false"
-                                    },
-                                    {
-                                        "code": "court_jurisdiction",
-                                        "value": "KA"
-                                    },
-                                    {
-                                        "code": "accept",
-                                        "value": "Y"
-                                    }
-                                ]
-                            },
-                            {
-                                "code": "bpp_terms_charges",
-                                "list": [
-                                    {
-                                        "code": "delay_interest",
-                                        "value": "1000"
-                                    },
-                                    {
-                                        "code": "accept",
-                                        "value": "Y"
-                                    }
-                                ]
-                            },
-                            {
-                                "code": "bpp_seller_gst",
-                                "list": [
-                                    {
-                                        "code": "GST",
-                                        "value": "XXXXXXXXXXXXXXX"
-                                    }
-                                ]
-                            }
-                        ],
-                        "created_at": "2022-05-10T18:01:53.000Z",
-                        "updated_at": "2022-05-10T18:02:19.000Z"
+                            "@ondc/org/settlement_details": config.get("sellerConfig").settlement_details,
+                            "documents": [
+                                {
+                                    "url": "https://invoice_url",
+                                    "label": "Invoice"
+                                }
+                            ],
+                            "tags": [
+                                {
+                                    "code": "bap_terms_fee",
+                                    "list": [
+                                        {
+                                            "code": "finder_fee_type",
+                                            "value": "percent"
+                                        },
+                                        {
+                                            "code": "finder_fee_amount",
+                                            "value": "3"
+                                        },
+                                        {
+                                            "code": "accept",
+                                            "value": "Y"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "bpp_terms_liability",
+                                    "list": [
+                                        {
+                                            "code": "max_liability_cap",
+                                            "value": "10000"
+                                        },
+                                        {
+                                            "code": "max_liability",
+                                            "value": "2"
+                                        },
+                                        {
+                                            "code": "accept",
+                                            "value": "Y"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "bpp_terms_arbitration",
+                                    "list": [
+                                        {
+                                            "code": "mandatory_arbitration",
+                                            "value": "false"
+                                        },
+                                        {
+                                            "code": "court_jurisdiction",
+                                            "value": "KA"
+                                        },
+                                        {
+                                            "code": "accept",
+                                            "value": "Y"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "bpp_terms_charges",
+                                    "list": [
+                                        {
+                                            "code": "delay_interest",
+                                            "value": "1000"
+                                        },
+                                        {
+                                            "code": "accept",
+                                            "value": "Y"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "bpp_seller_gst",
+                                    "list": [
+                                        {
+                                            "code": "GST",
+                                            "value": "XXXXXXXXXXXXXXX"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "created_at": "2022-05-10T18:01:53.000Z",
+                            "updated_at": "2022-05-10T18:02:19.000Z"
+                        }
                     }
                 }
-            }}
+            }
             ]
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
-                this.buildConfirmRequest(logisticsMessageId,selectMessageId)
+                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
 
             return initRequest
@@ -793,22 +875,22 @@ class LogisticsService {
         }
     }
 
-    async buildConfirmRequest(logisticsMessageId,initMessageId){
+    async buildConfirmRequest(logisticsMessageId, initMessageId) {
 
-        try{
+        try {
             console.log("buildInitRequest---------->");
             //1. look up for logistics
-            let logisticsResponse =await this.getLogistics(logisticsMessageId,initMessageId,'confirm')
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'confirm')
             //2. if data present then build select response
 
-            console.log("logisticsResponse---------->",logisticsResponse);
+            console.log("logisticsResponse---------->", logisticsResponse);
 
             let selectResponse = await this.productConfirm(logisticsResponse)
 
             //3. post to protocol layer
             await this.postConfirmResponse(selectResponse);
 
-        }catch (e){
+        } catch (e) {
             console.log(e)
             return e
         }
@@ -861,14 +943,15 @@ class LogisticsService {
             detailedQoute.push(qouteItemsDetails)
         }
 
+        //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
-                "currency": "INR",
-                "value": "0"
+                "currency": '' + logisticData.message.order.quote.price.currency,
+                "value": '' + logisticData.message.order.quote.price.value
             }
-        }
+        }//TODO: need to map all items in the catalog to find out delivery charges
 
         let totalPriceObj = {value: totalPrice, currency: "INR"}
 
@@ -880,12 +963,12 @@ class LogisticsService {
 
         let orderItems = []
         // let confirmData = requestQuery.message.order
-        for(let item  of confirmData.items){
+        for (let item of confirmData.items) {
 
             let productItems = {
-                product:item.id,
-                status:'Created',
-                qty:item.quantity.count
+                product: item.id,
+                status: 'Created',
+                qty: item.quantity.count
 
             }
             let httpRequest = new HttpRequest(
@@ -896,16 +979,16 @@ class LogisticsService {
                 headers
             );
             let result = await httpRequest.send();
-            console.log("result--------------->",result.data.data.id)
+            console.log("result--------------->", result.data.data.id)
             orderItems.push(result.data.data.id);
         }
 
 
-        confirmData["order_items"] =orderItems
+        confirmData["order_items"] = orderItems
         confirmData.order_id = confirmData.id
         delete confirmData.id
 
-        console.log("orderItems-------confirmData-------->",confirmData)
+        console.log("orderItems-------confirmData-------->", confirmData)
 
         let confirm = {}
         let httpRequest = new HttpRequest(
@@ -926,7 +1009,7 @@ class LogisticsService {
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,
-            logisticData:logisticData
+            logisticData: logisticData
         });
 
         return productData
@@ -934,8 +1017,8 @@ class LogisticsService {
 
 
     //return confirm response to protocol layer
-    async postConfirmResponse(confirmResponse){
-        try{
+    async postConfirmResponse(confirmResponse) {
+        try {
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -952,13 +1035,12 @@ class LogisticsService {
 
             return result.data
 
-        }catch(e){
-            console.log("ee----------->",e)
+        } catch (e) {
+            console.log("ee----------->", e)
             return e
         }
 
     }
-
 
 
 }
