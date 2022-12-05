@@ -11,7 +11,6 @@ import logisticRoutes from './routes/logistic.routes';
 import config from './lib/config';
 import Mailer from './lib/mailer';
 import initializeFirebase from './lib/firebase/initializeFirebase.js';
-
 initializeFirebase();
 const mailer = new Mailer();
 

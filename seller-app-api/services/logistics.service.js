@@ -2,10 +2,7 @@ import {v4 as uuidv4} from 'uuid';
 import config from "../lib/config";
 import HttpRequest from "../utils/HttpRequest";
 import {getProducts, getSelect, getInit, getConfirm} from "../utils/schemaMapping";
-import {ProductService} from '../services';
-// import {getSelect} from "../utils/schemaMapping";
-//
-// const productService = new ProductService();
+import {sequelize,Sequelize,SelectRequest} from '../models'
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
@@ -64,9 +61,23 @@ class LogisticsService {
                             }
                         },
                         "fulfillment": {
-                            "type": "CoD",
-                            "start": config.get("sellerConfig").sellerPickupLocation,
-                            "end": order.fulfillments[0].end
+                            "type": "Prepaid",
+                            "start": {
+                                "location": {
+                                    "gps": "12.938382,77.651775",
+                                    "address": {
+                                        "area_code": "560087"
+                                    }
+                                }
+                            },
+                            "end": {
+                                "location": {
+                                    "gps": "12.997989,77.622650",
+                                    "address": {
+                                        "area_code": "560005"
+                                    }
+                                }
+                            }
                         },
                         "payment": {
                             "@ondc/org/collection_amount": "30000"
@@ -104,7 +115,7 @@ class LogisticsService {
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
                 this.buildSelectRequest(logisticsMessageId,selectMessageId)
-            }, 5000);
+            }, 5000); //TODO move to config
 
             return searchRequest
         } catch (err) {
@@ -117,7 +128,7 @@ class LogisticsService {
 
         try{
             //1. look up for logistics
-                let logisticsResponse =await this.getLogistics(logisticsMessageId,selectMessageId)
+                let logisticsResponse =await this.getLogistics(logisticsMessageId,selectMessageId,'select')
             //2. if data present then build select response
 
             let selectResponse = await this.productSelect(logisticsResponse)
@@ -132,14 +143,22 @@ class LogisticsService {
     }
 
     //get all logistics response from protocol layer
-    async getLogistics(logisticsMessageId,selectMessageId){
+    async getLogistics(logisticsMessageId,retailMessageId,type){
         try{
 
-            console.log(`[getLogistics]==logisticsMessageId ${logisticsMessageId} selectMessageId ${selectMessageId}`)
+            console.log(`[getLogistics]==logisticsMessageId ${logisticsMessageId} selectMessageId ${retailMessageId}`)
             let headers = {};
-            let httpRequest = new HttpRequest(
+            let query = ''
+            if(type==='select'){
+                query =`logisticsOnSearch=${logisticsMessageId}&select=${retailMessageId}`
+            }else if(type==='init') {
+                query = `logisticsOnInit=${logisticsMessageId}&init=${retailMessageId}`
+            }else if(type==='confirm') {
+                query = `logisticsOnConfirm=${logisticsMessageId}&confirm=${retailMessageId}`
+            }
+                let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BAP_URI,
-                `/protocol/v1/response/network-request-payloads?logisticsOnSearch=${logisticsMessageId}&select=${selectMessageId}`,
+                `/protocol/v1/response/network-request-payloads?${query}`,
                 'get',
                 {},
                 headers
@@ -227,6 +246,15 @@ class LogisticsService {
                 }}
         }
 
+        let savedLogistics = new SelectRequest()
+
+        savedLogistics.transactionId = selectData.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.selectedLogistics = logisticProvider
+
+        await savedLogistics.save();
+
         //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
             "title": "Delivery charges",
@@ -303,18 +331,28 @@ class LogisticsService {
     }
 
 
-    async init(context = {}, req = {}) {
+    async init(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            /*TODO:
-               1 .store logistics select/onsearch request
-               2. map transaction id with provider id
-               3. use psql db to cache these details
-               4. add cron to remove entries after 1 day - can be taken up in next phase
-               5.
-            *  */
-            const initRequest = {
+            console.log("payload.context----->",payload.context);
+
+            const selectRequest = await SelectRequest.findOne({where:{
+                    transactionId:payload.context.transaction_id
+                }})
+
+            console.log("selected logistics--------selectRequest------->",selectRequest);
+
+            const logistics = selectRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->",logistics);
+            console.log("selected logistics--------selectRequest----context--->",logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const initRequest = [{
                 "context":
                     {
                         "domain": "nic2004:60232",
@@ -322,12 +360,12 @@ class LogisticsService {
                         "city": "std:080",
                         "action": "init",
                         "core_version": "1.0.0",
-                        "bap_id": "ondc.gofrugal.com/ondc/18275", //CONFIG
-                        "bap_uri": "https://ondc.gofrugal.com/ondc/seller/adaptor",//CONFIG
-                        "bpp_id": "shiprocket.com/ondc/18275",//STORED OBJECT
-                        "bpp_uri": "https://shiprocket.com/ondc", //STORED OBJECT
-                        "transaction_id": "9fdb667c-76c6-456a-9742-ba9caa5eb765",
-                        "message_id": "1651742565654",
+                        "bap_id": config.get("sellerConfig").BAP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id":  payload.context.transaction_id,
+                        "message_id": logisticsMessageId,
                         "timestamp": "2022-06-13T07:22:45.363Z",
                         "ttl": "PT30S"
                     },
@@ -337,7 +375,7 @@ class LogisticsService {
                             {
                                 "provider":
                                     {
-                                        "id": "18275-Provider-1", //STORED object
+                                        "id": logistics.message.catalog["bpp/providers"][0].id, //STORED object
                                         "locations":
                                             [
                                                 {
@@ -345,13 +383,7 @@ class LogisticsService {
                                                 }
                                             ]
                                     },
-                                "items": //TODO: take it from request
-                                    [
-                                        {
-                                            "id": "18275-Item-1",
-                                            "category_id": "Immediate Delivery"
-                                        }
-                                    ],
+                                "items": order.items,
                                 "fulfillments":
                                     [
                                         {
@@ -359,329 +391,576 @@ class LogisticsService {
                                             "type": "CoD", //TODO: type payment check
                                             "start":
                                                 {
-                                                    "location":
-                                                        {
-                                                            "gps": "12.4535445,77.9283792",
-                                                            "address":
-                                                                {
-                                                                    "name": "Fritoburger",
-                                                                    "building": "12 Restaurant Tower",
-                                                                    "locality": "JP Nagar 24th Main",
-                                                                    "city": "Bengaluru",
-                                                                    "state": "Karnataka",
-                                                                    "country": "India",
-                                                                    "area_code": "560041"
-                                                                }
-                                                        },
-                                                    "contact": //TODO: take from config
-                                                        {
-                                                            "phone": "98860 98860",
-                                                            "email": "abcd.efgh@gmail.com"
-                                                        }
+                                                    "location":config.get("sellerConfig").sellerPickupLocation.location,
+                                                    "contact":config.get("sellerConfig").sellerPickupLocation.contact
                                                 },
-                                            "end":
-                                                {
-                                                    "location":
-                                                        {
-                                                            "gps": "12.4535445,77.9283792",
-                                                            "address":
-                                                                {
-                                                                    "name": "D 000",
-                                                                    "building": "Prestige Towers",
-                                                                    "locality": "Bannerghatta Road",
-                                                                    "city": "Bengaluru",
-                                                                    "state": "Karnataka",
-                                                                    "country": "India",
-                                                                    "area_code": "560076"
-                                                                }
-                                                        },
-                                                    "contact":
-                                                        {
-                                                            "phone": "98860 98860",
-                                                            "email": "abcd.efgh@gmail.com"
-                                                        }
-                                                }
+                                            "end":order.fulfillments.end
                                         }
                                     ],
-                                "billing":
-                                    {
-                                        "name": "XXXX YYYYY",
-                                        "address":
-                                            {
-                                                "name": "D000, Prestige Towers",
-                                                "locality": "Bannerghatta Road",
-                                                "city": "Bengaluru",
-                                                "state": "Karnataka",
-                                                "country": "India",
-                                                "area_code": "560076"
-                                            },
-                                        "phone": "98860 98860",
-                                        "email": "abcd.efgh@gmail.com"
-                                    },
+                                "billing":order.billing,
                                 "payment":
                                     {
                                         "type": "POST-FULFILLMENT",
                                         "collected_by": "BAP",
                                         "@ondc/org/settlement_window": "P2D",
-                                        "@ondc/org/settlement_details": //TODO: put this in the config
-                                            [
-                                                {
-                                                    "settlement_counterparty": "buyer-app",
-                                                    "settlement_type": "upi",
-                                                    "upi_address": "gft@oksbi",
-                                                    "settlement_bank_account_no": "XXXXXXXXXX",
-                                                    "settlement_ifsc_code": "XXXXXXXXX"
-                                                }
-                                            ]
+                                        "@ondc/org/settlement_details": config.get("sellerConfig").settlement_details
+
                                     }
                             }
                     }
             }
+            ]
 
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildInitRequest(logisticsMessageId,selectMessageId)
+            }, 5000); //TODO move to config
 
-            return searchRequest
+            return initRequest
         } catch (err) {
             throw err;
         }
     }
 
+    async buildInitRequest(logisticsMessageId,initMessageId){
 
-    async confirm(context = {}, req = {}) {
+        try{
+            console.log("buildInitRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse =await this.getLogistics(logisticsMessageId,initMessageId,'init')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->",logisticsResponse);
+
+            let selectResponse = await this.productInit(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postInitResponse(selectResponse);
+
+        }catch (e){
+            console.log(e)
+            return e
+        }
+    }
+
+    async productInit(requestQuery) {
+
+        //get search criteria
+        // const items = requestQuery.message.order.items
+
+        const initData = requestQuery.retail_init[0]//select first select request
+        const items = initData.message.order.items
+        const logisticData = requestQuery.logistics_on_init[0]
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += price
+                item.price = {value: price, currency: "INR"}
+            }
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": "INR",
+                "value": "0"
+            }
+        }
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        console.log("qouteItems------------------", qouteItems)
+        console.log("totalPriceObj------------------", totalPriceObj)
+        console.log("detailedQoute------------------", detailedQoute)
+
+        const productData = await getInit({
+            qouteItems: qouteItems,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: initData.context,
+            message: initData.message,
+            logisticData:initData.logisticData
+        });
+
+        console.log("productData------------------", productData)
+
+        return productData
+    }
+
+
+    //return init response to protocol layer
+    async postInitResponse(initResponse){
+        try{
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BAP_URI,
+                `/protocol/v1/on_init`,
+                'POST',
+                initResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        }catch(e){
+            console.log("ee----------->",e)
+            return e
+        }
+
+    }
+
+
+    async confirm(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            const searchRequest = {
-                //            "context":
-                //                {
-                //                    "domain": "nic2004:60232",
-                //                    "country": "IND",
-                //                    "city": "std:080",
-                //                    "action": "confirm",
-                //                    "core_version": "1.0.0",
-                //                    "bap_id": "ondc.gofrugal.com/ondc/18275",
-                //                    "bap_uri": "https://ondc.gofrugal.com/ondc/seller/adaptor",
-                //                    "bpp_id": "shiprocket.com/ondc/18275",
-                //                    "bpp_uri": "https://shiprocket.com/ondc",
-                //                    "transaction_id": "9fdb667c-76c6-456a-9742-ba9caa5eb765",
-                //                    "message_id": "1651742565654",
-                //                    "timestamp": "2022-06-13T07:22:45.363Z",
-                //                    "ttl": "PT30S"
-                //                },
-                //            "message":
-                //                {
-                //                    "order":
-                //                        {
-                // "id": "0799f385-5043-4848-8433-4643ad511a14",
-                // "state": "Created",
-                //            "provider":
-                //        {
-                //            "id": "18275-Provider-1",
-                //    "locations":
-                //            [
-                //                {
-                //        "id": "18275-Location-1"
-                //        }
-                //        ]
-                //        },
-                //        "items":
-                //        [
-                //            {
-                //                "id": "18275-Item-1",
-                //                "category_id": "Same Day Delivery"
-                //            }
-                //        ],
-                //            "quote":
-                //        {
-                //            "price":
-                //            {
-                //                "currency": "INR",
-                //                "value": "7.0"
-                //            },
-                //            "breakup":
-                //            [
-                //                {
-                //        "@ondc/org/item_id": "18275-Item-1",
-                //        "@ondc/org/title_type": "Delivery Charge",
-                //            "price":
-                //            {
-                //                "currency": "INR",
-                //                "value": "5.0"
-                //            }
-                //        },
-                //            {
-                //                "title": "RTO charges",
-                //        "@ondc/org/title_type": "RTO Charge",
-                //                "price":
-                //                {
-                //                    "currency": "INR",
-                //                    "value": "2.0"
-                //                }
-                //            }
-                //        ]
-                //        },
-                //        "fulfillments":
-                //        [
-                //            {
-                //    "id": "Fulfillment1",
-                //        "type": "CoD",
-                //            "@ondc/org/awb_no": "1227262193237777",
-                //            "start":
-                //        {
-                //            "person":
-                //            {
-                //                "name": "Ramu"
-                //            },
-                //            "location":
-                //            {
-                //                "gps": "12.4535445,77.9283792",
-                //                "address":
-                //                {
-                //                    "name": "Fritoburger",
-                //                    "building": "12 Restaurant Tower",
-                //                    "locality": "JP Nagar 24th Main",
-                //                    "city": "Bengaluru",
-                //                    "state": "Karnataka",
-                //                    "country": "India",
-                //                    "area_code": "560041"
-                //                }
-                //            },
-                //            "contact":
-                //            {
-                //                "phone": "98860 98860",
-                //                "email": "abcd.efgh@gmail.com"
-                //            },
-                //            "instructions":
-                //            {
-                //                "short_desc": "XYZ1",
-                //                "long_desc": "QR code will be attached to package",
-                //                "additional_desc":
-                //                {
-                //                "content_type":"text/html",
-                //                    "url":"URL for instructions"
-                //                },
-                //                "images":
-                //                    [
-                //                    "URL or data string as per spec"
-                //                    ]
-                //            }
-                //        },
-                //        "end":
-                //        {
-                //            "person":
-                //            {
-                //                "name": "Ramu"
-                //            },
-                //            "location":
-                //            {
-                //                "gps": "12.4535445,77.9283792",
-                //                "address":
-                //                {
-                //                    "name": "D 000",
-                //                    "building": "Prestige Towers",
-                //                    "locality": "Bannerghatta Road",
-                //                    "city": "Bengaluru",
-                //                    "state": "Karnataka",
-                //                    "country": "India",
-                //                    "area_code": "560076"
-                //                }
-                //            },
-                //            "contact":
-                //            {
-                //                "phone": "98860 98860",
-                //                "email": "abcd.efgh@gmail.com"
-                //            },
-                //            "instructions":
-                //            {
-                //                "short_desc": "XYZ2",
-                //                "long_desc": "drop package at security gate"
-                //            }
-                //        },
-                //        "tags": "",
-                //        "@ondc/org/order_ready_to_ship": "Yes"
-                //    }
-                //    ],
-                //        "billing":
-                //        {
-                //            "tax_number": "29AAACU1901H1ZK"
-                //        },
-                //        "payment":
-                //        {
-                //            "@ondc/org/collection_amount": "30000",
-                //            "type": "ON-ORDER",
-                //            "@ondc/org/settlement_details":
-                //            [
-                //                {
-                //                    "settlement_counterparty": "seller-app",
-                //                    "settlement_type": "upi",
-                //                    "upi_address": "gft@oksbi",
-                //                    "settlement_bank_account_no": "XXXXXXXXXX",
-                //                    "settlement_ifsc_code": "XXXXXXXXX",
-                //                    "settlement_status": "PAID",
-                //                    "settlement_reference": "XXXXXXXXX",
-                //                    "settlement_timestamp": "2022-09-11T18:01:53.000Z"
-                //        }
-                //        ]
-                //        },
-                //        "@ondc/org/linked_order":
-                //        {
-                //            "items":
-                //            [
-                //             "category_id": "Grocery",
-                //            "descriptor":
-                //            {
-                //            "name": "Atta"
-                //            },
-                //            "quantity":
-                //            {
-                //                "count": "2"
-                //                "measure":
-                //                {
-                //                    "unit": "Kilogram",
-                //                    "value": 5
-                //                },
-                //            },
-                //            "price":
-                //            {
-                //                "currency": "INR",
-                //                "value": "300"
-                //            }
-                //        ],
-                //            "provider":
-                //            {
-                //            "descriptor":
-                //                {
-                //                    "name": "Aadishwar Store"
-                //                },
-                //                "address":
-                //                {
-                //                    "name": "KHB Towers",
-                //                    "street": "6th Block",
-                //                    "locality": "Koramangala",
-                //                    "city": "Bengaluru",
-                //                    "state": "Karnataka",
-                //                    "area_code": "560070"
-                //                }
-                //            },
-                //            "order":
-                //            {
-                //                "id": "ABCDEFGH",
-                //                "weight":
-                //                {
-                //                    "unit": "Kilogram",
-                //                    "value": 10
-                //                }
-                //            }
-                //        }
-                //    }
-                //    }
-            }
+            console.log("payload.context----->",payload.context);
 
+            const selectRequest = await SelectRequest.findOne({where:{
+                    transactionId:payload.context.transaction_id
+                }})
 
-            return searchRequest
+            console.log("selected logistics--------selectRequest------->",selectRequest);
+
+            const logistics = selectRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->",logistics);
+            console.log("selected logistics--------selectRequest----context--->",logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const initRequest = [{
+                "context": {
+                    "domain": "nic2004:52110",
+                    "action": "on_confirm",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BAP_ID,
+                    "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": "2022-05-09T10:31:08.201Z"
+                },
+                "message": {
+                    "order": {
+                        "id": "0799f385-5043-4848-8433-4643ad511a14",
+                        "state": "Accepted",
+                        "provider": {
+                            "id": logistics.message.catalog["bpp/providers"][0].id,
+                            "locations": [
+                                {
+                                    "id": "GFFBRTFR1649830006"
+                                }
+                            ],
+                            "rateable": "true"
+                        },
+                        "items":order.items,
+                        "billing": order.billing,
+                        "fulfillments": [
+                            {
+                                "id": "Fulfillment1",
+                                "@ondc/org/provider_name": "Loadshare",
+                                "state": {
+                                    "descriptor": {
+                                        "name": "Pending",
+                                        "code": "Pending"
+                                    }
+                                },
+                                "type": "Delivery",
+                                "tracking": false,
+                                "start": {
+                                    "location":config.get("sellerConfig").sellerPickupLocation.location,
+                                    "contact":config.get("sellerConfig").sellerPickupLocation.contact,
+                                    "time": {
+                                        "range": {
+                                            "start": "2022-05-10T20:02:19.609Z",
+                                            "end": "2022-05-10T20:32:19.609Z"
+                                        }
+                                    },
+                                    "instructions": {
+                                        "name": "Status for pickup",
+                                        "short_desc": "Pickup Confirmation Code"
+                                    },
+
+                                },
+                                "end": order.fulfillments.end,
+                                "rateable": "true"
+                            }
+                        ],
+                        "quote": {
+                            "price": {
+                                "currency": "INR",
+                                "value": "5.0"
+                            },
+                            "breakup": [
+                                {
+                                    "@ondc/org/item_id": "18275-ONDC-1-9",
+                                    "@ondc/org/item_quantity": {
+                                        "count": 1
+                                    },
+                                    "title": "SENSODYNE SENSITIVE TOOTH BRUSH",
+                                    "@ondc/org/title_type": "item",
+                                    "price": {
+                                        "currency": "INR",
+                                        "value": "5.0"
+                                    }
+                                },
+                                {
+                                    "title": "Delivery charges",
+                                    "@ondc/org/title_type": "delivery",
+                                    "price": {
+                                        "currency": "INR",
+                                        "value": "0.0"
+                                    }
+                                },
+                                {
+                                    "title": "Packing charges",
+                                    "@ondc/org/title_type": "packing",
+                                    "price": {
+                                        "currency": "INR",
+                                        "value": "0.0"
+                                    }
+                                },
+                                {
+                                    "@ondc/org/item_id": "18275-ONDC-1-9",
+                                    "title": "Tax",
+                                    "@ondc/org/title_type": "tax",
+                                    "price": {
+                                        "currency": "INR",
+                                        "value": "0.0"
+                                    }
+                                }
+                            ]
+                        },
+                        "payment": {
+                            "uri": "https://ondc.transaction.com/payment",
+                            "tl_method": "http/get",
+                            "params": {
+                                "currency": "INR",
+                                "transaction_id": "3937",
+                                "amount": "5.0"
+                            },
+                            "status": "PAID",
+                            "type": "ON-ORDER",
+                            "collected_by": "BAP",
+                            "@ondc/org/buyer_app_finder_fee_type": "Percent",
+                            "@ondc/org/buyer_app_finder_fee_amount": "0.0",
+                            "@ondc/org/withholding_amount": "0.0",
+                            "@ondc/org/return_window": "0",
+                            "@ondc/org/settlement_basis": "Collection",
+                            "@ondc/org/settlement_window": "P2D",
+                            "@ondc/org/settlement_details":config.get("sellerConfig").settlement_details,
+                        "documents": [
+                            {
+                                "url": "https://invoice_url",
+                                "label": "Invoice"
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "code": "bap_terms_fee",
+                                "list": [
+                                    {
+                                        "code": "finder_fee_type",
+                                        "value": "percent"
+                                    },
+                                    {
+                                        "code": "finder_fee_amount",
+                                        "value": "3"
+                                    },
+                                    {
+                                        "code": "accept",
+                                        "value": "Y"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "bpp_terms_liability",
+                                "list": [
+                                    {
+                                        "code": "max_liability_cap",
+                                        "value": "10000"
+                                    },
+                                    {
+                                        "code": "max_liability",
+                                        "value": "2"
+                                    },
+                                    {
+                                        "code": "accept",
+                                        "value": "Y"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "bpp_terms_arbitration",
+                                "list": [
+                                    {
+                                        "code": "mandatory_arbitration",
+                                        "value": "false"
+                                    },
+                                    {
+                                        "code": "court_jurisdiction",
+                                        "value": "KA"
+                                    },
+                                    {
+                                        "code": "accept",
+                                        "value": "Y"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "bpp_terms_charges",
+                                "list": [
+                                    {
+                                        "code": "delay_interest",
+                                        "value": "1000"
+                                    },
+                                    {
+                                        "code": "accept",
+                                        "value": "Y"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "bpp_seller_gst",
+                                "list": [
+                                    {
+                                        "code": "GST",
+                                        "value": "XXXXXXXXXXXXXXX"
+                                    }
+                                ]
+                            }
+                        ],
+                        "created_at": "2022-05-10T18:01:53.000Z",
+                        "updated_at": "2022-05-10T18:02:19.000Z"
+                    }
+                }
+            }}
+            ]
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildConfirmRequest(logisticsMessageId,selectMessageId)
+            }, 5000); //TODO move to config
+
+            return initRequest
         } catch (err) {
             throw err;
         }
     }
+
+    async buildConfirmRequest(logisticsMessageId,initMessageId){
+
+        try{
+            console.log("buildInitRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse =await this.getLogistics(logisticsMessageId,initMessageId,'confirm')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->",logisticsResponse);
+
+            let selectResponse = await this.productConfirm(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postConfirmResponse(selectResponse);
+
+        }catch (e){
+            console.log(e)
+            return e
+        }
+    }
+
+    async productConfirm(requestQuery) {
+
+        //get search criteria
+        // const items = requestQuery.message.order.items
+
+        const confirmRequest = requestQuery.retail_confirm[0]//select first select request
+        const items = confirmRequest.message.order.items
+        const logisticData = requestQuery.logistics_on_confirm[0]
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += price
+                item.price = {value: price, currency: "INR"}
+            }
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": "INR",
+                "value": "0"
+            }
+        }
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        let headers = {};
+
+        let confirmData = confirmRequest.message.order
+
+        let orderItems = []
+        // let confirmData = requestQuery.message.order
+        for(let item  of confirmData.items){
+
+            let productItems = {
+                product:item.id,
+                status:'Created',
+                qty:item.quantity.count
+
+            }
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/order-items`,
+                'POST',
+                {data: productItems},
+                headers
+            );
+            let result = await httpRequest.send();
+            console.log("result--------------->",result.data.data.id)
+            orderItems.push(result.data.data.id);
+        }
+
+
+        confirmData["order_items"] =orderItems
+        confirmData.order_id = confirmData.id
+        delete confirmData.id
+
+        console.log("orderItems-------confirmData-------->",confirmData)
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders`,
+            'POST',
+            {data: confirmData},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("confirm---------result---------", result.data.data)
+
+        const productData = await getConfirm({
+            qouteItems: qouteItems,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: confirmRequest.context,
+            message: confirmRequest.message,
+            logisticData:logisticData
+        });
+
+        return productData
+    }
+
+
+    //return confirm response to protocol layer
+    async postConfirmResponse(confirmResponse){
+        try{
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BAP_URI,
+                `/protocol/v1/on_confirm`,
+                'POST',
+                confirmResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        }catch(e){
+            console.log("ee----------->",e)
+            return e
+        }
+
+    }
+
+
+
 }
 
 export default LogisticsService;

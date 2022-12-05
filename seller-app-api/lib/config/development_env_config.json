@@ -19,6 +19,21 @@
       }
     }
   },
+  "database": {
+    "username": "postgres",
+    "password": "root",
+    "name": "sellerapp",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres",
+    "pool": {
+      "max": 60,
+      "min": 0,
+      "acquire": 1000000,
+      "idle": 10000,
+      "evict": 10000
+    }
+  },
   "email": {
     "transport": {
       "SMTP": {
@@ -71,14 +86,27 @@
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
     "BPP_URI": "https://sellerapp-staging.datasyndicate.in/",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://dba0-103-115-201-50.in.ngrok.io",
+    "BAP_URI": "https://237d-103-115-201-50.in.ngrok.io",
     "sellerPickupLocation": {
       "location": {
         "gps": "12.938382,77.651775",
         "address": {
           "area_code": "560087"
         }
+      },
+      "contact":
+      {
+        "phone": "98860 98860",
+        "email": "abcd.efgh@gmail.com"
       }
     }
+  },"settlement_details":   [
+  {
+    "settlement_counterparty": "buyer-app",
+    "settlement_type": "upi",
+    "upi_address": "gft@oksbi",
+    "settlement_bank_account_no": "XXXXXXXXXX",
+    "settlement_ifsc_code": "XXXXXXXXX"
   }
+]
 }

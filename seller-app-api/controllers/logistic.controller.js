@@ -16,7 +16,7 @@ class LogisticsController {
 
     init(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.init().then(data => {
+        logisticsService.init(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -25,7 +25,7 @@ class LogisticsController {
 
     confirm(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.confirm().then(data => {
+        logisticsService.confirm(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

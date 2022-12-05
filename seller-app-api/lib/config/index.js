@@ -35,6 +35,8 @@ if (env !== 'development') {
     nconf.set('strapi:apiToken', process.env.STRAPI_API_TOKEN);
     nconf.set('sellerConfig:BPP_URI', process.env.BPP_URI);
     nconf.set('sellerConfig:BPP_ID', process.env.BPP_ID);
+    nconf.set('sellerConfig:BPP_URI', process.env.BAP_ID);
+    nconf.set('sellerConfig:BPP_ID', process.env.BAP_URI);
 
    // const apiUrl = process.env.PROTOCOL + process.env.HOST + ':' + process.env.PORT + '/';
    // nconf.set('express:apiUrl', apiUrl);

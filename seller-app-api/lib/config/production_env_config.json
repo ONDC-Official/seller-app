@@ -19,6 +19,21 @@
       }
     }
   },
+  "database": {
+    "username": "postgres",
+    "password": "root",
+    "name": "sellerapp",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres",
+    "pool": {
+      "max": 60,
+      "min": 0,
+      "acquire": 1000000,
+      "idle": 10000,
+      "evict": 10000
+    }
+  },
   "email": {
     "transport": {
       "SMTP": {
