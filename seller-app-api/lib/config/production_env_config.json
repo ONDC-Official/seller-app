@@ -86,14 +86,27 @@
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
     "BPP_URI": "https://sellerapp-staging.datasyndicate.in/",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://112b-103-115-201-50.in.ngrok.io",
+    "BAP_URI": "https://4ad4-103-115-201-50.in.ngrok.io",
     "sellerPickupLocation": {
       "location": {
         "gps": "12.938382,77.651775",
         "address": {
           "area_code": "560087"
         }
+      },
+      "contact":
+      {
+        "phone": "98860 98860",
+        "email": "abcd.efgh@gmail.com"
       }
     }
+  },"settlement_details":   [
+  {
+    "settlement_counterparty": "buyer-app",
+    "settlement_type": "upi",
+    "upi_address": "gft@oksbi",
+    "settlement_bank_account_no": "XXXXXXXXXX",
+    "settlement_ifsc_code": "XXXXXXXXX"
   }
+]
 }
