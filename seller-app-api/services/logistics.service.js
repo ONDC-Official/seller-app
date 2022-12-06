@@ -29,8 +29,8 @@ class LogisticsService {
                         "city": "std:080",
                         "action": "search",
                         "core_version": "1.0.0",
-                        "bap_id": config.get("sellerConfig").BAP_ID,
-                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BPP_URI,
                         "transaction_id": payload.context.transaction_id,
                         "message_id": logisticsMessageId,
                         "timestamp": new Date(),
@@ -158,7 +158,7 @@ class LogisticsService {
                 query = `logisticsOnConfirm=${logisticsMessageId}&confirm=${retailMessageId}`
             }
             let httpRequest = new HttpRequest(
-                config.get("sellerConfig").BAP_URI,
+                config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/response/network-request-payloads?${query}`,
                 'get',
                 {},
@@ -314,7 +314,7 @@ class LogisticsService {
 
             let headers = {};
             let httpRequest = new HttpRequest(
-                config.get("sellerConfig").BAP_URI,
+                config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_select`,
                 'POST',
                 selectResponse,
@@ -366,8 +366,8 @@ class LogisticsService {
             //             "city": "std:080",
             //             "action": "init",
             //             "core_version": "1.0.0",
-            //             "bap_id": config.get("sellerConfig").BAP_ID,
-            //             "bap_uri": config.get("sellerConfig").BAP_URI+'/protocol/v1',
+            //             "bap_id": config.get("sellerConfig").BPP_ID,
+            //             "bap_uri": config.get("sellerConfig").BPP_URI+'/protocol/v1',
             //             "bpp_id": logistics.context.bpp_id,//STORED OBJECT
             //             "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
             //             "transaction_id":  payload.context.transaction_id,
@@ -425,8 +425,8 @@ class LogisticsService {
                     "city": "std:080",
                     "action": "init",
                     "core_version": "1.0.0",
-                    "bap_id": config.get("sellerConfig").BAP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": payload.context.transaction_id,
@@ -593,7 +593,7 @@ class LogisticsService {
 
             let headers = {};
             let httpRequest = new HttpRequest(
-                config.get("sellerConfig").BAP_URI,
+                config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_init`,
                 'POST',
                 initResponse,
@@ -642,8 +642,8 @@ class LogisticsService {
                     "domain": "nic2004:52110",
                     "action": "confirm",
                     "core_version": "1.0.0",
-                    "bap_id": config.get("sellerConfig").BAP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": payload.context.transaction_id,
@@ -1022,7 +1022,7 @@ class LogisticsService {
 
             let headers = {};
             let httpRequest = new HttpRequest(
-                config.get("sellerConfig").BAP_URI,
+                config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_confirm`,
                 'POST',
                 confirmResponse,
