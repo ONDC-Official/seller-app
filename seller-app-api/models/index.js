@@ -41,7 +41,7 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 //
 sequelize
-    .sync({alter: true})
+    .sync({alter: false})
     .then(() => console.log('Completed!'))
 
 

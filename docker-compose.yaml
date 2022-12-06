@@ -24,7 +24,7 @@ services:
     environment:
       FIREBASE_SERVICE_ACCOUNT_JSON_PATH: lib/config/firebase-service-account.json
       STRAPI_SERVER_URL: http://strapi:1337
-      DATABASE_NAME_SELLER_CLIENT: strapi
+      DATABASE_NAME_SELLER_CLIENT: sellerapp
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       DATABASE_USERNAME: strapi
@@ -39,7 +39,7 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_DB: strapi
+      POSTGRES_DB: sellerApp
       POSTGRES_USER: strapi
       POSTGRES_PASSWORD: strapi
     volumes:
