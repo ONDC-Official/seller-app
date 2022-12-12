@@ -12,11 +12,14 @@ COPY ./seller-app-api/ .
 
 RUN npm install
 
-#ENV NODE_ENV development
+RUN npm run build
+
+#ENV NODE_ENV production
 ENV HOST 0.0.0.0
 ENV PROTOCOL "http://"
 ENV USE_FQDN_FOR_APIS false
 ENV FQDN ""
 
 #CMD [ "npm", "serve", "--port", $PORT]
-CMD ["npm", "start"]
+CMD exec npm run serve
+
