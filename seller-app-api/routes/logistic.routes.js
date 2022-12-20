@@ -13,4 +13,13 @@ router.post('/logistics/init-payload-for-retail-init',
 router.post('/logistics/confirm-payload-for-retail-confirm',
     logisticController.confirm);
 
+router.post('/logistics/track-payload-for-retail-track',
+    logisticController.track);
+
+router.post('/logistics/status-payload-for-retail-status',
+    logisticController.status);
+
+router.post('/logistics/support-payload-for-retail-support',
+    logisticController.support);
+
 export default router;

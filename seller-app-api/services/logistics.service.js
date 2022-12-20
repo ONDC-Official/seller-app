@@ -1,8 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
 import config from "../lib/config";
 import HttpRequest from "../utils/HttpRequest";
-import {getProducts, getSelect, getInit, getConfirm} from "../utils/schemaMapping";
-import {sequelize, Sequelize, SelectRequest} from '../models'
+import {getProducts, getSelect, getInit, getConfirm,getTrack,getSupport} from "../utils/schemaMapping";
+import {sequelize, Sequelize,InitRequest, ConfirmRequest, SelectRequest} from '../models'
 
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
@@ -116,7 +116,7 @@ class LogisticsService {
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 10000); //TODO move to config
 
             return searchRequest
         } catch (err) {
@@ -156,6 +156,16 @@ class LogisticsService {
                 query = `logisticsOnInit=${logisticsMessageId}&init=${retailMessageId}`
             } else if (type === 'confirm') {
                 query = `logisticsOnConfirm=${logisticsMessageId}&confirm=${retailMessageId}`
+            }else if (type === 'track') {
+                query = `logisticsOnTrack=${logisticsMessageId}&track=${retailMessageId}`
+            }else if (type === 'status') {
+                query = `logisticsOnStatus=${logisticsMessageId}&status=${retailMessageId}`
+            }else if (type === 'update') {
+                query = `logisticsOnUpdate=${logisticsMessageId}&update=${retailMessageId}`
+            }else if (type === 'cancel') {
+                query = `logisticsOnCancel=${logisticsMessageId}&cancel=${retailMessageId}`
+            }else if (type === 'support') {
+                query = `logisticsOnSupport=${logisticsMessageId}&support=${retailMessageId}`
             }
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
@@ -270,7 +280,7 @@ class LogisticsService {
         }//TODO: need to map all items in the catalog to find out delivery charges
 
         //added delivery charges in total price
-        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+        totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
 
         let fulfillments = [
             {
@@ -292,7 +302,7 @@ class LogisticsService {
         //update fulfillment
         selectData.message.order.fulfillments = fulfillments
 
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
 
         detailedQoute.push(deliveryCharges);
 
@@ -431,7 +441,7 @@ class LogisticsService {
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": payload.context.transaction_id,
                     "message_id": logisticsMessageId,
-                    "timestamp": "2022-06-13T07:22:45.363Z",
+                    "timestamp":new Date(),
                     "ttl": "PT30S"
                 },
                 "message": {
@@ -536,7 +546,7 @@ class LogisticsService {
             if (result?.data?.data.attributes) {
 
                 let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += price
+                totalPrice += parseInt(price)
                 item.price = {value: price, currency: "INR"}
             }
 
@@ -564,13 +574,22 @@ class LogisticsService {
             }
         }//TODO: need to map all items in the catalog to find out delivery charges
 
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
 
         detailedQoute.push(deliveryCharges);
 
         console.log("qouteItems------------------", qouteItems)
         console.log("totalPriceObj------------------", totalPriceObj)
         console.log("detailedQoute------------------", detailedQoute)
+
+        let savedLogistics = new InitRequest()
+
+        savedLogistics.transactionId = initData.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.selectedLogistics = logisticData
+
+        await savedLogistics.save();
 
         const productData = await getInit({
             qouteItems: qouteItems,
@@ -637,6 +656,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
+            const logisticsOrderId = uuidv4();
             const initRequest = [{
                 "context": {
                     "domain": "nic2004:52110",
@@ -650,11 +670,11 @@ class LogisticsService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": "2022-05-09T10:31:08.201Z"
+                    "timestamp": new Date()
                 },
                 "message": {
                     "order": {
-                        "id": "0799f385-5043-4848-8433-4643ad511a14",
+                        "id": logisticsOrderId, //FIXME:  logistics order id should be created per order
                         "state":"Created",
                         "provider": {
                             "id": logistics.message.catalog["bpp/providers"][0].id,
@@ -905,6 +925,8 @@ class LogisticsService {
         const items = confirmRequest.message.order.items
         const logisticData = requestQuery.logistics_on_confirm[0]
 
+        console.log("logisticData====>",logisticData);
+
         let qouteItems = []
         let detailedQoute = []
         let totalPrice = 0
@@ -1003,6 +1025,18 @@ class LogisticsService {
 
         console.log("confirm---------result---------", result.data.data)
 
+        let savedLogistics = new ConfirmRequest()
+
+        savedLogistics.transactionId = confirmRequest.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.retailOrderId = confirmData.order_id
+        savedLogistics.orderId = logisticData.message.order.id
+        savedLogistics.selectedLogistics = logisticData
+
+        await savedLogistics.save();
+
+
         const productData = await getConfirm({
             qouteItems: qouteItems,
             totalPrice: totalPriceObj,
@@ -1026,6 +1060,372 @@ class LogisticsService {
                 `/protocol/v1/on_confirm`,
                 'POST',
                 confirmResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            console.log("ee----------->", e)
+            return e
+        }
+
+    }
+
+
+    async track(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            console.log("payload.context----->", payload.context);
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id ,
+                    retailOrderId: payload.message.order_id
+                }
+            })
+
+            console.log("selected logistics--------selectRequest------->", confirmRequest);
+
+            const logistics = confirmRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = [{
+                "context": {
+                    "domain": "nic2004:52110",
+                    "action": "track",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": confirmRequest.transactionId,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message":
+                    {
+                        "order_id": confirmRequest.orderId,//payload.message.order_id,
+                    }
+
+            }
+            ]
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildTrackRequest(logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+
+            return trackRequest
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async buildTrackRequest(logisticsMessageId, initMessageId) {
+
+        try {
+            console.log("buildTrackRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'track')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->", logisticsResponse);
+
+            let selectResponse = await this.productTrack(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postTrackResponse(selectResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    async productTrack(requestQuery) {
+
+        const trackRequest = requestQuery.retail_track[0]//select first select request
+        const logisticData = requestQuery.logistics_on_track[0]
+        const productData = await getTrack({
+            context: trackRequest.context,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+
+    //return track response to protocol layer
+    async postTrackResponse(trackResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_track`,
+                'POST',
+                trackResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            console.log("ee----------->", e)
+            return e
+        }
+
+    }
+
+
+    async status(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            console.log("payload.context----->", payload.context);
+
+            const selectRequest = await SelectRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id //FIXME: find by order id
+                }
+            })
+
+            console.log("selected logistics--------selectRequest------->", selectRequest);
+
+            const logistics = selectRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = [{
+                "context": {
+                    "domain": "nic2004:52110",
+                    "action": "status",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message":
+                    {
+                        "order_id": payload.message.order_id,
+                    }
+
+            }
+            ]
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildStatusRequest(logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+
+            return trackRequest
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async buildStatusRequest(logisticsMessageId, initMessageId) {
+
+        try {
+            console.log("buildTrackRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->", logisticsResponse);
+
+            let selectResponse = await this.productStatus(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postStatusResponse(selectResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    async productStatus(requestQuery) {
+
+        const trackRequest = requestQuery.retail_status[0]//select first select request
+        const logisticData = requestQuery.logistics_on_status[0]
+
+
+        //TODO: update order status from logistics status api.
+        //1, update order level status
+        //2. update item level fullfillment status
+
+        console.log("trackRequest=============>",trackRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getTrack({
+            context: trackRequest.context,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+
+    //return track response to protocol layer
+    async postStatusResponse(statusResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_status`,
+                'POST',
+                statusResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            console.log("ee----------->", e)
+            return e
+        }
+
+    }
+
+
+
+    async support(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            console.log("payload.context----->", payload.context);
+            console.log("payload.context----->", payload.message);
+
+            const selectRequest = await ConfirmRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id ,
+                    retailOrderId: payload.message.ref_id
+                }
+            })
+
+            console.log("selected logistics--------selectRequest------->", selectRequest);
+
+            const logistics = selectRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = [{
+                "context": {
+                    "domain": "nic2004:52110",
+                    "action": "support",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": selectRequest.transactionId,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message":
+                    {
+                        "ref_id": selectRequest.orderId,
+                    }
+
+            }
+            ]
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildSupportRequest(logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+
+            return trackRequest
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async buildSupportRequest(logisticsMessageId, initMessageId) {
+
+        try {
+            console.log("buildTrackRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'support')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->", logisticsResponse);
+
+            let selectResponse = await this.productSupport(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postSupportResponse(selectResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    async productSupport(requestQuery) {
+
+        const trackRequest = requestQuery.retail_support[0]//select first select request
+        const logisticData = requestQuery.logistics_on_support[0]
+        const productData = await getSupport({
+            context: trackRequest.context,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+
+    //return track response to protocol layer
+    async postSupportResponse(trackResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_support`,
+                'POST',
+                trackResponse,
                 headers
             );
 

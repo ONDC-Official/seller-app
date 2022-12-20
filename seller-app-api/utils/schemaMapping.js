@@ -154,12 +154,50 @@ exports.getInit = async (data) => {
     return schema
 
 }
+
+exports.getTrack = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_track'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "tracking":
+                    data.logisticData.message.tracking
+
+        }
+    }
+    return schema
+
+}
+exports.getSupport = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_support'
+    const schema = {
+        "context": {...context},
+        "message":  data.logisticData.message
+
+    }
+    return schema
+
+}
 exports.getConfirm = async (data) => {
 
     let productAvailable = []
     //set product items to schema
 
-    console.log("data.message.order.provider",data.message.order)
+    console.log("data.message.order.provider",data.message.order.order_id)
     console.log("data.message.order.provider_location",data.message.order.provider_location)
     console.log("data.message.order.billing",data.message.order.billing)
     console.log("data.message.order.fulfillments",data.message.order.fulfillments)
@@ -172,7 +210,7 @@ exports.getConfirm = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "id":data.message.order.id,
+                "id":data.message.order.order_id,
                 "provider":data.message.order.provider,
                 "provider_location": data.message.order.provider_location,
                 "items": data.qouteItems,
