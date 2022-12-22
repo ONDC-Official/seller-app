@@ -9,6 +9,9 @@ const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
+import ProductService from './product.service'
+const productService = new ProductService();
+
 class LogisticsService {
 
     async search(payload = {}, req = {}) {
@@ -132,7 +135,7 @@ class LogisticsService {
             let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
 
-            let selectResponse = await this.productSelect(logisticsResponse)
+            let selectResponse = await productService.productSelect(logisticsResponse)
 
             //3. post to protocol layer
             await this.postSelectResponse(selectResponse);
@@ -190,134 +193,6 @@ class LogisticsService {
 
     }
 
-    async productSelect(requestQuery) {
-
-        console.log("requestQuery------------->", requestQuery);
-        console.log("requestQuery-------data------>", requestQuery.data);
-        console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
-        console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
-        //get search criteria
-        const selectData = requestQuery.retail_select[0]//select first select request
-        const items = selectData.message.order.items
-        const logisticData = requestQuery.logistics_on_search
-
-        let qouteItems = []
-        let detailedQoute = []
-        let totalPrice = 0
-        for (let item of items) {
-            let headers = {};
-
-            let qouteItemsDetails = {}
-            let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
-                'get',
-                {},
-                headers
-            );
-
-            let result = await httpRequest.send();
-
-            if (result?.data?.data.attributes) {
-
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += price
-                item.price = {value: price, currency: "INR"}
-            }
-
-            //TODO: check if quantity is available
-
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.data?.attributes?.name,
-                "@ondc/org/title_type": "item",
-                "price": item.price
-            }
-
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
-        }
-
-        let logisticProvider = {}
-        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
-            if (logisticData1.message) {
-                if (logisticData1.context.bpp_id === "flash-api.staging.shadowfax.in") {
-                    logisticProvider = logisticData1
-                }
-            }
-        }
-
-        if (Object.keys(logisticProvider).length === 0) {
-            return {
-                context: {...selectData.context, action: 'on_select'}, error: {
-                    "type": "CORE-ERROR",
-                    "code": "60001",
-                    "message": "Pickup not servicable"
-                }
-            }
-        }
-
-        let savedLogistics = new SelectRequest()
-
-        savedLogistics.transactionId = selectData.context.transaction_id
-        savedLogistics.packaging = "0"//TODO: select packaging option
-        savedLogistics.providerId = "0"//TODO: select from items provider id
-        savedLogistics.selectedLogistics = logisticProvider
-
-        await savedLogistics.save();
-
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
-                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
-
-        //added delivery charges in total price
-        totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
-
-        let fulfillments = [
-            {
-                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
-                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
-                "tracking": false,
-                "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
-                "@ondc/org/TAT": "PT45M",
-                "provider_id": logisticProvider.context.bpp_id,
-                "state":
-                    {
-                        "descriptor":
-                            {
-                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name
-                            }
-                    }, end: selectData.message.order.fulfillments[0].end
-            }]
-
-        //update fulfillment
-        selectData.message.order.fulfillments = fulfillments
-
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
-        const productData = await getSelect({
-            qouteItems: qouteItems,
-            order: selectData.message.order,
-            totalPrice: totalPriceObj,
-            detailedQoute: detailedQoute,
-            context: selectData.context
-        });
-
-        return productData
-    }
-
-
     //return select response to protocol layer
     async postSelectResponse(selectResponse) {
         try {
@@ -367,66 +242,6 @@ class LogisticsService {
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
-            //
-            // const initRequest = [{
-            //     "context":
-            //         {
-            //             "domain": "nic2004:60232",
-            //             "country": "IND",
-            //             "city": "std:080",
-            //             "action": "init",
-            //             "core_version": "1.0.0",
-            //             "bap_id": config.get("sellerConfig").BPP_ID,
-            //             "bap_uri": config.get("sellerConfig").BPP_URI+'/protocol/v1',
-            //             "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-            //             "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-            //             "transaction_id":  payload.context.transaction_id,
-            //             "message_id": logisticsMessageId,
-            //             "timestamp": "2022-06-13T07:22:45.363Z",
-            //             "ttl": "PT30S"
-            //         },
-            //     "message":
-            //         {
-            //             "order":
-            //                 {
-            //                     "provider":
-            //                         {
-            //                             "id": logistics.message.catalog["bpp/providers"][0].id, //STORED object
-            //                             "locations":
-            //                                 [
-            //                                     {
-            //                                         "id": "18275-Location-1" //TODO: TBD
-            //                                     }
-            //                                 ]
-            //                         },
-            //                     "items": order.items,
-            //                     "fulfillments":
-            //                         [
-            //                             {
-            //                                 "id": "Fulfillment1",
-            //                                 "type": "CoD", //TODO: type payment check
-            //                                 "start":
-            //                                     {
-            //                                         "location":config.get("sellerConfig").sellerPickupLocation.location,
-            //                                         "contact":config.get("sellerConfig").sellerPickupLocation.contact
-            //                                     },
-            //                                 "end":order.fulfillments.end
-            //                             }
-            //                         ],
-            //                     "billing":order.billing,
-            //                     "payment":
-            //                         {
-            //                             "type": "POST-FULFILLMENT",
-            //                             "collected_by": "BAP",
-            //                             "@ondc/org/settlement_window": "P2D",
-            //                             "@ondc/org/settlement_details": config.get("sellerConfig").settlement_details
-            //
-            //                         }
-            //                 }
-            //         }
-            // }
-            // ]
-
 
             const initRequest = [{
                 "context": {
@@ -506,7 +321,7 @@ class LogisticsService {
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await this.productInit(logisticsResponse)
+            let selectResponse = await productService.productInit(logisticsResponse)
 
             //3. post to protocol layer
             await this.postInitResponse(selectResponse);
@@ -515,94 +330,6 @@ class LogisticsService {
             console.log(e)
             return e
         }
-    }
-
-    async productInit(requestQuery) {
-
-        //get search criteria
-        // const items = requestQuery.message.order.items
-
-        const initData = requestQuery.retail_init[0]//select first select request
-        const items = initData.message.order.items
-        const logisticData = requestQuery.logistics_on_init[0]
-
-        let qouteItems = []
-        let detailedQoute = []
-        let totalPrice = 0
-        for (let item of items) {
-            let headers = {};
-
-            let qouteItemsDetails = {}
-            let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
-                'get',
-                {},
-                headers
-            );
-
-            let result = await httpRequest.send();
-
-            if (result?.data?.data.attributes) {
-
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += parseInt(price)
-                item.price = {value: price, currency: "INR"}
-            }
-
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.data?.attributes?.name,
-                "@ondc/org/title_type": "item",
-                "price": item.price
-            }
-
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
-        }
-
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
-
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
-        console.log("qouteItems------------------", qouteItems)
-        console.log("totalPriceObj------------------", totalPriceObj)
-        console.log("detailedQoute------------------", detailedQoute)
-
-        let savedLogistics = new InitRequest()
-
-        savedLogistics.transactionId = initData.context.transaction_id
-        savedLogistics.packaging = "0"//TODO: select packaging option
-        savedLogistics.providerId = "0"//TODO: select from items provider id
-        savedLogistics.selectedLogistics = logisticData
-
-        await savedLogistics.save();
-
-        const productData = await getInit({
-            qouteItems: qouteItems,
-            totalPrice: totalPriceObj,
-            detailedQoute: detailedQoute,
-            context: initData.context,
-            message: initData.message,
-            logisticData: initData.logisticData
-        });
-
-        console.log("productData------------------", productData)
-
-        return productData
     }
 
 
@@ -905,7 +632,7 @@ class LogisticsService {
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await this.productConfirm(logisticsResponse)
+            let selectResponse = await productService.productConfirm(logisticsResponse)
 
             //3. post to protocol layer
             await this.postConfirmResponse(selectResponse);
@@ -914,139 +641,6 @@ class LogisticsService {
             console.log(e)
             return e
         }
-    }
-
-    async productConfirm(requestQuery) {
-
-        //get search criteria
-        // const items = requestQuery.message.order.items
-
-        const confirmRequest = requestQuery.retail_confirm[0]//select first select request
-        const items = confirmRequest.message.order.items
-        const logisticData = requestQuery.logistics_on_confirm[0]
-
-        console.log("logisticData====>",logisticData);
-
-        let qouteItems = []
-        let detailedQoute = []
-        let totalPrice = 0
-        for (let item of items) {
-            let headers = {};
-
-            let qouteItemsDetails = {}
-            let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
-                'get',
-                {},
-                headers
-            );
-
-            let result = await httpRequest.send();
-
-            if (result?.data?.data.attributes) {
-
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += price
-                item.price = {value: price, currency: "INR"}
-            }
-
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.data?.attributes?.name,
-                "@ondc/org/title_type": "item",
-                "price": item.price
-            }
-
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
-        }
-
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
-
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
-        let headers = {};
-
-        let confirmData = confirmRequest.message.order
-
-        let orderItems = []
-        // let confirmData = requestQuery.message.order
-        for (let item of confirmData.items) {
-
-            let productItems = {
-                product: item.id,
-                status: 'Created',
-                qty: item.quantity.count
-
-            }
-            let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/order-items`,
-                'POST',
-                {data: productItems},
-                headers
-            );
-            let result = await httpRequest.send();
-            console.log("result--------------->", result.data.data.id)
-            orderItems.push(result.data.data.id);
-        }
-
-
-        confirmData["order_items"] = orderItems
-        confirmData.order_id = confirmData.id
-        delete confirmData.id
-
-        console.log("orderItems-------confirmData-------->", confirmData)
-
-        let confirm = {}
-        let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders`,
-            'POST',
-            {data: confirmData},
-            headers
-        );
-
-        let result = await httpRequest.send();
-
-        console.log("confirm---------result---------", result.data.data)
-
-        let savedLogistics = new ConfirmRequest()
-
-        savedLogistics.transactionId = confirmRequest.context.transaction_id
-        savedLogistics.packaging = "0"//TODO: select packaging option
-        savedLogistics.providerId = "0"//TODO: select from items provider id
-        savedLogistics.retailOrderId = confirmData.order_id
-        savedLogistics.orderId = logisticData.message.order.id
-        savedLogistics.selectedLogistics = logisticData
-
-        await savedLogistics.save();
-
-
-        const productData = await getConfirm({
-            qouteItems: qouteItems,
-            totalPrice: totalPriceObj,
-            detailedQoute: detailedQoute,
-            context: confirmRequest.context,
-            message: confirmRequest.message,
-            logisticData: logisticData
-        });
-
-        return productData
     }
 
 
@@ -1145,7 +739,7 @@ class LogisticsService {
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await this.productTrack(logisticsResponse)
+            let selectResponse = await productService.productTrack(logisticsResponse)
 
             //3. post to protocol layer
             await this.postTrackResponse(selectResponse);
@@ -1154,18 +748,6 @@ class LogisticsService {
             console.log(e)
             return e
         }
-    }
-
-    async productTrack(requestQuery) {
-
-        const trackRequest = requestQuery.retail_track[0]//select first select request
-        const logisticData = requestQuery.logistics_on_track[0]
-        const productData = await getTrack({
-            context: trackRequest.context,
-            logisticData: logisticData
-        });
-
-        return productData
     }
 
 
@@ -1263,7 +845,7 @@ class LogisticsService {
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await this.productStatus(logisticsResponse)
+            let selectResponse = await productService.productStatus(logisticsResponse)
 
             //3. post to protocol layer
             await this.postStatusResponse(selectResponse);
@@ -1272,26 +854,6 @@ class LogisticsService {
             console.log(e)
             return e
         }
-    }
-
-    async productStatus(requestQuery) {
-
-        const trackRequest = requestQuery.retail_status[0]//select first select request
-        const logisticData = requestQuery.logistics_on_status[0]
-
-
-        //TODO: update order status from logistics status api.
-        //1, update order level status
-        //2. update item level fullfillment status
-
-        console.log("trackRequest=============>",trackRequest);
-        console.log("logisticData=============>",logisticData);
-        const productData = await getTrack({
-            context: trackRequest.context,
-            logisticData: logisticData
-        });
-
-        return productData
     }
 
 
@@ -1392,7 +954,7 @@ class LogisticsService {
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await this.productSupport(logisticsResponse)
+            let selectResponse = await productService.productSupport(logisticsResponse)
 
             //3. post to protocol layer
             await this.postSupportResponse(selectResponse);
@@ -1403,17 +965,6 @@ class LogisticsService {
         }
     }
 
-    async productSupport(requestQuery) {
-
-        const trackRequest = requestQuery.retail_support[0]//select first select request
-        const logisticData = requestQuery.logistics_on_support[0]
-        const productData = await getSupport({
-            context: trackRequest.context,
-            logisticData: logisticData
-        });
-
-        return productData
-    }
 
 
     //return track response to protocol layer
