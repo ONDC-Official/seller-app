@@ -16,7 +16,7 @@ const sequelize = new Sequelize(dbConfig.name, dbConfig.username, dbConfig.passw
     timezone: '+05:30',
     charset: 'utf8',
     collate: 'utf8_general_ci',
-    logging:false
+    logging:true
 });
 
 // Or you can simply use a connection uri
