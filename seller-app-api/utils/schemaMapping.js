@@ -1,4 +1,5 @@
 const config = require("../lib/config");
+const logger = require("../lib/logger");
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
@@ -89,6 +90,8 @@ exports.getProducts = async (data) => {
 
 exports.getSelect = async (data) => {
 
+    logger.log('info', `[Schema mapping ] build retail select request from :`, data);
+
     let productAvailable = []
     //set product items to schema
 
@@ -111,6 +114,8 @@ exports.getSelect = async (data) => {
             }
         }
     }
+
+    logger.log('info', `[Schema mapping ] after build retail select request :`, schema);
 
     return schema
 
@@ -145,6 +150,41 @@ exports.getInit = async (data) => {
                     "ttl": "P1D"
                 },
                 "payment": data.message.order.payment
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+
+exports.getStatus = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    // console.log("data.message.order.provider",data.message.order)
+    // console.log("data.message.order.provider_location",data.message.order.provider_location)
+    // console.log("data.message.order.billing",data.message.order.billing)
+    // console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    // console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_status'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "order": {
+                "provider":data.updateOrder.provider,
+                "state":data.updateOrder.state,
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment
             }
         }
     }
@@ -211,6 +251,7 @@ exports.getConfirm = async (data) => {
         "message":  {
             "order": {
                 "id":data.message.order.order_id,
+                "state":"Created",
                 "provider":data.message.order.provider,
                 "provider_location": data.message.order.provider_location,
                 "items": data.qouteItems,

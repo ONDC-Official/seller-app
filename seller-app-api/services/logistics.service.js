@@ -8,9 +8,12 @@ const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
+const sellerPickupLocation = config.get("sellerConfig").sellerPickupLocation
+const storeOpenSchedule = config.get("sellerConfig").storeOpenSchedule
 
 import ProductService from './product.service'
 const productService = new ProductService();
+import logger from '../lib/logger'
 
 class LogisticsService {
 
@@ -18,7 +21,7 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
+            logger.log('info', `[Logistics Service] search logistics payload : param :`,payload);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -44,26 +47,7 @@ class LogisticsService {
                         "category": {
                             "id": "Immediate Delivery"
                         },
-                        "provider": { //TBD: what values should go here. i think it should be config based
-                            "time": {
-                                "days": "1,2,3,4,5,6,7",
-                                "schedule": {
-                                    "holidays": [
-                                        "2022-08-15",
-                                        "2022-08-19"
-                                    ],
-                                    "frequency": "PT4H",
-                                    "times": [
-                                        "1100",
-                                        "1900"
-                                    ]
-                                },
-                                "range": {
-                                    "start": "1100",
-                                    "end": "2100"
-                                }
-                            }
-                        },
+                        "provider": storeOpenSchedule,
                         "fulfillment": {
                             "type": "Prepaid",
                             "start": {
@@ -116,13 +100,14 @@ class LogisticsService {
 
             }]
 
-            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
+                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,payload);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
 
             return searchRequest
         } catch (err) {
+            logger.error('error', `[Logistics Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
         }
     }
@@ -131,17 +116,16 @@ class LogisticsService {
     async buildSelectRequest(logisticsMessageId, selectMessageId) {
 
         try {
+            logger.log('info', `[Logistics Service] search logistics payload - build select request : param :`, {logisticsMessageId,selectMessageId});
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
-
             let selectResponse = await productService.productSelect(logisticsResponse)
-
             //3. post to protocol layer
             await this.postSelectResponse(selectResponse);
 
         } catch (e) {
-            console.log(e)
+            logger.error('error', `[Logistics Service] search logistics payload - build select request : param :`, e);
             return e
         }
     }
@@ -150,7 +134,8 @@ class LogisticsService {
     async getLogistics(logisticsMessageId, retailMessageId, type) {
         try {
 
-            console.log(`[getLogistics]==logisticsMessageId ${logisticsMessageId} selectMessageId ${retailMessageId}`)
+            logger.log('info', `[Logistics Service] get logistics : param :`, {logisticsMessageId,retailMessageId,type});
+
             let headers = {};
             let query = ''
             if (type === 'select') {
@@ -182,12 +167,12 @@ class LogisticsService {
 
             let result = await httpRequest.send();
 
-            console.log(`[getLogistics]==result.data ${result.data}`)
+            logger.log('info', `[Logistics Service] get logistics : response :`, result.data);
 
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
+            logger.error('error', `[Logistics Service] get logistics : response :`, e);
             return e
         }
 
@@ -196,6 +181,8 @@ class LogisticsService {
     //return select response to protocol layer
     async postSelectResponse(selectResponse) {
         try {
+
+            logger.info('info', `[Logistics Service] post http select response : `, selectResponse);
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -206,14 +193,12 @@ class LogisticsService {
                 headers
             );
 
-            console.log(httpRequest)
-
             let result = await httpRequest.send();
 
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
+            logger.error('error', `[Logistics Service] post http select response : `, e);
             return e
         }
 
@@ -224,7 +209,7 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
+            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload);
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
@@ -232,22 +217,21 @@ class LogisticsService {
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
+            logger.log('info', `[Logistics Service] old select request :`,selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+            logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
-            const selectMessageId = payload.context.message_id;
+            const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
             const initRequest = [{
                 "context": {
                     "domain": "nic2004:60232",
                     "country": "IND",
-                    "city": "std:080",
+                    "city": "std:080", //TODO: take city from retail context
                     "action": "init",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
@@ -302,33 +286,36 @@ class LogisticsService {
             }]
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
-                this.buildInitRequest(logisticsMessageId, selectMessageId)
+                logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
+
+                this.buildInitRequest(logisticsMessageId, initMessageId)
             }, 5000); //TODO move to config
 
             return initRequest
         } catch (err) {
-            throw err;
+            logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+            return err
         }
     }
 
     async buildInitRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildInitRequest---------->");
+            logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId});
+
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'init')
+
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
-
+            logger.log('info', `[Logistics Service] build init request - get logistics response :`, logisticsResponse);
             let selectResponse = await productService.productInit(logisticsResponse)
 
             //3. post to protocol layer
             await this.postInitResponse(selectResponse);
 
-        } catch (e) {
-            console.log(e)
-            return e
+        } catch (err) {
+            logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+            return err
         }
     }
 
@@ -336,6 +323,8 @@ class LogisticsService {
     //return init response to protocol layer
     async postInitResponse(initResponse) {
         try {
+
+            logger.info('info', `[Logistics Service] post init request :`, initResponse);
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -346,15 +335,13 @@ class LogisticsService {
                 headers
             );
 
-            console.log(httpRequest)
-
             let result = await httpRequest.send();
 
             return result.data
 
-        } catch (e) {
-            console.log("ee----------->", e)
-            return e
+        } catch (err) {
+            logger.error('error', `[Logistics Service] post init request :`, {error:err.stack,message:err.message});
+            return err
         }
 
     }
@@ -386,7 +373,7 @@ class LogisticsService {
             const logisticsOrderId = uuidv4();
             const initRequest = [{
                 "context": {
-                    "domain": "nic2004:52110",
+                    "domain": "nic2004:60232",
                     "action": "confirm",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
@@ -456,8 +443,10 @@ class LogisticsService {
 
                                 },
                                 "end": order.fulfillments[0].end,
-                                "rateable": "true"
-                            }
+                                "rateable": "true",
+                                "tags":{"@ondc/org/order_ready_to_ship": "Yes"}
+
+        }
                         ],
                         "quote": {
                             "price": {
@@ -605,18 +594,144 @@ class LogisticsService {
                             ],
                             "created_at": "2022-05-10T18:01:53.000Z",
                             "updated_at": "2022-05-10T18:02:19.000Z"
+                        },
+                        "@ondc/org/linked_order":{
+                            "items": [{
+                                "category_id": "Grocery",
+                                "descriptor": {
+                                    "name": "testing"
+                                },
+                                "name": "Atta",
+                                "quantity": {
+                                    "count": 2,
+                                    "measure": {
+                                        "value": 2,
+                                        "unit": "kilogram"
+                                    }
+                                },
+                                "price": {
+                                    "currency": "INR",
+                                    "value": "5000"
+                                },
+                                "order": {
+                                    "id": payload.context.transaction_id,
+                                    "weight": {
+                                        "unit": "Kilogram",
+                                        "value": 5
+                                    }
+                                }
+                            }]
                         }
                     }
                 }
             }
             ]
 
+
+            const confirmRequest  = [{
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "confirm",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message": {
+                    "order": {
+                        "id": payload.context.transaction_id,
+                        "state": "Created",
+                        "provider": {
+                            "id": logistics.message.catalog["bpp/providers"][0].id,
+                            "locations": [
+                                {
+                                    "id": "GFFBRTFR1649830006"
+                                }
+                            ],
+                            "rateable": "true"
+                        },
+                        "items": logistics.message.catalog["bpp/providers"][0].items,
+                        "quote": order.qoute,
+                        "payment": {
+                            "type": "ON-ORDER",
+                            "@ondc/org/settlement_details": [{
+                                "settlement_counterparty": "seller-app",
+                                "settlement_type": "upi",
+                                "upi_address": "gft@oksbi",
+                                "settlement_bank_account_no": "XXXXXXXXXX",
+                                "settlement_ifsc_code": "XXXXXXXXX"
+                            }]
+                        },
+                        "fulfillments": [{
+                            "id": "Fulfillment1",
+                            "type": "Prepaid",
+                            "start": sellerPickupLocation,
+                            "end":{...order.fulfillments[0].end,person:order.fulfillments[0].customer.person},
+                            "@ondc/org/awb_no": "1227262193237777", //TBD: do seller needs to generate this number?
+                            "tags": {
+                                "@ondc/org/order_ready_to_ship": "Yes" //
+                            }
+                        }],
+                        "billing": { //TODO: take from config
+                            "name": "XXXX YYYYY",
+                            "address": {
+                                "name": "D000, Prestige Towers",
+                                "locality": "Bannerghatta Road",
+                                "city": "Bengaluru",
+                                "state": "Karnataka",
+                                "country": "India",
+                                "area_code": "560076"
+                            },
+                            "tax_number": "29AAACU1901H1ZK",
+                            "phone": "98860 98860",
+                            "email": "abcd.efgh@gmail.com"
+                        },
+                        "@ondc/org/linked_order": { //TBD: need more details how to build this object
+                            "items": [{
+                                "category_id": "Immediate Delivery",
+                                "name": "SFX",
+                                "quantity": {
+                                    "count": 2,
+                                    "measure": {
+                                        "type": "CONSTANT",
+                                        "value": 2,
+                                        "estimated_value": 2,
+                                        "computed_value": 2,
+                                        "range": {
+                                            "min": 2,
+                                            "max": 5
+                                        },
+                                        "unit": "10"
+                                    }
+                                },
+                                "price": {
+                                    "currency": "INR",
+                                    "value": "5000",
+                                    "estimated_value": "5500",
+                                    "computed_value": "5525",
+                                    "listed_value": "5300",
+                                    "offered_value": "4555",
+                                    "minimum_value": "4000",
+                                    "maximum_value": "5500"
+                                }
+                            }]
+                        }
+                    }
+                }
+
+            }]
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
                 this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 10000); //TODO move to config
 
-            return initRequest
+            return confirmRequest
         } catch (err) {
             throw err;
         }
@@ -697,7 +812,7 @@ class LogisticsService {
 
             const trackRequest = [{
                 "context": {
-                    "domain": "nic2004:52110",
+                    "domain": "nic2004:60232",
                     "action": "track",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
@@ -784,15 +899,16 @@ class LogisticsService {
 
             console.log("payload.context----->", payload.context);
 
-            const selectRequest = await SelectRequest.findOne({
+            const confirmRequest = await ConfirmRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id //FIXME: find by order id
+                    transactionId: payload.context.transaction_id ,
+                    retailOrderId: payload.message.order_id
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
+            console.log("selected logistics--------selectRequest------->", confirmRequest);
 
-            const logistics = selectRequest.selectedLogistics;
+            const logistics = confirmRequest.selectedLogistics;
 
             console.log("selected logistics--------selectRequest-----logistics-->", logistics);
             console.log("selected logistics--------selectRequest----context--->", logistics.context);
@@ -803,7 +919,7 @@ class LogisticsService {
 
             const trackRequest = [{
                 "context": {
-                    "domain": "nic2004:52110",
+                    "domain": "nic2004:60232",
                     "action": "status",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
@@ -818,7 +934,7 @@ class LogisticsService {
                 },
                 "message":
                     {
-                        "order_id": payload.message.order_id,
+                        "order_id": confirmRequest.orderId,
                     }
 
             }
@@ -838,17 +954,17 @@ class LogisticsService {
     async buildStatusRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildTrackRequest---------->");
+            console.log("buildStatusRequest---------->");
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response
 
             console.log("logisticsResponse---------->", logisticsResponse);
 
-            let selectResponse = await productService.productStatus(logisticsResponse)
+            let statusResponse = await productService.productStatus(logisticsResponse)
 
             //3. post to protocol layer
-            await this.postStatusResponse(selectResponse);
+            await this.postStatusResponse(statusResponse);
 
         } catch (e) {
             console.log(e)

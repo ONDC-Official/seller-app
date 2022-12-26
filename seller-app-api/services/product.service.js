@@ -1,26 +1,19 @@
 import HttpRequest from '../utils/HttpRequest';
-import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport} from "../utils/schemaMapping";
+import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus} from "../utils/schemaMapping";
 import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
+import logger from "../lib/logger";
 
 var config = require('../lib/config');
-// const strapiAccessToken = '1465d1ca50726c39d0a764ba345121bc594f4923367de7d8ce57c779c0b3a3fd64eecbd4268e5e8818a57068f0f48b1b7d3a4ec20cfeb55e48bf902283c318b8b9fbe7f6fd9e86e813eab18acbd38075a2389bd5e5eb73fe1ba9607d3f9e7b00a5cc46c8dcf617734f52ec0e91b90d167a180bba4ed1f0a7d7ad026f28c5aad2'
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
-
-// import BppSearchService from './logistics.service'
-// // const BPP_ID = config.get("sellerConfig").BPP_ID
-//
-// let bppSearchService = new BppSearchService()
 
 class ProductService {
 
     async list() {
 
         let headers = {};
-        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
-
         let httpRequest = new HttpRequest(
             strapiURI,
             '/api/products',
@@ -36,13 +29,12 @@ class ProductService {
 
     async search(requestQuery) {
 
+        logger.log('info', `[Product Service] search product : param :`,requestQuery);
+
         //get search criteria
         const searchProduct = requestQuery.message.intent.item.descriptor.name
-        //const searchCategory = requestQuery.message.intent.category.descriptor?.name??""
 
         let headers = {};
-        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
-
 
         let httpRequest = new HttpRequest(
             strapiURI,
@@ -54,17 +46,19 @@ class ProductService {
 
         let result = await httpRequest.send();
 
-        console.log("search result================>", result)
+        logger.log('info', `[Product Service] search product : result :`, result.data);
 
         const productData = await getProducts({data: result.data, context: requestQuery.context});
 
-        console.log("search result=======productData=========>", productData);
+        logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
         return productData
     }
 
 
     async select(requestQuery) {
+
+        logger.log('info', `[Product Service] product select :`, requestQuery);
 
         //get search criteria
         const selectData = requestQuery.retail_select
@@ -111,6 +105,8 @@ class ProductService {
             detailedQoute.push(qouteItemsDetails)
         }
 
+        logger.log('info', `[Product Service] checking if logistics provider available from :`, logisticData);
+
         let logisticProvider = {}
         for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
 
@@ -126,6 +122,8 @@ class ProductService {
                 "message": "Pickup not servicable"
             }}
         }
+
+        logger.log('info', `[Product Service] logistics provider available  :`, logisticProvider);
 
         //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
@@ -451,19 +449,54 @@ class ProductService {
 
     async productStatus(requestQuery) {
 
-        const trackRequest = requestQuery.retail_status[0]//select first select request
+        const statusRequest = requestQuery.retail_status[0]//select first select request
         const logisticData = requestQuery.logistics_on_status[0]
 
 
-        //TODO: update order status from logistics status api.
-        //1, update order level status
-        //2. update item level fullfillment status
+        console.log("trackRequest=============>",statusRequest);
 
-        console.log("trackRequest=============>",trackRequest);
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders?filters[order_id][$eq]=${statusRequest.message.order_id}`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data.data[0]);
+
+        let updateOrder = result.data.data[0].attributes
+
+        updateOrder.state =logisticData.message.order.state
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${result.data.data[0].id}`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            item.tags={status:updateOrder.state};
+            item.fulfillment_id = item.id
+            return item;
+        });
+
+        updateOrder.items = items;
+
+        console.log("trackRequest=============>",statusRequest);
         console.log("logisticData=============>",logisticData);
-        const productData = await getTrack({
-            context: trackRequest.context,
-            logisticData: logisticData
+        const productData = await getStatus({
+            context: statusRequest.context,
+            updateOrder:updateOrder
         });
 
         return productData
@@ -557,8 +590,8 @@ class ProductService {
             let productItems = {
                 product: item.id,
                 status: 'Created',
-                qty: item.quantity.count
-
+                qty: item.quantity.count,
+                value: item.price.value
             }
             let httpRequest = new HttpRequest(
                 strapiURI,
@@ -575,6 +608,8 @@ class ProductService {
 
         confirmData["order_items"] = orderItems
         confirmData.order_id = confirmData.id
+        confirmData.transaction_id = confirmRequest.context.transaction_id
+        confirmData.state ="Created"
         delete confirmData.id
 
         console.log("orderItems-------confirmData-------->", confirmData)
@@ -629,6 +664,26 @@ class ProductService {
         let qouteItems = []
         let detailedQoute = []
         let totalPrice = 0
+
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticData.message.order.quote.price.currency,
+                "value": '' + logisticData.message.order.quote.price.value
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        console.log("qouteItems------------------", qouteItems)
+        console.log("totalPriceObj------------------", totalPriceObj)
+        console.log("detailedQoute------------------", detailedQoute)
+
         for (let item of items) {
             let headers = {};
 
@@ -660,27 +715,10 @@ class ProductService {
                 "price": item.price
             }
 
+            item.fulfillment_id = item.id //TODO: revisit for item level status
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
-
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
-
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
-        console.log("qouteItems------------------", qouteItems)
-        console.log("totalPriceObj------------------", totalPriceObj)
-        console.log("detailedQoute------------------", detailedQoute)
 
         let savedLogistics = new InitRequest()
 
@@ -720,6 +758,36 @@ class ProductService {
         let qouteItems = []
         let detailedQoute = []
         let totalPrice = 0
+
+
+        let logisticProvider = {}
+
+        for (let logisticData1 of logisticData) {
+            if (logisticData1.message) {
+                if (logisticData1.context.bpp_id === "ondc.yaarilabs.com") {//TODO: move to env
+                    logisticProvider = logisticData1
+                }
+            }
+        }
+
+        if (Object.keys(logisticProvider).length === 0) {
+            for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+                if (logisticData1.message) {
+                    logisticProvider = logisticData1
+                }
+            }
+        }
+
+        if (Object.keys(logisticProvider).length === 0) {
+            return {
+                context: {...selectData.context, action: 'on_select'}, error: {
+                    "type": "CORE-ERROR",
+                    "code": "60001",
+                    "message": "Pickup not servicable"
+                }
+            }
+        }
+
         for (let item of items) {
             let headers = {};
 
@@ -753,29 +821,9 @@ class ProductService {
                 "price": item.price
             }
 
+            item.fulfillment_id = item.id //TODO: revisit for item level status
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
-        }
-
-        let logisticProvider = {}
-        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
-            if (logisticData1.message) {
-                if (logisticData1.context.bpp_id === "flash-api.staging.shadowfax.in") {//TODO: move to env
-                    logisticProvider = logisticData1
-                }else{
-                    logisticProvider = logisticData1
-                }
-            }
-        }
-
-        if (Object.keys(logisticProvider).length === 0) {
-            return {
-                context: {...selectData.context, action: 'on_select'}, error: {
-                    "type": "CORE-ERROR",
-                    "code": "60001",
-                    "message": "Pickup not servicable"
-                }
-            }
         }
 
         let savedLogistics = new SelectRequest()
