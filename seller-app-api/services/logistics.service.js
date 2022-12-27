@@ -758,8 +758,7 @@ class LogisticsService {
 
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id ,
-                    retailOrderId: payload.message.order_id
+                    transactionId: payload.context.ref_id
                 }
             })
 
