@@ -758,7 +758,7 @@ class LogisticsService {
 
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
-                    transactionId: payload.context.ref_id
+                    transactionId: payload.message.ref_id
                 }
             })
 
@@ -769,7 +769,6 @@ class LogisticsService {
             console.log("selected logistics--------selectRequest-----logistics-->", logistics);
             console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
-            const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
