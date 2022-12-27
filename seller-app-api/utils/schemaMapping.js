@@ -178,7 +178,7 @@ exports.getStatus = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "provider":data.updateOrder.provider,
+                "provider":{"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"}, //TODO: map to strapi
                 "state":data.updateOrder.state,
                 "items": data.updateOrder.items,
                 "billing": data.updateOrder.billing,
@@ -252,7 +252,7 @@ exports.getConfirm = async (data) => {
             "order": {
                 "id":data.message.order.order_id,
                 "state":"Created",
-                "provider":data.message.order.provider,
+                "provider": {"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"},
                 "provider_location": data.message.order.provider_location,
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
