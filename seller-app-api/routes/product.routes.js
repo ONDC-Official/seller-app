@@ -19,6 +19,14 @@ router.put('/product/:id',
     authentication(),
     productController.update);
 
+router.get('/orders',
+    productController.orderList);
+
+
+router.get('/orders/:id',
+    productController.getOrderById);
+
+
 //ONDC specific API
 
 router.post('/search',

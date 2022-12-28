@@ -395,6 +395,24 @@ class ProductService {
         return result.data
     }
 
+    async getOrderById(id) {
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${id}?populate[0]=order_items&populate[1]=order_items.product`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
+
     async update(data, id) {
 
         let headers = {};
