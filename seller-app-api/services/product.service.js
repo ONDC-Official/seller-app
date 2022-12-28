@@ -676,10 +676,6 @@ class ProductService {
             }
         }//TODO: need to map all items in the catalog to find out delivery charges
 
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
         console.log("qouteItems------------------", qouteItems)
         console.log("totalPriceObj------------------", totalPriceObj)
         console.log("detailedQoute------------------", detailedQoute)
@@ -719,6 +715,14 @@ class ProductService {
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
+
+        console.log("totalPrice---->",totalPrice)
+        console.log("logisticData.message.order.quote.price.currency---->",logisticData.message.order.quote.price.value)
+
+        totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
 
         let savedLogistics = new InitRequest()
 
