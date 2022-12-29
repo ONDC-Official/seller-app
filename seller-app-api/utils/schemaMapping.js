@@ -184,7 +184,8 @@ exports.getStatus = async (data) => {
                 "billing": data.updateOrder.billing,
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
-                "payment": data.updateOrder.payment
+                "payment": data.updateOrder.payment,
+                 "id" :  data.updateOrder.id
             }
         }
     }
@@ -219,7 +220,8 @@ exports.getCancel = async (data) => {
                 "billing": data.updateOrder.billing,
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
-                "payment": data.updateOrder.payment
+                "payment": data.updateOrder.payment,
+                "id" :  data.updateOrder.id
             }
         }
     }
