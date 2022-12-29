@@ -699,6 +699,65 @@ class LogisticsService {
         }
     }
 
+    async cancel(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            console.log("payload.context-cancel---->", payload.context);
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id ,
+                    retailOrderId: payload.message.order_id
+                }
+            })
+
+            console.log("selected logistics--------selectRequest------->", confirmRequest);
+
+            const logistics = confirmRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = [{
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "cancel",
+                    "core_version": "1.0.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message":
+                    {
+                        "order_id": confirmRequest.orderId,
+                        "cancellation_reason_id": payload.message.cancellation_reason_id
+                    }
+
+            }
+            ]
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            setTimeout(() => {
+                this.buildCancelRequest(logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+
+            return trackRequest
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async buildStatusRequest(logisticsMessageId, initMessageId) {
 
         try {
@@ -721,6 +780,28 @@ class LogisticsService {
     }
 
 
+    async buildCancelRequest(logisticsMessageId, initMessageId) {
+
+        try {
+            console.log("buildCancelRequest---------->");
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'cancel')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->", logisticsResponse);
+
+            let statusResponse = await productService.productCancel(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postCancelResponse(statusResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+
     //return track response to protocol layer
     async postStatusResponse(statusResponse) {
         try {
@@ -729,6 +810,32 @@ class LogisticsService {
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_status`,
+                'POST',
+                statusResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            console.log("ee----------->", e)
+            return e
+        }
+
+    }
+
+    //return track response to protocol layer
+    async postCancelResponse(statusResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_cancel`,
                 'POST',
                 statusResponse,
                 headers

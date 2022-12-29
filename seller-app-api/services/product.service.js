@@ -520,6 +520,61 @@ class ProductService {
         return productData
     }
 
+    async productCancel(requestQuery) {
+
+        const cancelRequest = requestQuery.retail_cancel[0]//select first select request
+        const logisticData = requestQuery.logistics_on_cancel[0]
+
+
+        console.log("trackRequest=============>",cancelRequest);
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders?filters[order_id][$eq]=${cancelRequest.message.order_id}`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data.data[0]);
+
+        let updateOrder = result.data.data[0].attributes
+
+        updateOrder.state =logisticData.message.order.state
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${result.data.data[0].id}`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            item.tags={status:updateOrder.state};
+            item.fulfillment_id = item.id
+            return item;
+        });
+
+        updateOrder.items = items;
+
+        console.log("trackRequest=============>",cancelRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getStatus({
+            context: cancelRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
 
     async productSupport(requestQuery) {
 

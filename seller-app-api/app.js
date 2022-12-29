@@ -66,6 +66,7 @@ app.use(function (err, req, res, next) {
     const exceptionEmailRecipients = config.get('general').exceptionEmailRecipientList;
     // mailer.exceptionEmail({receivers: exceptionEmailRecipients, data: {err}}).send();
 
+    console.log("errr--------------->",err)
     // If no custom error is thrown then return 500(server side error/exception)
     res.status(500).json({error: 'Something went wrong. Please try again'});
 });

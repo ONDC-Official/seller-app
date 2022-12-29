@@ -55,6 +55,14 @@ class LogisticsController {
             next(err);
         });
     }
+    cancel(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        logisticsService.cancel(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
 
 }
 

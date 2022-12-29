@@ -13,6 +13,9 @@ router.post('/logistics/init-payload-for-retail-init',
 router.post('/logistics/confirm-payload-for-retail-confirm',
     logisticController.confirm);
 
+router.post('/logistics/cancel-payload-for-retail-cancel',
+    logisticController.cancel);
+
 router.post('/logistics/track-payload-for-retail-track',
     logisticController.track);
 
