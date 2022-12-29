@@ -565,7 +565,7 @@ class ProductService {
         });
 
         updateOrder.items = items;
-        updateOrder.id = statusRequest.message.order_id;
+        updateOrder.id = cancelRequest.message.order_id;
         console.log("trackRequest=============>",cancelRequest);
         console.log("logisticData=============>",logisticData);
         const productData = await getCancel({
