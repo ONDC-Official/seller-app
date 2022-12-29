@@ -1,5 +1,5 @@
 import HttpRequest from '../utils/HttpRequest';
-import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus} from "../utils/schemaMapping";
+import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
 import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
 import logger from "../lib/logger";
 
@@ -567,7 +567,7 @@ class ProductService {
 
         console.log("trackRequest=============>",cancelRequest);
         console.log("logisticData=============>",logisticData);
-        const productData = await getStatus({
+        const productData = await getCancel({
             context: cancelRequest.context,
             updateOrder:updateOrder
         });
