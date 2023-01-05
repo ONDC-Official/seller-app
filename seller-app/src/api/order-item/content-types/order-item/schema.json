@@ -23,6 +23,9 @@
       "relation": "manyToOne",
       "target": "api::product.product",
       "inversedBy": "order_items"
+    },
+    "value": {
+      "type": "biginteger"
     }
   }
 }

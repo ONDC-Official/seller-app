@@ -43,6 +43,9 @@
     },
     "items": {
       "type": "json"
+    },
+    "quote": {
+      "type": "json"
     }
   }
 }
