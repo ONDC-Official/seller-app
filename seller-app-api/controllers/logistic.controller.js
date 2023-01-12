@@ -14,6 +14,15 @@ class LogisticsController {
         });
     }
 
+    productSelect(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        logisticsService.productSelect(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
     init(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         logisticsService.init(req.body,req).then(data => {

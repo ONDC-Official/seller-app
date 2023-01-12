@@ -112,6 +112,138 @@ class LogisticsService {
         }
     }
 
+    async productSelect(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            logger.log('info', `[Logistics Service] search logistics payload : param :`,payload);
+
+            const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const searchRequest = [{
+                "context":
+                    {
+                        "domain": "nic2004:60232",
+                        "country": "IND",
+                        "city": "std:080",
+                        "action": "search",
+                        "core_version": "1.0.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BPP_URI,
+                        "transaction_id": payload.context.transaction_id,
+                        "message_id": logisticsMessageId,
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                "message": {
+                    "intent": {
+                        "category": {
+                            "id": "Immediate Delivery"
+                        },
+                        "provider": storeOpenSchedule,
+                        "fulfillment": {
+                            "type": "Prepaid",
+                            "start": {
+                                "location": {
+                                    "gps": "12.938382,77.651775",
+                                    "address": {
+                                        "area_code": "560087"
+                                    }
+                                }
+                            },
+                            "end": {
+                                "location": {
+                                    "gps": "12.997989,77.622650",
+                                    "address": {
+                                        "area_code": "560005"
+                                    }
+                                }
+                            }
+                        },
+                        "payment": {
+                            "@ondc/org/collection_amount": "30000"
+                        },
+                        "@ondc/org/payload_details": {
+                            "weight": {
+                                "unit": "Kilogram",
+                                "value": 10
+                            },
+                            "dimensions": {
+                                "length": {
+                                    "unit": "meter",
+                                    "value": 1
+                                },
+                                "breadth": {
+                                    "unit": "meter",
+                                    "value": 1
+                                },
+                                "height": {
+                                    "unit": "meter",
+                                    "value": 1
+                                }
+                            },
+                            "category": "Mobile Phone", //TODO: taken from product category
+                            "value": {
+                                "currency": "INR",
+                                "value": "50000" // sum of total items
+                            }
+                        }
+                    }
+                }
+
+            }]
+
+            setTimeout(() => {
+                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,payload);
+                this.buildSelectRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
+
+            return searchRequest
+        } catch (err) {
+            logger.error('error', `[Logistics Service] search logistics payload - search logistics payload : param :`, err);
+            throw err;
+        }
+    }
+
+    async postSelectRequest(searchRequest,selectMessageId,logisticsMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+
+                logger.info('info', `[Logistics Service] post http select response : `, selectResponse);
+
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/logistics/v1/search`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+
+                let result = await httpRequest.send();
+
+            } catch (e) {
+                logger.error('error', `[Logistics Service] post http select response : `, e);
+                return e
+            }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                this.buildSelectRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Logistics Service] post http select response : `, e);
+            return e
+        }
+    }
 
     async buildSelectRequest(logisticsMessageId, selectMessageId) {
 

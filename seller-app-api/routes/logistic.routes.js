@@ -7,6 +7,10 @@ const logisticController = new LogisticController();
 router.post('/logistics/search-payload-for-retail-select',
     logisticController.search);
 
+//new changes
+router.post('/client/select',
+    logisticController.productSelect);
+
 router.post('/logistics/init-payload-for-retail-init',
     logisticController.init);
 
