@@ -432,7 +432,7 @@ class LogisticsService {
         }
     }
 
-    async productSelect(payload = {}, req = {}) {
+    async productInit(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -454,7 +454,7 @@ class LogisticsService {
             const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const initRequest = [{
+            const initRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "country": "IND",
@@ -510,7 +510,7 @@ class LogisticsService {
                         }
                     }
                 }
-            }]
+            }
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             // setTimeout(() => {
                 logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
@@ -782,7 +782,7 @@ class LogisticsService {
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.city
 
-            const confirmRequest  = [{
+            const confirmRequest  = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "confirm",
@@ -879,7 +879,7 @@ class LogisticsService {
                     }
                 }
 
-            }]
+            }
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
            // setTimeout(() => {
                 this.postConfirmRequest(confirmRequest,logisticsMessageId, selectMessageId)
@@ -1006,7 +1006,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "track",
@@ -1027,7 +1027,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
@@ -1269,7 +1269,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "status",
@@ -1290,7 +1290,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
@@ -1428,7 +1428,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "cancel",
@@ -1450,7 +1450,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
@@ -1623,7 +1623,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:52110",
                     "action": "support",
@@ -1644,7 +1644,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
@@ -1679,7 +1679,7 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:52110",
                     "action": "support",
@@ -1700,7 +1700,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {

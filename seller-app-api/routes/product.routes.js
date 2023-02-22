@@ -8,7 +8,6 @@ router.get('/product',
     productController.list);
 
 router.get('/product/:id',
-    authentication(),
     productController.get);
 
 router.post('/product',

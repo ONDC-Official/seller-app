@@ -66,6 +66,7 @@ class HttpRequest {
         } 
         catch (err) 
         {
+            console.log("err-------->",err);
 
             if (err.response) {
                 // The client was given an error response (5xx, 4xx)

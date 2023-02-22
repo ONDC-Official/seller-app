@@ -20,8 +20,8 @@
     }
   },
   "database": {
-    "username": "postgres",
-    "password": "root",
+    "username": "akshay",
+    "password": "",
     "name": "sellerapp",
     "host": "localhost",
     "port": "5432",
@@ -37,12 +37,12 @@
   "email": {
     "transport": {
       "SMTP": {
-        "host": "email-smtp.us-east-1.amazonaws.com",
+        "host": "email-smtp.us-west-2.amazonaws.com",
         "port": 587,
         "secure": false,
         "auth": {
-          "user": "",
-          "pass": ""
+          "user": "AKIASIARTUPSNGAZRQZ4",
+          "pass": "BFHnEVgkYYIQtMsr4493ME+st9LoR8457ylSiX+V+HLU"
         }
       },
       "local": {
@@ -84,9 +84,9 @@
   },
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
-    "BPP_URI": "https://c0ae-2402-e280-3e33-24e-b1b3-e49b-bea7-49a8.in.ngrok.io",
+    "BPP_URI": "https://8d61-103-115-202-153.in.ngrok.io",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://4873-2402-e280-3e33-24e-c954-4862-deda-7817.in.ngrok.io",
+    "BAP_URI": "https://8d61-103-115-202-153.in.ngrok.io",
     "storeOpenSchedule": {
       "time": {
         "days": "1,2,3,4,5,6,7",

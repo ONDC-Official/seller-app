@@ -364,6 +364,8 @@ class ProductService {
         let headers = {};
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
+        return 0/3;
+
         let httpRequest = new HttpRequest(
             strapiURI,
             `/api/products/${id}`,
