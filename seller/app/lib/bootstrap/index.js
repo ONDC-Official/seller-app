@@ -25,7 +25,7 @@ async function BootstrapData() {
         let promiseArray = Users.map(async (userObj) => {
             let roles = await Role.find({});
             const role = roles.find(role => role.name === 'Super Admin');
-            userObj.roleId = role.id;
+            userObj.role = role.name
             const user = await userService.create(userObj);
             return user;
         });
