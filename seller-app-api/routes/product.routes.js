@@ -8,7 +8,6 @@ router.get('/product',
     productController.list);
 
 router.get('/product/:id',
-    authentication(),
     productController.get);
 
 router.post('/product',
@@ -18,6 +17,16 @@ router.post('/product',
 router.put('/product/:id',
     authentication(),
     productController.update);
+
+router.get('/orders',
+    productController.orderList);
+
+
+router.get('/orders/:id',
+    productController.getOrderById);
+
+
+//ONDC specific API
 
 router.post('/search',
     productController.search);

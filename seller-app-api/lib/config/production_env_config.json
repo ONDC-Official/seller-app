@@ -19,6 +19,21 @@
       }
     }
   },
+  "database": {
+    "username": "postgres",
+    "password": "root",
+    "name": "sellerapp",
+    "host": "localhost",
+    "port": "5432",
+    "dialect": "postgres",
+    "pool": {
+      "max": 60,
+      "min": 0,
+      "acquire": 1000000,
+      "idle": 10000,
+      "evict": 10000
+    }
+  },
   "email": {
     "transport": {
       "SMTP": {
@@ -26,8 +41,8 @@
         "port": 587,
         "secure": false,
         "auth": {
-          "user": "AKIAXFYZJE6FIP5LB2VM",
-          "pass": "BNLIHC/hDpI58lRjO/qD4LC8fvQwiAw0nETpn8M5Jwu8"
+          "user": "",
+          "pass": ""
         }
       },
       "local": {
@@ -67,8 +82,62 @@
   "firebase": {
     "account": "lib/config/firebase-service-account.json"
   },
+
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
-    "BPP_URI": "https://sellerapp-staging.datasyndicate.in/"
-  }
+    "BPP_URI": "https://c0ae-2402-e280-3e33-24e-b1b3-e49b-bea7-49a8.in.ngrok.io",
+    "BAP_ID": "sellerapp-staging.datasyndicate.in",
+    "BAP_URI": "https://4873-2402-e280-3e33-24e-c954-4862-deda-7817.in.ngrok.io",
+    "storeOpenSchedule": {
+      "time": {
+        "days": "1,2,3,4,5,6,7",
+        "schedule": {
+          "holidays": [
+            "2022-08-15",
+            "2022-08-19"
+          ],
+          "frequency": "PT4H",
+          "times": [
+            "1100",
+            "1900"
+          ]
+        },
+        "range": {
+          "start": "1100",
+          "end": "2100"
+        }
+      }
+    },
+    "sellerPickupLocation": {
+      "person": {
+        "name": "Ramu"
+      },
+      "location": {
+        "gps": "12.938382, 77.651775",
+        "address": {
+          "area_code": "560087",
+          "name": "Fritoburger",
+          "building": "12 Restaurant Tower",
+          "locality": "JP Nagar 24th Main",
+          "city": "Bengaluru",
+          "state": "Karnataka",
+          "country": "India"
+        }
+      },
+      "contact":
+      {
+        "phone": "98860 98860",
+        "email": "abcd.efgh@gmail.com"
+      }
+    }
+  },
+  "settlement_details":   [
+    {
+      "settlement_counterparty": "buyer-app",
+      "settlement_type": "upi",
+      "upi_address": "gft@oksbi",
+      "settlement_bank_account_no": "XXXXXXXXXX",
+      "settlement_ifsc_code": "XXXXXXXXX"
+    }
+  ]
 }

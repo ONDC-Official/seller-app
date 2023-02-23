@@ -11,7 +11,6 @@ import logisticRoutes from './routes/logistic.routes';
 import config from './lib/config';
 import Mailer from './lib/mailer';
 import initializeFirebase from './lib/firebase/initializeFirebase.js';
-
 initializeFirebase();
 const mailer = new Mailer();
 
@@ -59,14 +58,15 @@ app.disable('etag');
 // Error handler
 app.use(function (err, req, res, next) {
     // Send response status based on custom error code
-    // if (err.status) {
+    if (err.status) {
         return res.status(err.status).json({error: err.message});
-    // }
+    }
 
     // Send an exception email to dev users
-    // const exceptionEmailRecipients = config.get('general').exceptionEmailRecipientList;
-    // mailer.exceptionEmail({receivers: exceptionEmailRecipients, data: {err}}).send();
+    const exceptionEmailRecipients = config.get('general').exceptionEmailRecipientList;
+     mailer.exceptionEmail({receivers: exceptionEmailRecipients, data: {err}}).send();
 
+    console.log("errr--------------->",err)
     // If no custom error is thrown then return 500(server side error/exception)
     res.status(500).json({error: 'Something went wrong. Please try again'});
 });

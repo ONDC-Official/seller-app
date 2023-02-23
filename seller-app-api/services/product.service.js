@@ -1,24 +1,19 @@
 import HttpRequest from '../utils/HttpRequest';
-import {getProducts, getSelect, getInit, getConfirm} from "../utils/schemaMapping";
+import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
+import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
+import logger from "../lib/logger";
 
 var config = require('../lib/config');
-// const strapiAccessToken = '1465d1ca50726c39d0a764ba345121bc594f4923367de7d8ce57c779c0b3a3fd64eecbd4268e5e8818a57068f0f48b1b7d3a4ec20cfeb55e48bf902283c318b8b9fbe7f6fd9e86e813eab18acbd38075a2389bd5e5eb73fe1ba9607d3f9e7b00a5cc46c8dcf617734f52ec0e91b90d167a180bba4ed1f0a7d7ad026f28c5aad2'
 const strapiAccessToken = config.get("strapi").apiToken
 const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
+const BPP_URI = config.get("sellerConfig").BPP_URI
 
-import BppSearchService from './logistics.service'
-// const BPP_ID = config.get("sellerConfig").BPP_ID
-
-let bppSearchService = new BppSearchService()
-
-class CategoryService {
+class ProductService {
 
     async list() {
 
         let headers = {};
-        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
-
         let httpRequest = new HttpRequest(
             strapiURI,
             '/api/products',
@@ -34,17 +29,16 @@ class CategoryService {
 
     async search(requestQuery) {
 
+        logger.log('info', `[Product Service] search product : param :`,requestQuery);
+
         //get search criteria
         const searchProduct = requestQuery.message.intent.item.descriptor.name
-        //const searchCategory = requestQuery.message.intent.category.descriptor?.name??""
 
         let headers = {};
-        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
-
 
         let httpRequest = new HttpRequest(
             strapiURI,
-            `/api/products?filters[name][$eq]=${searchProduct}`,
+            `/api/products?filters[name][$eq]=${searchProduct}`, //TODO: allow $like query
             'get',
             {},
             headers
@@ -52,21 +46,24 @@ class CategoryService {
 
         let result = await httpRequest.send();
 
-        console.log("search result================>", result)
+        logger.log('info', `[Product Service] search product : result :`, result.data);
 
         const productData = await getProducts({data: result.data, context: requestQuery.context});
 
-        console.log("search result=======productData=========>", productData);
+        logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
         return productData
     }
 
+
     async select(requestQuery) {
 
+        logger.log('info', `[Product Service] product select :`, requestQuery);
+
         //get search criteria
-        const selectData = requestQuery.select
+        const selectData = requestQuery.retail_select
         const items = selectData.message.order.items
-        const logisticData = requestQuery.logistic_on_search
+        const logisticData = requestQuery.logistics_on_search
 
         let qouteItems = []
         let detailedQoute = []
@@ -108,17 +105,15 @@ class CategoryService {
             detailedQoute.push(qouteItemsDetails)
         }
 
-        let logisticProvider = {}
-        for (let logisticData1 of logisticData) {
+        logger.log('info', `[Product Service] checking if logistics provider available from :`, logisticData);
 
-            console.log("logisticData---------->", logisticData1);
+        let logisticProvider = {}
+        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
 
             if (logisticData1.message) {
                 logisticProvider = logisticData1
             }
         }
-
-        console.log("logisticProvider---------->", logisticProvider);
 
         if (Object.keys(logisticProvider).length === 0  ) {
             return {context: {...selectData.context,action:'on_select'},message:{
@@ -128,18 +123,20 @@ class CategoryService {
             }}
         }
 
-        //select on logistic based on criteria for now first -
+        logger.log('info', `[Product Service] logistics provider available  :`, logisticProvider);
+
+        //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
-                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items.price.currency,
-                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items.price.value
+                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
+                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
             }
-        }
+        }//TODO: need to map all items in the catalog to find out delivery charges
 
         //added delivery charges in total price
-        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items.price.value
+        totalPrice += logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
 
         let fulfillments = [
             {
@@ -252,7 +249,6 @@ class CategoryService {
 
     async confirm(requestQuery) {
 
-        //get search criteria
         const items = requestQuery.message.order.items
 
         let qouteItems = []
@@ -368,6 +364,8 @@ class CategoryService {
         let headers = {};
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
+        return 0/3;
+
         let httpRequest = new HttpRequest(
             strapiURI,
             `/api/products/${id}`,
@@ -389,6 +387,24 @@ class CategoryService {
         let httpRequest = new HttpRequest(
             strapiURI,
             `/api/orders?populate[0]=order_items&populate[1]=order_items.product`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
+
+    async getOrderById(id) {
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${id}?populate[0]=order_items&populate[1]=order_items.product`,
             'get',
             {},
             headers
@@ -437,6 +453,516 @@ class CategoryService {
 
         return result.data
     }
+
+
+    async productTrack(requestQuery) {
+
+        const trackRequest = requestQuery.retail_track[0]//select first select request
+        const logisticData = requestQuery.logistics_on_track[0]
+        const productData = await getTrack({
+            context: trackRequest.context,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+    async productStatus(requestQuery) {
+
+        const statusRequest = requestQuery.retail_status[0]//select first select request
+        const logisticData = requestQuery.logistics_on_status[0]
+
+
+        console.log("trackRequest=============>",statusRequest);
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders?filters[order_id][$eq]=${statusRequest.message.order_id}`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data.data[0]);
+
+        let updateOrder = result.data.data[0].attributes
+
+        updateOrder.state =logisticData.message.order.state
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${result.data.data[0].id}`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            item.tags={status:updateOrder.state};
+            item.fulfillment_id = item.id
+            return item;
+        });
+
+        updateOrder.items = items;
+        updateOrder.id = statusRequest.message.order_id;
+
+        console.log("trackRequest=============>",statusRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getStatus({
+            context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
+    async productCancel(requestQuery) {
+
+        const cancelRequest = requestQuery.retail_cancel[0]//select first select request
+        const logisticData = requestQuery.logistics_on_cancel[0]
+
+
+        console.log("trackRequest=============>",cancelRequest);
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders?filters[order_id][$eq]=${cancelRequest.message.order_id}`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data.data[0]);
+
+        let updateOrder = result.data.data[0].attributes
+
+        updateOrder.state =logisticData.message.order.state
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders/${result.data.data[0].id}`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            item.tags={status:updateOrder.state};
+            item.fulfillment_id = item.id
+            return item;
+        });
+
+        updateOrder.items = items;
+        updateOrder.id = cancelRequest.message.order_id;
+        console.log("trackRequest=============>",cancelRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getCancel({
+            context: cancelRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
+
+    async productSupport(requestQuery) {
+
+        const trackRequest = requestQuery.retail_support[0]//select first select request
+        const logisticData = requestQuery.logistics_on_support[0]
+        const productData = await getSupport({
+            context: trackRequest.context,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+
+    async productConfirm(requestQuery) {
+
+        //get search criteria
+        // const items = requestQuery.message.order.items
+
+        const confirmRequest = requestQuery.retail_confirm[0]//select first select request
+        const items = confirmRequest.message.order.items
+        const logisticData = requestQuery.logistics_on_confirm[0]
+
+        console.log("logisticData====>",logisticData);
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += price
+                item.price = {value: price, currency: "INR"}
+            }
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticData.message.order.quote.price.currency,
+                "value": '' + logisticData.message.order.quote.price.value
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        let headers = {};
+
+        let confirmData = confirmRequest.message.order
+
+        let orderItems = []
+        // let confirmData = requestQuery.message.order
+        for (let item of confirmData.items) {
+
+            let productItems = {
+                product: item.id,
+                status: 'Created',
+                qty: item.quantity.count,
+                value: item.price.value
+            }
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/order-items`,
+                'POST',
+                {data: productItems},
+                headers
+            );
+            let result = await httpRequest.send();
+            console.log("result--------------->", result.data.data.id)
+            orderItems.push(result.data.data.id);
+        }
+
+
+        confirmData["order_items"] = orderItems
+        confirmData.order_id = confirmData.id
+        confirmData.transaction_id = confirmRequest.context.transaction_id
+        confirmData.state ="Created"
+        delete confirmData.id
+
+        console.log("orderItems-------confirmData-------->", confirmData)
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            strapiURI,
+            `/api/orders`,
+            'POST',
+            {data: confirmData},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("confirm---------result---------", result.data.data)
+
+        let savedLogistics = new ConfirmRequest()
+
+        savedLogistics.transactionId = confirmRequest.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.retailOrderId = confirmData.order_id
+        savedLogistics.orderId = logisticData.message.order.id
+        savedLogistics.selectedLogistics = logisticData
+
+        await savedLogistics.save();
+
+
+        const productData = await getConfirm({
+            qouteItems: qouteItems,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: confirmRequest.context,
+            message: confirmRequest.message,
+            logisticData: logisticData
+        });
+
+        return productData
+    }
+
+
+    async productInit(requestQuery) {
+
+        //get search criteria
+        // const items = requestQuery.message.order.items
+
+        const initData = requestQuery.retail_init[0]//select first select request
+        const items = initData.message.order.items
+        const logisticData = requestQuery.logistics_on_init[0]
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticData.message.order.quote.price.currency,
+                "value": '' + logisticData.message.order.quote.price.value
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        console.log("qouteItems------------------", qouteItems)
+        console.log("totalPriceObj------------------", totalPriceObj)
+        console.log("detailedQoute------------------", detailedQoute)
+
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += parseInt(price)
+                item.price = {value: price, currency: "INR"}
+            }
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            item.fulfillment_id = item.id //TODO: revisit for item level status
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        console.log("totalPrice---->",totalPrice)
+        console.log("logisticData.message.order.quote.price.currency---->",logisticData.message.order.quote.price.value)
+
+        totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        let savedLogistics = new InitRequest()
+
+        savedLogistics.transactionId = initData.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.selectedLogistics = logisticData
+
+        await savedLogistics.save();
+
+        const productData = await getInit({
+            qouteItems: qouteItems,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: initData.context,
+            message: initData.message,
+            logisticData: initData.logisticData
+        });
+
+        console.log("productData------------------", productData)
+
+        return productData
+    }
+
+
+    async productSelect(requestQuery) {
+
+        console.log("requestQuery------------->", requestQuery);
+        console.log("requestQuery-------data------>", requestQuery.data);
+        console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
+        console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
+        //get search criteria
+        const selectData = requestQuery.retail_select[0]//select first select request
+        const items = selectData.message.order.items
+        const logisticData = requestQuery.logistics_on_search
+
+        let qouteItems = []
+        let detailedQoute = []
+        let totalPrice = 0
+
+
+        let logisticProvider = {}
+
+        for (let logisticData1 of logisticData) {
+            if (logisticData1.message) {
+                if (logisticData1.context.bpp_id === "ondc.yaarilabs.com") {//TODO: move to env
+                    logisticProvider = logisticData1
+                }
+            }
+        }
+
+        if (Object.keys(logisticProvider).length === 0) {
+            for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+                if (logisticData1.message) {
+                    logisticProvider = logisticData1
+                }
+            }
+        }
+
+        if (Object.keys(logisticProvider).length === 0) {
+            return {
+                context: {...selectData.context, action: 'on_select'}, error: {
+                    "type": "CORE-ERROR",
+                    "code": "60001",
+                    "message": "Pickup not servicable"
+                }
+            }
+        }
+
+        for (let item of items) {
+            let headers = {};
+
+            let qouteItemsDetails = {}
+            let httpRequest = new HttpRequest(
+                strapiURI,
+                `/api/products/${item.id}`,
+                'get',
+                {},
+                headers
+            );
+
+            let result = await httpRequest.send();
+
+            if (result?.data?.data.attributes) {
+
+                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                totalPrice += price
+                item.price = {value: price, currency: "INR"}
+            }
+
+            //TODO: check if quantity is available
+
+            qouteItemsDetails = {
+                "@ondc/org/item_id": item.id,
+                "@ondc/org/item_quantity": {
+                    "count": item.quantity.count
+                },
+                "title": result?.data?.data?.attributes?.name,
+                "@ondc/org/title_type": "item",
+                "price": item.price
+            }
+
+            item.fulfillment_id = item.id //TODO: revisit for item level status
+            qouteItems.push(item)
+            detailedQoute.push(qouteItemsDetails)
+        }
+
+        let savedLogistics = new SelectRequest()
+
+        savedLogistics.transactionId = selectData.context.transaction_id
+        savedLogistics.packaging = "0"//TODO: select packaging option
+        savedLogistics.providerId = "0"//TODO: select from items provider id
+        savedLogistics.selectedLogistics = logisticProvider
+
+        await savedLogistics.save();
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
+                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        //added delivery charges in total price
+        totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
+
+        let fulfillments = [
+            {
+                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
+                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
+                "tracking": false,
+                "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
+                "@ondc/org/TAT": "PT45M",
+                "provider_id": logisticProvider.context.bpp_id,
+                "state":
+                    {
+                        "descriptor":
+                            {
+                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name
+                            }
+                    }, end: selectData.message.order.fulfillments[0].end
+            }]
+
+        //update fulfillment
+        selectData.message.order.fulfillments = fulfillments
+
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        const productData = await getSelect({
+            qouteItems: qouteItems,
+            order: selectData.message.order,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: selectData.context
+        });
+
+        return productData
+    }
+
 }
 
-module.exports = CategoryService;
+module.exports = ProductService;

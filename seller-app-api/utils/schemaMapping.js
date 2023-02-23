@@ -1,4 +1,5 @@
 const config = require("../lib/config");
+const logger = require("../lib/logger");
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
@@ -89,6 +90,8 @@ exports.getProducts = async (data) => {
 
 exports.getSelect = async (data) => {
 
+    logger.log('info', `[Schema mapping ] build retail select request from :`, data);
+
     let productAvailable = []
     //set product items to schema
 
@@ -111,6 +114,8 @@ exports.getSelect = async (data) => {
             }
         }
     }
+
+    logger.log('info', `[Schema mapping ] after build retail select request :`, schema);
 
     return schema
 
@@ -154,12 +159,122 @@ exports.getInit = async (data) => {
     return schema
 
 }
+
+exports.getStatus = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    // console.log("data.message.order.provider",data.message.order)
+    // console.log("data.message.order.provider_location",data.message.order.provider_location)
+    // console.log("data.message.order.billing",data.message.order.billing)
+    // console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    // console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_status'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "order": {
+                "provider":{"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"}, //TODO: map to strapi
+                "state":data.updateOrder.state,
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment,
+                 "id" :  data.updateOrder.id
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+
+exports.getCancel = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    // console.log("data.message.order.provider",data.message.order)
+    // console.log("data.message.order.provider_location",data.message.order.provider_location)
+    // console.log("data.message.order.billing",data.message.order.billing)
+    // console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    // console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_cancel'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "order": {
+                "provider":{"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"}, //TODO: map to strapi
+                "state":data.updateOrder.state,
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment,
+                "id" :  data.updateOrder.id
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+
+exports.getTrack = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_track'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "tracking":
+                    data.logisticData.message.tracking
+
+        }
+    }
+    return schema
+
+}
+exports.getSupport = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_support'
+    const schema = {
+        "context": {...context},
+        "message":  data.logisticData.message
+
+    }
+    return schema
+
+}
 exports.getConfirm = async (data) => {
 
     let productAvailable = []
     //set product items to schema
 
-    console.log("data.message.order.provider",data.message.order)
+    console.log("data.message.order.provider",data.message.order.order_id)
     console.log("data.message.order.provider_location",data.message.order.provider_location)
     console.log("data.message.order.billing",data.message.order.billing)
     console.log("data.message.order.fulfillments",data.message.order.fulfillments)
@@ -172,8 +287,9 @@ exports.getConfirm = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "id":data.message.order.id,
-                "provider":data.message.order.provider,
+                "id":data.message.order.order_id,
+                "state":"Created",
+                "provider": {"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"},
                 "provider_location": data.message.order.provider_location,
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,

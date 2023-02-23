@@ -1,0 +1,54 @@
+doctype html
+html(lang='en')
+  head
+  body
+    .main-container(style='margin:0 auto; max-width:100%;')
+      table(style='border-collapse: collapse; border-spacing: 0; width: 100%; background: white;', cellspacing='0', cellpadding='0', border='0', align='center')
+        tbody
+          tr
+            td
+              img(alt='artifex', style='border: none; padding: 10px; margin-left: 20px; height: 65px', src='' + logo, border='0')
+          tr
+            td
+              table(style='font-family: sans-serif; font-size: 14px; color: #2b2c34; line-height: 24px;  border-collapse: collapse; width: 100%;', cellspacing='0', cellpadding='0', border='0', align='left')
+                tbody
+                  tr
+                    td(style='width: 20px')
+                    td(style='border-top: 1px solid #ED3237; border-bottom: 1px solid #ED3237; padding-top: 30px; padding-bottom: 30px', align='left')
+                      | Hi there,
+                      p
+                        b Exception occured in Artifex at:
+                      p #{exceptionOccuredAt}
+                      b Request
+                      br
+                      p
+                        b Hostname
+                        code  #{hostname}
+                      p
+                        b Method
+                        code  #{method}
+                      p
+                        b Path
+                        code  #{path}
+                      b Body
+                      pre #{body}
+                      b Root cause:
+                      p #{err}
+                      b Exception stack trace:
+                      pre #{stackTrace}
+          tr(style='height: 30px')
+          tr
+            td(style='font-size: 14px ; font-family: sans-serif; color: #2b2c34', align='center')
+              p(style='font-weight: 500;')
+                a(style='color: #ED3237', href='http://www.artifex.com/', target='_other', rel='nofollow')
+                  | www.artifex.com
+          tr
+            td(style='font-size: 15px ; font-family: sans-serif ; color: #aaaaaa', align='center')
+              a(href='http://www.artifex.com/', style='color: #aaaaaa; margin: 0 7px;', target='_other', rel='nofollow')
+                | About Us
+              |                 |
+              a(href='http://www.artifex.com/', style='color: #aaaaaa; margin: 0 7px;', target='_other', rel='nofollow')
+                | Terms and Conditions
+              |                 |
+              a(href='http://www.artifex.com/', style='color: #aaaaaa; margin: 0 7px;', target='_other', rel='nofollow')
+                | Privacy Policy

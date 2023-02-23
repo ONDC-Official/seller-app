@@ -7,7 +7,7 @@ var app = require('../app');
 var debug = require('debug')('genA-sdk:server');
 var http = require('http');
 var config = require('../lib/config');
-// var {sequelize} = require('../models');
+var {sequelize} = require('../models');
 var bootstrapData = require('../lib/bootstrap').default;
 
 
@@ -32,7 +32,7 @@ var server = http.createServer(app);
 /**
  * Let sequalize synchronize the database
  */
-// sequelize.sync().then(function () {
+sequelize.sync().then(function () {
      /**
      * Listen on provided port, on all network interfaces.
      */
@@ -47,7 +47,7 @@ var server = http.createServer(app);
 //      */
 //     bootstrapData();
 //
-// });
+});
 
 /**
  * Normalize a port into a number, string, or false.

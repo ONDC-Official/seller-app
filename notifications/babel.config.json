@@ -1,0 +1,14 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        },
+        "useBuiltIns": "entry"
+      }
+    ]
+  ],
+  "plugins": ["@babel/plugin-transform-modules-commonjs"]
+}
