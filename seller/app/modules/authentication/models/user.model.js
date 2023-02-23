@@ -7,15 +7,9 @@ const userSchema = new mongoose.Schema({ //Users who has login ability should go
         required:true,
         default: () => uuid(),
     },
-    firstName: {
+    name: {
         type: String,
         required: true,
-    },
-    middleName: {
-        type: String,
-    },
-    lastName: {
-        type: String,
     },
     mobile: {
         type: String,
@@ -37,6 +31,7 @@ const userSchema = new mongoose.Schema({ //Users who has login ability should go
         default:true
     },
     role: { type: String, ref: 'Role' },
+    organization: { type: String, ref: 'Organization' },
     isSystemGeneratedPassword: {
         type: Boolean,
         default:true

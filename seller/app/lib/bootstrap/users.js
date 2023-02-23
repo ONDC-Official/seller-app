@@ -3,9 +3,7 @@ const env = process.env.NODE_ENV || 'development'; // By default development env
 // default users fordevelopment and staging/production environment
 const users = (env === 'development') ? [
     {
-        "firstName": "Abhinandan",
-        "middleName": "Ashok",
-        "lastName": "Satpute",
+        "name": "Abhinandan",
         "username": "sa@mailinator.com",
         "email": "sa@mailinator.com",
         "roleName": 'Super Admin',
@@ -18,9 +16,7 @@ const users = (env === 'development') ? [
     }
 ] : [
     {
-        "firstName": "Abhinandan",
-        "middleName": "Ashok",
-        "lastName": "Satpute",
+        "name": "Abhinandan",
         "username": "sa@mailinator.com",
         "email": "sa@mailinator.com",
         "roleName": 'Super Admin',

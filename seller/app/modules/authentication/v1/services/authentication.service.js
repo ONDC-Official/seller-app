@@ -17,7 +17,7 @@ class AuthenticationService {
             //find user with email
             data.email = data.email.toLowerCase();
 
-            let currentUser = await User.findOne({email:data.email},{enabled:0}).populate('role');
+            let currentUser = await User.findOne({email:data.email},{enabled:0}).populate([{path:'role'},{path:'organization'}]);
             if (!currentUser) {
                 throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
             }

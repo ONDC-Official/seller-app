@@ -7,8 +7,9 @@ import {
 } from '../../../../lib/errors/index';
 import { v1 as uuidv1 } from 'uuid';
 import User from '../../models/user.model';
+import Role from '../../models/role.model';
 import Organization from '../../models/organization.model';
-//import ServiceApi from '../../../../lib/utils/serviceApi';
+import ServiceApi from '../../../../lib/utils/serviceApi';
 import s3 from '../../../../lib/utils/s3Utils'
 class UserService {
     /**
@@ -31,6 +32,9 @@ class UserService {
             data.email = data.email.toLowerCase()
             const password = data.password;
             console.log(`password-${password}`);
+
+            let role = await Role.findOne({name:data.role});
+
             data.password = await encryptPIN('' + data.password);
             data.enabled = true;
             data.lastLoginAt = null;
@@ -38,14 +42,12 @@ class UserService {
             data.createdAt = Date.now();
             data.updatedAt = Date.now();
             let user = new User();
-            user.organizations = data.organizationId
-            user.firstName = data.firstName; 
-            user.lastName = data.lastName;
-            user.middleName = data.middleName;
+            user.organization = data.organization
+            user.name = data.name;
             user.mobile = data.mobile;
             user.email = data.email; 
             user.password = data.password;
-            user.role=data.roleId
+            user.role=role._id
             let savedUser =  await user.save();
             //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
             let mailData = { temporaryPassword: password, user: data};
@@ -58,14 +60,70 @@ class UserService {
             // };
 
 
-            // ServiceApi.sendEmail(
-            //     {
-            //         receivers: [data.email],
-            //         template: 'SIGN_UP',
-            //         data: mailData,
-            //     },
-            //     user, null
-            // );
+            ServiceApi.sendEmail(
+                {
+                    receivers: [data.email],
+                    template: 'SIGN_UP',
+                    data: mailData,
+                },
+                user, null
+            );
+
+
+            return savedUser;
+        } catch (err) {
+            if (err.statusCode === 404)
+                throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
+            throw err;
+        }
+    }
+
+    async invite(data) {
+        try {
+
+            console.log("data to bootstrap--->",data);
+            // Find user by email or mobile
+            let query = { email:data.email};
+            let userExist = await User.findOne(query);
+            if (userExist) {
+                throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
+            }
+            if (!data.password)
+                data.password = Math.floor(100000 + Math.random() * 900000);
+
+
+            let role = await Role.findOne({name:"Super Admin"});
+            data.email = data.email.toLowerCase()
+            const password = data.password;
+            console.log(`password-${password}`);
+            data.password = await encryptPIN('' + data.password);
+            data.enabled = true;
+            data.lastLoginAt = null;
+            data.id = uuidv1();
+            data.createdAt = Date.now();
+            data.updatedAt = Date.now();
+            let user = new User();
+            user.organizations = data.organizationId
+            user.name = data.name;
+            user.mobile = data.mobile;
+            user.email = data.email;
+            user.password = data.password;
+            user.role=role._id
+            let savedUser =  await user.save();
+            //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
+            let mailData = { temporaryPassword: password, user: data};
+
+            console.log("mailData------>",mailData)
+
+
+            ServiceApi.sendEmail(
+                {
+                    receivers: [data.email],
+                    template: 'SIGN_UP',
+                    data: mailData,
+                },
+                user, null
+            );
 
 
             return savedUser;
@@ -187,7 +245,10 @@ class UserService {
                 query.mobile = { $regex: queryData.mobile, $options: 'i' };
             }
             const users = await User.find(query,{password:0}).populate('role').sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
-            return users;
+
+            const count = await User.count(query);
+
+            return {count:count,data:users};
 
         } catch (err) {
             throw err;

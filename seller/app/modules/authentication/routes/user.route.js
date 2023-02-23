@@ -13,18 +13,27 @@ const authController = new AuthenticationController();
 // router.use('/auth', authentication.middleware());
 
 router.post('/v1/users/create',
+    authentication.middleware(),
     userController.create
 );
 
+router.post('/v1/users/invite/admin',
+    authentication.middleware(),
+    userController.invite
+);
+
 router.get('/v1/users/:userId',
+    authentication.middleware(),
     userController.getUsersById
 );
 
 router.get('/v1/users',
+    authentication.middleware(),
     userController.getUsers
 );
 
 router.get('/v1/upload/:category',
+    authentication.middleware(),
     userController.upload
 );
 

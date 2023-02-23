@@ -24,6 +24,20 @@ class UserController {
         }
     }
 
+    async invite(req, res, next) {
+        try {
+
+            console.log("user data------------------",req.body);
+            const data = req.body;
+            const user = await userService.invite(data);
+            return res.send(user);
+
+        } catch (error) {
+            console.log('[userController] [createUser] Error -', error);
+            next(error);
+        }
+    }
+
     /**
    * Update user
    * @param {*} req    HTTP request object
