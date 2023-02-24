@@ -60,7 +60,7 @@ class OrganizationService {
             };
             return organizationData;
         } catch (err) {
-            console.log('[OrganizationService] [getAll] Error in getting all organization ',err);
+            console.log('[ProductService] [getAll] Error in getting all organization ',err);
             throw err;
         }
     }

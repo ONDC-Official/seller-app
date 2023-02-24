@@ -17,7 +17,7 @@ class OrganizationController {
             return res.send(organization);
 
         } catch (error) {
-            console.log('[OrganizationController] [create] Error -', error);
+            console.log('[ProductController] [create] Error -', error);
             next(error);
         }     
     }
@@ -39,7 +39,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[OrganizationController] [list] Error -', error);
+            console.log('[ProductController] [list] Error -', error);
             next(error);
         }
     }
@@ -57,7 +57,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[OrganizationController] [get] Error -', error);
+            console.log('[ProductController] [get] Error -', error);
             next(error);
         }
     }
@@ -70,7 +70,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[OrganizationController] [get] Error -', error);
+            console.log('[ProductController] [get] Error -', error);
             next(error);
         }
     }
@@ -82,7 +82,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[OrganizationController] [get] Error -', error);
+            console.log('[ProductController] [get] Error -', error);
             next(error);
         }
     }

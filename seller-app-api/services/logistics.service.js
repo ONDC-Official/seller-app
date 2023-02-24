@@ -4,8 +4,6 @@ import HttpRequest from "../utils/HttpRequest";
 import {getProducts, getSelect, getInit, getConfirm,getTrack,getSupport} from "../utils/schemaMapping";
 import {sequelize, Sequelize,InitRequest, ConfirmRequest, SelectRequest} from '../models'
 
-const strapiAccessToken = config.get("strapi").apiToken
-const strapiURI = config.get("strapi").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 const sellerPickupLocation = config.get("sellerConfig").sellerPickupLocation

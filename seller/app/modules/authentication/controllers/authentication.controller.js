@@ -12,6 +12,7 @@ class AuthenticationController {
    **/
     login(req, res, next) {
         const data = req.body;
+
         authenticationService
             .login(req.user, data)
             .then(({ user, token }) => {

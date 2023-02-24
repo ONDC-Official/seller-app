@@ -35,7 +35,8 @@ class AuthenticationService {
             const tokenPayload = {
                 user: {
                     id: currentUser.id,
-                    role:currentUser.role
+                    role:currentUser.role,
+                    organization:currentUser?.organization?._id
                 },
                 lastLoginAt: loginTimestamp,
             };
