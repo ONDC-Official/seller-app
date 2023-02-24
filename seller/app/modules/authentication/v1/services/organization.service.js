@@ -87,6 +87,11 @@ class OrganizationService {
 
                     let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
                     doc.GSTN.proof =GSTN
+
+                    if(doc.storeDetails){
+                        let logo = await s3.getSignedUrlForRead({path:doc.storeDetails?.logo});
+                        doc.storeDetails.logo =logo
+                    }
                 }
 
                 return {user:user,providerDetail:doc};
