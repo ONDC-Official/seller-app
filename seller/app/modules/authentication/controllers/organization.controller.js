@@ -62,6 +62,31 @@ class OrganizationController {
         }
     }
 
+    async setStoreDetails(req, res, next) {
+        try {
+            const params = req.params;
+            const data = req.body;
+            const organizations = await organizationService.setStoreDetails(params.id,data);
+            return res.send(organizations);
+
+        } catch (error) {
+            console.log('[OrganizationController] [get] Error -', error);
+            next(error);
+        }
+    }
+    async getStoreDetails(req, res, next) {
+        try {
+            const params = req.params;
+            const data = req.body;
+            const organizations = await organizationService.getStoreDetails(params.organizationId,data);
+            return res.send(organizations);
+
+        } catch (error) {
+            console.log('[OrganizationController] [get] Error -', error);
+            next(error);
+        }
+    }
+
 }
 
 export default OrganizationController;

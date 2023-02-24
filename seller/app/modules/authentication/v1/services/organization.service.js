@@ -8,6 +8,7 @@ import {
     DuplicateRecordFoundError,
     BadRequestParameterError,
 } from '../../../../lib/errors';
+import s3 from "../../../../lib/utils/s3Utils";
 
 //import axios from 'axios';
 //import ServiceApi from '../../../../lib/utils/serviceApi';
@@ -66,15 +67,67 @@ class OrganizationService {
 
     async get(organizationId) {
         try {
-            let organization = await Organization.findOne({_id:organizationId}).lean();
+            let doc = await Organization.findOne({_id:organizationId}).lean();
 
-            console.log("organization----->",organization)
+            //console.log("organization----->",organization)
             let user = await User.findOne({organization:organizationId},{password:0})
-            if (organization) {
-                return {user:user,providerDetail:organization};
+            if (doc) {
+                {
+                    let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
+                    doc.idProof =idProof
+
+                    let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
+                    doc.addressProof =addressProof
+
+                    let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
+                    doc.bankDetails.cancelledCheque =cancelledCheque
+
+                    let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
+                    doc.PAN.proof =PAN
+
+                    let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
+                    doc.GSTN.proof =GSTN
+                }
+
+                return {user:user,providerDetail:doc};
             } else {
                 throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
             }
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
+    async setStoreDetails(organizationId,data) {
+        try {
+            let organization = await Organization.findOne({_id:organizationId})//.lean();
+            if (organization) {
+                organization.storeDetails =data;
+                organization.save();
+            } else {
+                throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
+            }
+            return data;
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
+    async getStoreDetails(organizationId,data) {
+        try {
+            let organization = await Organization.findOne({_id:organizationId},{storeDetails:1}).lean();
+            if (organization) {
+
+                let logo = await s3.getSignedUrlForRead({path:organization?.storeDetails?.logo});
+                organization.storeDetails.logo =logo
+
+                return organization;
+            } else {
+                throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
+            }
+
         } catch (err) {
             console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
             throw err;

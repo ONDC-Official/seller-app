@@ -29,6 +29,36 @@ module.exports = {
             }
         });
     },
+    setStoreDetails:()=>{
+        return Joi.object({
+            categories: Joi.array(),
+            logo: Joi.string(),
+            location: {lat:Joi.number(),long:Joi.number()},
+            locationAvailabilityPANIndia:Joi.boolean(),
+            city:Joi.array(),
+            defaultCancellable:Joi.boolean(),
+            defaultReturnable:Joi.boolean(),
+            supportDetails:{
+                email:Joi.string(),
+                mobile:Joi.string()
+            }
+        });
+    },
+    updateStoreDetails:()=>{
+        return Joi.object({
+            categories: Joi.array(),
+            logo: Joi.string(),
+            location: {lat:Joi.number(),long:Joi.number()},
+            locationAvailabilityPANIndia:Joi.boolean(),
+            city:Joi.array(),
+            defaultCancellable:Joi.boolean(),
+            defaultReturnable:Joi.boolean(),
+            supportDetails:{
+            email:Joi.string(),
+                mobile:Joi.string()
+            }
+        });
+    },
     get:()=>{
         return Joi.object({
             organizationId: Joi.string().guid({
@@ -36,6 +66,15 @@ module.exports = {
             }),
         });
     },
+    
+    getStoreDetails:()=>{
+        return Joi.object({
+            organizationId: Joi.string().guid({
+                version: ['uuidv4']
+            }),
+        });
+    },
+    
     list:()=>{
         return Joi.object({
             name:Joi.string().empty(''),

@@ -17,7 +17,7 @@ class AuthenticationService {
             //find user with email
             data.email = data.email.toLowerCase();
 
-            let currentUser = await User.findOne({email:data.email},{enabled:0}).populate([{path:'role'},{path:'organization'}]);
+            let currentUser = await User.findOne({email:data.email},{enabled:0}).populate([{path:'role'},{path:'organization',select:['name','_id','storeDetails']}]);
             if (!currentUser) {
                 throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
             }
@@ -34,7 +34,8 @@ class AuthenticationService {
             // JWT token payload object
             const tokenPayload = {
                 user: {
-                    id: currentUser.id
+                    id: currentUser.id,
+                    role:currentUser.role
                 },
                 lastLoginAt: loginTimestamp,
             };
