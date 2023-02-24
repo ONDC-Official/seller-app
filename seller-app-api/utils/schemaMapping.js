@@ -12,23 +12,23 @@ exports.getProducts = async (data) => {
         let item =  {
             "id": items.id,
             "descriptor": {
-                "name": items.attributes.name,
+                "name": items.productName,
                 "symbol": "https://awstoazures3.blob.core.windows.net/signcatch-master/production/products/images/10997/1629350300589Oshon-Coffee-Star-Jar-jpg",
-                "short_desc": items.attributes.description,
-                "long_desc": items.attributes.description,
+                "short_desc": items.description,
+                "long_desc": items.longDescription,
                 "images": [
                     "https://awstoazures3.blob.core.windows.net/signcatch-master/production/products/images/10997/1629350300589Oshon-Coffee-Star-Jar-jpg"
                 ]
             },
             "price": {
                 "currency": "INR",
-                "value":  items.attributes.price
+                "value":  items.MRP
             },
-            "location_id": "8fdd9880-3d0c-444a-8038-fb98ec65f7b6",
+            "location_id": "8fdd9880-3d0c-444a-8038-fb98ec65f7b6", //TODO: FIX
             "matched": true,
-            "@ondc/org/returnable":  items.attributes?.isReturnable??false,
-            "@ondc/org/cancellable":  items.attributes?.isCancellable??false,
-            "@ondc/org/available_on_cod": true,
+            "@ondc/org/returnable":  items.isReturnable??false,
+            "@ondc/org/cancellable":  items.isCancellable??false,
+            "@ondc/org/available_on_cod": items.availableOnCod,
             "@ondc/org/time_to_ship": "PT48H"
         }
         productAvailable.push(item)
@@ -44,6 +44,21 @@ exports.getProducts = async (data) => {
         "context": {...context},
         "message": {
             "catalog": {
+                "bpp/fulfillments":
+                    [
+                        {
+                            "id":"1",
+                            "type":"Delivery"
+                        },
+                        {
+                            "id":"2",
+                            "type":"Self-Pickup"
+                        },
+                        {
+                            "id":"3",
+                            "type":"Delivery and Self-Pickup"
+                        }
+                    ],
                 "bpp/descriptor": {
                     "name": "Bech",
                     "symbol": "https://uploads-ssl.webflow.com/5f5b3175374e04e897cf2a3d/5f5b3175374e04ade4cf2b56_bechbrand.svg",

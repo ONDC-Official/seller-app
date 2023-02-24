@@ -4,8 +4,7 @@ import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
 import logger from "../lib/logger";
 
 var config = require('../lib/config');
-const strapiAccessToken = config.get("strapi").apiToken
-const strapiURI = config.get("strapi").serverUrl
+const serverUrl = config.get("seller").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
@@ -15,8 +14,8 @@ class ProductService {
 
         let headers = {};
         let httpRequest = new HttpRequest(
-            strapiURI,
-            '/api/products',
+            serverUrl,
+            '/api/v1/products/search',
             'get',
             {},
             headers
@@ -37,8 +36,8 @@ class ProductService {
         let headers = {};
 
         let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/products?filters[name][$eq]=${searchProduct}`, //TODO: allow $like query
+            serverUrl,
+            `/api/v1/products/search`, //TODO: allow $like query
             'get',
             {},
             headers
@@ -73,7 +72,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -186,7 +185,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -259,7 +258,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -317,7 +316,7 @@ class ProductService {
 
             }
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/order-items`,
                 'POST',
                 {data: productItems},
@@ -337,7 +336,7 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders`,
             'POST',
             {data: confirmData},
@@ -367,7 +366,7 @@ class ProductService {
         return 0/3;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/products/${id}`,
             'get',
             {},
@@ -385,7 +384,7 @@ class ProductService {
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders?populate[0]=order_items&populate[1]=order_items.product`,
             'get',
             {},
@@ -403,7 +402,7 @@ class ProductService {
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders/${id}?populate[0]=order_items&populate[1]=order_items.product`,
             'get',
             {},
@@ -422,7 +421,7 @@ class ProductService {
 
         console.log(data)
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/products/${id}`,
             'put',
             {data: data},
@@ -442,7 +441,7 @@ class ProductService {
         console.log(data);
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             '/api/products',
             'post',
             {data},
@@ -477,7 +476,7 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders?filters[order_id][$eq]=${statusRequest.message.order_id}`,
             'GET',
             {},
@@ -494,7 +493,7 @@ class ProductService {
 
         //update order level state
         httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders/${result.data.data[0].id}`,
             'PUT',
             {data:updateOrder},
@@ -533,7 +532,7 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders?filters[order_id][$eq]=${cancelRequest.message.order_id}`,
             'GET',
             {},
@@ -550,7 +549,7 @@ class ProductService {
 
         //update order level state
         httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders/${result.data.data[0].id}`,
             'PUT',
             {data:updateOrder},
@@ -611,7 +610,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -670,7 +669,7 @@ class ProductService {
                 value: item.price.value
             }
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/order-items`,
                 'POST',
                 {data: productItems},
@@ -692,7 +691,7 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders`,
             'POST',
             {data: confirmData},
@@ -761,7 +760,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -873,7 +872,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
