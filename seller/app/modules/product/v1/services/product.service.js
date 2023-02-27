@@ -63,9 +63,20 @@ class ProductService {
         }
     }
 
-    async get(organizationId) {
+    async get(productId) {
         try {
-            let doc = await Product.findOne({_id:organizationId}).lean();
+            let doc = await Product.findOne({_id:productId}).lean();
+            return doc;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
+    async update(productId,data) {
+        try {
+            let doc = await Product.findOneAndUpdate({_id:productId},data)//.lean();
             return doc;
 
         } catch (err) {

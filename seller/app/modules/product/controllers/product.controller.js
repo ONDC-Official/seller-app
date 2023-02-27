@@ -58,6 +58,18 @@ class ProductController {
         }
     }
 
+    async update(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.update(params.productId,req.body);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[ProductController] [get] Error -', error);
+            next(error);
+        }
+    }
+
     async uploadTemplate(req, res, next) {
         try {
 
