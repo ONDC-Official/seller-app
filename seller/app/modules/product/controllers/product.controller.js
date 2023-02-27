@@ -1,5 +1,5 @@
 import ProductService from '../v1/services/product.service';
-
+var XLSX = require('xlsx')
 const productService = new ProductService();
 
 class ProductController {
@@ -51,6 +51,48 @@ class ProductController {
             const params = req.params;
             const product = await productService.get(params.organizationId);
             return res.send(product);
+
+        } catch (error) {
+            console.log('[ProductController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async uploadTemplate(req, res, next) {
+        try {
+
+            const file = `app/modules/product/template/template.xlsx`;
+            return res.download(file);
+
+        } catch (error) {
+            console.log('[ProductController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async uploadCatalog(req, res, next) {
+        try {
+
+            let path = req.file.path;
+            var workbook = XLSX.readFile(path);
+            var sheet_name_list = workbook.SheetNames;
+            let jsonData = XLSX.utils.sheet_to_json(
+                workbook.Sheets[sheet_name_list[0]]
+            );
+            if (jsonData.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "xml sheet has no data",
+                });
+            }else{
+                for(const row of jsonData){
+                    await productService.create(row);
+                }
+            }
+
+            // const params = req.params;
+            // const product = await productService.get(params.organizationId);
+           return res.send({});
 
         } catch (error) {
             console.log('[ProductController] [get] Error -', error);

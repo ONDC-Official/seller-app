@@ -20,21 +20,20 @@ const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
     //TODO: Use Axios to send http request
     try {
 
-        console.log('data-------myBucket-----region-',myBucket);
-        console.log('data-------myBucket-----version-',version);
+        let orgId = '';
+        if(data.organizationId){
+            orgId = data.organizationId;
+        }else{
+            orgId = data.currentUser.organization;
+        }
 
-        console.log('data-------------',data);
-        console.log('data-------myBucket------',myBucket);
-        // console.log("data-------myBucket-----s3-",s3);
-
-        const myKey = data.path+'/' + uuidv4() + data?.fileType?.replace(/^\.?/, '.');
+        const myKey = orgId+'/'+data.path+'/' + data?.fileName + data?.fileType?.replace(/^\.?/, '.');
         const params = {
             Bucket: myBucket,
             Key: myKey,
             Expires: signedUrlExpireSeconds
         };
 
-        console.log('params------------->',params);
 
         return await new Promise(
             (resolve, reject) =>
@@ -55,12 +54,7 @@ const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
                     }
                 }));
 
-        console.log('params---------signedUrl---->');
-        //
-        // return signedUrl;
     } catch (err) {
-        console.log('params---------err---->',err);
-
         return err;
     }
 };
@@ -70,8 +64,6 @@ exports.getSignedUrlForUpload = getSignedUrlForUpload(s3,myBucket);
 exports.getSignedUrlForRead = async(data) => {
     //TODO: Use Axios to send http request
     try {
-        console.log('data-------------',data);
-
         let myKey = data.path;
 
         const params = {

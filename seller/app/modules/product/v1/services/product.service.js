@@ -13,10 +13,10 @@ class ProductService {
         try {
             let query = {};
 
-            const organizationExist = await Product.findOne({productName:data.productName});
-            if (organizationExist) {
-                throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
-            }
+            // const organizationExist = await Product.findOne({productName:data.productName});
+            // if (organizationExist) {
+            //     throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
+            // }
             let product = new Product(data);
             let savedProduct= await product.save();
 

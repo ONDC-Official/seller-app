@@ -279,8 +279,8 @@ class UserService {
         }
     }
 
-    async upload(path, fileType) {
-            return await s3.getSignedUrlForUpload({ path, fileType });
+    async upload(currentUser, path, body) {
+            return await s3.getSignedUrlForUpload({ path, ...body,currentUser });
     }
 
 }

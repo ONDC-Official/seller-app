@@ -111,9 +111,11 @@ class UserController {
 
     async upload(req, res, next) {
         try {
+            const currentUser=req.user;
             const result = await userService.upload(
+                currentUser,
                 `${req.params.category}`,
-                req.body.fileType
+                req.body
             );
             res.json(result);
         } catch (e) {
