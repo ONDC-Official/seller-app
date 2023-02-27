@@ -35,7 +35,7 @@ router.get('/v1/users',
     userController.getUsers
 );
 
-router.get('/v1/upload/:category',
+router.post('/v1/upload/:category',
     authentication.middleware(),
     userController.upload
 );
