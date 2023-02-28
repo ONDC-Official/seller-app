@@ -34,7 +34,7 @@ class AuthenticationService {
             // JWT token payload object
             const tokenPayload = {
                 user: {
-                    id: currentUser.id,
+                    id: currentUser._id,
                     role:currentUser.role,
                     organization:currentUser?.organization?._id
                 },
