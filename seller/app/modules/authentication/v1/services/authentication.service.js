@@ -45,10 +45,10 @@ class AuthenticationService {
             delete currentUser.password;
 
             if(currentUser.organization ){
-                if(currentUser.organization.storeDetails.supportDetails){
+                if(currentUser.organization?.storeDetails?.supportDetails){
                     currentUser.organization.storeDetailsAvailable = true
                 }else{
-                    currentUser.organization.storeDetailsAvailable = true
+                    currentUser.organization.storeDetailsAvailable = false
                 }
                delete currentUser.organization.storeDetails
             }

@@ -30,11 +30,11 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         default:Date.now()
     },
     storeDetails:{
-        categories: {type:Array},
+        categories: {type:Object},
         logo: {type:String},
         location: {lat:{type:Number},long:{type:Number}},
         locationAvailabilityPANIndia:{type:Boolean},
-        city:{type:Array},
+        city:{type:Object},
         defaultCancellable:{type:Boolean},
         defaultReturnable:{type:Boolean},
         supportDetails:{

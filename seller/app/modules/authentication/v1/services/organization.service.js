@@ -125,8 +125,12 @@ class OrganizationService {
             let organization = await Organization.findOne({_id:organizationId},{storeDetails:1}).lean();
             if (organization) {
 
-                let logo = await s3.getSignedUrlForRead({path:organization?.storeDetails?.logo});
-                organization.storeDetails.logo =logo
+                if(organization?.storeDetails){
+                    let logo = await s3.getSignedUrlForRead({path:organization?.storeDetails?.logo});
+                    organization.storeDetails.logo =logo
+                }else{
+                    organization.storeDetails = {}
+                }
 
                 return organization;
             } else {
