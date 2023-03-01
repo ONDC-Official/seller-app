@@ -23,6 +23,7 @@ class ProductController {
             const query = req.query;
             query.offset = parseInt(query.offset);
             query.limit = parseInt(query.limit);
+            query.organization = req.user.organization;
             const products = await productService.list(query);
             return res.send(products);
 
