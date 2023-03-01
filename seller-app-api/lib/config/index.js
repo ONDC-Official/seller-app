@@ -30,10 +30,8 @@ if (env !== 'development') {
 //     nconf.set('express:port', process.env.PORT);
 
     nconf.set('firebase:account', process.env.FIREBASE_SERVICE_ACCOUNT_JSON_PATH);
-    nconf.set('strapi:serverUrl', process.env.STRAPI_SERVER_URL);
-    nconf.set('strapi:apiToken', process.env.STRAPI_API_TOKEN);
-    nconf.set('strapi:apiToken', process.env.STRAPI_API_TOKEN);
     nconf.set('sellerConfig:BPP_URI', process.env.BPP_URI);
+    nconf.set('seller:serverUrl', process.env.SELLER_SERVER_URL);
     nconf.set('sellerConfig:BPP_ID', process.env.BPP_ID);
     nconf.set('sellerConfig:BAP_URI', process.env.BAP_ID);
     nconf.set('sellerConfig:BAP_ID', process.env.BAP_URI);

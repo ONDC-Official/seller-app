@@ -12,7 +12,7 @@ exports.getProducts = async (data) => {
         let productAvailable = []
         for(let items of org.items){
             let item =  {
-                "id": items.id,
+                "id": items._id,
                 "descriptor": {
                     "name": items.productName,
                     "symbol": items.images[0],
