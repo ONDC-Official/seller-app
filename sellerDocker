@@ -6,12 +6,12 @@ LABEL com.centurylinklabs.watchtower.enable="false"
 WORKDIR /usr/src/app
 
 #COPY ./package*.json ./
-COPY ./seller-app/ .
+COPY ./seller/ .
 
 ENV NODE_ENV production
 
 RUN npm install
-RUN npm run build
+#RUN npm run build
 
 
 ENV NODE_ENV production
