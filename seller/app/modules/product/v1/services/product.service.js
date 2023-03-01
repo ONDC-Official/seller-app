@@ -1,12 +1,14 @@
 import { v1 as uuidv1 } from 'uuid';
 import MESSAGES from '../../../../lib/utils/messages';
 import Product from '../../models/product.model';
+import Organization from '../../../authentication/models/organization.model';
 import {
     NoRecordFoundError,
     DuplicateRecordFoundError,
     BadRequestParameterError,
 } from '../../../../lib/errors';
 import s3 from "../../../../lib/utils/s3Utils";
+import {Organizations} from "aws-sdk";
 
 class ProductService {
     async create(data) {
@@ -50,12 +52,17 @@ class ProductService {
         try {
             let query={};
 
-            const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
-            const count = await Product.count(query)
-            let products={
-                count,
-                data
-            };
+            const orgs = await Organization.find({},{storeDetails:1,_id:1,name:1}).lean();
+            let products = [];
+            for(const org of orgs){
+                query.organization = org._id
+                const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
+                if(data.length>0){
+                    org.items = data
+                    products.push(org);
+                }
+            }
+            //collect all store details by
             return products;
         } catch (err) {
             console.log('[ProductService] [getAll] Error in getting all from organization ',err);

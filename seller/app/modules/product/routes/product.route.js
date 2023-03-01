@@ -40,6 +40,11 @@ router.get('/v1/products/:productId',
     productController.get,
 );
 
+router.get('/v1/products/:productId/ondcGet',
+    apiParamsValidator.middleware({ schema: productSchema.get() }),
+    productController.get,
+);
+
 router.post('/v1/products/upload/bulk',
     authentication.middleware(),
     upload.single("xlsx"),

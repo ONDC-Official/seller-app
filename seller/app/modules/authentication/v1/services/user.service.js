@@ -234,19 +234,52 @@ class UserService {
         try {
             //building query            
             let query = {};
-            query.organizationId = organizationId;
-            if(queryData.firstName){
-                query.firstName = { $regex: queryData.firstName, $options: 'i' };
-            }
-            if(queryData.email){
-                query.email = { $regex: queryData.email, $options: 'i' };
-            }
-            if(queryData.mobile){
-                query.mobile = { $regex: queryData.mobile, $options: 'i' };
-            }
-            const users = await User.find(query,{password:0}).populate('role').sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
+            // query.organizationId = organizationId;
+            // if(queryData.role){
+            //     query.role = 'Super Admin';
+            // }
+            //{path: 'path',select : ['fields'],match:query}
+            //const users = await User.find(query,{password:0}).populate({path: 'role',match: {name:queryData.role}}).sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
 
-            const count = await User.count(query);
+            let userQuery ={role:{$ne:[]}};
+            let roleQuery ={ name:queryData.role};
+            const users = await User.aggregate([
+                {
+                    '$lookup':{
+                        'from':'roles',
+                        'localField':'role',
+                        'foreignField':'_id',
+                        'as': 'role',
+                        'pipeline':[{'$match':roleQuery}]
+                    }
+                },{
+                    '$match':userQuery,
+                },
+            ]).sort({createdAt:1}).limit(queryData.limit).skip(queryData.offset);
+
+
+            const usersCount = await User.aggregate([
+                {
+                    '$lookup':{
+                        'from':'roles',
+                        'localField':'role',
+                        'foreignField':'_id',
+                        'as': 'role',
+                        'pipeline':[{'$match':roleQuery}]
+                    }
+                },{
+                    '$match':userQuery,
+                },
+            ]).count('count');
+
+            let count;
+            if(usersCount && usersCount.length > 0){
+                count = usersCount[0].count;
+            }else{
+                count = 0;
+            }
+
+            //const count = await User.count(query);
 
             return {count:count,data:users};
 

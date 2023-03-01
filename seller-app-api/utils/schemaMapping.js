@@ -6,32 +6,127 @@ const BPP_URI = config.get("sellerConfig").BPP_URI
 
 exports.getProducts = async (data) => {
 
-    let productAvailable = []
-    for(let items of data?.data?.data){
+    let bppDetails ={}
+    let bppProviders =[]
+    for(const org of data?.data){
+        let productAvailable = []
+        for(let items of org.items){
+            let item =  {
+                "id": items.id,
+                "descriptor": {
+                    "name": items.productName,
+                    "symbol": items.images[0],
+                    "short_desc": items.description,
+                    "long_desc": items.longDescription,
+                    "images": items.images
+                },
+                "price": {
+                    "currency": "INR",
+                    "value":  items.MRP,
+                    "maximum_value": items.MRP
+                },
+                "quantity": {
+                    "available": {
+                        "count": items.quantity
+                    },
+                    "maximum": {
+                        "count": items.maxAllowedQty
+                    }
+                },
+                "category_id": items.productCategory,
+                "location_id": org.storeDetails.location._id,
+                "fulfillment_id": org.storeDetails.location._id,//TODO: following shoplyst
+                "matched": true,
+                "@ondc/org/returnable":  items.isReturnable??false,
+                "@ondc/org/cancellable":  items.isCancellable??false,
+                "@ondc/org/available_on_cod": items.availableOnCod,
+                "@ondc/org/time_to_ship": "PT48H",
+                "@ondc/org/seller_pickup_return": true,
+                "@ondc/org/return_window": "P7D",
+                "@ondc/org/contact_details_consumer_care": `${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
+                "@ondc/org/mandatory_reqs_veggies_fruits": {
+                    "net_quantity": items.packQty
+                }
 
-        let item =  {
-            "id": items.id,
-            "descriptor": {
-                "name": items.productName,
-                "symbol": "https://awstoazures3.blob.core.windows.net/signcatch-master/production/products/images/10997/1629350300589Oshon-Coffee-Star-Jar-jpg",
-                "short_desc": items.description,
-                "long_desc": items.longDescription,
+            }
+            productAvailable.push(item)
+        }
+
+        bppDetails = {
+            "name": org.name,
+                "symbol": org.storeDetails.logo,
+                "short_desc": "", //TODO: mark this for development
+                "long_desc": "",
                 "images": [
-                    "https://awstoazures3.blob.core.windows.net/signcatch-master/production/products/images/10997/1629350300589Oshon-Coffee-Star-Jar-jpg"
+                    org.storeDetails.logo
+            ]
+        },
+        bppProviders.push(            {
+            "id": org._id,
+            "descriptor": {
+                "name": org.name,
+                "symbol": org.storeDetails.logo,
+                "short_desc": "",
+                "long_desc": "",
+                "images": [
+                    org.storeDetails.logo
                 ]
             },
-            "price": {
-                "currency": "INR",
-                "value":  items.MRP
-            },
-            "location_id": "8fdd9880-3d0c-444a-8038-fb98ec65f7b6", //TODO: FIX
-            "matched": true,
-            "@ondc/org/returnable":  items.isReturnable??false,
-            "@ondc/org/cancellable":  items.isCancellable??false,
-            "@ondc/org/available_on_cod": items.availableOnCod,
-            "@ondc/org/time_to_ship": "PT48H"
-        }
-        productAvailable.push(item)
+            "locations": [
+                {
+                    "id": org.storeDetails.location._id,
+                    "gps": "28.483664, 77.000427", //TODO: hard coded for now,
+                    "address":org.storeDetails.address,
+                    "time": { //TODO: hard coded for now
+                        "range": {
+                            "start": "0000",
+                            "end": "2359"
+                        },
+                        "days": "1,2,3,4,5,6,7"
+                    }
+                }
+            ],
+            "ttl": "PT24H",
+            "items": productAvailable,
+            "fulfillments":
+                [
+                    {
+                        "contact":
+                            {
+                                "phone":org.storeDetails.supportDetails.mobile,
+                                "email":org.storeDetails.supportDetails.email
+                            }
+                    }
+                ],
+            "tags": [
+                {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails.location._id
+                        },
+                        {
+                            "code": "category", //TODO: hard coded for now
+                            "value": "Fruits and Vegetables"
+                        },
+                        {
+                            "code": "type",
+                            "value": "12"
+                        },
+                        {
+                            "code": "val",
+                            "value": "IND"
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        }
+                    ]
+                }],
+            "@ondc/org/fssai_license_no": org.FSSAI
+        })
+
     }
 
     //set product items to schema
@@ -59,36 +154,8 @@ exports.getProducts = async (data) => {
                             "type":"Delivery and Self-Pickup"
                         }
                     ],
-                "bpp/descriptor": {
-                    "name": "Bech",
-                    "symbol": "https://uploads-ssl.webflow.com/5f5b3175374e04e897cf2a3d/5f5b3175374e04ade4cf2b56_bechbrand.svg",
-                    "short_desc": "Made in India SuperApp for Brands, Retailers & Wholesalers",
-                    "long_desc": "",
-                    "images": [
-                        "https://uploads-ssl.webflow.com/5f5b3175374e04e897cf2a3d/5f5b3175374e04ade4cf2b56_bechbrand.svg"
-                    ]
-                },
-                "bpp/providers": [
-                    {
-                        "id": "afe44f35-fb0c-527b-8a80-a1b0b839197e",
-                        "descriptor": {
-                            "name": "DataOrc",
-                            "symbol": "https://awstoazures3.blob.core.windows.net/aws-product-images-prod/images/profile/991/profile_image_477.png1640236184842",
-                            "short_desc": "",
-                            "long_desc": "",
-                            "images": [
-                                "https://awstoazures3.blob.core.windows.net/aws-product-images-prod/images/profile/991/profile_image_477.png1640236184842"
-                            ]
-                        },
-                        "locations": [
-                            {
-                                "id": "8fdd9880-3d0c-444a-8038-fb98ec65f7b6",
-                                "gps": "28.483664, 77.000427"
-                            }
-                        ],
-                        "items": productAvailable
-                    }
-                ]
+                "bpp/descriptor": bppDetails,
+                "bpp/providers": bppProviders
             }
         }
     }

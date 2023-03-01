@@ -49,7 +49,7 @@ class ProductController {
     async get(req, res, next) {
         try {
             const params = req.params;
-            const product = await productService.get(params.organizationId);
+            const product = await productService.get(params.productId);
             return res.send(product);
 
         } catch (error) {

@@ -77,7 +77,7 @@ module.exports = {
     },
     get:()=>{
         return Joi.object({
-            organizationId: Joi.string().guid({
+            productId: Joi.string().guid({
                 version: ['uuidv4']
             }),
         });

@@ -5,9 +5,9 @@ const logisticsService = new LogisticsService();
 class LogisticsController {
 
 
-    search(req, res, next) {
+    productSearch(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.search(req.body,req).then(data => {
+        logisticsService.productSearch(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

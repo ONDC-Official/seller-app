@@ -28,30 +28,35 @@ class ProductService {
 
     async search(requestQuery) {
 
-        logger.log('info', `[Product Service] search product : param :`,requestQuery);
+        try{
+            logger.log('info', `[Product Service] search product : param :`,requestQuery);
 
-        //get search criteria
-        const searchProduct = requestQuery.message.intent.item.descriptor.name
+            //get search criteria
+            const searchProduct = requestQuery.message.intent.item.descriptor.name
 
-        let headers = {};
+            let headers = {};
 
-        let httpRequest = new HttpRequest(
-            serverUrl,
-            `/api/v1/products/search`, //TODO: allow $like query
-            'get',
-            {},
-            headers
-        );
+            let httpRequest = new HttpRequest(
+                serverUrl,
+                `/api/v1/products/search`, //TODO: allow $like query
+                'get',
+                {name:searchProduct},
+                headers
+            );
 
-        let result = await httpRequest.send();
+            let result = await httpRequest.send();
 
-        logger.log('info', `[Product Service] search product : result :`, result.data);
+            logger.log('info', `[Product Service] search product : result :`, result.data);
 
-        const productData = await getProducts({data: result.data, context: requestQuery.context});
+            const productData = await getProducts({data: result.data, context: requestQuery.context});
 
-        logger.log('info', `[Product Service] search product transformed: result :`, productData);
+            logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
-        return productData
+            return productData
+        }catch (e) {
+            console.log(e)
+        }
+
     }
 
 
@@ -825,10 +830,10 @@ class ProductService {
 
     async productSelect(requestQuery) {
 
-        console.log("requestQuery------------->", requestQuery);
-        console.log("requestQuery-------data------>", requestQuery.data);
-        console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
-        console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
+        // console.log("requestQuery------------->", requestQuery);
+        // console.log("requestQuery-------data------>", requestQuery.data);
+        // console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
+        // console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
         //get search criteria
         const selectData = requestQuery.retail_select[0]//select first select request
         const items = selectData.message.order.items
@@ -873,7 +878,7 @@ class ProductService {
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/products/${item.id}`,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -881,9 +886,10 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            console.log("product data------------>", result?.data);
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
+            if (result?.data) {
+                let price = result?.data?.MRP * item.quantity.count
                 totalPrice += price
                 item.price = {value: price, currency: "INR"}
             }
@@ -895,12 +901,12 @@ class ProductService {
                 "@ondc/org/item_quantity": {
                     "count": item.quantity.count
                 },
-                "title": result?.data?.data?.attributes?.name,
+                "title": result?.data?.productName,
                 "@ondc/org/title_type": "item",
                 "price": item.price
             }
 
-            item.fulfillment_id = item.id //TODO: revisit for item level status
+            item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
@@ -929,12 +935,12 @@ class ProductService {
 
         let fulfillments = [
             {
-                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
+                "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
                 "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
                 "@ondc/org/TAT": "PT45M",
-                "provider_id": logisticProvider.context.bpp_id,
+                "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
                 "state":
                     {
                         "descriptor":
