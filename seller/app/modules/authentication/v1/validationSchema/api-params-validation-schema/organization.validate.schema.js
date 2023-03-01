@@ -38,6 +38,14 @@ module.exports = {
             city:Joi.array(),
             defaultCancellable:Joi.boolean(),
             defaultReturnable:Joi.boolean(),
+            address: {
+                building: Joi.string(),
+                city: Joi.string(),
+                state: Joi.string(),
+                country: Joi.string(),
+                area_code: Joi.string(),
+                locality: Joi.string()
+            },
             supportDetails:{
                 email:Joi.string(),
                 mobile:Joi.string()
@@ -53,6 +61,14 @@ module.exports = {
             city:Joi.array(),
             defaultCancellable:Joi.boolean(),
             defaultReturnable:Joi.boolean(),
+            address: {
+                building: Joi.string(),
+                city: Joi.string(),
+                state: Joi.string(),
+                country: Joi.string(),
+                area_code: Joi.string(),
+                locality: Joi.string()
+            },
             supportDetails:{
             email:Joi.string(),
                 mobile:Joi.string()

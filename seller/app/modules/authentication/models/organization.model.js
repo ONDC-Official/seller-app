@@ -32,11 +32,19 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
     storeDetails:{
         categories: {type:Object},
         logo: {type:String},
-        location: {lat:{type:Number},long:{type:Number}},
+        location: new mongoose.Schema({lat:{type:Number},long:{type:Number}},{ _id: true }),
         locationAvailabilityPANIndia:{type:Boolean},
         city:{type:Object},
         defaultCancellable:{type:Boolean},
         defaultReturnable:{type:Boolean},
+        address: {
+            building: {type:String},
+            city: {type:String},
+            state: {type:String},
+            country: {type:String},
+            area_code: {type:String},
+            locality: {type:String}
+        },
         supportDetails:{
             email:{type:String},
             mobile:{type:String}

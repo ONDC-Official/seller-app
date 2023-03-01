@@ -15,7 +15,7 @@ router.post('/v1/organizations',
     apiParamsValidator.middleware({ schema: organisationSchema.create() }),
     organizationController.create);
 
-router.patch('/v1/organizations/:id/storeDetails',
+router.post('/v1/organizations/:id/storeDetails',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: organisationSchema.setStoreDetails() }),
