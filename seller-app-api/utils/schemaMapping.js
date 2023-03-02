@@ -34,8 +34,8 @@ exports.getProducts = async (data) => {
                     }
                 },
                 "category_id": items.productCategory,
-                "location_id": org.storeDetails.location._id,
-                "fulfillment_id": org.storeDetails.location._id,//TODO: following shoplyst
+                "location_id": "1", //org.storeDetails.location._id
+                "fulfillment_id": "1" ,//TODO: following shoplyst - org.storeDetails.location._id
                 "matched": true,
                 "@ondc/org/returnable":  items.isReturnable??false,
                 "@ondc/org/cancellable":  items.isCancellable??false,
@@ -74,7 +74,7 @@ exports.getProducts = async (data) => {
             },
             "locations": [
                 {
-                    "id": org.storeDetails.location._id,
+                    "id": "1", //org.storeDetails.location._id
                     "gps": "28.483664, 77.000427", //TODO: hard coded for now,
                     "address":org.storeDetails.address,
                     "time": { //TODO: hard coded for now
@@ -104,7 +104,7 @@ exports.getProducts = async (data) => {
                     "list": [
                         {
                             "code": "location",
-                            "value": org.storeDetails.location._id
+                            "value": "1"//org.storeDetails.location._id
                         },
                         {
                             "code": "category", //TODO: hard coded for now
