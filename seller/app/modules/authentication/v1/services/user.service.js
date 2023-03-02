@@ -30,7 +30,9 @@ class UserService {
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
             data.email = data.email.toLowerCase()
-            const password = data.password;
+            //const password = data.password;
+            const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
+
             console.log(`password-${password}`);
 
             let role = await Role.findOne({name:data.role});
@@ -45,7 +47,8 @@ class UserService {
             user.organization = data.organization
             user.name = data.name;
             user.mobile = data.mobile;
-            user.email = data.email; 
+            user.email = data.email;
+
             user.password = data.password;
             user.role=role._id
             let savedUser =  await user.save();
@@ -94,7 +97,7 @@ class UserService {
 
             let role = await Role.findOne({name:"Super Admin"});
             data.email = data.email.toLowerCase()
-            const password = "ONDC123"; //data.password; //FIXME: reset to default random password once SES is activated
+            const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
             data.password = await encryptPIN('' + data.password);
             data.enabled = true;
