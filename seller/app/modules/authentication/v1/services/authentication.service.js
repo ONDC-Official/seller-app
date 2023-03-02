@@ -73,7 +73,7 @@ class AuthenticationService {
             if (!data.password)
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
-            const password = data.password;
+            const password = "ONDC123"; //data.password; //FIXME: reset to default random password once SES is activated
 
             data.password = await encryptPIN('' + data.password);
 
