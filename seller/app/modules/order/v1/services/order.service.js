@@ -64,13 +64,25 @@ class OrderService {
     }
 
 
-    async get(productId) {
+    async get(orderId) {
         try {
-            let doc = await Order.findOne({_id:productId}).lean();
-            return doc;
+            let order = await Order.findOne({_id:orderId}).lean();
+
+            let items = []
+            for(const itemDetails of order.items){
+
+                console.log("ordre----item->",itemDetails);
+
+                let item = await Product.findOne({_id:itemDetails.id})
+                itemDetails.details = item; //TODO:return images
+                items.push(itemDetails)
+            }
+            order.items=items
+
+            return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
             throw err;
         }
     }

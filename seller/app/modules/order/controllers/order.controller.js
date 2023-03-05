@@ -36,7 +36,7 @@ class OrderController {
     async get(req, res, next) {
         try {
             const params = req.params;
-            const product = await orderService.get(params.productId);
+            const product = await orderService.get(params.orderId);
             return res.send(product);
 
         } catch (error) {
