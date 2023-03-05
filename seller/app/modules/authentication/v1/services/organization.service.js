@@ -60,7 +60,7 @@ class OrganizationService {
             };
             return organizationData;
         } catch (err) {
-            console.log('[ProductService] [getAll] Error in getting all organization ',err);
+            console.log('[OrderService] [getAll] Error in getting all organization ',err);
             throw err;
         }
     }
@@ -110,6 +110,32 @@ class OrganizationService {
             if (organization) {
                 organization.storeDetails =data;
                 organization.save();
+            } else {
+                throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
+            }
+            return data;
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
+    async update(organizationId,data) {
+        try {
+            let organization = await Organization.findOne({_id:organizationId})//.lean();
+            if (organization) {
+
+                let userExist = await User.findOne({mobile:data.user.mobile,organization:organizationId})
+
+                if (userExist && userExist.organization !==organizationId ) {
+                    throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
+                }
+                else{
+                    const updateUser  = await User.findOneAndUpdate({organization:organizationId},data.user)
+                }
+
+                let updateOrg = await Organization.findOneAndUpdate({_id:organizationId},data.providerDetails);
+
             } else {
                 throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
             }

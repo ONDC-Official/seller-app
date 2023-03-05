@@ -15,6 +15,12 @@ router.post('/v1/organizations',
     apiParamsValidator.middleware({ schema: organisationSchema.create() }),
     organizationController.create);
 
+router.put('/v1/organizations/:id/',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
+    apiParamsValidator.middleware({ schema: organisationSchema.update() }),
+    organizationController.update);
+
 router.post('/v1/organizations/:id/storeDetails',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),

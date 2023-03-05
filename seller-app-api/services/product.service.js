@@ -372,7 +372,25 @@ class ProductService {
 
         let httpRequest = new HttpRequest(
             serverUrl,
-            `/api/products/${id}`,
+            `/api/v1/products/${id}`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
+
+    async getForOndc(id) {
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/products/${id}/ondcGet`,
             'get',
             {},
             headers
@@ -616,7 +634,7 @@ class ProductService {
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/products/${item.id}`,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -624,68 +642,46 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            // if (result?.data?.data.attributes) {
+            //
+            //     let price = result?.data?.data?.attributes?.price * item.quantity.count
+            //     totalPrice += price
+            //     item.price = {value: price, currency: "INR"}
+            // }
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += price
-                item.price = {value: price, currency: "INR"}
-            }
+            // qouteItemsDetails = {
+            //     "@ondc/org/item_id": item.id,
+            //     "@ondc/org/item_quantity": {
+            //         "count": item.quantity.count
+            //     },
+            //     "title": result?.data?.data?.attributes?.name,
+            //     "@ondc/org/title_type": "item",
+            //     "price": item.price
+            // }
 
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.data?.attributes?.name,
-                "@ondc/org/title_type": "item",
-                "price": item.price
-            }
-
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
+            // qouteItems.push(item)
+            // detailedQoute.push(qouteItemsDetails)
         }
 
         //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
+        // let deliveryCharges = {
+        //     "title": "Delivery charges",
+        //     "@ondc/org/title_type": "delivery",
+        //     "price": {
+        //         "currency": '' + logisticData.message.order.quote.price.currency,
+        //         "value": '' + logisticData.message.order.quote.price.value
+        //     }
+        // }//TODO: need to map all items in the catalog to find out delivery charges
 
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
+        //let totalPriceObj = {value: totalPrice, currency: "INR"}
 
-        detailedQoute.push(deliveryCharges);
+        //detailedQoute.push(deliveryCharges);
 
         let headers = {};
 
         let confirmData = confirmRequest.message.order
 
         let orderItems = []
-        // let confirmData = requestQuery.message.order
-        for (let item of confirmData.items) {
-
-            let productItems = {
-                product: item.id,
-                status: 'Created',
-                qty: item.quantity.count,
-                value: item.price.value
-            }
-            let httpRequest = new HttpRequest(
-                serverUrl,
-                `/api/order-items`,
-                'POST',
-                {data: productItems},
-                headers
-            );
-            let result = await httpRequest.send();
-            console.log("result--------------->", result.data.data.id)
-            orderItems.push(result.data.data.id);
-        }
-
-
         confirmData["order_items"] = orderItems
         confirmData.order_id = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
@@ -697,7 +693,7 @@ class ProductService {
         let confirm = {}
         let httpRequest = new HttpRequest(
             serverUrl,
-            `/api/orders`,
+            `/api/v1/orders`,
             'POST',
             {data: confirmData},
             headers
@@ -766,7 +762,7 @@ class ProductService {
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/products/${item.id}`,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -774,9 +770,9 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            if (result?.data) {
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                let price = result?.data?.MRP * item.quantity.count
                 totalPrice += parseInt(price)
                 item.price = {value: price, currency: "INR"}
             }
@@ -786,12 +782,12 @@ class ProductService {
                 "@ondc/org/item_quantity": {
                     "count": item.quantity.count
                 },
-                "title": result?.data?.data?.attributes?.name,
+                "title": result?.data?.productName,
                 "@ondc/org/title_type": "item",
                 "price": item.price
             }
 
-            item.fulfillment_id = item.id //TODO: revisit for item level status
+            item.fulfillment_id =  item.fulfillment_id
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
@@ -848,7 +844,7 @@ class ProductService {
 
         for (let logisticData1 of logisticData) {
             if (logisticData1.message) {
-                if (logisticData1.context.bpp_id === "ondc.yaarilabs.com") {//TODO: move to env
+                if (logisticData1.context.bpp_id === "ondc-preprod.loadshare.net") {//TODO: move to env
                     logisticProvider = logisticData1
                 }
             }
@@ -864,7 +860,7 @@ class ProductService {
 
         if (Object.keys(logisticProvider).length === 0) {
             return {
-                context: {...selectData.context, action: 'on_select'}, error: {
+                context: {...selectData.context, action: 'on_select'}, error: { //TODO: return product details with valid code
                     "type": "CORE-ERROR",
                     "code": "60001",
                     "message": "Pickup not servicable"
@@ -936,16 +932,17 @@ class ProductService {
         let fulfillments = [
             {
                 "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
-                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
+                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
                 "@ondc/org/TAT": "PT45M",
                 "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
+                "type":"Delivery",//TODO: hard coded
                 "state":
                     {
                         "descriptor":
                             {
-                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name
+                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name //TODO: discuss with Prashant
                             }
                     }, end: selectData.message.order.fulfillments[0].end
             }]

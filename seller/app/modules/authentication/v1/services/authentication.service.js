@@ -75,7 +75,7 @@ class AuthenticationService {
 
             const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
 
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
 
             user.password = data.password;
             user.isSystemGeneratedPassword = true;

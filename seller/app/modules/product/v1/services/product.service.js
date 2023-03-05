@@ -46,7 +46,7 @@ class ProductService {
             };
             return products;
         } catch (err) {
-            console.log('[ProductService] [getAll] Error in getting all organization ',err);
+            console.log('[OrderService] [getAll] Error in getting all organization ',err);
             throw err;
         }
     }
@@ -68,7 +68,7 @@ class ProductService {
             //collect all store details by
             return products;
         } catch (err) {
-            console.log('[ProductService] [getAll] Error in getting all from organization ',err);
+            console.log('[OrderService] [getAll] Error in getting all from organization ',err);
             throw err;
         }
     }
@@ -88,6 +88,19 @@ class ProductService {
         try {
             let doc = await Product.findOneAndUpdate({_id:productId},data)//.lean();
             return doc;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
+    async publish(productId,data) {
+        try {
+            console.log("req.body---->",data)
+            //TODO: add org level check and record not found validation
+            let doc = await Product.findOneAndUpdate({_id:productId},data)//.lean();
+            return data;
 
         } catch (err) {
             console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);

@@ -44,7 +44,8 @@ const productSchema = new mongoose.Schema({
         type:Number,
         default:Date.now()
     },
-    createdBy:{type:String}
+    createdBy:{type:String},
+    published:{type:Boolean,default:false}
 },{  
     strict: true,
     timestamps:true

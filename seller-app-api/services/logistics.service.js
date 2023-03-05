@@ -43,30 +43,73 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
+            //TODO:add validation for qty check
+
+            let totalProductValue = 0
+            for(let items of payload.message.order.items){
+                const product = await productService.getForOndc(items.id)
+                totalProductValue+=product.MRP
+                console.log("product------->",product);
+            }
+
+
             const searchRequest = {
-                "context":
-                    {
-                        "domain": "nic2004:60232",
-                        "country": "IND",
-                        "city": "std:080",
-                        "action": "search",
-                        "core_version": "1.1.0",
-                        "bap_id": config.get("sellerConfig").BPP_ID,
-                        "bap_uri": config.get("sellerConfig").BPP_URI,
-                        "transaction_id": payload.context.transaction_id,
-                        "message_id": logisticsMessageId,
-                        "timestamp": new Date(),
-                        "ttl": "PT30S"
-                    },
-                "message":{"intent":{"category":{"id":"Standard Delivery"},"provider":{"time":{"days":"1,2,3,4,5,6,7","range":{"end":"2359","start":"0000"}}},"fulfillment":{"type":"Prepaid","start":{"location":{"gps":"18.9346525,72.8363315","address":{"area_code":"400001"}}},"end":{"location":{"gps":"18.93267,72.8314770000001","address":{"area_code":"400001"}}}},"@ondc/org/payload_details":{"weight":{"unit":"Kilogram","value":10},"category":"Grocery","value":{"currency":"INR","value":"450.11"}}}}}
+                "context": {
+                    "domain": "nic2004:60232",
+                    "country": "IND",
+                    "city": "std:080",
+                    "action": "search",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
+                },
+                "message": {
+                    "intent": {
+                        "category": {
+                            "id": "Standard Delivery" //TODO: based on provider it should change
+                        },
+                        "provider": {
+                            "time": { //TODO: HARD Coded
+                                "days": "1,2,3,4,5,6,7",
+                                "range": {
+                                    "end": "2359",
+                                    "start": "0000"
+                                }
+                            }
+                        },
+                        "fulfillment": {
+                            "type": "Prepaid", //TODO: ONLY prepaid orders should be there
+                            "start": {
+                                "location": {
+                                    "gps": "18.9346525,72.8363315",
+                                    "address": {
+                                        "area_code": "400001"
+                                    }
+                                }
+                            },
+                            "end": payload.message.order.fulfillments[0].end
+                        },
+                        "@ondc/org/payload_details": { //TODO: HARD coded
+                            "weight": {
+                                "unit": "Kilogram",
+                                "value": 10
+                            },
+                            "category": "Grocery", //TODO: @abhinandan Take it from Product schema
+                            "value": {
+                                "currency": "INR",
+                                "value": `${totalProductValue}`
+                            }
+                        }
+                    }
+                }
+            }
 
-
-
-
-            // setTimeout(() => {
-            //     logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,payload);
-                this.postSelectRequest(searchRequest,logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            //process select request and send it to protocol layer
+            this.postSelectRequest(searchRequest,logisticsMessageId, selectMessageId)
 
             return searchRequest
         } catch (err) {
@@ -81,9 +124,6 @@ class LogisticsService {
             //1. post http to protocol/logistics/v1/search
 
             try {
-
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -95,7 +135,6 @@ class LogisticsService {
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -369,7 +408,7 @@ class LogisticsService {
             const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const initRequest = {
+            const initRequest2 = {
                 "context": {
                     "domain": "nic2004:60232",
                     "country": "IND",
@@ -426,12 +465,65 @@ class LogisticsService {
                     }
                 }
             }
-            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
-            // setTimeout(() => {
+
+            const contextTimeStamp =new Date()
+            const initRequest =     {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "country": "IND",
+                    "city": "std:080", //TODO: take city from retail context
+                    "action": "init",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id, //STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "timestamp": contextTimeStamp,
+                    "ttl": "PT30S"
+                },
+                "message": {
+                    "order": {
+                        "provider": {
+                            "id": logistics.message.catalog["bpp/providers"][0].id
+                        },
+                        "items": [logistics.message.catalog["bpp/providers"][0].items[0]],
+                        "fulfillments": [{
+                            "id": logistics.message.catalog["bpp/fulfillments"][0].id,
+                            "type": logistics.message.catalog["bpp/fulfillments"][0].type,
+                            "start": {
+                                "location": config.get("sellerConfig").sellerPickupLocation.location,
+                                "contact": config.get("sellerConfig").sellerPickupLocation.contact
+                            },
+                            "end": order.fulfillments[0].end
+                        }],
+                        "billing": { //
+                            "name": order.billing.name,
+                            "address": {
+                                "name": order.billing.address.name,
+                                "building": order.billing.address.building,
+                                "locality": order.billing.address.locality,
+                                "city": order.billing.address.city,
+                                "state": order.billing.address.state,
+                                "country": order.billing.address.country,
+                                "area_code": order.billing.address.area_code
+                            },
+                            "tax_number": "pan_number", //FIXME: take provider details
+                            "phone": "9999999999", //FIXME: take provider details
+                            "email": "test@gmail.com", //FIXME: take provider details
+                            "created_at": contextTimeStamp,
+                            "updated_at": contextTimeStamp
+                        },
+                        "payment": {
+                            "@ondc/org/settlement_details": order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                        }
+                    }
+                }
+            }
                 logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
                 this.postInitRequest(initRequest,logisticsMessageId, initMessageId)
-            // }, 5000); //TODO move to config
 
             return {'status':'ACK'}
         } catch (err) {
@@ -447,9 +539,6 @@ class LogisticsService {
             //1. post http to protocol/logistics/v1/search
 
             try {
-
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -461,8 +550,6 @@ class LogisticsService {
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
-
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
                 return e
@@ -680,13 +767,16 @@ class LogisticsService {
                 }
             })
 
+            const initRequest = await InitRequest.findOne({
+                where: {
+                    transactionId: payload.context.transaction_id
+                }
+            })
+
             console.log("selected logistics--------selectRequest------->", selectRequest);
+            console.log("selected logistics--------initRequest------->", initRequest);
 
             const logistics = selectRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
-
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
@@ -697,7 +787,7 @@ class LogisticsService {
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.city
 
-            const confirmRequest  = {
+            const confirmRequest2  = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "confirm",
@@ -795,7 +885,170 @@ class LogisticsService {
                 }
 
             }
-            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+
+
+            let itemDetails = []
+            for(const items of payload.message.order.items){
+                let item = await productService.getForOndc(items.id)
+
+                let details = {
+                    "descriptor": {
+                        "name": item.productName
+                    },
+                    "price": {
+                        "currency": "INR",
+                        "value": ""+item.MRP
+                    },
+                    "category_id": item.categoryName,
+                    "quantity": {
+                        "count": items.quantity.count,
+                        "measure": { //TODO: hard coded
+                            "unit": "Kilogram",
+                            "value": 1
+                        }
+                    }
+                }
+                itemDetails.push(details)
+            }
+
+            const contextTimestamp = new Date()
+            const confirmRequest  = {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "confirm",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": payload.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080",
+                    "country": "IND",
+                    "timestamp": contextTimestamp
+                },
+                "message": {
+                    "order": {
+                        "@ondc/org/linked_order": {
+                            "items": itemDetails,
+                            "provider": {
+                                "descriptor": {
+                                    "name": "Spice 9"
+                                },
+                                "address": {
+                                    "name": "Spice 9",
+                                        "building": "12",
+                                        "locality": "prashanth nagar",
+                                        "city": "Bangalore",
+                                        "state": "Karnataka",
+                                        "country": "IND",
+                                        "area_code": "560036"
+                                }
+                            },
+                            "order": {
+                                "id": order.id,
+                                    "weight": {//TODO: hard coded
+                                    "unit": "Kilogram",
+                                        "value": 1
+                                }
+                            }
+                        },
+                        "id": order.id,
+                        "items": [{
+                            "id": "express",
+                            "descriptor": {
+                                "code": "P2P"
+                            },
+                            "category_id": "Immediate Delivery"
+                        }],
+                        "provider":initRequest.selectedLogistics.message.order.provider,
+                        "fulfillments": [{
+                            "id": "c60db0e3-6b07-4f5c-8e97-38bb5afcf3b0",
+                            "type": "Prepaid",
+                            "start": {
+                                "location": {
+                                    "gps": "12.913371523733359,77.68308302883554",
+                                    "address": {
+                                        "name": "Spice 9",
+                                        "building": "12",
+                                        "locality": "prashanth nagar",
+                                        "city": "Bangalore",
+                                        "state": "Karnataka",
+                                        "country": "IND",
+                                        "area_code": "560036"
+                                    }
+                                },
+                                "instructions": {
+                                    "short_desc": "",
+                                    "long_desc": ""
+                                },
+                                "contact": {
+                                    "phone": "9000912423",
+                                    "email": "mohd.najeeb.ahmed@gmail.com"
+                                },
+                                "person": {
+                                    "name": "Manager"
+                                }
+                            },
+                            "end": {
+                                "location": {
+                                    "gps": "12.9075050000001, 77.695502",
+                                    "address": {
+                                        "name": "Najeeb",
+                                        "building": "Sarjapur road",
+                                        "locality": "82/2 3rd floor, Gold Sand, Doddakannalli, Mahadevapura, Sarjapur road, bengaluru, 560035",
+                                        "city": "Bengaluru",
+                                        "state": "Karnataka",
+                                        "country": "IND",
+                                        "area_code": "560035"
+                                    }
+                                },
+                                "instructions": {
+                                    "short_desc": "",
+                                    "long_desc": ""
+                                },
+                                "contact": {
+                                    "phone": "9000912423",
+                                    "email": "masterblaster775@gmail.com"
+                                },
+                                "person": {
+                                    "name": "Najeeb"
+                                }
+                            },
+                            "tags": {
+                                "@ondc/org/order_ready_to_ship": "Yes" //TODO: hard coded
+                            }
+                        }],
+                            "quote": initRequest.selectedLogistics.message.order.quote,
+                        "payment": {
+                            "type": "ON-ORDER",
+                                "collected_by": "BAP",
+                                "@ondc/org/settlement_details": []
+                        },
+                        "billing": {
+                            "name": "Ek Second Technologies",
+                                "email": "najeeb@eksecon.in",
+                                "phone": "9000912423",
+                                "created_at": "2023-03-03T14:36:16.538Z",
+                                "updated_at": "2023-03-03T14:36:16.538Z",
+                                "address": {
+                                "name": "EkSecond Pvt Ltd",
+                                    "building": "8-7-171/10/14/B",
+                                    "locality": "Old Bowenpally",
+                                    "city": "secunderabad",
+                                    "state": "Telangana",
+                                    "country": "India",
+                                    "area_code": "500011"
+                            },
+                            "tax_number": "ADFSDF34343"
+                        },
+                        "state": "Created",
+                        created_at:contextTimestamp,
+                        updated_at:contextTimestamp
+                    }
+                }
+
+            }            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
            // setTimeout(() => {
                 this.postConfirmRequest(confirmRequest,logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config

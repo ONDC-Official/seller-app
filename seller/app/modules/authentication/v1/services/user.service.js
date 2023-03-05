@@ -37,7 +37,7 @@ class UserService {
 
             let role = await Role.findOne({name:data.role});
 
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
             data.enabled = true;
             data.lastLoginAt = null;
             data.id = uuidv1();
@@ -99,7 +99,7 @@ class UserService {
             data.email = data.email.toLowerCase()
             const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
             data.enabled = true;
             data.lastLoginAt = null;
             data.id = uuidv1();
@@ -275,6 +275,11 @@ class UserService {
                 },
             ]).count('count');
 
+            for(const user of users){ //attach org details
+
+                let organization = await Organization.findOne({_id:user.organization},{_id:1,name:1});
+                user.organization = organization
+            }
             let count;
             if(usersCount && usersCount.length > 0){
                 count = usersCount[0].count;

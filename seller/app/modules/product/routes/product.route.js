@@ -17,11 +17,17 @@ router.post('/v1/products',
     apiParamsValidator.middleware({ schema: productSchema.create() }),
     productController.create);
 
-router.patch('/v1/products/:productId',
+router.put('/v1/products/:productId',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.update() }),
     productController.update);
+
+router.put('/v1/products/:productId/publish',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    apiParamsValidator.middleware({ schema: productSchema.publish() }),
+    productController.publish);
 
 router.get('/v1/products',
     authentication.middleware(),

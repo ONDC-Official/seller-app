@@ -17,7 +17,7 @@ class OrganizationController {
             return res.send(organization);
 
         } catch (error) {
-            console.log('[ProductController] [create] Error -', error);
+            console.log('[OrderController] [create] Error -', error);
             next(error);
         }     
     }
@@ -39,7 +39,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[ProductController] [list] Error -', error);
+            console.log('[OrderController] [list] Error -', error);
             next(error);
         }
     }
@@ -57,7 +57,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
@@ -70,7 +70,20 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+            const params = req.params;
+            const data = req.body;
+            const organizations = await organizationService.update(params.id,data);
+            return res.send(organizations);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
@@ -82,7 +95,7 @@ class OrganizationController {
             return res.send(organizations);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }

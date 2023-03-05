@@ -12,7 +12,7 @@ class ProductController {
             return res.send(product);
 
         } catch (error) {
-            console.log('[ProductController] [create] Error -', error);
+            console.log('[OrderController] [create] Error -', error);
             next(error);
         }     
     }
@@ -28,7 +28,7 @@ class ProductController {
             return res.send(products);
 
         } catch (error) {
-            console.log('[ProductController] [list] Error -', error);
+            console.log('[OrderController] [list] Error -', error);
             next(error);
         }
     }
@@ -42,7 +42,7 @@ class ProductController {
             return res.send(products);
 
         } catch (error) {
-            console.log('[ProductController] [list] Error -', error);
+            console.log('[OrderController] [list] Error -', error);
             next(error);
         }
     }
@@ -54,7 +54,7 @@ class ProductController {
             return res.send(product);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
@@ -66,7 +66,19 @@ class ProductController {
             return res.send(product);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async publish(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.publish(params.productId,req.body);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
@@ -78,7 +90,7 @@ class ProductController {
             return res.download(file);
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
@@ -108,7 +120,7 @@ class ProductController {
            return res.send({});
 
         } catch (error) {
-            console.log('[ProductController] [get] Error -', error);
+            console.log('[OrderController] [get] Error -', error);
             next(error);
         }
     }
