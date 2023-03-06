@@ -1231,11 +1231,11 @@ class LogisticsService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = [{
+            const trackRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "track",
-                    "core_version": "1.0.0",
+                    "core_version": "1.1.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
@@ -1252,7 +1252,7 @@ class LogisticsService {
                     }
 
             }
-            ]
+
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
@@ -1793,7 +1793,7 @@ class LogisticsService {
 
             const trackRequest = {
                 "context": {
-                    "domain": "nic2004:52110",
+                    "domain": "nic2004:60232",
                     "action": "support",
                     "core_version": "1.0.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
@@ -1833,7 +1833,7 @@ class LogisticsService {
 
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
-                    transactionId: payload.message.ref_id
+                    transactionId: payload.message.order_id
                 }
             })
 
@@ -1849,9 +1849,9 @@ class LogisticsService {
 
             const trackRequest = {
                 "context": {
-                    "domain": "nic2004:52110",
+                    "domain": "nic2004:60232",
                     "action": "support",
-                    "core_version": "1.0.0",
+                    "core_version": "1.1.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT

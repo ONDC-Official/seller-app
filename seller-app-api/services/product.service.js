@@ -717,7 +717,6 @@ class ProductService {
 
         const productData = await getConfirm({
             qouteItems: qouteItems,
-            totalPrice: totalPriceObj,
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,
