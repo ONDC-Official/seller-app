@@ -222,7 +222,7 @@ exports.getInit = async (data) => {
         "message":  {
             "order": {
                 "provider":data.message.order.provider,
-                "provider_location": data.message.order.provider.locations[0].id,
+                "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,

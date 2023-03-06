@@ -147,7 +147,7 @@ class LogisticsService {
             setTimeout(() => {
                 logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 20000); //TODO move to config
+            }, 10000); //TODO move to config
         }catch (e){
             logger.error('error', `[Logistics Service] post http select response : `, e);
             return e
@@ -297,7 +297,7 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload);
+            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
@@ -305,11 +305,11 @@ class LogisticsService {
                 }
             })
 
-            logger.log('info', `[Logistics Service] old select request :`,selectRequest);
+            //logger.log('info', `[Logistics Service] old select request :`,selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
+            //logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
@@ -381,7 +381,8 @@ class LogisticsService {
 
             return initRequest
         } catch (err) {
-            logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+        	console.log(err);    
+	logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
             return err
         }
     }
@@ -390,7 +391,7 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload);
+            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
@@ -398,11 +399,11 @@ class LogisticsService {
                 }
             })
 
-            logger.log('info', `[Logistics Service] old select request :`,selectRequest);
+  //          logger.log('info', `[Logistics Service] old select request :`,selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
+            //logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
@@ -516,19 +517,20 @@ class LogisticsService {
                             "updated_at": contextTimeStamp
                         },
                         "payment": {
-                            "@ondc/org/settlement_details": order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                            "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
                         }
                     }
                 }
             }
-                logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
+                //logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
                 this.postInitRequest(initRequest,logisticsMessageId, initMessageId)
 
             return {'status':'ACK'}
         } catch (err) {
             logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
-            return err
+        console.log(err)   
+	 return err
         }
     }
 
@@ -561,7 +563,7 @@ class LogisticsService {
             setTimeout(() => {
                 logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildInitRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 5000); //TODO move to config
         }catch (e){
             logger.error('error', `[Logistics Service] post http select response : `, e);
             return e
@@ -783,9 +785,10 @@ class LogisticsService {
 
             const logisticsOrderId = uuidv4();
 
-            let end = {...order.fulfillments[0].end,person:order.fulfillments[0].customer.person}
+console.log("end logs------------->",order.fulfillments[0].end)
+            let end = {...order.fulfillments[0].end}
 
-            end.location.address.locality = end.location.address.locality ?? end.location.address.city
+            end.location.address.locality = end.location.address.locality ?? end.location.address.street
 
             const confirmRequest2  = {
                 "context": {
@@ -967,7 +970,7 @@ class LogisticsService {
                             "type": "Prepaid",
                             "start": {
                                 "location": {
-                                    "gps": "12.913371523733359,77.68308302883554",
+                                    "gps": "12.926837, 77.5506810000001",
                                     "address": {
                                         "name": "Spice 9",
                                         "building": "12",
@@ -975,7 +978,7 @@ class LogisticsService {
                                         "city": "Bangalore",
                                         "state": "Karnataka",
                                         "country": "IND",
-                                        "area_code": "560036"
+                                        "area_code": "560085"
                                     }
                                 },
                                 "instructions": {
@@ -992,7 +995,7 @@ class LogisticsService {
                             },
                             "end": {
                                 "location": {
-                                    "gps": "12.9075050000001, 77.695502",
+                                    "gps": "12.926837, 77.5506810000001",
                                     "address": {
                                         "name": "Najeeb",
                                         "building": "Sarjapur road",
@@ -1000,7 +1003,7 @@ class LogisticsService {
                                         "city": "Bengaluru",
                                         "state": "Karnataka",
                                         "country": "IND",
-                                        "area_code": "560035"
+                                        "area_code": "560085"
                                     }
                                 },
                                 "instructions": {
@@ -1050,6 +1053,8 @@ class LogisticsService {
 
             }            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
            // setTimeout(() => {
+
+logger.info('info', `[Logistics Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
                 this.postConfirmRequest(confirmRequest,logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 
