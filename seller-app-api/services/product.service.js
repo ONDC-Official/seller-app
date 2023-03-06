@@ -681,7 +681,7 @@ class ProductService {
 
         let confirmData = confirmRequest.message.order
 
-        let orderItems = []
+        let orderItems = confirmRequest.message.order.quote
         confirmData["order_items"] = orderItems
         confirmData.order_id = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id

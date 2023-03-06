@@ -958,11 +958,11 @@ console.log("end logs------------->",order.fulfillments[0].end)
                         },
                         "id": order.id,
                         "items": [{
-                            "id": "express",
+                            "id": "nextday",
                             "descriptor": {
                                 "code": "P2P"
                             },
-                            "category_id": "Immediate Delivery"
+                            "category_id": "Next Day Delivery"
                         }],
                         "provider":initRequest.selectedLogistics.message.order.provider,
                         "fulfillments": [{
