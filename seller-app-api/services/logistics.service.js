@@ -85,9 +85,9 @@ class LogisticsService {
                             "type": "Prepaid", //TODO: ONLY prepaid orders should be there
                             "start": {
                                 "location": {
-                                    "gps": "18.9346525,72.8363315",
+                                    "gps": "13.0007580000001, 77.6165090000001",
                                     "address": {
-                                        "area_code": "400001"
+                                        "area_code": "560005"
                                     }
                                 }
                             },
