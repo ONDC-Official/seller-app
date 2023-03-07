@@ -790,106 +790,6 @@ console.log("end logs------------->",order.fulfillments[0].end)
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.street
 
-            const confirmRequest2  = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "confirm",
-                    "core_version": "1.0.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080",
-                    "country": "IND",
-                    "timestamp": new Date()
-                },
-                "message": {
-                    "order": {
-                        "id": payload.context.transaction_id,
-                        "state": "Created",
-                        "provider": {
-                            "id": logistics.message.catalog["bpp/providers"][0].id,
-                            "locations": [
-                                {
-                                    "id": "GFFBRTFR1649830006"
-                                }
-                            ],
-                            "rateable": "true"
-                        },
-                        "items": logistics.message.catalog["bpp/providers"][0].items,
-                        "quote": order.qoute,
-                        "payment": {
-                            "type": "ON-ORDER",
-                            "@ondc/org/settlement_details": [{
-                                "settlement_counterparty": "seller-app",
-                                "settlement_type": "upi",
-                                "upi_address": "gft@oksbi",
-                                "settlement_bank_account_no": "XXXXXXXXXX",
-                                "settlement_ifsc_code": "XXXXXXXXX"
-                            }]
-                        },
-                        "fulfillments": [{
-                            "id": "Fulfillment1",
-                            "type": "Prepaid",
-                            "start": sellerPickupLocation,
-                            "end":end,
-                            "@ondc/org/awb_no": "1227262193237777", //TBD: do seller needs to generate this number?
-                            "tags": {
-                                "@ondc/org/order_ready_to_ship": "Yes" //
-                            }
-                        }],
-                        "billing": { //TODO: take from config
-                            "name": "XXXX YYYYY",
-                            "address": {
-                                "name": "D000, Prestige Towers",
-                                "locality": "Bannerghatta Road",
-                                "city": "Bengaluru",
-                                "state": "Karnataka",
-                                "country": "India",
-                                "area_code": "560076"
-                            },
-                            "tax_number": "29AAACU1901H1ZK",
-                            "phone": "98860 98860",
-                            "email": "abcd.efgh@gmail.com"
-                        },
-                        "@ondc/org/linked_order": { //TBD: need more details how to build this object
-                            "items": [{
-                                "category_id": "Immediate Delivery",
-                                "name": "SFX",
-                                "quantity": {
-                                    "count": 2,
-                                    "measure": {
-                                        "type": "CONSTANT",
-                                        "value": 2,
-                                        "estimated_value": 2,
-                                        "computed_value": 2,
-                                        "range": {
-                                            "min": 2,
-                                            "max": 5
-                                        },
-                                        "unit": "10"
-                                    }
-                                },
-                                "price": {
-                                    "currency": "INR",
-                                    "value": "5000",
-                                    "estimated_value": "5500",
-                                    "computed_value": "5525",
-                                    "listed_value": "5300",
-                                    "offered_value": "4555",
-                                    "minimum_value": "4000",
-                                    "maximum_value": "5500"
-                                }
-                            }]
-                        }
-                    }
-                }
-
-            }
-
-
             let itemDetails = []
             for(const items of payload.message.order.items){
                 let item = await productService.getForOndc(items.id)
@@ -993,31 +893,7 @@ console.log("end logs------------->",order.fulfillments[0].end)
                                     "name": "Manager"
                                 }
                             },
-                            "end": {
-                                "location": {
-                                    "gps": "12.926837, 77.5506810000001",
-                                    "address": {
-                                        "name": "Najeeb",
-                                        "building": "Sarjapur road",
-                                        "locality": "82/2 3rd floor, Gold Sand, Doddakannalli, Mahadevapura, Sarjapur road, bengaluru, 560035",
-                                        "city": "Bengaluru",
-                                        "state": "Karnataka",
-                                        "country": "IND",
-                                        "area_code": "560085"
-                                    }
-                                },
-                                "instructions": {
-                                    "short_desc": "",
-                                    "long_desc": ""
-                                },
-                                "contact": {
-                                    "phone": "9000912423",
-                                    "email": "masterblaster775@gmail.com"
-                                },
-                                "person": {
-                                    "name": "Najeeb"
-                                }
-                            },
+                            "end": end,
                             "tags": {
                                 "@ondc/org/order_ready_to_ship": "Yes" //TODO: hard coded
                             }

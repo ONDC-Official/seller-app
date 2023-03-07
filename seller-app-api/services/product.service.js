@@ -681,12 +681,23 @@ class ProductService {
 
         let confirmData = confirmRequest.message.order
 
+        let itemList = []
+        for(const item of confirmRequest.message.order.items){
+                item.state = logisticData.message.order.fulfillments[0].state?.descriptor?.code??"Pending"
+
+                let qouteItem = confirmRequest.message.order.quote.breakup.find((data)=>{ return data['@ondc/org/item_id'=== item.id]})
+                item.MRP = qouteItem?.price?.value
+                itemList.push(item);
+        }
+
         let orderItems = confirmRequest.message.order.quote
         confirmData["order_items"] = orderItems
+        confirmData.items = itemList;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
+        // confirmData.state = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
-        confirmData.state ="Created"
+        confirmData.state =logisticData.message.order.state
         delete confirmData.id
 
         console.log("orderItems-------confirmData-------->", confirmData)
