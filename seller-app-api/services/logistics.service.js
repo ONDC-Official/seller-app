@@ -1838,7 +1838,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
-                    transactionId: payload.message.order_id
+                    transactionId: payload.message.ref_id
                 }
             })
 
@@ -1869,7 +1869,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 },
                 "message":
                     {
-                        "ref_id": selectRequest.orderId,
+                        "ref_id": selectRequest.transactionId,
                     }
 
             }
