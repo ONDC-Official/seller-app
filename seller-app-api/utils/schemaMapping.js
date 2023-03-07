@@ -375,11 +375,7 @@ exports.getConfirm = async (data) => {
                 "items": data.items,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
-                "quote":{
-                    "price":data.totalPrice,
-                    "breakup": data.detailedQoute,
-                    "ttl": "P1D"
-                },
+                "quote":data.message.quote,
                 "payment": data.message.order.payment
             }
         }
