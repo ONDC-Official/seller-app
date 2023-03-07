@@ -76,6 +76,15 @@ class ProductService {
     async get(productId) {
         try {
             let doc = await Product.findOne({_id:productId}).lean();
+
+            let images = []
+            for(const image of doc.images){
+                let data = await s3.getSignedUrlForRead({path:image});
+                images.push(data)
+            }
+
+            doc.images = images
+
             return doc;
 
         } catch (err) {
