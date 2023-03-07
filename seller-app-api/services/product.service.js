@@ -556,7 +556,7 @@ class ProductService {
         let confirm = {}
         let httpRequest = new HttpRequest(
             serverUrl,
-            `/api/orders?filters[order_id][$eq]=${cancelRequest.message.order_id}`,
+            `/api/v1/orders/${cancelRequest.message.order_id}/ondcGet`,
             'GET',
             {},
             {}
@@ -564,16 +564,16 @@ class ProductService {
 
         let result = await httpRequest.send();
 
-        console.log("result---------------->",result.data.data[0]);
+        console.log("result---------------->",result.data);
 
-        let updateOrder = result.data.data[0].attributes
+        let updateOrder = result.data
 
         updateOrder.state =logisticData.message.order.state
 
         //update order level state
         httpRequest = new HttpRequest(
             serverUrl,
-            `/api/orders/${result.data.data[0].id}`,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
@@ -684,6 +684,7 @@ class ProductService {
         let orderItems = confirmRequest.message.order.quote
         confirmData["order_items"] = orderItems
         confirmData.order_id = confirmData.id
+        confirmData.orderId = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
         confirmData.state ="Created"
         delete confirmData.id

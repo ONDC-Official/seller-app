@@ -44,6 +44,28 @@ class OrderController {
             next(error);
         }
     }
+    async getONDC(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await orderService.getONDC(params.orderId);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+    async update(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await orderService.update(params.orderId,req.body);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
 
 }
 

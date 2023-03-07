@@ -17,12 +17,15 @@ router.get('/v1/orders',
 );
 
 router.get('/v1/orders/:orderId',
-    authentication.middleware(),
     orderController.get,
 );
 
 router.get('/v1/orders/:orderId/ondcGet',
-    orderController.get,
+    orderController.getONDC,
+);
+
+router.put('/v1/orders/:orderId/ondcUpdate',
+    orderController.update,
 );
 
 module.exports = router;

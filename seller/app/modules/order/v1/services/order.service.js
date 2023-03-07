@@ -86,6 +86,33 @@ class OrderService {
             throw err;
         }
     }
+    async getONDC(orderId) {
+        try {
+            let order = await Order.findOne({orderId:orderId}).lean();
+
+            return order;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            throw err;
+        }
+    }
+
+    async update(orderId,data) {
+        try {
+            let order = await Order.findOne({orderId:orderId}).lean();
+
+            order.state = data.state
+
+            await order.save();
+
+            return order;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            throw err;
+        }
+    }
 
 }
 export default OrderService;

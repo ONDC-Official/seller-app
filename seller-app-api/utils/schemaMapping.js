@@ -373,7 +373,7 @@ exports.getConfirm = async (data) => {
                 "state":"Created",
                 "provider": {"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"},
                 "provider_location": data.message.order.provider_location,
-                "items": data.qouteItems,
+                "items": data.items,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
                 "quote":{
