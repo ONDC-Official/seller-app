@@ -61,6 +61,15 @@ class ProductService {
                 query.organization = org._id
                 const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
                 if(data.length>0){
+                    for(const product of data){
+                        let productDetails = product
+                        let images = []
+                        for(const image of productDetails.images){
+                            let imageData = await s3.getSignedUrlForRead({path:image});
+                            images.push(imageData.url);
+                        }
+                        product.images = images
+                    }
                     org.items = data
                     products.push(org);
                 }
