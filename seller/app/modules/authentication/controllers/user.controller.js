@@ -109,6 +109,18 @@ class UserController {
         }
     }
 
+    async enable(req, res, next) {
+        try {
+            const data = req.body;
+            const user = await userService.enable(req.params.userId,data);
+            return res.send(user);
+
+        } catch (error) {
+            console.log('[userController] [getUsers] Error -', error);
+            next(error);
+        }
+    }
+
     async upload(req, res, next) {
         try {
             const currentUser=req.user;

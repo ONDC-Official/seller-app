@@ -29,6 +29,12 @@ router.get('/v1/users/:userId',
     userController.getUsersById
 );
 
+router.put('/v1/users/:userId/enable',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
+    userController.enable
+);
+
 router.get('/v1/users',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),

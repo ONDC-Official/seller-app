@@ -226,6 +226,24 @@ class UserService {
         }
     }
 
+    async enable(userId,data){
+        try {
+
+            const users = await User.findOne({_id:userId})
+            console.log(users);
+            if(!users){
+                throw  new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
+            }else{
+
+                users.enabled = data.enabled
+                await users.save();
+                return data;
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
     /**
    * Fetch list of all users in the system
    * - Users list depends on role of ther user(API caller)
