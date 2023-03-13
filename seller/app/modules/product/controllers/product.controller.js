@@ -1,7 +1,9 @@
 import ProductService from '../v1/services/product.service';
+import {mergedEnvironmentConfig} from "../../../config/env.config";
 var XLSX = require('xlsx')
 const productService = new ProductService();
-
+import AWS from 'aws-sdk';
+import fetch from 'node-fetch';
 class ProductController {
 
     async create(req, res, next) {
@@ -113,7 +115,49 @@ class ProductController {
             }else{
                 for(const row of jsonData){
                     row.organization = req.user.organization
+
+                    let images = row.images.split(',')
+
+                    let imageUrls = []
+                    var keyName = req.user.organization+'/'+'productImages'+'/' + s4();
+
+                        function s4() {
+                            return Math.floor((1 + Math.random()) * 0x10000)
+                                .toString(16)
+                                .substring(1);
+                        }
+
+                    for(const img of images){
+                        var keyName = req.user.organization+'/'+'productImages'+'/' + s4();
+                        const region = mergedEnvironmentConfig.s3.region;
+                        const bucket = mergedEnvironmentConfig.s3.bucket;
+
+                        const imageURL = img
+                        const res = await fetch(imageURL)
+                        console.log("mime--->",res)
+
+                        let extention = imageURL.split('.').slice(-1)[0]
+                        keyName=keyName+'.'+extention
+                        const blob = await res.buffer()
+                        const s3 = new AWS.S3({
+                            useAccelerateEndpoint: true,
+                            region: region
+                        });
+
+                        const uploadedImage = await s3.upload({
+                            Bucket: bucket,
+                            Key: keyName,
+                            Body: blob
+                        }).promise()
+
+                        //console.log("uploaded image --->",uploadedImage);
+
+                        imageUrls.push(keyName);
+                    }
+
+                    row.images=imageUrls
                     await productService.create(row);
+
                 }
             }
 
@@ -125,7 +169,10 @@ class ProductController {
             console.log('[OrderController] [get] Error -', error);
             next(error);
         }
+
+
     }
+
 
 }
 

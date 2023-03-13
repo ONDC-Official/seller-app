@@ -5,6 +5,7 @@ const version = mergedEnvironmentConfig.s3.version;
 const region = mergedEnvironmentConfig.s3.region;
 const bucket = mergedEnvironmentConfig.s3.bucket;
 
+
 //TODO:move to ext config
 const s3 = new AWS.S3({
     useAccelerateEndpoint: true,
