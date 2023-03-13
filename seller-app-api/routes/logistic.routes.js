@@ -24,7 +24,7 @@ router.post('/client/cancel',
 router.post('/client/track',
     logisticController.productTrack);
 
-router.post('/client/track',
+router.post('/client/status',
     logisticController.productStatus);
 
 router.post('/client/support',

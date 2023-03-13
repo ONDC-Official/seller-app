@@ -58,7 +58,7 @@ router.post('/v1/products/upload/bulk',
 );
 
 router.get('/v1/products/upload/bulk/template',
-    authentication.middleware(),
+    //authentication.middleware(),
     productController.uploadTemplate,
 );
 

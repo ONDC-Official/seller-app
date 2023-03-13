@@ -408,65 +408,6 @@ class LogisticsService {
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
-
-            const initRequest2 = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "country": "IND",
-                    "city": "std:080", //TODO: take city from retail context
-                    "action": "init",
-                    "core_version": "1.0.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
-                    "message_id": logisticsMessageId,
-                    "timestamp":new Date(),
-                    "ttl": "PT30S"
-                },
-                "message": {
-                    "order": {
-                        "provider": {
-                            "id": logistics.message.catalog["bpp/providers"][0].id,
-                            "locations": [{
-                                "id": "18275-Location-1"
-                            }]
-                        },
-                        "items": logistics.message.catalog["bpp/providers"][0].items,
-                        "fulfillments": [{
-                            "id": "Fulfillment1",
-                            "type": "Prepaid",
-                            "start": {
-                                "location": config.get("sellerConfig").sellerPickupLocation.location,
-                                "contact": config.get("sellerConfig").sellerPickupLocation.contact
-                            },
-                            "end": order.fulfillments[0].end
-                        }],
-                        billing:      { //TODO: move to config
-                            "name": "XXXX YYYYY",
-                            "address":
-                                {
-                                    "name": "D000, Prestige Towers",
-                                    "locality": "Bannerghatta Road",
-                                    "city": "Bengaluru",
-                                    "state": "Karnataka",
-                                    "country": "India",
-                                    "area_code": "560076"
-                                },
-                            "tax_number": "29AAACU1901H1ZK",
-                            "phone": "98860 98860",
-                            "email": "abcd.efgh@gmail.com"
-                        },
-                        "payment": {
-                            "type": "POST-FULFILLMENT",
-                            "collected_by": "BAP",
-                            "@ondc/org/settlement_window": "P2D"
-                        }
-                    }
-                }
-            }
-
             const contextTimeStamp =new Date()
             const initRequest =     {
                 "context": {
@@ -836,7 +777,7 @@ console.log("end logs------------->",order.fulfillments[0].end)
                             "items": itemDetails,
                             "provider": {
                                 "descriptor": {
-                                    "name": "Spice 9"
+                                    "name": "Spice 9" //TODO: take details from seller service
                                 },
                                 "address": {
                                     "name": "Spice 9",
@@ -857,18 +798,12 @@ console.log("end logs------------->",order.fulfillments[0].end)
                             }
                         },
                         "id": order.id,
-                        "items": [{
-                            "id": "nextday",
-                            "descriptor": {
-                                "code": "P2P"
-                            },
-                            "category_id": "Next Day Delivery"
-                        }],
+                        "items": initRequest.selectedLogistics.message.order.items,
                         "provider":initRequest.selectedLogistics.message.order.provider,
                         "fulfillments": [{
-                            "id": "c60db0e3-6b07-4f5c-8e97-38bb5afcf3b0",
+                            "id": order.fulfillments[0].id,
                             "type": "Prepaid",
-                            "start": {
+                            "start": { //TODO: hard coded for seller
                                 "location": {
                                     "gps": "12.926837, 77.5506810000001",
                                     "address": {
@@ -895,16 +830,16 @@ console.log("end logs------------->",order.fulfillments[0].end)
                             },
                             "end": end,
                             "tags": {
-                                "@ondc/org/order_ready_to_ship": "Yes" //TODO: hard coded
+                                "@ondc/org/order_ready_to_ship": "No" //TODO: hard coded
                             }
                         }],
                             "quote": initRequest.selectedLogistics.message.order.quote,
-                        "payment": {
+                        "payment": { //TODO: hard coded
                             "type": "ON-ORDER",
                                 "collected_by": "BAP",
                                 "@ondc/org/settlement_details": []
                         },
-                        "billing": {
+                        "billing": { //TODO: hard coded
                             "name": "Ek Second Technologies",
                                 "email": "najeeb@eksecon.in",
                                 "phone": "9000912423",
@@ -1322,7 +1257,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "status",
-                    "core_version": "1.0.0",
+                    "core_version": "1.1.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
@@ -1343,7 +1278,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-                this.buildStatusRequest(trackRequest,logisticsMessageId, selectMessageId)
+                this.postStatusRequest(trackRequest,logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
             return {status:'ACK'}
@@ -1385,7 +1320,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             //async post request
             setTimeout(() => {
                 logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
-                this.buildStatusRequest(logisticsMessageId, selectMessageId)
+                this.buildStatusRequest(searchRequest,logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
             logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1551,10 +1486,10 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return e
         }
     }
-    async buildStatusRequest(logisticsMessageId, initMessageId) {
+    async buildStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildStatusRequest---------->");
+            console.log("buildStatusRequest---------->",logisticsMessageId,"--",initMessageId);
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response

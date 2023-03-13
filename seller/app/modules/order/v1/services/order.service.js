@@ -115,5 +115,19 @@ class OrderService {
         }
     }
 
+    async OndcUpdate(orderId,data) {
+        try {
+
+            console.log("data-------->",data.data)
+            let order = await Order.findOneAndUpdate({orderId:orderId},data.data)
+
+            return order;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            throw err;
+        }
+    }
+
 }
 export default OrderService;

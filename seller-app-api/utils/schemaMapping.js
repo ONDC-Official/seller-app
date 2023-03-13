@@ -260,14 +260,14 @@ exports.getStatus = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "provider":{"id": "afe44f35-fb0c-527b-8a80-a1b0b839197e"}, //TODO: map to strapi
+                "provider":{"id":data.updateOrder.organization}, //TODO: map to strapi
                 "state":data.updateOrder.state,
                 "items": data.updateOrder.items,
                 "billing": data.updateOrder.billing,
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
                 "payment": data.updateOrder.payment,
-                 "id" :  data.updateOrder.id
+                 "id" :  data.updateOrder.order_id
             }
         }
     }

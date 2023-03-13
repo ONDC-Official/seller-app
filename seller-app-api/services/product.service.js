@@ -500,7 +500,7 @@ class ProductService {
         let confirm = {}
         let httpRequest = new HttpRequest(
             serverUrl,
-            `/api/orders?filters[order_id][$eq]=${statusRequest.message.order_id}`,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcGet`,
             'GET',
             {},
             {}
@@ -508,16 +508,24 @@ class ProductService {
 
         let result = await httpRequest.send();
 
-        console.log("result---------------->",result.data.data[0]);
+        console.log("result---------------->",result.data);
 
-        let updateOrder = result.data.data[0].attributes
+        let updateOrder = result.data
 
-        updateOrder.state =logisticData.message.order.state
+        if(logisticData.message.order.fulfillments[0].state?.descriptor?.code ==='Pending'){
+            updateOrder.state ='Created'
+        }else{
+            updateOrder.state =logisticData.message.order.state
+        }
+
+        //updateOrder.state =logisticData.message.order.state
+
+        updateOrder.fulfillments[0].state =logisticData.message.order.fulfillments[0].state
 
         //update order level state
         httpRequest = new HttpRequest(
             serverUrl,
-            `/api/orders/${result.data.data[0].id}`,
+            `/api/v1/orders/${result.data._id}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
@@ -527,13 +535,15 @@ class ProductService {
 
         //update item level fulfillment status
         let items = updateOrder.items.map((item)=>{
-            item.tags={status:updateOrder.state};
-            item.fulfillment_id = item.id
+            item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            delete item.state
             return item;
         });
 
         updateOrder.items = items;
         updateOrder.id = statusRequest.message.order_id;
+
 
         console.log("trackRequest=============>",statusRequest);
         console.log("logisticData=============>",logisticData);
@@ -697,7 +707,13 @@ class ProductService {
         confirmData.orderId = confirmData.id
         // confirmData.state = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
-        confirmData.state =logisticData.message.order.state
+
+        if(logisticData.message.order.fulfillments[0].state?.descriptor?.code ==='Pending'){
+            confirmData.state ='Created'
+        }else{
+            confirmData.state =logisticData.message.order.state
+        }
+
         delete confirmData.id
 
         console.log("orderItems-------confirmData-------->", confirmData)
@@ -785,7 +801,7 @@ class ProductService {
 
                 let price = result?.data?.MRP * item.quantity.count
                 totalPrice += parseInt(price)
-                item.price = {value: price, currency: "INR"}
+                item.price = {value: ""+price, currency: "INR"}
             }
 
             qouteItemsDetails = {
@@ -898,7 +914,7 @@ class ProductService {
             if (result?.data) {
                 let price = result?.data?.MRP * item.quantity.count
                 totalPrice += price
-                item.price = {value: price, currency: "INR"}
+                item.price = {value: ""+price, currency: "INR"}
             }
 
             //TODO: check if quantity is available

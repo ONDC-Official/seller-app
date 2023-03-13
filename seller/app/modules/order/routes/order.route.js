@@ -25,7 +25,7 @@ router.get('/v1/orders/:orderId/ondcGet',
 );
 
 router.put('/v1/orders/:orderId/ondcUpdate',
-    orderController.update,
+    orderController.ondcUpdate,
 );
 
 module.exports = router;
