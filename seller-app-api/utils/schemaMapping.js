@@ -278,6 +278,42 @@ exports.getStatus = async (data) => {
 
 }
 
+exports.getUpdate = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    // console.log("data.message.order.provider",data.message.order)
+    // console.log("data.message.order.provider_location",data.message.order.provider_location)
+    // console.log("data.message.order.billing",data.message.order.billing)
+    // console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    // console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_update'
+    const schema = {
+        "context": {...context},
+        "message":  {
+            "order": {
+                "provider":{"id":data.updateOrder.organization},
+                "state":data.updateOrder.state,
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment,
+                 "id" :  data.updateOrder.id
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+
 exports.getCancel = async (data) => {
 
     let productAvailable = []

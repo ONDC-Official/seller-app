@@ -1,5 +1,5 @@
 import HttpRequest from '../utils/HttpRequest';
-import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
+import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
 import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
 import logger from "../lib/logger";
 
@@ -550,6 +550,83 @@ class ProductService {
         console.log("trackRequest=============>",statusRequest);
         console.log("logisticData=============>",logisticData);
         const productData = await getStatus({
+            context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
+    async productUpdate(requestQuery) {
+
+        const statusRequest = requestQuery.retail_update[0]//select first select request
+        const logisticData = requestQuery.logistics_on_update[0]
+
+        console.log("trackRequest=============>",statusRequest);
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order.id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data);
+
+        let updateOrder = result.data
+
+        let updatedItems = []
+        for (let item of updateOrder.items){
+            let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
+
+            if(updateItem.tags.update_type==='cancel'){
+                item.state = "Cancelled";
+                item. reason_code = updateItem.tags.reason_code;
+            }
+            console.log("updateItem------>",updateItem);
+            console.log("updateItem----item-->",item);
+            //if(item.id === )
+
+            updatedItems.push(item);
+        }
+
+        updateOrder.items =updatedItems;
+
+        console.log("updated items---->",updatedItems)
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = updateOrder.fulfillments[0].id
+            delete item.state
+            delete item.reason_code
+            return item;
+        });
+
+        updateOrder.items = items;
+        updateOrder.id = updateOrder.orderId;
+
+        console.log("trackRequest=============>",statusRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getUpdate({
             context: statusRequest.context,
             updateOrder:updateOrder
         });

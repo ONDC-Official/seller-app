@@ -30,6 +30,9 @@ router.post('/client/status',
 router.put('/client/status/updateOrder',
     logisticController.productStatusUpdate);
 
+router.post('/client/update',
+    logisticController.productUpdate);
+
 router.post('/client/support',
     logisticController.productSupport);
 
