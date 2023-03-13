@@ -27,6 +27,9 @@ router.post('/client/track',
 router.post('/client/status',
     logisticController.productStatus);
 
+router.put('/client/status/updateOrder',
+    logisticController.productStatusUpdate);
+
 router.post('/client/support',
     logisticController.productSupport);
 

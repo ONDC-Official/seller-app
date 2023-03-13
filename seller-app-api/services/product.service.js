@@ -535,7 +535,10 @@ class ProductService {
 
         //update item level fulfillment status
         let items = updateOrder.items.map((item)=>{
-            item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
             item.fulfillment_id = logisticData.message.order.fulfillments[0].id
             delete item.state
             return item;
@@ -544,11 +547,64 @@ class ProductService {
         updateOrder.items = items;
         updateOrder.id = statusRequest.message.order_id;
 
-
         console.log("trackRequest=============>",statusRequest);
         console.log("logisticData=============>",logisticData);
         const productData = await getStatus({
             context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
+    async productOrderStatus(requestQuery,statusRequest) {
+
+        const logisticData = requestQuery.logistics_on_update[0]
+
+        let confirm = {}
+
+
+       // let result = await httpRequest.send();
+
+       console.log("result---------------->",statusRequest);
+
+        let updateOrder = statusRequest.message.order
+
+        updateOrder.state =logisticData.message.order.state //set to inprogress
+
+        //update order level state
+       let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${updateOrder.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        updateOrder.order_id = updateOrder.orderId;
+        delete updateOrder._id
+
+       // updateOrder.fulfillments[0].state =logisticData.message.order.fulfillments[0].state
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            delete item.state
+            return item;
+        });
+
+        updateOrder.items = items;
+        //updateOrder.id = statusRequest.orderId;
+
+        console.log("trackRequest=============>",statusRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getStatus({
+            context: statusRequest.context, //TODO: build status context from confirm request
             updateOrder:updateOrder
         });
 
@@ -739,6 +795,7 @@ class ProductService {
         savedLogistics.retailOrderId = confirmData.order_id
         savedLogistics.orderId = logisticData.message.order.id
         savedLogistics.selectedLogistics = logisticData
+        savedLogistics.confirmRequest = confirmRequest
 
         await savedLogistics.save();
 

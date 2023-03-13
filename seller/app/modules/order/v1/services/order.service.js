@@ -1,7 +1,8 @@
 
 import Order from '../../models/order.model';
 import Product from '../../../product/models/product.model';
-import ProductService from "../../../product/v1/services/product.service";
+import HttpRequest from '../../../../lib/utils/HttpRequest'
+import {mergedEnvironmentConfig} from "../../../../config/env.config";
 
 class OrderService {
     async create(data) {
@@ -87,6 +88,32 @@ class OrderService {
             throw err;
         }
     }
+
+    async updateOrderStatus(orderId,data) {
+        try {
+            let order = await Order.findOne({_id:orderId}).lean();
+
+            //update order state
+            order.state = data.status;
+
+            //notify client to update order status ready to ship to logistics
+           let httpRequest = new HttpRequest(
+               mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                `/api/client/status/updateOrder`,
+                'PUT',
+                {data:order},
+                {}
+            );
+           await httpRequest.send();
+
+            return order;
+
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            throw err;
+        }
+    }
+
     async getONDC(orderId) {
         try {
             let order = await Order.findOne({orderId:orderId}).lean();
@@ -119,6 +146,7 @@ class OrderService {
         try {
 
             console.log("data-------->",data.data)
+            delete data.data._id
             let order = await Order.findOneAndUpdate({orderId:orderId},data.data)
 
             return order;

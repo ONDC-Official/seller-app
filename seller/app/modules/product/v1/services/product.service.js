@@ -59,6 +59,7 @@ class ProductService {
             let products = [];
             for(const org of orgs){
                 query.organization = org._id
+                query.published = true
                 const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
                 if(data.length>0){
                     for(const product of data){

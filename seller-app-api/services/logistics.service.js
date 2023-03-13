@@ -1286,6 +1286,95 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             throw err;
         }
     }
+    async productStatusUpdate(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            console.log("payload.context----->", payload);
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    retailOrderId: payload.data.orderId
+                }
+            })
+
+            console.log("selected logistics--------selectRequest------->", confirmRequest);
+
+            const logistics = confirmRequest.selectedLogistics;
+
+            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
+            console.log("selected logistics--------selectRequest----context--->", logistics.context);
+
+            const order = payload.data;
+            const selectMessageId = uuidv4();
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "update",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": logistics.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080", //TODO: take it from request
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message": {
+                    "order": {
+                        "id": order.orderId,
+                        "state": "Accepted",
+                        "items": logistics.items,
+                        "@ondc/org/linked_order": {
+                            "items": [{
+                                "descriptor": {
+                                    "name": "KIT KAT"
+                                },
+                                "quantity": {
+                                    "count": 2,
+                                    "measure": {
+                                        "value": 200,
+                                        "unit": "Gram"
+                                    }
+                                },
+                                "price": {
+                                    "currency": "INR",
+                                    "value": "200.00"
+                                },
+                                "category_id": "Grocery"
+                            }]
+                        },
+                        "fulfillments": [{
+                            "id": logistics.message.order.fulfillments[0].id,
+                            "type": logistics.message.order.fulfillments[0].type,
+                            "tracking": logistics.message.order.fulfillments[0].tracking,
+                            "tags": {
+                                "@ondc/org/order_ready_to_ship": "yes"
+                            }
+                        }],
+                        "updated_at":new Date()
+                    },
+                    "update_target": "fulfillment"
+                }
+
+            }
+
+
+            payload = {message:{order:order},context:confirmRequest.confirmRequest.context}
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            //setTimeout(() => {
+                this.postUpdateRequest(payload,trackRequest,logisticsMessageId, selectMessageId)
+            //}, 5000); //TODO move to config
+
+            return {status:'ACK'}
+        } catch (err) {
+            throw err;
+        }
+    }
 
 
     async postStatusRequest(searchRequest,logisticsMessageId,selectMessageId){
@@ -1321,6 +1410,46 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             setTimeout(() => {
                 logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildStatusRequest(searchRequest,logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Logistics Service] post http select response : `, e);
+            return e
+        }
+    }
+
+    async postUpdateRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+
+                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
+                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/logistics/v1/update`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+
+
+                let result = await httpRequest.send();
+                console.log("------result ->>>",result )
+
+            } catch (e) {
+                logger.error('error', `[Logistics Service] post http select response : `, e);
+                return e
+            }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+               this.buildOrderStatusRequest(orderData,logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
             logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1497,6 +1626,27 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             console.log("logisticsResponse---------->", logisticsResponse);
 
             let statusResponse = await productService.productStatus(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postStatusResponse(statusResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    async buildOrderStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
+
+        try {
+            console.log("buildStatusRequest---------->",logisticsMessageId,"--",initMessageId);
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'update')
+            //2. if data present then build select response
+
+            console.log("logisticsResponse---------->", logisticsResponse);
+
+            let statusResponse = await productService.productOrderStatus(logisticsResponse,statusRequest)
 
             //3. post to protocol layer
             await this.postStatusResponse(statusResponse);

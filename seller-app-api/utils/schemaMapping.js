@@ -260,7 +260,7 @@ exports.getStatus = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "provider":{"id":data.updateOrder.organization}, //TODO: map to strapi
+                "provider":{"id":data.updateOrder.organization},
                 "state":data.updateOrder.state,
                 "items": data.updateOrder.items,
                 "billing": data.updateOrder.billing,

@@ -5,5 +5,6 @@ module.exports = {
     jwtForResetPasswordSecret:process.env.AUTH_ACCESS_JWT_SECRET_RESET_PASSWORD,
     intraServiceApiEndpoints: {
         nes: process.env.INTRA_SERVICE_NOTIFICAION_SERVICE_URL,
+        client: process.env.INTRA_SERVICE_SELLER_CLIENT_SERVICE_URL
     },
 };

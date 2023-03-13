@@ -44,6 +44,18 @@ class OrderController {
             next(error);
         }
     }
+
+    async updateOrderStatus(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await orderService.updateOrderStatus(params.orderId,req.body);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
     async getONDC(req, res, next) {
         try {
             const params = req.params;
