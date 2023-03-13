@@ -99,6 +99,7 @@ class ProductController {
         try {
 
             let path = req.file.path;
+
             var workbook = XLSX.readFile(path);
             var sheet_name_list = workbook.SheetNames;
             let jsonData = XLSX.utils.sheet_to_json(
@@ -111,6 +112,7 @@ class ProductController {
                 });
             }else{
                 for(const row of jsonData){
+                    row.organization = req.user.organization
                     await productService.create(row);
                 }
             }
