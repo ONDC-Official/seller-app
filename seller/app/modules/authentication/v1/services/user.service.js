@@ -272,10 +272,11 @@ class UserService {
                         'foreignField':'_id',
                         'as': 'role',
                         'pipeline':[{'$match':roleQuery}]
-                    }
+                    },
+
                 },{
                     '$match':userQuery,
-                },
+                },      {'$project': { "password": 0 }}
             ]).sort({createdAt:1}).limit(queryData.limit).skip(queryData.offset);
 
 

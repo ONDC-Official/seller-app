@@ -30,7 +30,7 @@ class OrderService {
             if(params.organization){
                 query.organization =params.organization;
             }
-            const data = await Order.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit).lean();
+            const data = await Order.find(query).populate([{path:'organization',select:['name','_id','storeDetails']}]).sort({createdAt:1}).skip(params.offset).limit(params.limit).lean();
 
             for(const order of data ){
 
@@ -68,6 +68,7 @@ class OrderService {
         try {
             let order = await Order.findOne({_id:orderId}).lean();
 
+            console.log("order---->",order);
             let items = []
             for(const itemDetails of order.items){
 
