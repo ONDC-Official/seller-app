@@ -4,6 +4,7 @@ var XLSX = require('xlsx')
 const productService = new ProductService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
+import { uuid } from 'uuidv4';
 class ProductController {
 
     async create(req, res, next) {
@@ -119,16 +120,9 @@ class ProductController {
                     let images = row.images.split(',')
 
                     let imageUrls = []
-                    var keyName = req.user.organization+'/'+'productImages'+'/' + s4();
-
-                        function s4() {
-                            return Math.floor((1 + Math.random()) * 0x10000)
-                                .toString(16)
-                                .substring(1);
-                        }
 
                     for(const img of images){
-                        var keyName = req.user.organization+'/'+'productImages'+'/' + s4();
+                        var keyName = req.user.organization+'/'+'productImages'+'/' + uuid();
                         const region = mergedEnvironmentConfig.s3.region;
                         const bucket = mergedEnvironmentConfig.s3.bucket;
 
