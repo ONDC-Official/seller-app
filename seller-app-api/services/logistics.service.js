@@ -19,7 +19,9 @@ class LogisticsService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] search logistics payload : param :`,payload);
+            console.log("payload----->",payload)
+
+            logger.log('info', `[Logistics Service] search logistics payload : param >>:`,payload);
 
             const order = payload;
             const selectMessageId = payload.context.message_id;

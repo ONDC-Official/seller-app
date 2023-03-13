@@ -30,6 +30,9 @@ const orderSchema = new mongoose.Schema({
     orderId:{
         type:String
     },
+    cancellation_reason_id:{
+        type:String
+    },
     organization: { type: String, ref: 'Organization' },
     updatedAt:{
         type:Number,

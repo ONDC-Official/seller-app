@@ -55,11 +55,13 @@ class ProductService {
         try {
             let query={};
 
+            console.log("params------->",params)
             const orgs = await Organization.find({},{storeDetails:1,_id:1,name:1}).lean();
             let products = [];
             for(const org of orgs){
                 query.organization = org._id
                 query.published = true
+               // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
                 const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
                 if(data.length>0){
                     for(const product of data){

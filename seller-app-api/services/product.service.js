@@ -635,6 +635,7 @@ class ProductService {
         let updateOrder = result.data
 
         updateOrder.state =logisticData.message.order.state
+        updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
 
         //update order level state
         httpRequest = new HttpRequest(
@@ -648,13 +649,13 @@ class ProductService {
         let updateResult = await httpRequest.send();
 
         //update item level fulfillment status
-        let items = updateOrder.items.map((item)=>{
-            item.tags={status:updateOrder.state};
-            item.fulfillment_id = item.id
-            return item;
-        });
+        // let items = updateOrder.items.map((item)=>{
+        //     item.tags={status:updateOrder.state};
+        //     item.fulfillment_id = item.id
+        //     return item;
+        // });
 
-        updateOrder.items = items;
+        //updateOrder.items = items;
         updateOrder.id = cancelRequest.message.order_id;
         console.log("trackRequest=============>",cancelRequest);
         console.log("logisticData=============>",logisticData);
