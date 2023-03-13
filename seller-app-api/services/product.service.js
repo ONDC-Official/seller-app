@@ -581,13 +581,16 @@ class ProductService {
 
         let updatedItems = []
         for (let item of updateOrder.items){
+
             let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
 
-            if(updateItem.tags.update_type==='cancel'){
-                item.state = "Cancelled";
-                item. reason_code = updateItem.tags.reason_code;
-            }
             console.log("updateItem------>",updateItem);
+
+            if(updateItem?.tags?.update_type==='cancel'){
+                item.state = "Cancelled";
+                item.reason_code = updateItem.tags.reason_code;
+            }
+
             console.log("updateItem----item-->",item);
             //if(item.id === )
 
