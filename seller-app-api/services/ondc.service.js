@@ -19,7 +19,7 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] search logistics payload : param >>:`,payload);
+            logger.log('info', `[Ondc Service] search logistics payload : param >>:`,payload);
 
             const order = payload;
             const selectMessageId = payload.context.message_id;
@@ -28,7 +28,7 @@ class OndcService {
 
             return {}
         } catch (err) {
-            logger.error('error', `[Logistics Service] search logistics payload - search logistics payload : param :`, err);
+            logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
         }
     }
@@ -37,7 +37,7 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] search logistics payload : param :`,payload);
+            logger.log('info', `[Ondc Service] search logistics payload : param :`,payload);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -112,7 +112,7 @@ class OndcService {
 
             return searchRequest
         } catch (err) {
-            logger.error('error', `[Logistics Service] search logistics payload - search logistics payload : param :`, err);
+            logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
         }
     }
@@ -136,7 +136,7 @@ class OndcService {
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -144,11 +144,11 @@ class OndcService {
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -156,7 +156,7 @@ class OndcService {
     async buildSelectRequest(logisticsMessageId, selectMessageId) {
 
         try {
-            logger.log('info', `[Logistics Service] search logistics payload - build select request : param :`, {logisticsMessageId,selectMessageId});
+            logger.log('info', `[Ondc Service] search logistics payload - build select request : param :`, {logisticsMessageId,selectMessageId});
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
@@ -165,7 +165,7 @@ class OndcService {
             await this.postSelectResponse(selectResponse);
 
         } catch (e) {
-            logger.error('error', `[Logistics Service] search logistics payload - build select request : param :`, e);
+            logger.error('error', `[Ondc Service] search logistics payload - build select request : param :`, e);
             return e
         }
     }
@@ -174,7 +174,7 @@ class OndcService {
         try{
                 this.buildSearchRequest(searchRequest, selectMessageId)
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e;
         }
     }
@@ -186,7 +186,7 @@ class OndcService {
             await this.postSearchResponse(searchResponse);
 
         } catch (e) {
-            logger.error('error', `[Logistics Service] search logistics payload - build select request : param :`, e);
+            logger.error('error', `[Ondc Service] search logistics payload - build select request : param :`, e);
             return e
         }
     }
@@ -195,7 +195,7 @@ class OndcService {
     async getLogistics(logisticsMessageId, retailMessageId, type) {
         try {
 
-            logger.log('info', `[Logistics Service] get logistics : param :`, {logisticsMessageId,retailMessageId,type});
+            logger.log('info', `[Ondc Service] get logistics : param :`, {logisticsMessageId,retailMessageId,type});
 
             let headers = {};
             let query = ''
@@ -228,12 +228,12 @@ class OndcService {
 
             let result = await httpRequest.send();
 
-            logger.log('info', `[Logistics Service] get logistics : response :`, result.data);
+            logger.log('info', `[Ondc Service] get logistics : response :`, result.data);
 
             return result.data
 
         } catch (e) {
-            logger.error('error', `[Logistics Service] get logistics : response :`, e);
+            logger.error('error', `[Ondc Service] get logistics : response :`, e);
             return e
         }
 
@@ -243,7 +243,7 @@ class OndcService {
     async postSelectResponse(selectResponse) {
         try {
 
-            logger.info('info', `[Logistics Service] post http select response : `, selectResponse);
+            logger.info('info', `[Ondc Service] post http select response : `, selectResponse);
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -259,7 +259,7 @@ class OndcService {
             return result.data
 
         } catch (e) {
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
 
@@ -269,7 +269,7 @@ class OndcService {
     async postSearchResponse(searchResponse) {
         try {
 
-            logger.info('info', `[Logistics Service] post http select response : `, searchResponse);
+            logger.info('info', `[Ondc Service] post http select response : `, searchResponse);
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -285,7 +285,7 @@ class OndcService {
             return result.data
 
         } catch (e) {
-            logger.error('error', `[Logistics Service] post http search response : `, e);
+            logger.error('error', `[Ondc Service] post http search response : `, e);
             return e
         }
 
@@ -296,7 +296,7 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload.message.order);
+            logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
@@ -304,11 +304,11 @@ class OndcService {
                 }
             })
 
-            //logger.log('info', `[Logistics Service] old select request :`,selectRequest);
+            //logger.log('info', `[Ondc Service] old select request :`,selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            //logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
+            //logger.log('info', `[Ondc Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
@@ -373,7 +373,7 @@ class OndcService {
             }]
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
+                logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
                 this.buildInitRequest(logisticsMessageId, initMessageId)
             }, 5000); //TODO move to config
@@ -381,7 +381,7 @@ class OndcService {
             return initRequest
         } catch (err) {
         	console.log(err);    
-	logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+	logger.error('error', `[Ondc Service] build init request :`, {error:err.stack,message:err.message});
             return err
         }
     }
@@ -390,7 +390,7 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            logger.log('info', `[Logistics Service] init logistics payload : param :`,payload.message.order);
+            logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
@@ -398,11 +398,11 @@ class OndcService {
                 }
             })
 
-  //          logger.log('info', `[Logistics Service] old select request :`,selectRequest);
+  //          logger.log('info', `[Ondc Service] old select request :`,selectRequest);
 
             const logistics = selectRequest.selectedLogistics;
 
-            //logger.log('info', `[Logistics Service] old selected logistics :`,logistics);
+            //logger.log('info', `[Ondc Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
@@ -462,13 +462,13 @@ class OndcService {
                     }
                 }
             }
-                //logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
+                //logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
                 this.postInitRequest(initRequest,logisticsMessageId, initMessageId)
 
             return {'status':'ACK'}
         } catch (err) {
-            logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+            logger.error('error', `[Ondc Service] build init request :`, {error:err.stack,message:err.message});
         console.log(err)   
 	 return err
         }
@@ -493,7 +493,7 @@ class OndcService {
 
                 let result = await httpRequest.send();
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -501,11 +501,11 @@ class OndcService {
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildInitRequest(logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -513,20 +513,20 @@ class OndcService {
     async buildInitRequest(logisticsMessageId, initMessageId) {
 
         try {
-            logger.log('info', `[Logistics Service] build init request :`, {logisticsMessageId,initMessageId});
+            logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId});
 
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'init')
 
             //2. if data present then build select response
-            logger.log('info', `[Logistics Service] build init request - get logistics response :`, logisticsResponse);
+            logger.log('info', `[Ondc Service] build init request - get logistics response :`, logisticsResponse);
             let selectResponse = await productService.productInit(logisticsResponse)
 
             //3. post to protocol layer
             await this.postInitResponse(selectResponse);
 
         } catch (err) {
-            logger.error('error', `[Logistics Service] build init request :`, {error:err.stack,message:err.message});
+            logger.error('error', `[Ondc Service] build init request :`, {error:err.stack,message:err.message});
             return err
         }
     }
@@ -536,7 +536,7 @@ class OndcService {
     async postInitResponse(initResponse) {
         try {
 
-            logger.info('info', `[Logistics Service] post init request :`, initResponse);
+            logger.info('info', `[Ondc Service] post init request :`, initResponse);
 
             let headers = {};
             let httpRequest = new HttpRequest(
@@ -552,7 +552,7 @@ class OndcService {
             return result.data
 
         } catch (err) {
-            logger.error('error', `[Logistics Service] post init request :`, {error:err.stack,message:err.message});
+            logger.error('error', `[Ondc Service] post init request :`, {error:err.stack,message:err.message});
             return err
         }
 
@@ -851,7 +851,7 @@ class OndcService {
             }            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
            // setTimeout(() => {
 
-logger.info('info', `[Logistics Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
+logger.info('info', `[Ondc Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
                 this.postConfirmRequest(confirmRequest,logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 
@@ -882,7 +882,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -890,11 +890,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildConfirmRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1067,7 +1067,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -1075,11 +1075,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildTrackRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1416,7 +1416,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -1424,11 +1424,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildStatusRequest(searchRequest,logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1456,7 +1456,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             //     console.log("------result ->>>",result )
             //
             // } catch (e) {
-            //     logger.error('error', `[Logistics Service] post http select response : `, e);
+            //     logger.error('error', `[Ondc Service] post http select response : `, e);
             //     return e
             // }
 
@@ -1464,11 +1464,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                this.buildUpdateRequest(orderData,logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1492,7 +1492,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -1500,11 +1500,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                this.buildOrderStatusRequest(orderData,logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1634,7 +1634,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -1642,11 +1642,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildCancelRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
@@ -1919,7 +1919,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 let result = await httpRequest.send();
 
             } catch (e) {
-                logger.error('error', `[Logistics Service] post http select response : `, e);
+                logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
             }
 
@@ -1927,11 +1927,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                 this.buildSupportRequest(logisticsMessageId, selectMessageId)
             }, 10000); //TODO move to config
         }catch (e){
-            logger.error('error', `[Logistics Service] post http select response : `, e);
+            logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
