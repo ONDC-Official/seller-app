@@ -19,15 +19,6 @@ const MESSAGES = {
     SET_PASSWORD_SUCCESS: 'Password changed successfully',
     RESET_PASSWORD_SUCCESS: 'Password reset successfully',
     CHANGE_PASSWORD_SUCCESS: 'Password updated successfully',
-    LAB_ALREADY_EXISTS: 'Lab is already exists',
-    LAB_NOT_EXISTS: 'Lab is does not exists',
-    PROCESS_ALREADY_EXISTS: 'Process is already exists',
-    PROCESS_NOT_EXISTS: 'Process is does not exists',
-    LTMC_ALREADY_EXISTS: 'Local test method code is already exists',
-    LTMC_NOT_EXISTS: 'Local test method code is does not exists',
-    METHOD_DESCRIPTOR_ALREADY_EXISTS: 'method descriptor is already exists',
-    METHOD_DESCRIPTOR_NOT_EXISTS: 'method descriptor is does not exists'
-
 };
 
 export default MESSAGES;

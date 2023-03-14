@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import LogisticController from '../controllers/logistic.controller';
+import LogisticController from '../controllers/ondc.controller';
 import { authentication } from '../middlewares/index.js';
 
 const router = new Router();
@@ -10,30 +10,30 @@ router.post('/client/search',
 
 //new changes
 router.post('/client/select',
-    logisticController.productSelect);
+    logisticController.orderSelect);
 
 router.post('/client/Init',
-    logisticController.productInit);
+    logisticController.orderInit);
 
 router.post('/client/confirm',
-    logisticController.productConfirm);
+    logisticController.orderConfirm);
 
 router.post('/client/cancel',
-    logisticController.productCancel);
+    logisticController.orderCancel);
 
 router.post('/client/track',
-    logisticController.productTrack);
+    logisticController.orderTrack);
 
 router.post('/client/status',
-    logisticController.productStatus);
+    logisticController.orderStatus);
 
 router.put('/client/status/updateOrder',
-    logisticController.productStatusUpdate);
+    logisticController.orderStatusUpdate);
 
 router.post('/client/update',
-    logisticController.productUpdate);
+    logisticController.orderUpdate);
 
 router.post('/client/support',
-    logisticController.productSupport);
+    logisticController.orderSupport);
 
 export default router;

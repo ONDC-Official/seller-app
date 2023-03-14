@@ -1,8 +1,6 @@
 
-import CategoryService from './category.service';
 import ProductService from './product.service';
-import LogisticsService from './logistics.service';
+import OndcService from './ondc.service';
 
-exports.CategoryService = CategoryService;
 exports.ProductService = ProductService;
-exports.LogisticsService = LogisticsService;
+exports.OndcService = OndcService;

@@ -13,7 +13,7 @@ import ProductService from './product.service'
 const productService = new ProductService();
 import logger from '../lib/logger'
 
-class LogisticsService {
+class OndcService {
 
     async productSearch(payload = {}, req = {}) {
         try {
@@ -35,7 +35,7 @@ class LogisticsService {
         }
     }
 
-    async productSelect(payload = {}, req = {}) {
+    async orderSelect(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -389,7 +389,7 @@ class LogisticsService {
         }
     }
 
-    async productInit(payload = {}, req = {}) {
+    async orderInit(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -700,7 +700,7 @@ class LogisticsService {
         }
     }
 
-    async productConfirm(payload = {}, req = {}) {
+    async orderConfirm(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1025,7 +1025,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             throw err;
         }
     }
-    async productTrack(payload = {}, req = {}) {
+    async orderTrack(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1231,7 +1231,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         }
     }
 
-    async productStatus(payload = {}, req = {}) {
+    async orderStatus(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1288,7 +1288,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             throw err;
         }
     }
-    async productStatusUpdate(payload = {}, req = {}) {
+    async orderStatusUpdate(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1369,7 +1369,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             payload = {message:{order:order},context:confirmRequest.confirmRequest.context}
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-                this.postUpdateRequest(payload,trackRequest,logisticsMessageId, selectMessageId)
+                this.postUpdateOrderStatusRequest(payload,trackRequest,logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
             return {status:'ACK'}
@@ -1377,7 +1377,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             throw err;
         }
     }
-    async productUpdate(payload = {}, req = {}) {
+    async orderUpdate(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1544,6 +1544,45 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return e
         }
     }
+    async postUpdateOrderStatusRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try { //TODO: post this request for update items
+
+                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
+                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/logistics/v1/update`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+
+
+                let result = await httpRequest.send();
+                console.log("------result ->>>",result )
+
+            } catch (e) {
+                logger.error('error', `[Logistics Service] post http select response : `, e);
+                return e
+            }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Logistics Service] search logistics payload - timeout : param :`,searchRequest);
+               this.buildOrderStatusRequest(orderData,logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Logistics Service] post http select response : `, e);
+            return e
+        }
+    }
     async cancel(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
@@ -1605,7 +1644,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
 
-    async productCancel(payload = {}, req = {}) {
+    async orderCancel(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1924,7 +1963,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             throw err;
         }
     }
-    async productSupport(payload = {}, req = {}) {
+    async orderSupport(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -2074,4 +2113,4 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 }
 
-export default LogisticsService;
+export default OndcService;
