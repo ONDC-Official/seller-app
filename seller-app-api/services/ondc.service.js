@@ -19,8 +19,6 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload----->",payload)
-
             logger.log('info', `[Logistics Service] search logistics payload : param >>:`,payload);
 
             const order = payload;
@@ -51,7 +49,6 @@ class OndcService {
             for(let items of payload.message.order.items){
                 const product = await productService.getForOndc(items.id)
                 totalProductValue+=product.MRP
-                console.log("product------->",product);
             }
 
 
@@ -566,20 +563,13 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const selectRequest = await SelectRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
-
             const logistics = selectRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -704,8 +694,6 @@ class OndcService {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const selectRequest = await SelectRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id
@@ -718,9 +706,6 @@ class OndcService {
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
-            console.log("selected logistics--------initRequest------->", initRequest);
-
             const logistics = selectRequest.selectedLogistics;
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -728,7 +713,6 @@ class OndcService {
 
             const logisticsOrderId = uuidv4();
 
-console.log("end logs------------->",order.fulfillments[0].end)
             let end = {...order.fulfillments[0].end}
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.street
@@ -885,8 +869,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try {
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -898,7 +880,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -922,12 +903,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildConfirmRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildInitRequest---------->");
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'confirm')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let selectResponse = await productService.productConfirm(logisticsResponse)
 
@@ -961,7 +939,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 
@@ -972,8 +949,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -981,12 +956,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1029,8 +999,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -1038,12 +1006,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1091,8 +1054,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try {
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -1104,7 +1065,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1127,12 +1087,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildTrackRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildTrackRequest---------->");
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'track')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let selectResponse = await productService.productTrack(logisticsResponse)
 
@@ -1166,7 +1123,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 
@@ -1177,8 +1133,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -1186,12 +1140,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1235,8 +1184,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -1244,12 +1191,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1292,20 +1234,13 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     retailOrderId: payload.data.orderId
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.data;
             const selectMessageId = uuidv4();
@@ -1381,15 +1316,11 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     retailOrderId: payload.message.order.id
                 }
             })
-
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
 
             const logistics = confirmRequest.selectedLogistics;
 
@@ -1472,8 +1403,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try {
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -1485,7 +1414,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1551,8 +1479,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try { //TODO: post this request for update items
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -1564,7 +1490,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1587,8 +1512,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context-cancel---->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -1596,12 +1519,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1648,8 +1566,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context-cancel---->", payload.context);
-
             const confirmRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.context.transaction_id ,
@@ -1657,12 +1573,7 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", confirmRequest);
-
             const logistics = confirmRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
@@ -1710,8 +1621,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try {
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -1723,7 +1632,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -1745,12 +1653,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildStatusRequest---------->",logisticsMessageId,"--",initMessageId);
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let statusResponse = await productService.productStatus(logisticsResponse)
 
@@ -1765,12 +1670,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildUpdateRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildStatusRequest---------->",logisticsMessageId,"--",initMessageId);
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'update')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let statusResponse = await productService.productUpdate(logisticsResponse)
 
@@ -1786,12 +1688,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildOrderStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildStatusRequest---------->",logisticsMessageId,"--",initMessageId);
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'update')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let statusResponse = await productService.productOrderStatus(logisticsResponse,statusRequest)
 
@@ -1808,12 +1707,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildCancelRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildCancelRequest---------->");
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'cancel')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let statusResponse = await productService.productCancel(logisticsResponse)
 
@@ -1847,7 +1743,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 
@@ -1873,7 +1768,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 
@@ -1899,7 +1793,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 
@@ -1911,21 +1804,13 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-            console.log("payload.context----->", payload.message);
-
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.message.ref_id
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
-
             const logistics = selectRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
@@ -1967,21 +1852,13 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
         try {
             const {criteria = {}, payment = {}} = req || {};
 
-            console.log("payload.context----->", payload.context);
-            console.log("payload.context----->", payload.message);
-
             const selectRequest = await ConfirmRequest.findOne({
                 where: {
                     transactionId: payload.message.ref_id
                 }
             })
 
-            console.log("selected logistics--------selectRequest------->", selectRequest);
-
             const logistics = selectRequest.selectedLogistics;
-
-            console.log("selected logistics--------selectRequest-----logistics-->", logistics);
-            console.log("selected logistics--------selectRequest----context--->", logistics.context);
 
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
@@ -2029,8 +1906,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
             try {
 
-                console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-                console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
@@ -2042,7 +1917,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
 
 
                 let result = await httpRequest.send();
-                console.log("------result ->>>",result )
 
             } catch (e) {
                 logger.error('error', `[Logistics Service] post http select response : `, e);
@@ -2064,12 +1938,9 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
     async buildSupportRequest(logisticsMessageId, initMessageId) {
 
         try {
-            console.log("buildTrackRequest---------->");
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'support')
             //2. if data present then build select response
-
-            console.log("logisticsResponse---------->", logisticsResponse);
 
             let selectResponse = await productService.productSupport(logisticsResponse)
 
@@ -2104,7 +1975,6 @@ logger.info('info', `[Logistics Service] post init request :confirmRequestconfir
             return result.data
 
         } catch (e) {
-            console.log("ee----------->", e)
             return e
         }
 

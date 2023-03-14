@@ -34,10 +34,6 @@ const orderSchema = new mongoose.Schema({
         type:String
     },
     organization: { type: String, ref: 'Organization' },
-    updatedAt:{
-        type:Number,
-        default:Date.now()
-    },
     createdBy:{type:String},
 },{  
     strict: true,

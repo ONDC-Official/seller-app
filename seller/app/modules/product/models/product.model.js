@@ -40,10 +40,6 @@ const productSchema = new mongoose.Schema({
     description: {type:String},
     organization: { type: String, ref: 'Organization' },
     images: {type:Array},
-    updatedAt:{
-        type:Number,
-        default:Date.now()
-    },
     createdBy:{type:String},
     published:{type:Boolean,default:true}
 },{  

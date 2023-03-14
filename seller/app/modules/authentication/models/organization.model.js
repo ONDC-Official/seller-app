@@ -50,10 +50,6 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
             mobile:{type:String}
         }
         },
-    updatedAt:{
-        type:Number,
-        default:Date.now()
-    },
     createdBy:{type:String}
 },{  
     strict: true,
