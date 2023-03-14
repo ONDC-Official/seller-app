@@ -31,7 +31,7 @@ class UserService {
 
             data.email = data.email.toLowerCase()
             //const password = data.password;
-            const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
+            const password = data.password; //FIXME: reset to default random password once SES is activated
 
             console.log(`password-${password}`);
 
@@ -97,7 +97,7 @@ class UserService {
 
             let role = await Role.findOne({name:"Super Admin"});
             data.email = data.email.toLowerCase()
-            const password = "ONDC2023"; //data.password; //FIXME: reset to default random password once SES is activated
+            const password = data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
             data.password = await encryptPIN('' + password);
             data.enabled = true;
