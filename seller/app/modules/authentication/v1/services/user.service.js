@@ -277,8 +277,7 @@ class UserService {
                 },{
                     '$match':userQuery,
                 },      {'$project': { "password": 0 }}
-            ]).sort({createdAt:1}).limit(queryData.limit).skip(queryData.offset);
-
+            ]).sort({createdAt:1}).skip(queryData.offset*queryData.limit).limit(queryData.limit)
 
             const usersCount = await User.aggregate([
                 {

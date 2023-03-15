@@ -31,7 +31,7 @@ class OrderService {
             if(params.organization){
                 query.organization =params.organization;
             }
-            const data = await Order.find(query).populate([{path:'organization',select:['name','_id','storeDetails']}]).sort({createdAt:-1}).skip(params.offset).limit(params.limit).lean();
+            const data = await Order.find(query).populate([{path:'organization',select:['name','_id','storeDetails']}]).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit).lean();
 
             for(const order of data ){
 
