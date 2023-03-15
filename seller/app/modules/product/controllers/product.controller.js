@@ -24,8 +24,8 @@ class ProductController {
     async list(req, res, next) {
         try {
             const query = req.query;
-            query.offset = parseInt(query.offset);
-            query.limit = parseInt(query.limit);
+            query.offset = parseInt(query.offset??0);
+            query.limit = parseInt(query.limit??100);
             query.organization = req.user.organization;
             const products = await productService.list(query);
             return res.send(products);
