@@ -108,6 +108,8 @@ class ProductController {
             let jsonData = XLSX.utils.sheet_to_json(
                 workbook.Sheets[sheet_name_list[0]]
             );
+
+            console.log("jsonData--->",jsonData)
             if (jsonData.length === 0) {
                 return res.status(400).json({
                     success: false,
@@ -115,9 +117,10 @@ class ProductController {
                 });
             }else{
                 for(const row of jsonData){
+
                     row.organization = req.user.organization
 
-                    let images = row.images.split(',')
+                    let images = row?.images?.split(',')??[]
 
                     let imageUrls = []
 
@@ -127,27 +130,37 @@ class ProductController {
                         const bucket = mergedEnvironmentConfig.s3.bucket;
 
                         const imageURL = img
-                        const res = await fetch(imageURL)
-                        console.log("mime--->",res)
+                        let res
+                        try{
+                            res = await fetch(imageURL)
+                        }catch(e){
+                            console.log(e)
+                        }
 
-                        let extention = imageURL.split('.').slice(-1)[0]
-                        keyName=keyName+'.'+extention
-                        const blob = await res.buffer()
-                        const s3 = new AWS.S3({
-                            useAccelerateEndpoint: true,
-                            region: region
-                        });
+                        if(res){
+                            console.log("mime--->",res)
 
-                        const uploadedImage = await s3.upload({
-                            Bucket: bucket,
-                            Key: keyName,
-                            Body: blob
-                        }).promise()
+                            let extention = imageURL.split('.').slice(-1)[0]
+                            keyName=keyName+'.'+extention
+                            const blob = await res.buffer()
+                            const s3 = new AWS.S3({
+                                useAccelerateEndpoint: true,
+                                region: region
+                            });
 
-                        //console.log("uploaded image --->",uploadedImage);
+                            const uploadedImage = await s3.upload({
+                                Bucket: bucket,
+                                Key: keyName,
+                                Body: blob
+                            }).promise()
 
-                        imageUrls.push(keyName);
+                            //console.log("uploaded image --->",uploadedImage);
+
+                            imageUrls.push(keyName);
+                        }
+
                     }
+                    console.log("row---->",row)
 
                     row.images=imageUrls
                     await productService.create(row);

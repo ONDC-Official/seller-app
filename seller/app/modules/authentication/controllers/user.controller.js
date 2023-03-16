@@ -87,8 +87,8 @@ class UserController {
         try {
             const params = req.params;
             const query = req.query;
-            query.offset = parseInt(query.offset);
-            query.limit = parseInt(query.limit);
+            query.offset = parseInt(query.offset??0);
+            query.limit = parseInt(query.limit??100);
             const user = await userService.list(params.organizationId,query);
             return res.send(user);
         
