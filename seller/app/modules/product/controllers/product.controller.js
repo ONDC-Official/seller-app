@@ -1,10 +1,12 @@
 import ProductService from '../v1/services/product.service';
 import {mergedEnvironmentConfig} from "../../../config/env.config";
+
 var XLSX = require('xlsx')
 const productService = new ProductService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
-import { uuid } from 'uuidv4';
+import {uuid} from 'uuidv4';
+
 class ProductController {
 
     async create(req, res, next) {
@@ -17,15 +19,15 @@ class ProductController {
         } catch (error) {
             console.log('[OrderController] [create] Error -', error);
             next(error);
-        }     
+        }
     }
 
 
     async list(req, res, next) {
         try {
             const query = req.query;
-            query.offset = parseInt(query.offset??0);
-            query.limit = parseInt(query.limit??100);
+            query.offset = parseInt(query.offset ?? 0);
+            query.limit = parseInt(query.limit ?? 100);
             query.organization = req.user.organization;
             const products = await productService.list(query);
             return res.send(products);
@@ -65,7 +67,7 @@ class ProductController {
     async update(req, res, next) {
         try {
             const params = req.params;
-            const product = await productService.update(params.productId,req.body);
+            const product = await productService.update(params.productId, req.body);
             return res.send(product);
 
         } catch (error) {
@@ -77,7 +79,7 @@ class ProductController {
     async publish(req, res, next) {
         try {
             const params = req.params;
-            const product = await productService.publish(params.productId,req.body);
+            const product = await productService.publish(params.productId, req.body);
             return res.send(product);
 
         } catch (error) {
@@ -109,39 +111,70 @@ class ProductController {
                 workbook.Sheets[sheet_name_list[0]]
             );
 
-            console.log("jsonData--->",jsonData)
+            console.log("jsonData--->", jsonData)
             if (jsonData.length === 0) {
                 return res.status(400).json({
                     success: false,
                     message: "xml sheet has no data",
+                    error:"xml sheet has no data"
                 });
-            }else{
-                for(const row of jsonData){
+            } else {
+
+                const validKeys = [
+                    'productCode', 'productName',
+                    'MRP', 'retailPrice',
+                    'purchasePrice', 'HSNCode',
+                    'GST_Percentage', 'productCategory',
+                    'quantity', 'barcode',
+                    'maxAllowedQty', 'UOM',
+                    'packQty', 'length',
+                    'breadth', 'height',
+                    'weight', 'isReturnable',
+                    'returnWindow', 'isVegetarian',
+                    'manufacturerName', 'manufacturedDate',
+                    'nutritionalInfo', 'additiveInfo',
+                    'instructions', 'isCancellable',
+                    'longDescription', 'availableOnCod',
+                    'description', 'images'
+                ]
+
+                let inputKeys = Object.keys(jsonData[0]);
+
+                //check if excel sheet is valid or not
+                if(validKeys.length !== inputKeys.length && inputKeys.every(e => !validKeys.includes(e))){
+                    return res.status(400).json({
+                        success: false,
+                        message: "Template is invalid",
+                        error:"Template is invalid"
+                    });
+                }
+
+                for (const row of jsonData) {
 
                     row.organization = req.user.organization
 
-                    let images = row?.images?.split(',')??[]
+                    let images = row?.images?.split(',') ?? []
 
                     let imageUrls = []
 
-                    for(const img of images){
-                        var keyName = req.user.organization+'/'+'productImages'+'/' + uuid();
+                    for (const img of images) {
+                        var keyName = req.user.organization + '/' + 'productImages' + '/' + uuid();
                         const region = mergedEnvironmentConfig.s3.region;
                         const bucket = mergedEnvironmentConfig.s3.bucket;
 
                         const imageURL = img
                         let res
-                        try{
+                        try {
                             res = await fetch(imageURL)
-                        }catch(e){
+                        } catch (e) {
                             console.log(e)
                         }
 
-                        if(res){
-                            console.log("mime--->",res)
+                        if (res) {
+                            console.log("mime--->", res)
 
                             let extention = imageURL.split('.').slice(-1)[0]
-                            keyName=keyName+'.'+extention
+                            keyName = keyName + '.' + extention
                             const blob = await res.buffer()
                             const s3 = new AWS.S3({
                                 useAccelerateEndpoint: true,
@@ -160,9 +193,9 @@ class ProductController {
                         }
 
                     }
-                    console.log("row---->",row)
+                    console.log("row---->", row)
 
-                    row.images=imageUrls
+                    row.images = imageUrls
                     await productService.create(row);
 
                 }
@@ -170,7 +203,7 @@ class ProductController {
 
             // const params = req.params;
             // const product = await productService.get(params.organizationId);
-           return res.send({});
+            return res.send({});
 
         } catch (error) {
             console.log('[OrderController] [get] Error -', error);
