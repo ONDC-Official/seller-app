@@ -161,6 +161,7 @@ class OrderService {
 
             let oldOrder = await Order.findOne({orderId:orderId}).lean()
 
+            console.log("oldOrder--->",orderId,oldOrder);
             delete data.data._id
 
             if(data.data.state==='Cancelled'){
