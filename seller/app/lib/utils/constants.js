@@ -2,10 +2,7 @@
 exports.EMAIL_TEMPLATES = {
     FORGOT_PASSWORD: 'FORGOT_PASSWORD',
     SIGN_UP: 'SIGN_UP',
-    EXCEPTION_EMAIL: 'EXCEPTION_EMAIL',
-    INVITING_STUDENT: 'INVITE_STUDENT',
-    REINVITING_STUDENT: 'REINVITE_STUDENT',
-    REPORTS: 'REPORTS',
+
 };
 
 exports.DEVICE_TYPE = {
@@ -31,5 +28,11 @@ const GENDERS = {
     FEMALE: 'Female',
     OTHER: 'Other',
 };
+
+const SYSTEM_ROLE = {
+    SUPER_ADMIN: 'Super Admin',
+    ORG_ADMN:'Organization Admin'
+};
 exports.GENDERS = GENDERS;
+exports.SYSTEM_ROLE = SYSTEM_ROLE;
 

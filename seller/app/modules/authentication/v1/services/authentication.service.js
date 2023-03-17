@@ -17,9 +17,12 @@ class AuthenticationService {
             //find user with email
             data.email = data.email.toLowerCase();
 
-            let currentUser = await User.findOne({email:data.email},{enabled:0}).populate([{path:'role'},{path:'organization'}]);
+            let currentUser = await User.findOne({email:data.email}).populate([{path:'role'},{path:'organization',select:['name','_id','storeDetails']}]).lean();
             if (!currentUser) {
                 throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
+            }
+            if(!currentUser.enabled){
+                throw new UnauthenticatedError(MESSAGES.LOGIN_ERROR_USER_ACCOUNT_DEACTIVATED);
             }
 
             let PIN = '';
@@ -34,15 +37,24 @@ class AuthenticationService {
             // JWT token payload object
             const tokenPayload = {
                 user: {
-                    id: currentUser.id
+                    id: currentUser._id,
+                    role:currentUser.role,
+                    organization:currentUser?.organization?._id
                 },
                 lastLoginAt: loginTimestamp,
             };
             // create JWT access token
             const JWTToken = await AuthenticationJwtToken.getToken(tokenPayload);
             delete currentUser.password;
-            currentUser = currentUser.toJSON(); //TODO: do thi using exec() fn
-            delete currentUser.password;
+
+            if(currentUser.organization ){
+                if(currentUser.organization?.storeDetails?.supportDetails){
+                    currentUser.organization.storeDetailsAvailable = true
+                }else{
+                    currentUser.organization.storeDetailsAvailable = false
+                }
+               delete currentUser.organization.storeDetails
+            }
 
             return { user: currentUser, token: JWTToken };
         } catch (err) {
@@ -64,9 +76,9 @@ class AuthenticationService {
             if (!data.password)
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
-            const password = data.password;
+            const password = data.password; //FIXME: reset to default random password once SES is activated
 
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
 
             user.password = data.password;
             user.isSystemGeneratedPassword = true;

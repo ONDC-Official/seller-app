@@ -5,6 +5,6 @@ export default [
     },
     {
         "name": "Organization Admin",
-        "description": "Can view anything and everything in the system"
+        "description": "Can view anything and everything in the organization"
     }
 ]

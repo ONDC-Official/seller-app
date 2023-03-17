@@ -1,5 +1,5 @@
 module.exports = {
-    appNamespace: process.env.BASE_APP_NAMESPACE ?? 'artifex-auth',
+    appNamespace: process.env.BASE_APP_NAMESPACE ?? 'NES',
     servicePort: process.env.BASE_APP_PORT ?? '3008',
     mobileApplicationAllowedVersions: {
         ios: {

@@ -1,11 +1,10 @@
 import HttpRequest from '../utils/HttpRequest';
-import {getProducts, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
+import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
 import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
 import logger from "../lib/logger";
 
 var config = require('../lib/config');
-const strapiAccessToken = config.get("strapi").apiToken
-const strapiURI = config.get("strapi").serverUrl
+const serverUrl = config.get("seller").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
@@ -15,8 +14,8 @@ class ProductService {
 
         let headers = {};
         let httpRequest = new HttpRequest(
-            strapiURI,
-            '/api/products',
+            serverUrl,
+            '/api/v1/products/search',
             'get',
             {},
             headers
@@ -29,30 +28,35 @@ class ProductService {
 
     async search(requestQuery) {
 
-        logger.log('info', `[Product Service] search product : param :`,requestQuery);
+        try{
+            logger.log('info', `[Product Service] search product : param :`,requestQuery);
 
-        //get search criteria
-        const searchProduct = requestQuery.message.intent.item.descriptor.name
+            //get search criteria
+            const searchProduct = requestQuery.message.intent.item.descriptor.name
 
-        let headers = {};
+            let headers = {};
 
-        let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/products?filters[name][$eq]=${searchProduct}`, //TODO: allow $like query
-            'get',
-            {},
-            headers
-        );
+            let httpRequest = new HttpRequest(
+                serverUrl,
+                `/api/v1/products/search`, //TODO: allow $like query
+                'get',
+                {name:searchProduct},
+                headers
+            );
 
-        let result = await httpRequest.send();
+            let result = await httpRequest.send();
 
-        logger.log('info', `[Product Service] search product : result :`, result.data);
+            logger.log('info', `[Product Service] search product : result :`, result.data);
 
-        const productData = await getProducts({data: result.data, context: requestQuery.context});
+            const productData = await getProducts({data: result.data, context: requestQuery.context});
 
-        logger.log('info', `[Product Service] search product transformed: result :`, productData);
+            logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
-        return productData
+            return productData
+        }catch (e) {
+            console.log(e)
+        }
+
     }
 
 
@@ -73,7 +77,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -186,7 +190,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -259,7 +263,7 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/products/${item.id}`,
                 'get',
                 {},
@@ -317,7 +321,7 @@ class ProductService {
 
             }
             let httpRequest = new HttpRequest(
-                strapiURI,
+                serverUrl,
                 `/api/order-items`,
                 'POST',
                 {data: productItems},
@@ -337,7 +341,7 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders`,
             'POST',
             {data: confirmData},
@@ -367,8 +371,26 @@ class ProductService {
         return 0/3;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/products/${id}`,
+            serverUrl,
+            `/api/v1/products/${id}`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
+
+    async getForOndc(id) {
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/products/${id}/ondcGet`,
             'get',
             {},
             headers
@@ -385,7 +407,7 @@ class ProductService {
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders?populate[0]=order_items&populate[1]=order_items.product`,
             'get',
             {},
@@ -403,7 +425,7 @@ class ProductService {
         // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/orders/${id}?populate[0]=order_items&populate[1]=order_items.product`,
             'get',
             {},
@@ -422,7 +444,7 @@ class ProductService {
 
         console.log(data)
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             `/api/products/${id}`,
             'put',
             {data: data},
@@ -442,7 +464,7 @@ class ProductService {
         console.log(data);
 
         let httpRequest = new HttpRequest(
-            strapiURI,
+            serverUrl,
             '/api/products',
             'post',
             {data},
@@ -477,8 +499,8 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders?filters[order_id][$eq]=${statusRequest.message.order_id}`,
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcGet`,
             'GET',
             {},
             {}
@@ -486,16 +508,24 @@ class ProductService {
 
         let result = await httpRequest.send();
 
-        console.log("result---------------->",result.data.data[0]);
+        console.log("result---------------->",result.data);
 
-        let updateOrder = result.data.data[0].attributes
+        let updateOrder = result.data
 
-        updateOrder.state =logisticData.message.order.state
+        if(logisticData.message.order.fulfillments[0].state?.descriptor?.code ==='Pending'){
+            updateOrder.state ='Created'
+        }else{
+            updateOrder.state =logisticData.message.order.state
+        }
+
+        //updateOrder.state =logisticData.message.order.state
+
+        updateOrder.fulfillments[0].state =logisticData.message.order.fulfillments[0].state
 
         //update order level state
         httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders/${result.data.data[0].id}`,
+            serverUrl,
+            `/api/v1/orders/${result.data._id}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
@@ -505,8 +535,12 @@ class ProductService {
 
         //update item level fulfillment status
         let items = updateOrder.items.map((item)=>{
-            item.tags={status:updateOrder.state};
-            item.fulfillment_id = item.id
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            delete item.state
             return item;
         });
 
@@ -523,6 +557,140 @@ class ProductService {
         return productData
     }
 
+    async productUpdate(requestQuery) {
+
+        const statusRequest = requestQuery.retail_update[0]//select first select request
+        const logisticData = requestQuery.logistics_on_update[0]
+
+        console.log("trackRequest=============>",statusRequest);
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order.id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result---------------->",result.data);
+
+        let updateOrder = result.data
+
+        let updatedItems = []
+        for (let item of updateOrder.items){
+
+            let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
+
+            console.log("updateItem------>",updateItem);
+
+            if(updateItem?.tags?.update_type==='cancel'){
+                item.state = "Cancelled";
+                item.reason_code = updateItem.tags.reason_code;
+            }
+
+            console.log("updateItem----item-->",item);
+            //if(item.id === )
+
+            updatedItems.push(item);
+        }
+
+        updateOrder.items =updatedItems;
+
+        console.log("updated items---->",updatedItems)
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = updateOrder.fulfillments[0].id
+            delete item.state
+            delete item.reason_code
+            return item;
+        });
+
+        updateOrder.items = items;
+        updateOrder.id = updateOrder.orderId;
+
+        console.log("trackRequest=============>",statusRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getUpdate({
+            context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
+    async productOrderStatus(requestQuery,statusRequest) {
+
+        const logisticData = requestQuery.logistics_on_update[0]
+
+        let confirm = {}
+
+
+       // let result = await httpRequest.send();
+
+       console.log("result---------------->",statusRequest);
+
+        let updateOrder = statusRequest.message.order
+
+        updateOrder.state =logisticData.message.order.state //set to inprogress
+
+        //update order level state
+       let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${updateOrder.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        updateOrder.order_id = updateOrder.orderId;
+        delete updateOrder._id
+
+       // updateOrder.fulfillments[0].state =logisticData.message.order.fulfillments[0].state
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item)=>{
+            if(item.state=='Cancelled'){
+                item.tags={status:'Cancelled'};
+            }
+           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            delete item.state
+            return item;
+        });
+
+        updateOrder.items = items;
+        //updateOrder.id = statusRequest.orderId;
+
+        console.log("trackRequest=============>",statusRequest);
+        console.log("logisticData=============>",logisticData);
+        const productData = await getStatus({
+            context: statusRequest.context, //TODO: build status context from confirm request
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
     async productCancel(requestQuery) {
 
         const cancelRequest = requestQuery.retail_cancel[0]//select first select request
@@ -533,8 +701,8 @@ class ProductService {
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders?filters[order_id][$eq]=${cancelRequest.message.order_id}`,
+            serverUrl,
+            `/api/v1/orders/${cancelRequest.message.order_id}/ondcGet`,
             'GET',
             {},
             {}
@@ -542,16 +710,17 @@ class ProductService {
 
         let result = await httpRequest.send();
 
-        console.log("result---------------->",result.data.data[0]);
+        console.log("result---------------->",result.data);
 
-        let updateOrder = result.data.data[0].attributes
+        let updateOrder = result.data
 
         updateOrder.state =logisticData.message.order.state
+        updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
 
         //update order level state
         httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders/${result.data.data[0].id}`,
+            serverUrl,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
@@ -560,13 +729,13 @@ class ProductService {
         let updateResult = await httpRequest.send();
 
         //update item level fulfillment status
-        let items = updateOrder.items.map((item)=>{
-            item.tags={status:updateOrder.state};
-            item.fulfillment_id = item.id
-            return item;
-        });
+        // let items = updateOrder.items.map((item)=>{
+        //     item.tags={status:updateOrder.state};
+        //     item.fulfillment_id = item.id
+        //     return item;
+        // });
 
-        updateOrder.items = items;
+        //updateOrder.items = items;
         updateOrder.id = cancelRequest.message.order_id;
         console.log("trackRequest=============>",cancelRequest);
         console.log("logisticData=============>",logisticData);
@@ -611,8 +780,8 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
+                serverUrl,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -620,80 +789,76 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            // if (result?.data?.data.attributes) {
+            //
+            //     let price = result?.data?.data?.attributes?.price * item.quantity.count
+            //     totalPrice += price
+            //     item.price = {value: price, currency: "INR"}
+            // }
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
-                totalPrice += price
-                item.price = {value: price, currency: "INR"}
-            }
+            // qouteItemsDetails = {
+            //     "@ondc/org/item_id": item.id,
+            //     "@ondc/org/item_quantity": {
+            //         "count": item.quantity.count
+            //     },
+            //     "title": result?.data?.data?.attributes?.name,
+            //     "@ondc/org/title_type": "item",
+            //     "price": item.price
+            // }
 
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.data?.attributes?.name,
-                "@ondc/org/title_type": "item",
-                "price": item.price
-            }
-
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
+            // qouteItems.push(item)
+            // detailedQoute.push(qouteItemsDetails)
         }
 
         //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
+        // let deliveryCharges = {
+        //     "title": "Delivery charges",
+        //     "@ondc/org/title_type": "delivery",
+        //     "price": {
+        //         "currency": '' + logisticData.message.order.quote.price.currency,
+        //         "value": '' + logisticData.message.order.quote.price.value
+        //     }
+        // }//TODO: need to map all items in the catalog to find out delivery charges
 
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
+        //let totalPriceObj = {value: totalPrice, currency: "INR"}
 
-        detailedQoute.push(deliveryCharges);
+        //detailedQoute.push(deliveryCharges);
 
         let headers = {};
 
         let confirmData = confirmRequest.message.order
 
-        let orderItems = []
-        // let confirmData = requestQuery.message.order
-        for (let item of confirmData.items) {
+        let itemList = []
+        for(const item of confirmRequest.message.order.items){
+                item.state = logisticData.message.order.fulfillments[0].state?.descriptor?.code??"Pending"
 
-            let productItems = {
-                product: item.id,
-                status: 'Created',
-                qty: item.quantity.count,
-                value: item.price.value
-            }
-            let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/order-items`,
-                'POST',
-                {data: productItems},
-                headers
-            );
-            let result = await httpRequest.send();
-            console.log("result--------------->", result.data.data.id)
-            orderItems.push(result.data.data.id);
+                let qouteItem = confirmRequest.message.order.quote.breakup.find((data)=>{ return data['@ondc/org/item_id'=== item.id]})
+                item.MRP = qouteItem?.price?.value
+                itemList.push(item);
         }
 
-
+        let orderItems = confirmRequest.message.order.quote
         confirmData["order_items"] = orderItems
+        confirmData.items = itemList;
         confirmData.order_id = confirmData.id
+        confirmData.orderId = confirmData.id
+        // confirmData.state = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
-        confirmData.state ="Created"
+
+        if(logisticData.message.order.fulfillments[0].state?.descriptor?.code ==='Pending'){
+            confirmData.state ='Created'
+        }else{
+            confirmData.state =logisticData.message.order.state
+        }
+
         delete confirmData.id
 
         console.log("orderItems-------confirmData-------->", confirmData)
 
         let confirm = {}
         let httpRequest = new HttpRequest(
-            strapiURI,
-            `/api/orders`,
+            serverUrl,
+            `/api/v1/orders`,
             'POST',
             {data: confirmData},
             headers
@@ -711,13 +876,13 @@ class ProductService {
         savedLogistics.retailOrderId = confirmData.order_id
         savedLogistics.orderId = logisticData.message.order.id
         savedLogistics.selectedLogistics = logisticData
+        savedLogistics.confirmRequest = confirmRequest
 
         await savedLogistics.save();
 
 
         const productData = await getConfirm({
             qouteItems: qouteItems,
-            totalPrice: totalPriceObj,
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,
@@ -761,8 +926,8 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
+                serverUrl,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -770,11 +935,11 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            if (result?.data) {
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
+                let price = result?.data?.MRP * item.quantity.count
                 totalPrice += parseInt(price)
-                item.price = {value: price, currency: "INR"}
+                item.price = {value: ""+price, currency: "INR"}
             }
 
             qouteItemsDetails = {
@@ -782,12 +947,12 @@ class ProductService {
                 "@ondc/org/item_quantity": {
                     "count": item.quantity.count
                 },
-                "title": result?.data?.data?.attributes?.name,
+                "title": result?.data?.productName,
                 "@ondc/org/title_type": "item",
                 "price": item.price
             }
 
-            item.fulfillment_id = item.id //TODO: revisit for item level status
+            item.fulfillment_id =  item.fulfillment_id
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
@@ -826,10 +991,10 @@ class ProductService {
 
     async productSelect(requestQuery) {
 
-        console.log("requestQuery------------->", requestQuery);
-        console.log("requestQuery-------data------>", requestQuery.data);
-        console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
-        console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
+        // console.log("requestQuery------------->", requestQuery);
+        // console.log("requestQuery-------data------>", requestQuery.data);
+        // console.log("requestQuery---------retail_select---->", requestQuery.retail_select);
+        // console.log("requestQuery---------logistics_on_search---->", requestQuery.logistics_on_search);
         //get search criteria
         const selectData = requestQuery.retail_select[0]//select first select request
         const items = selectData.message.order.items
@@ -844,7 +1009,7 @@ class ProductService {
 
         for (let logisticData1 of logisticData) {
             if (logisticData1.message) {
-                if (logisticData1.context.bpp_id === "ondc.yaarilabs.com") {//TODO: move to env
+                if (logisticData1.context.bpp_id === "ondc-preprod.loadshare.net") {//TODO: move to env
                     logisticProvider = logisticData1
                 }
             }
@@ -860,7 +1025,7 @@ class ProductService {
 
         if (Object.keys(logisticProvider).length === 0) {
             return {
-                context: {...selectData.context, action: 'on_select'}, error: {
+                context: {...selectData.context, action: 'on_select'}, error: { //TODO: return product details with valid code
                     "type": "CORE-ERROR",
                     "code": "60001",
                     "message": "Pickup not servicable"
@@ -873,8 +1038,8 @@ class ProductService {
 
             let qouteItemsDetails = {}
             let httpRequest = new HttpRequest(
-                strapiURI,
-                `/api/products/${item.id}`,
+                serverUrl,
+                `/api/v1/products/${item.id}/ondcGet`,
                 'get',
                 {},
                 headers
@@ -882,11 +1047,12 @@ class ProductService {
 
             let result = await httpRequest.send();
 
-            if (result?.data?.data.attributes) {
+            console.log("product data------------>", result?.data);
 
-                let price = result?.data?.data?.attributes?.price * item.quantity.count
+            if (result?.data) {
+                let price = result?.data?.MRP * item.quantity.count
                 totalPrice += price
-                item.price = {value: price, currency: "INR"}
+                item.price = {value: ""+price, currency: "INR"}
             }
 
             //TODO: check if quantity is available
@@ -896,12 +1062,12 @@ class ProductService {
                 "@ondc/org/item_quantity": {
                     "count": item.quantity.count
                 },
-                "title": result?.data?.data?.attributes?.name,
+                "title": result?.data?.productName,
                 "@ondc/org/title_type": "item",
                 "price": item.price
             }
 
-            item.fulfillment_id = item.id //TODO: revisit for item level status
+            item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
@@ -930,17 +1096,18 @@ class ProductService {
 
         let fulfillments = [
             {
-                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
-                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
+                "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
+                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
                 "@ondc/org/TAT": "PT45M",
-                "provider_id": logisticProvider.context.bpp_id,
+                "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
+                "type":"Delivery",//TODO: hard coded
                 "state":
                     {
                         "descriptor":
                             {
-                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name
+                                "name": logisticProvider.message.catalog["bpp/providers"][0].descriptor.name //TODO: discuss with Prashant
                             }
                     }, end: selectData.message.order.fulfillments[0].end
             }]

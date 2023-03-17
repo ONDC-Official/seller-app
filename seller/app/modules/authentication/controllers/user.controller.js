@@ -87,8 +87,8 @@ class UserController {
         try {
             const params = req.params;
             const query = req.query;
-            query.offset = parseInt(query.offset);
-            query.limit = parseInt(query.limit);
+            query.offset = parseInt(query.offset??0);
+            query.limit = parseInt(query.limit??100);
             const user = await userService.list(params.organizationId,query);
             return res.send(user);
         
@@ -109,11 +109,25 @@ class UserController {
         }
     }
 
+    async enable(req, res, next) {
+        try {
+            const data = req.body;
+            const user = await userService.enable(req.params.userId,data);
+            return res.send(user);
+
+        } catch (error) {
+            console.log('[userController] [getUsers] Error -', error);
+            next(error);
+        }
+    }
+
     async upload(req, res, next) {
         try {
+            const currentUser=req.user;
             const result = await userService.upload(
+                currentUser,
                 `${req.params.category}`,
-                req.body.fileType
+                req.body
             );
             res.json(result);
         } catch (e) {

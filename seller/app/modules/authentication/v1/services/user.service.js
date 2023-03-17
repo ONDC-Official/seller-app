@@ -30,12 +30,14 @@ class UserService {
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
             data.email = data.email.toLowerCase()
-            const password = data.password;
+            //const password = data.password;
+            const password = data.password; //FIXME: reset to default random password once SES is activated
+
             console.log(`password-${password}`);
 
             let role = await Role.findOne({name:data.role});
 
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
             data.enabled = true;
             data.lastLoginAt = null;
             data.id = uuidv1();
@@ -45,7 +47,8 @@ class UserService {
             user.organization = data.organization
             user.name = data.name;
             user.mobile = data.mobile;
-            user.email = data.email; 
+            user.email = data.email;
+
             user.password = data.password;
             user.role=role._id
             let savedUser =  await user.save();
@@ -94,9 +97,9 @@ class UserService {
 
             let role = await Role.findOne({name:"Super Admin"});
             data.email = data.email.toLowerCase()
-            const password = data.password;
+            const password = data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
-            data.password = await encryptPIN('' + data.password);
+            data.password = await encryptPIN('' + password);
             data.enabled = true;
             data.lastLoginAt = null;
             data.id = uuidv1();
@@ -223,6 +226,24 @@ class UserService {
         }
     }
 
+    async enable(userId,data){
+        try {
+
+            const users = await User.findOne({_id:userId})
+            console.log(users);
+            if(!users){
+                throw  new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
+            }else{
+
+                users.enabled = data.enabled
+                await users.save();
+                return data;
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
     /**
    * Fetch list of all users in the system
    * - Users list depends on role of ther user(API caller)
@@ -234,19 +255,57 @@ class UserService {
         try {
             //building query            
             let query = {};
-            query.organizationId = organizationId;
-            if(queryData.firstName){
-                query.firstName = { $regex: queryData.firstName, $options: 'i' };
-            }
-            if(queryData.email){
-                query.email = { $regex: queryData.email, $options: 'i' };
-            }
-            if(queryData.mobile){
-                query.mobile = { $regex: queryData.mobile, $options: 'i' };
-            }
-            const users = await User.find(query,{password:0}).populate('role').sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
+            // query.organizationId = organizationId;
+            // if(queryData.role){
+            //     query.role = 'Super Admin';
+            // }
+            //{path: 'path',select : ['fields'],match:query}
+            //const users = await User.find(query,{password:0}).populate({path: 'role',match: {name:queryData.role}}).sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
 
-            const count = await User.count(query);
+            let userQuery ={role:{$ne:[]}};
+            let roleQuery ={ name:queryData.role};
+            const users = await User.aggregate([
+                {
+                    '$lookup':{
+                        'from':'roles',
+                        'localField':'role',
+                        'foreignField':'_id',
+                        'as': 'role',
+                        'pipeline':[{'$match':roleQuery}]
+                    },
+
+                },{
+                    '$match':userQuery,
+                },      {'$project': { "password": 0 }}
+            ]).sort({createdAt:1}).skip(queryData.offset*queryData.limit).limit(queryData.limit)
+
+            const usersCount = await User.aggregate([
+                {
+                    '$lookup':{
+                        'from':'roles',
+                        'localField':'role',
+                        'foreignField':'_id',
+                        'as': 'role',
+                        'pipeline':[{'$match':roleQuery}]
+                    }
+                },{
+                    '$match':userQuery,
+                },
+            ]).count('count');
+
+            for(const user of users){ //attach org details
+
+                let organization = await Organization.findOne({_id:user.organization},{_id:1,name:1});
+                user.organization = organization
+            }
+            let count;
+            if(usersCount && usersCount.length > 0){
+                count = usersCount[0].count;
+            }else{
+                count = 0;
+            }
+
+            //const count = await User.count(query);
 
             return {count:count,data:users};
 
@@ -279,8 +338,8 @@ class UserService {
         }
     }
 
-    async upload(path, fileType) {
-            return await s3.getSignedUrlForUpload({ path, fileType });
+    async upload(currentUser, path, body) {
+            return await s3.getSignedUrlForUpload({ path, ...body,currentUser });
     }
 
 }

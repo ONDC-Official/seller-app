@@ -1,6 +1,7 @@
 import mongoose from'mongoose';
 import { uuid } from 'uuidv4';
 import s3 from '../../../lib/utils/s3Utils'
+import Joi from "joi";
 const organizationSchema = new mongoose.Schema({ //Users who has login ability should go under User schema
     _id:{
         type: String, 
@@ -28,35 +29,52 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         type:Number,
         default:Date.now()
     },
-    updatedAt:{
-        type:Number,
-        default:Date.now()
-    },
+    storeDetails:{
+        categories: {type:Object},
+        logo: {type:String},
+        location: new mongoose.Schema({lat:{type:Number},long:{type:Number}},{ _id: true }),
+        locationAvailabilityPANIndia:{type:Boolean},
+        city:{type:Object},
+        defaultCancellable:{type:Boolean},
+        defaultReturnable:{type:Boolean},
+        address: {
+            building: {type:String},
+            city: {type:String},
+            state: {type:String},
+            country: {type:String},
+            area_code: {type:String},
+            locality: {type:String}
+        },
+        supportDetails:{
+            email:{type:String},
+            mobile:{type:String}
+        }
+        },
     createdBy:{type:String}
 },{  
     strict: true,
     timestamps:true
 });
 
-organizationSchema.post('findOne',async function(doc, next) {
-        if(doc){
-            let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
-            doc.idProof =idProof
-
-            let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
-            doc.addressProof =addressProof
-
-            let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
-            doc.bankDetails.cancelledCheque =cancelledCheque
-
-            let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
-            doc.PAN.proof =PAN
-
-            let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
-            doc.GSTN.proof =GSTN
-        }
-    next();
-});
+// organizationSchema.post('findOne',async function(doc, next) {
+//         if(doc){
+//             let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
+//             doc.idProof =idProof
+//
+//             let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
+//             doc.addressProof =addressProof
+//
+//             let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
+//             doc.bankDetails.cancelledCheque =cancelledCheque
+//
+//             let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
+//             doc.PAN.proof =PAN
+//
+//             let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
+//             doc.GSTN.proof =GSTN
+//         }
+//     next();
+// });
 
 organizationSchema.index({name:1,shortCode:1}, {unique: false});
 const Organization = mongoose.model('Organization',organizationSchema);

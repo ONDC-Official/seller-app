@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         selectedLogistics: {
             type: DataTypes.JSONB,
             allowNull: true
+        },
+        confirmRequest: {
+            type: DataTypes.JSONB,
+            allowNull: true
         }
 
     }, {

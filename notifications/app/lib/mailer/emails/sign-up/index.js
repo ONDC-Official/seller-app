@@ -26,6 +26,7 @@ class SignUp extends Email {
             name = `${user.firstName} ${user.lastName}`;
         return {
             temporaryPassword,
+            password:temporaryPassword,
             name: name,
             logo,
             appLoginUrl,

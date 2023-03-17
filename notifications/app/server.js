@@ -148,7 +148,7 @@ const corsOptionsDelegate = function (req, callback) {
 
                 const bindingParams = {
                     emailRecipients: mergedEnvironmentConfig.email.exceptionEmailRecipients,
-                    subject: `EXCEPTION: ARTIFEX-NES: Env ${mergedEnvironmentConfig.appEnvironment} : ${emailSubject}`,
+                    subject: `EXCEPTION: ONDC: Env ${mergedEnvironmentConfig.appEnvironment} : ${emailSubject}`,
                     text: emailBody
                 };
 

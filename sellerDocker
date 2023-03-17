@@ -1,0 +1,31 @@
+#FROM node:16 AS builder
+
+FROM node:16-alpine
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+RUN apk add chromium
+
+# Let WatchTower know to ignore this container for checking
+#LABEL com.centurylinklabs.watchtower.enable="false"
+
+WORKDIR /usr/src/app
+
+#COPY ./package*.json ./
+COPY ./seller/ .
+
+#ENV NODE_ENV production
+
+RUN npm install
+#RUN npm run build
+
+
+#ENV NODE_ENV production
+ENV HOST 0.0.0.0
+ENV PROTOCOL "http://"
+ENV USE_FQDN_FOR_APIS false
+ENV FQDN ""
+
+EXPOSE 3019
+
+CMD ["npm", "start"]

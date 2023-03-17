@@ -1,79 +1,97 @@
-import {LogisticsService} from '../services';
+import {OndcService} from '../services';
 
-const logisticsService = new LogisticsService();
+const ondcService = new OndcService();
 
-class LogisticsController {
+class OndcController {
 
 
-    search(req, res, next) {
+    productSearch(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.search(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-
-    productSelect(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productSelect(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productInit(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productInit(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productConfirm(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productConfirm(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productTrack(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productTrack(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productCancel(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productCancel(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productStatus(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productStatus(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    productSupport(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.productSupport(req.body,req).then(data => {
+        ondcService.productSearch(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
 
+    orderSelect(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderSelect(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderInit(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderInit(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderConfirm(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderConfirm(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderTrack(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderTrack(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderCancel(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderCancel(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderStatus(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderStatus(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    orderStatusUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderStatusUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    orderSupport(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderSupport(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    /************Legacy API**********************/
     init(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.init(req.body,req).then(data => {
+        ondcService.init(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -82,7 +100,7 @@ class LogisticsController {
 
     confirm(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.confirm(req.body,req).then(data => {
+        ondcService.confirm(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -90,7 +108,7 @@ class LogisticsController {
     }
     track(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.track(req.body,req).then(data => {
+        ondcService.track(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -98,7 +116,7 @@ class LogisticsController {
     }
     support(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.support(req.body,req).then(data => {
+        ondcService.support(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -106,7 +124,7 @@ class LogisticsController {
     }
     status(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.status(req.body,req).then(data => {
+        ondcService.status(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -114,7 +132,7 @@ class LogisticsController {
     }
     cancel(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        logisticsService.cancel(req.body,req).then(data => {
+        ondcService.cancel(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -123,4 +141,4 @@ class LogisticsController {
 
 }
 
-module.exports = LogisticsController;
+module.exports = OndcController;

@@ -1,9 +1,9 @@
 {
-  "name": "authentication-authorisation",
+  "name": "notification",
   "version": "2.0",
-  "description": "artifex-auth",
+  "description": "nes",
   "main": "index.js",
-  "author": "Wemotive",
+  "author": "ONDC",
   "license": "MIT",
   "scripts": {
     "start": "nodemon --exec babel-node ./app/server.js --trace-deprecation",

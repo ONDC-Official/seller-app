@@ -10,14 +10,6 @@ const roleSchema = new mongoose.Schema({ //Users who has login ability should go
     name: {
         type: String,
         required: true,
-    },
-    createdAt:{
-        type:Number,
-        default:Date.now()
-    },
-    updatedAt:{
-        type:Number,
-        default:Date.now()
     }
 },{
     strict: true,

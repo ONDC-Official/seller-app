@@ -38,14 +38,6 @@ const userSchema = new mongoose.Schema({ //Users who has login ability should go
     },
     profilePic: {
         type: String,
-    },
-    createdAt:{
-        type:Number,
-        default:Date.now()
-    },
-    updatedAt:{
-        type:Number,
-        default:Date.now()
     }
 },{
     strict: true,
