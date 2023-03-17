@@ -20,8 +20,8 @@
     }
   },
   "database": {
-    "username": "postgres",
-    "password": "root",
+    "username": "akshay",
+    "password": "",
     "name": "sellerapp",
     "host": "localhost",
     "port": "5432",
@@ -37,7 +37,7 @@
   "email": {
     "transport": {
       "SMTP": {
-        "host": "email-smtp.us-east-1.amazonaws.com",
+        "host": "",
         "port": 587,
         "secure": false,
         "auth": {
@@ -51,8 +51,8 @@
         "path": "/usr/sbin/sendmail"
       }
     },
-    "sender": "dev@wemotiveforge.com",
-    "supportEmail": "dev@wemotiveforge.com",
+    "sender": "",
+    "supportEmail": "",
     "webClientUri": "http://34.123.120.224",
     "shareUrl": "https://www.google.com"
   },
@@ -72,22 +72,19 @@
   },
   "general": {
     "exceptionEmailRecipientList": [
-      "akshay@wemotiveforge.com"
     ]
   },
-  "strapi": {
-    "serverUrl": "http://localhost:1337",
-    "apiToken": "1465d1ca50726c39d0a764ba345121bc594f4923367de7d8ce57c779c0b3a3fd64eecbd4268e5e8818a57068f0f48b1b7d3a4ec20cfeb55e48bf902283c318b8b9fbe7f6fd9e86e813eab18acbd38075a2389bd5e5eb73fe1ba9607d3f9e7b00a5cc46c8dcf617734f52ec0e91b90d167a180bba4ed1f0a7d7ad026f28c5aad2"
+  "seller": {
+    "serverUrl": "http://localhost:3019"
   },
   "firebase": {
-    "account": "lib/config/firebase-service-account.json"
+    "account": ""
   },
-
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
-    "BPP_URI": "https://c0ae-2402-e280-3e33-24e-b1b3-e49b-bea7-49a8.in.ngrok.io",
+    "BPP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://4873-2402-e280-3e33-24e-c954-4862-deda-7817.in.ngrok.io",
+    "BAP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
     "storeOpenSchedule": {
       "time": {
         "days": "1,2,3,4,5,6,7",
