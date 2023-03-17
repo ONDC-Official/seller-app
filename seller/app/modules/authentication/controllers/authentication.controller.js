@@ -1,4 +1,8 @@
 import AuthenticationService  from '../v1/services/authentication.service';
+import {HEADERS} from '../../../lib/utils/constants';
+import HttpRequest from '../../../lib/utils/HttpRequest';
+import {mergedEnvironmentConfig} from '../../../config/env.config';
+import axios from 'axios';
 
 const authenticationService = new AuthenticationService();
 
@@ -84,6 +88,31 @@ class AuthenticationController {
                 .catch((err) => {
                     next(err);
                 });
+        } catch (error) {
+            console.log('[ProjectController] [getUploadUrl] Error -', error);
+            next(error);
+        }
+    }
+
+    async mmiToken(req, res, next) {
+        try {
+
+            let params = {
+                'grant_type': 'client_credentials',
+                'client_id': mergedEnvironmentConfig.mmi.id,
+                'client_secret': mergedEnvironmentConfig.mmi.secret            };
+
+            var paramsData  = new URLSearchParams();
+            paramsData.append('grant_type', params.grant_type);
+            paramsData.append('client_id', params.client_id);
+            paramsData.append('client_secret', params.client_secret);
+
+            let headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+
+            let result=  await axios.post('https://outpost.mapmyindia.com/api/security/oauth/token', paramsData,{headers});
+
+            res.send(result.data);
+
         } catch (error) {
             console.log('[ProjectController] [getUploadUrl] Error -', error);
             next(error);

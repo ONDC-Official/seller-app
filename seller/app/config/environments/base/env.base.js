@@ -7,4 +7,9 @@ module.exports = {
         nes: process.env.INTRA_SERVICE_NOTIFICAION_SERVICE_URL,
         client: process.env.INTRA_SERVICE_SELLER_CLIENT_SERVICE_URL
     },
+    mmi:{
+        secret:process.env.MMI_CLIENT_SECRET,
+        id:process.env.MMI_CLIENT_ID,
+        apiKey:process.env.MMI_ADVANCE_API_KEY
+    }
 };

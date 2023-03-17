@@ -38,4 +38,10 @@ router.post(
     authenticationController.resetPassword
 );
 
+
+router.post(
+    '/v1/auth/mmi/token',
+    authenticationController.mmiToken
+);
+
 module.exports = router;
