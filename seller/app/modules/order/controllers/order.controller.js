@@ -90,6 +90,24 @@ class OrderController {
             next(error);
         }
     }
+    async cancel(req, res, next) {
+        try {
+            return res.send({});
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+    async cancelItems(req, res, next) {
+        try {
+                 return res.send({});
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
 
 }
 

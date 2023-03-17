@@ -34,4 +34,12 @@ router.put('/v1/orders/:orderId/ondcUpdate',
     orderController.ondcUpdate,
 );
 
+router.put('/v1/orders/:orderId/cancel',
+    orderController.cancel,
+);
+
+router.put('/v1/orders/:orderId/item/cancel',
+    orderController.cancelItems,
+);
+
 module.exports = router;
