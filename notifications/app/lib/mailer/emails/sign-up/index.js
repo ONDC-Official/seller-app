@@ -18,7 +18,7 @@ class SignUp extends Email {
         // Application logo path
         const logo = `${mergedEnvironmentConfig.email.emailHeader}`;
         // Application login page url
-        const appLoginUrl = `${mergedEnvironmentConfig.appUrl}/login`;
+        const appLoginUrl = `${mergedEnvironmentConfig.appUrl}`;
         // Support email address
         const supportEmail = mergedEnvironmentConfig.email.supportEmail;
         let name = user.firstName;
