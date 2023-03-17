@@ -22,8 +22,8 @@ exports.getProducts = async (data) => {
                 },
                 "price": {
                     "currency": "INR",
-                    "value":  items.MRP,
-                    "maximum_value": items.MRP
+                    "value":  items.MRP+"",
+                    "maximum_value": items.MRP+""
                 },
                 "quantity": {
                     "available": {
@@ -34,8 +34,8 @@ exports.getProducts = async (data) => {
                     }
                 },
                 "category_id": items.productCategory,
-                "location_id": "1", //org.storeDetails.location._id
-                "fulfillment_id": "1" ,//TODO: following shoplyst - org.storeDetails.location._id
+                "location_id": org.storeDetails.location._id,
+                "fulfillment_id": org.storeDetails.location._id,
                 "matched": true,
                 "@ondc/org/returnable":  items.isReturnable??false,
                 "@ondc/org/cancellable":  items.isCancellable??false,
@@ -46,9 +46,30 @@ exports.getProducts = async (data) => {
                 "@ondc/org/contact_details_consumer_care": `${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
                 "@ondc/org/mandatory_reqs_veggies_fruits": {
                     "net_quantity": items.packQty
-                }
+                },
+                "@ondc/org/statutory_reqs_packaged_commodities":
+                    {
+                        "manufacturer_or_packer_name":items.manufacturerName,
+                        "manufacturer_or_packer_address":items.manufacturerName,//TODO need to add this field
+                            "common_or_generic_name_of_commodity":items.productName,//TODO need to add this field
+                            "net_quantity_or_measure_of_commodity_in_pkg":items.packQty, //TODO need clarity on this.
+                        "month_year_of_manufacture_packing_import":items.manufacturedDate //TODO need to add this field
+                    },
+                "@ondc/org/statutory_reqs_prepackaged_food":
+                    {
+                        "nutritional_info":items.nutritionalInfo,
+                        "additives_info":items.additiveInfo,
+                        "brand_owner_FSSAI_license_no":org.FSSAI,
+                        "other_FSSAI_license_no":org.FSSAI, //TODO: need clarity on this field
+                        "importer_FSSAI_license_no":org.FSSAI
+                    },
+                "tags":
+                    {
+                        "veg":items.isVegetarian?'yes':'no',
+                        "non_veg":items.isVegetarian?'no':'yes'
+                    }
 
-            }
+        }
             productAvailable.push(item)
         }
 
@@ -74,8 +95,8 @@ exports.getProducts = async (data) => {
             },
             "locations": [
                 {
-                    "id": "1", //org.storeDetails.location._id
-                    "gps": "28.483664, 77.000427", //TODO: hard coded for now,
+                    "id": org.storeDetails.location._id, //org.storeDetails.location._id
+                    "gps": `${org.storeDetails.location.lat},${org.storeDetails.location.long}`, //TODO: hard coded for now,
                     "address":org.storeDetails.address,
                     "time": { //TODO: hard coded for now
                         "range": {
@@ -104,7 +125,7 @@ exports.getProducts = async (data) => {
                     "list": [
                         {
                             "code": "location",
-                            "value": "1"//org.storeDetails.location._id
+                            "value": org.storeDetails.location._id
                         },
                         {
                             "code": "category", //TODO: hard coded for now
