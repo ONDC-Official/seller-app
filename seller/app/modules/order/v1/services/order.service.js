@@ -3,6 +3,7 @@ import Order from '../../models/order.model';
 import Product from '../../../product/models/product.model';
 import HttpRequest from '../../../../lib/utils/HttpRequest'
 import {mergedEnvironmentConfig} from "../../../../config/env.config";
+import {ConflictError} from "../../../../lib/errors";
 
 class OrderService {
     async create(data) {
@@ -14,6 +15,19 @@ class OrderService {
             // if (organizationExist) {
             //     throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
             // }
+            //update item qty in product inventory
+
+            for(let item of data.data.items){
+                if(item.quantity.count){
+                    //reduce item quantity
+                    let product = await Product.findOne({_id:item.id});
+                    product.quantity = product.quantity-item.quantity.count
+                    if(product.quantity<0){
+                        throw new ConflictError();
+                    }
+                    await product.save();
+                }
+            }
             data.data.organization=data.data.provider.id
             let order = new Order(data.data);
             let savedOrder= await order.save();
@@ -145,8 +159,33 @@ class OrderService {
     async OndcUpdate(orderId,data) {
         try {
 
-            console.log("data-------->",data.data)
+            let oldOrder = await Order.findOne({orderId:orderId},data.data).lean()
+
             delete data.data._id
+
+            if(data.data.state==='Cancelled'){
+                for(let item of data.data.items){
+                        //reduce item quantity
+                        let product = await Product.findOne({_id:item.id});
+                        product.quantity = product.quantity+item.quantity.count
+                        await product.save();
+                }
+            }
+
+            //check item level cancellation status
+            for(let item of data.data.items){
+
+                let oldItemStatus = oldOrder.items.find((itemObj)=>{return itemObj.id==item.id})
+                if(item.state=='Cancelled' && oldItemStatus.state!=='Cancelled'){ //check if old item state
+                    //reduce item quantity
+                    let product = await Product.findOne({_id:item.id});
+                    product.quantity = product.quantity-item.quantity.count
+                    if(product.quantity<0){
+                        throw new ConflictError();
+                    }
+                    await product.save();
+                }
+            }
             let order = await Order.findOneAndUpdate({orderId:orderId},data.data)
 
             return order;
