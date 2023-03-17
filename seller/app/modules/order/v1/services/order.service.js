@@ -175,8 +175,9 @@ class OrderService {
             //check item level cancellation status
             for(let item of data.data.items){
 
-                let oldItemStatus = oldOrder.items.find((itemObj)=>{return itemObj.id==item.id})
-                if(item.state=='Cancelled' && oldItemStatus.state!=='Cancelled'){ //check if old item state
+                //let oldItemStatus = oldOrder.items.find((itemObj)=>{return itemObj.id==item.id})
+                //if(item.state=='Cancelled' && oldItemStatus.state!=='Cancelled'){ //check if old item state
+                if(item.state=='Cancelled'){ //check if old item state
                     //reduce item quantity
                     let product = await Product.findOne({_id:item.id});
                     product.quantity = product.quantity-item.quantity.count
