@@ -159,7 +159,7 @@ class OrderService {
     async OndcUpdate(orderId,data) {
         try {
 
-            let oldOrder = await Order.findOne({orderId:orderId},data.data).lean()
+            let oldOrder = await Order.findOne({orderId:orderId}).lean()
 
             delete data.data._id
 
