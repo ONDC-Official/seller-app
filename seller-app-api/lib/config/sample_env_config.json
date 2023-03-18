@@ -11,11 +11,11 @@
     "token": {
       "access": {
         "exp": 8640000,
-        "secret": "wftd3hg5$g67h*fd5h6fbvcy6rtg5wftd3hg5$g67h*fd5xxx"
+        "secret": ""
       },
       "resetPasswordLink": {
         "exp": 86400,
-        "secret": "de$rfdf5$g67*jhu*sdfbvcy3frd6r4e"
+        "secret": ""
       }
     }
   },
@@ -123,7 +123,7 @@
       },
       "contact":
       {
-        "phone": "98860 98860",
+        "phone": "",
         "email": "abcd.efgh@gmail.com"
       }
     }
