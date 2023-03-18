@@ -45,12 +45,23 @@ class OndcService {
 
             //TODO:add validation for qty check
 
+            let storeLocationEnd = {}
             let totalProductValue = 0
             for(let items of payload.message.order.items){
                 const product = await productService.getForOndc(items.id)
                 totalProductValue+=product.MRP
             }
 
+            let org= await productService.getOrgForOndc(payload.message.order.provider.id);
+
+            if(org.providerDetail.storeDetails){
+                storeLocationEnd = {
+                    gps:`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+                    address: {
+                        area_code: org.providerDetail.storeDetails.address.area_code
+                    }
+                }
+            }
 
             const searchRequest = {
                 "context": {
@@ -83,12 +94,7 @@ class OndcService {
                         "fulfillment": {
                             "type": "Prepaid", //TODO: ONLY prepaid orders should be there
                             "start": {
-                                "location": {
-                                    "gps": "13.0007580000001, 77.6165090000001",
-                                    "address": {
-                                        "area_code": "560005"
-                                    }
-                                }
+                                "location": storeLocationEnd
                             },
                             "end": payload.message.order.fulfillments[0].end
                         },
@@ -400,7 +406,32 @@ class OndcService {
 
   //          logger.log('info', `[Ondc Service] old select request :`,selectRequest);
 
+            let org= await productService.getOrgForOndc(payload.message.order.provider.id);
+
             const logistics = selectRequest.selectedLogistics;
+
+            let storeLocationEnd ={}
+            if(org.providerDetail.storeDetails){
+                storeLocationEnd = {
+                    location:{
+                        gps:`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+                        address: {
+                            area_code: org.providerDetail.storeDetails.address.area_code,
+                            name: org.providerDetail.name,
+                            building: org.providerDetail.storeDetails.address.building,
+                            locality: org.providerDetail.storeDetails.address.locality,
+                            city: org.providerDetail.storeDetails.address.city,
+                            state: org.providerDetail.storeDetails.address.state,
+                            country: org.providerDetail.storeDetails.address.country
+                        }
+                    },
+                    contact:
+                        {
+                            phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                            email: org.providerDetail.storeDetails.supportDetails.email
+                        }
+                }
+            }
 
             //logger.log('info', `[Ondc Service] old selected logistics :`,logistics);
 
@@ -433,13 +464,10 @@ class OndcService {
                         "fulfillments": [{
                             "id": logistics.message.catalog["bpp/fulfillments"][0].id,
                             "type": logistics.message.catalog["bpp/fulfillments"][0].type,
-                            "start": {
-                                "location": config.get("sellerConfig").sellerPickupLocation.location,
-                                "contact": config.get("sellerConfig").sellerPickupLocation.contact
-                            },
+                            "start": storeLocationEnd,
                             "end": order.fulfillments[0].end
                         }],
-                        "billing": { //
+                        "billing": { //TODO: discuss whos details should go here buyer or seller
                             "name": order.billing.name,
                             "address": {
                                 "name": order.billing.address.name,
@@ -450,7 +478,7 @@ class OndcService {
                                 "country": order.billing.address.country,
                                 "area_code": order.billing.address.area_code
                             },
-                            "tax_number": "pan_number", //FIXME: take provider details
+                            "tax_number": org.PAN, //FIXME: take provider details
                             "phone": "9999999999", //FIXME: take provider details
                             "email": "test@gmail.com", //FIXME: take provider details
                             "created_at": contextTimeStamp,
@@ -628,7 +656,7 @@ class OndcService {
                             "end":end,
                             "@ondc/org/awb_no": "1227262193237777", //TBD: do seller needs to generate this number?
                             "tags": {
-                                "@ondc/org/order_ready_to_ship": "Yes" //
+                                "@ondc/org/order_ready_to_ship": "no" //
                             }
                         }],
                         "billing": { //TODO: take from config
@@ -711,6 +739,35 @@ class OndcService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
+            let org= await productService.getOrgForOndc(payload.message.order.provider.id);
+
+            let storeLocationEnd ={}
+            if(org.providerDetail.storeDetails){
+                storeLocationEnd = {
+                    location:{
+                        gps:`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+                        address: {
+                            area_code: org.providerDetail.storeDetails.address.area_code,
+                            name: org.providerDetail.name,
+                            building: org.providerDetail.storeDetails.address.building,
+                            locality: org.providerDetail.storeDetails.address.locality,
+                            city: org.providerDetail.storeDetails.address.city,
+                            state: org.providerDetail.storeDetails.address.state,
+                            country: org.providerDetail.storeDetails.address.country
+                        }
+                    },
+                    contact:
+                        {
+                            phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                            email: org.providerDetail.storeDetails.supportDetails.email
+                        },
+                    person:{
+                        name:org.providerDetail.name //TODO: missing from curent impl
+                    }
+                }
+            }
+
+
             const logisticsOrderId = uuidv4();
 
             let end = {...order.fulfillments[0].end}
@@ -789,34 +846,10 @@ class OndcService {
                         "fulfillments": [{
                             "id": order.fulfillments[0].id,
                             "type": "Prepaid",
-                            "start": { //TODO: hard coded for seller
-                                "location": {
-                                    "gps": "12.926837, 77.5506810000001",
-                                    "address": {
-                                        "name": "Spice 9",
-                                        "building": "12",
-                                        "locality": "prashanth nagar",
-                                        "city": "Bangalore",
-                                        "state": "Karnataka",
-                                        "country": "IND",
-                                        "area_code": "560085"
-                                    }
-                                },
-                                "instructions": {
-                                    "short_desc": "",
-                                    "long_desc": ""
-                                },
-                                "contact": {
-                                    "phone": "9000912423",
-                                    "email": "mohd.najeeb.ahmed@gmail.com"
-                                },
-                                "person": {
-                                    "name": "Manager"
-                                }
-                            },
+                            "start": storeLocationEnd,
                             "end": end,
                             "tags": {
-                                "@ondc/org/order_ready_to_ship": "No" //TODO: hard coded
+                                "@ondc/org/order_ready_to_ship": "no" //TODO: hard coded
                             }
                         }],
                             "quote": initRequest.selectedLogistics.message.order.quote,
@@ -827,12 +860,12 @@ class OndcService {
                         },
                         "billing": { //TODO: hard coded
                             "name": "Ek Second Technologies",
-                                "email": "najeeb@eksecon.in",
-                                "phone": "9000912423",
-                                "created_at": "2023-03-03T14:36:16.538Z",
-                                "updated_at": "2023-03-03T14:36:16.538Z",
+                                "email": "ondc@ondc.org",
+                                "phone": "9000111111",
+                                "created_at": contextTimestamp,
+                                "updated_at": contextTimestamp,
                                 "address": {
-                                "name": "EkSecond Pvt Ltd",
+                                "name": "ONDC",
                                     "building": "8-7-171/10/14/B",
                                     "locality": "Old Bowenpally",
                                     "city": "secunderabad",
@@ -842,16 +875,14 @@ class OndcService {
                             },
                             "tax_number": "ADFSDF34343"
                         },
-                        "state": "Created",
+                        state: "Created",
                         created_at:contextTimestamp,
                         updated_at:contextTimestamp
                     }
                 }
 
-            }            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
-           // setTimeout(() => {
-
-logger.info('info', `[Ondc Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
+            }
+                logger.info('info', `[Ondc Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
                 this.postConfirmRequest(confirmRequest,logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 

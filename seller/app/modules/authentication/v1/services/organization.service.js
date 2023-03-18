@@ -69,7 +69,7 @@ class OrganizationService {
         try {
             let doc = await Organization.findOne({_id:organizationId}).lean();
 
-            //console.log("organization----->",organization)
+            console.log("organization----->",doc)
             let user = await User.findOne({organization:organizationId},{password:0})
             if (doc) {
                 {
