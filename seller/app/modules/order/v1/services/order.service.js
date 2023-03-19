@@ -127,7 +127,49 @@ class OrderService {
             throw err;
         }
     }    
-    
+
+    async cancelItems(orderId,data) {
+        try {
+            let order = await Order.findOne({_id:orderId});//.lean();
+
+            //update order item level status
+
+            let items =[];
+            for(let updateItem of data){
+                
+                let item = order.items.find((i)=>{return i.id===updateItem.id; });
+                if(item){
+                    item.state = 'Cancelled';
+                    item.reason_code = updateItem.cancellation_reason_id;
+                    items.push(item);
+                }else{
+                    items.push(updateItem);
+                }
+
+            }
+
+            order.items=items;
+            console.log("order.items--->",order.items);
+
+            await Order.findOneAndUpdate({_id:orderId},{items:items});
+            //notify client to update order status ready to ship to logistics
+            // let httpRequest = new HttpRequest(
+            //     mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+            //     '/api/client/status/updateOrderItems',
+            //     'PUT',
+            //     {data:order},
+            //     {}
+            // );
+            // await httpRequest.send();
+
+            return order;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
+            throw err;
+        }
+    }
+
     async cancel(orderId,data) {
         try {
             let order = await Order.findOne({_id:orderId}).lean();
