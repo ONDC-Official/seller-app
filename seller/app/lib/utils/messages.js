@@ -23,6 +23,7 @@ const MESSAGES = {
     RESET_PASSWORD_SUCCESS: 'Your password has been reset successfully',
     CHANGE_PASSWORD_SUCCESS: 'Your password has been updated successfully',
     USER_NOT_ALLOWED: 'You do not have access to this section, please contact your administrator',
+    SINGLE_ITEM_CANNOT_CANCEL:'You cannot cancel single item, cancel complete order'
 };
 
 export default MESSAGES;

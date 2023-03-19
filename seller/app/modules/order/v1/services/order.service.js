@@ -4,7 +4,8 @@ import Product from '../../../product/models/product.model';
 import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
 import {ConflictError} from '../../../../lib/errors';
-
+import MESSAGES from '../../../../lib/utils/messages';
+import BadRequestParameterError from "../../../../lib/errors/bad-request-parameter.error";
 class OrderService {
     async create(data) {
         try {
@@ -134,6 +135,11 @@ class OrderService {
 
             //update order item level status
 
+            //TODO: add check for single item cancellation is not allowed
+
+            if(order.items.length===1){
+                throw new BadRequestParameterError(MESSAGES.SINGLE_ITEM_CANNOT_CANCEL);
+            }
             let items =[];
             for(let updateItem of data){
                 
