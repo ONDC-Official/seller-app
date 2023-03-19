@@ -100,7 +100,7 @@ class ProductService {
             return doc;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            console.log(`[OrganizationService] [get] Error in getting organization by id -`,err);
             throw err;
         }
     }

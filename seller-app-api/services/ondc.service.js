@@ -1343,6 +1343,61 @@ class OndcService {
             throw err;
         }
     }
+    async orderCancelFromSeller(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    retailOrderId: payload.data.orderId
+                }
+            })
+
+            const logistics = confirmRequest.selectedLogistics;
+
+            const order = payload.data;
+
+            order.context=confirmRequest.confirmRequest.context
+
+            const selectMessageId = uuidv4();
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "cancel",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": logistics.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080", //TODO: take it from request
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message": {
+                            "order_id": order.orderId,
+                            "cancellation_reason_id": order.cancellation_reason_id
+                }
+            }
+
+            payload = {message:{order:order},context:confirmRequest.confirmRequest.context}
+
+            console.log("payload-------------->",payload);
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            //setTimeout(() => {
+                this.postSellerCancelRequest(payload,trackRequest,logisticsMessageId, selectMessageId)
+            //}, 5000); //TODO move to config
+
+            return {status:'ACK'}
+        } catch (err) {
+
+            console.log("err--->",err);
+            throw err;
+        }
+    }
     async orderUpdate(payload = {}, req = {}) {
         try {
             const {criteria = {}, payment = {}} = req || {};
@@ -1681,6 +1736,42 @@ class OndcService {
             return e
         }
     }
+    async postSellerCancelRequest(cancelData,cancelRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/logistics/v1/cancel`,
+                    'POST',
+                    cancelRequest,
+                    headers
+                );
+
+
+                let result = await httpRequest.send();
+
+            } catch (e) {
+                logger.error('error', `[Ondc Service] post http select response : `, e);
+                return e
+            }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,cancelRequest);
+                this.buildSellerCancelRequest(cancelData,logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
     async buildStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
@@ -1753,6 +1844,24 @@ class OndcService {
         }
     }
 
+    async buildSellerCancelRequest(cancelData,logisticsMessageId, initMessageId) {
+
+        try {
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'cancel')
+            //2. if data present then build select response
+
+            let statusResponse = await productService.productSellerCancel(cancelData,logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postSellerCancelResponse(statusResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
 
     //return track response to protocol layer
     async postStatusResponse(statusResponse) {
@@ -1806,6 +1915,32 @@ class OndcService {
 
     //return track response to protocol layer
     async postCancelResponse(statusResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_cancel`,
+                'POST',
+                statusResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            return e
+        }
+
+    }
+
+
+    //return track response to protocol layer
+    async postSellerCancelResponse(statusResponse) {
         try {
 
             let headers = {};

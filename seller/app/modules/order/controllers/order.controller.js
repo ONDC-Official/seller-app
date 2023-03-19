@@ -92,7 +92,9 @@ class OrderController {
     }
     async cancel(req, res, next) {
         try {
-            return res.send({});
+            const params = req.params;
+            const product = await orderService.cancel(params.orderId,req.body);
+            return res.send(product);
 
         } catch (error) {
             console.log('[OrderController] [get] Error -', error);

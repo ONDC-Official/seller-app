@@ -27,6 +27,9 @@ router.post('/client/track',
 router.post('/client/status',
     logisticController.orderStatus);
 
+router.post('/client/status/cancel',
+    logisticController.orderCancelFromSeller);
+
 router.put('/client/status/updateOrder',
     logisticController.orderStatusUpdate);
 

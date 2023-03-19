@@ -726,6 +726,59 @@ class ProductService {
         return productData
     }
 
+    async productSellerCancel(cancelData,requestQuery) {
+
+        const cancelRequest = requestQuery.retail_cancel[0]//select first select request
+        const logisticData = requestQuery.logistics_on_cancel[0]
+
+        console.log("cancelData----->",cancelData);
+        console.log("logisticData----->",logisticData);
+
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${cancelData.message.order.orderId}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        let updateOrder = result.data
+
+        updateOrder.state =logisticData.message.order.state
+        updateOrder.cancellation_reason_id =cancelData.message.order.cancellation_reason_id
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        // let items = updateOrder.items.map((item)=>{
+        //     item.tags={status:updateOrder.state};
+        //     item.fulfillment_id = item.id
+        //     return item;
+        // });
+
+        //updateOrder.items = items;
+        updateOrder.id = cancelData.order_id;
+        const productData = await getCancel({
+            context: cancelData.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
 
     async productSupport(requestQuery) {
 
