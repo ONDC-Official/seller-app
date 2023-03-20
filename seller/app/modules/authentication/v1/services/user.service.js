@@ -1,27 +1,30 @@
 import MESSAGES from '../../../../lib/utils/messages';
 import {encryptPIN} from '../../../../lib/utils/utilityFunctions';
-import {getSignedUrlForUpload,getSignedUrlForRead3} from '../../../../lib/utils/s3Utils';
+import {getSignedUrlForUpload, getSignedUrlForRead3} from '../../../../lib/utils/s3Utils';
 import {
     NoRecordFoundError,
     DuplicateRecordFoundError,
 } from '../../../../lib/errors/index';
-import { v1 as uuidv1 } from 'uuid';
+import {v1 as uuidv1} from 'uuid';
 import User from '../../models/user.model';
 import Role from '../../models/role.model';
+import LoginAttempts from '../../models/loginAttempts.model';
+import BannedUser from '../../models/bannedUser.model';
 import Organization from '../../models/organization.model';
 import ServiceApi from '../../../../lib/utils/serviceApi';
 import s3 from '../../../../lib/utils/s3Utils'
+
 class UserService {
     /**
-   * Create a new user
-   * @param {Object} data
-   */
+     * Create a new user
+     * @param {Object} data
+     */
     async create(data) {
         try {
 
-            console.log("data to bootstrap--->",data);
+            console.log("data to bootstrap--->", data);
             // Find user by email or mobile
-            let query = { email:data.email};
+            let query = {email: data.email};
             let userExist = await User.findOne(query);
             if (userExist) {
                 return userExist;
@@ -35,7 +38,7 @@ class UserService {
 
             console.log(`password-${password}`);
 
-            let role = await Role.findOne({name:data.role});
+            let role = await Role.findOne({name: data.role});
 
             data.password = await encryptPIN('' + password);
             data.enabled = true;
@@ -50,12 +53,12 @@ class UserService {
             user.email = data.email;
 
             user.password = data.password;
-            user.role=role._id
-            let savedUser =  await user.save();
+            user.role = role._id
+            let savedUser = await user.save();
             //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
-            let mailData = { temporaryPassword: password, user: data};
+            let mailData = {temporaryPassword: password, user: data};
 
-            console.log("mailData------>",mailData)
+            console.log("mailData------>", mailData)
             // let notificationData = {
             //     receivers: [data.email],
             //     data: mailData,
@@ -84,9 +87,9 @@ class UserService {
     async invite(data) {
         try {
 
-            console.log("data to bootstrap--->",data);
+            console.log("data to bootstrap--->", data);
             // Find user by email or mobile
-            let query = { email:data.email};
+            let query = {email: data.email};
             let userExist = await User.findOne(query);
             if (userExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
@@ -95,7 +98,7 @@ class UserService {
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
 
-            let role = await Role.findOne({name:"Super Admin"});
+            let role = await Role.findOne({name: "Super Admin"});
             data.email = data.email.toLowerCase()
             const password = data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
@@ -111,12 +114,12 @@ class UserService {
             user.mobile = data.mobile;
             user.email = data.email;
             user.password = data.password;
-            user.role=role._id
-            let savedUser =  await user.save();
+            user.role = role._id
+            let savedUser = await user.save();
             //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
-            let mailData = { temporaryPassword: password, user: data};
+            let mailData = {temporaryPassword: password, user: data};
 
-            console.log("mailData------>",mailData)
+            console.log("mailData------>", mailData)
 
 
             ServiceApi.sendEmail(
@@ -138,21 +141,21 @@ class UserService {
     }
 
     /**
-   * Update user
-   * @param data
-   * @param currentUser
-   * @returns {updatedUser}
-   */
+     * Update user
+     * @param data
+     * @param currentUser
+     * @returns {updatedUser}
+     */
     async update(id, data, currentUser) {
         try {
             const query = {
-                selector: { _id: { $eq: id } },
+                selector: {_id: {$eq: id}},
             };
             let user = await User(currentUser.organizationId).findOne(query);
             if (!user) {
                 throw new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
             }
-            const updatedUser = { ...user, ...data };
+            const updatedUser = {...user, ...data};
             const result = await User(currentUser.organizationId).update(
                 updatedUser
             );
@@ -165,15 +168,15 @@ class UserService {
     }
 
     /**
-   * Fetch single user details by id
-   * - this method is called from login action and get user details action
-   * @param {String} id Id of the User
-   * @param {Object|undefined} permission Users permissions (It can be undefined for login action)
-   */
-    async get(userId,currentUser) {
+     * Fetch single user details by id
+     * - this method is called from login action and get user details action
+     * @param {String} id Id of the User
+     * @param {Object|undefined} permission Users permissions (It can be undefined for login action)
+     */
+    async get(userId, currentUser) {
         try {
 
-            let user = await User.findOne({_id:userId,organizationId:currentUser.organizationId});
+            let user = await User.findOne({_id: userId, organizationId: currentUser.organizationId});
             console.log('user');
             console.log(user);
             return user;
@@ -185,23 +188,26 @@ class UserService {
     }
 
     /**
-   * Fetch single user details by id
-   * - this method is called from login action and get user details action
-   * @param {String} id Id of the User
-   * @param {Object|undefined} permission Users permissions (It can be undefined for login action)
-   */
-    async getUserApps(userId,currentUser) {
+     * Fetch single user details by id
+     * - this method is called from login action and get user details action
+     * @param {String} id Id of the User
+     * @param {Object|undefined} permission Users permissions (It can be undefined for login action)
+     */
+    async getUserApps(userId, currentUser) {
         try {
 
-            let user = await User.findOne({_id:currentUser.id,organizationId:currentUser.organizationId},{ password: 0,enabled:0,isSystemGeneratedPassword:0 });
+            let user = await User.findOne({
+                _id: currentUser.id,
+                organizationId: currentUser.organizationId
+            }, {password: 0, enabled: 0, isSystemGeneratedPassword: 0});
 
-            let userOrgs  = await Promise.all(  user.organizations.map(async (org) =>{
-                let orgDetails = await Organization.findOne({_id:org.id});
+            let userOrgs = await Promise.all(user.organizations.map(async (org) => {
+                let orgDetails = await Organization.findOne({_id: org.id});
                 org.name = orgDetails.name;
                 org.organizationId = orgDetails._id;
                 return org;
             }));
-            user.organizations=userOrgs;
+            user.organizations = userOrgs;
 
             return user;
         } catch (err) {
@@ -211,14 +217,14 @@ class UserService {
         }
     }
 
-    async usersById(userId){
+    async usersById(userId) {
         try {
 
-            const users = await User.find({_id:userId},{password:0}).populate('role');
+            const users = await User.find({_id: userId}, {password: 0}).populate('role');
             console.log(users);
-            if(!users){
+            if (!users) {
                 throw  new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
-            }else{
+            } else {
                 return users;
             }
         } catch (err) {
@@ -226,14 +232,14 @@ class UserService {
         }
     }
 
-    async enable(userId,data){
+    async enable(userId, data) {
         try {
 
-            const users = await User.findOne({_id:userId})
+            const users = await User.findOne({_id: userId})
             console.log(users);
-            if(!users){
+            if (!users) {
                 throw  new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
-            }else{
+            } else {
 
                 users.enabled = data.enabled
                 await users.save();
@@ -245,13 +251,13 @@ class UserService {
     }
 
     /**
-   * Fetch list of all users in the system
-   * - Users list depends on role of ther user(API caller)
-   * @param {Object} params query params
-   * @param {Object} currentUser Current user is fetched from JWT token which is used to make a request
-   * @param {Object} permission Current users permission
-   */
-    async list(organizationId,queryData) {
+     * Fetch list of all users in the system
+     * - Users list depends on role of ther user(API caller)
+     * @param {Object} params query params
+     * @param {Object} currentUser Current user is fetched from JWT token which is used to make a request
+     * @param {Object} permission Current users permission
+     */
+    async list(organizationId, queryData) {
         try {
             //building query            
             let query = {};
@@ -262,75 +268,80 @@ class UserService {
             //{path: 'path',select : ['fields'],match:query}
             //const users = await User.find(query,{password:0}).populate({path: 'role',match: {name:queryData.role}}).sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
 
-            let userQuery ={role:{$ne:[]}};
-            let roleQuery ={ name:queryData.role};
+            let userQuery = {role: {$ne: []}};
+            let roleQuery = {name: queryData.role};
             const users = await User.aggregate([
                 {
-                    '$lookup':{
-                        'from':'roles',
-                        'localField':'role',
-                        'foreignField':'_id',
+                    '$lookup': {
+                        'from': 'roles',
+                        'localField': 'role',
+                        'foreignField': '_id',
                         'as': 'role',
-                        'pipeline':[{'$match':roleQuery}]
+                        'pipeline': [{'$match': roleQuery}]
                     },
-
-                },{
-                    '$match':userQuery,
-                },      {'$project': { "password": 0 }}
-            ]).sort({createdAt:1}).skip(queryData.offset*queryData.limit).limit(queryData.limit)
+                    '$lookup': {
+                        'from': 'bannedusers',
+                        'localField': '_id',
+                        'foreignField': 'user',
+                        'as': 'bannedUser'
+                    }
+                }, {
+                    '$match': userQuery,
+                }, {'$project': {'password': 0}}
+            ]).sort({createdAt: 1}).skip(queryData.offset * queryData.limit).limit(queryData.limit);
 
             const usersCount = await User.aggregate([
                 {
-                    '$lookup':{
-                        'from':'roles',
-                        'localField':'role',
-                        'foreignField':'_id',
+                    '$lookup': {
+                        'from': 'roles',
+                        'localField': 'role',
+                        'foreignField': '_id',
                         'as': 'role',
-                        'pipeline':[{'$match':roleQuery}]
+                        'pipeline': [{'$match': roleQuery}]
                     }
-                },{
-                    '$match':userQuery,
+                }, {
+                    '$match': userQuery,
                 },
             ]).count('count');
 
-            for(const user of users){ //attach org details
+            for (const user of users) { //attach org details
 
-                let organization = await Organization.findOne({_id:user.organization},{_id:1,name:1});
+                let organization = await Organization.findOne({_id: user.organization}, {_id: 1, name: 1});
                 user.organization = organization
             }
             let count;
-            if(usersCount && usersCount.length > 0){
+            if (usersCount && usersCount.length > 0) {
                 count = usersCount[0].count;
-            }else{
+            } else {
                 count = 0;
             }
 
             //const count = await User.count(query);
 
-            return {count:count,data:users};
+            return {count: count, data: users};
 
         } catch (err) {
             throw err;
         }
     }
 
-    async uploads(identity){
-        if(identity){
+    async uploads(identity) {
+        if (identity) {
             try {
                 if (identity.aadhaarVerification)
-                    identity.aadhaarVerification = (await getSignedUrlForRead({ path: identity.aadhaarVerification }));
+                    identity.aadhaarVerification = (await getSignedUrlForRead({path: identity.aadhaarVerification}));
             } catch {
                 delete identity.aadhaarVerification;
             }
             try {
                 if (identity.addressProof)
-                    identity.addressProof = (await getSignedUrlForRead({ path: identity.addressProof }));
+                    identity.addressProof = (await getSignedUrlForRead({path: identity.addressProof}));
             } catch {
                 delete identity.addressProof;
             }
             try {
                 if (identity.identityProof)
-                    identity.identityProof = (await getSignedUrlForRead({ path: identity.identityProof }));
+                    identity.identityProof = (await getSignedUrlForRead({path: identity.identityProof}));
             } catch {
                 delete identity.identityProof;
             }
@@ -339,9 +350,127 @@ class UserService {
     }
 
     async upload(currentUser, path, body) {
-            return await s3.getSignedUrlForUpload({ path, ...body,currentUser });
+        return await s3.getSignedUrlForUpload({path, ...body, currentUser});
     }
 
+    async grantAccess(userId) {
+        try {
+
+            let d1 = new Date(),
+                d2 = new Date(d1.getTime());
+            d2.setMinutes(d1.getMinutes());
+
+            let bannedUser = await BannedUser.remove({user: userId});
+            let loginAttempts = await LoginAttempts.remove({user: userId});
+
+            return {};
+
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async logUserLoginAttempt(params) {
+        try {
+
+            let d1 = new Date(),
+                d2 = new Date(d1.getTime());
+            d2.setMinutes(d1.getMinutes() + 10);
+
+            if (params.success) { //login attempt is success
+                //check if login user is banned and compare with timestamp
+                let loginAttempt = await new LoginAttempts({
+                    user: params.userId,
+                    success: params.success,
+                    ip: params.ip,
+                    consecutive: true
+                }).save();
+                let updateInvalidLoginAttempt = await LoginAttempts.findOneAndUpdate({user: params.userId}, {consecutive: false});
+                return false;
+
+            } else {
+                let loginAttempt = await new LoginAttempts({
+                    user: params.userId,
+                    success: params.success,
+                    ip: params.ip,
+                    consecutive: true
+                }).save();
+
+                let loginAttemptCount = await LoginAttempts.count({
+                    user: params.userId,
+                    success: params.success,
+                    consecutive: true
+                });
+
+                if (loginAttemptCount > 4) {
+
+                    let bannedUser = await BannedUser.findOne({user: params.userId});
+                    if (bannedUser) {
+                        bannedUser.expires = d2;
+                        bannedUser.save();
+                    } else {
+                        await new BannedUser({user: params.userId, expires: d2}).save();
+                    }
+
+                    //TODO: send notification to user
+                    let user = await User.findOne({_id: params.userId});
+                    let mailData = {receivers: [user.email], data: {user}};
+
+                    ServiceApi.sendEmail(
+                        {
+                            receivers: [user.email],
+                            template: 'ACCOUNT_LOCKED',
+                            data: mailData,
+                        },
+                        user, null
+                    );
+
+                    //TODO: send notification  to all org admins
+
+                    let userQuery = {role: {$ne: []}};
+                    let roleQuery = {name: 'Super Admin'};
+                    const users = await User.aggregate([
+                        {
+                            '$lookup': {
+                                'from': 'roles',
+                                'localField': 'role',
+                                'foreignField': '_id',
+                                'as': 'role',
+                                'pipeline': [{'$match': roleQuery}]
+                            },
+
+                        }, {
+                            '$match': userQuery,
+                        }, {'$project': {'password': 0}}
+                    ]).sort({createdAt: 1});
+
+                    for (let adminUser of users) {
+                        let mailData = {receivers: [adminUser.email], data: {user}};
+
+                        ServiceApi.sendEmail(
+                            {
+                                receivers: [user.email],
+                                template: 'ACCOUNT_LOCKED_ORG_ADMIN',
+                                data: mailData,
+                            },
+                            user, null
+                        );
+                    }
+                    //let adminUser = await User.findOne({where: {id: admin.UserId}});
+                    //await mailer.OrgAdminNotification({receivers: [adminUser.email], data: {adminUser, user}}).send();
+
+                    return true; //user is banned
+                } else {
+                    return false; //user is not banned
+                }
+
+            }
+
+        } catch (err) {
+            console.log(err);
+            throw err
+        }
+    }
 }
 
 export default UserService;

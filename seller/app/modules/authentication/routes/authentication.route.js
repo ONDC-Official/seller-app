@@ -1,7 +1,8 @@
 import express from 'express';
 const router = express.Router();
 import AuthenticationController from '../controllers/authentication.controller';
-import {authentication} from '../../../lib/middlewares';
+import {authentication, authorisation} from '../../../lib/middlewares';
+import {SYSTEM_ROLE} from "../../../lib/utils/constants";
 // import { authSchema } from '../lib/api-params-validation-schema';
 
 const authenticationController = new AuthenticationController();
@@ -43,5 +44,10 @@ router.post(
     '/v1/auth/mmi/token',
     authenticationController.mmiToken
 );
+
+router.put('/v1/auth/grantAccess/:id', authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
+    authenticationController.grantAccess);
+
 
 module.exports = router;

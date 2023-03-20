@@ -10,6 +10,9 @@ import Organization from '../../models/organization.model';
 import {JsonWebToken, Token} from '../../../../lib/authentication';
 // import {Nes} from '../isc';
 import { mergedEnvironmentConfig } from '../../../../config/env.config.js';
+import UserService from "./user.service";
+
+const userService = new UserService();
 class AuthenticationService {
     async login(currentUser, data) {
         try {
@@ -31,9 +34,29 @@ class AuthenticationService {
             currentPIN = currentUser.password;
             // verify current PIN
             const isValid = await isValidPIN('' + PIN, currentPIN);
+            // if (!isValid) {
+            //     throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
+            // }
+
             if (!isValid) {
-                throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
+                //create login attempt and validate is user is banned
+                let bannedUser =  await userService.logUserLoginAttempt({userId:currentUser._id,ip:"",success:false});
+
+                if(bannedUser){
+                    throw new UnauthenticatedError(MESSAGES.LOGIN_ERROR_USER_ACCOUNT_BANNED);
+                }else{
+                    throw new UnauthenticatedError(MESSAGES.INVALID_PIN);
+                }
+
+            }else{
+                //create login attempt and validate is user is banned
+                let bannedUser =  await userService.logUserLoginAttempt({userId:currentUser._id,ip:"",success:true});
+
+                if(bannedUser){
+                    throw new UnauthenticatedError(MESSAGES.LOGIN_ERROR_USER_ACCOUNT_BANNED);
+                }
             }
+
             // JWT token payload object
             const tokenPayload = {
                 user: {

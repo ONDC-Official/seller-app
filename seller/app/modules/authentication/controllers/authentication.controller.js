@@ -3,9 +3,10 @@ import {HEADERS} from '../../../lib/utils/constants';
 import HttpRequest from '../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../config/env.config';
 import axios from 'axios';
+import UserService from '../v1/services/user.service';
 
 const authenticationService = new AuthenticationService();
-
+const userService =new UserService();
 class AuthenticationController {
     /**
    * Login
@@ -142,6 +143,15 @@ class AuthenticationController {
             .catch((err) => {
                 next(err);
             });
+    }
+
+    grantAccess(req, res) {
+        let {id:userId} = req.params;
+        userService.grantAccess(userId).then((token) => {
+            res.json({});
+        }).catch((err) => {
+            next(err);
+        });
     }
 
 }
