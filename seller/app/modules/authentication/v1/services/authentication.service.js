@@ -52,7 +52,11 @@ class AuthenticationService {
                 //create login attempt and validate is user is banned
                 let bannedUser =  await userService.logUserLoginAttempt({userId:currentUser._id,ip:"",success:true});
 
+                console.log("banned user------------>",bannedUser);
+
                 if(bannedUser){
+                    console.log("banned user--------insid---->",bannedUser);
+
                     throw new UnauthenticatedError(MESSAGES.LOGIN_ERROR_USER_ACCOUNT_BANNED);
                 }
             }
@@ -76,7 +80,7 @@ class AuthenticationService {
                 }else{
                     currentUser.organization.storeDetailsAvailable = false
                 }
-               delete currentUser.organization.storeDetails
+                delete currentUser.organization.storeDetails
             }
 
             return { user: currentUser, token: JWTToken };

@@ -385,8 +385,16 @@ class UserService {
                     ip: params.ip,
                     consecutive: true
                 }).save();
-                let updateInvalidLoginAttempt = await LoginAttempts.findOneAndUpdate({user: params.userId}, {consecutive: false});
-                return false;
+                let updateInvalidLoginAttempt = await LoginAttempts.updateMany({user: params.userId}, {consecutive: false});
+
+                let bannedUser = await BannedUser.findOne({user: params.userId});
+
+                if(bannedUser && (bannedUser.expires > new Date())){
+                    return true;
+                }else{
+                    return false;
+                }
+
 
             } else {
                 let loginAttempt = await new LoginAttempts({
