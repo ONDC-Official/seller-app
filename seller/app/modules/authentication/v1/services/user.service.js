@@ -279,12 +279,6 @@ class UserService {
                         'as': 'role',
                         'pipeline': [{'$match': roleQuery}]
                     },
-                    '$lookup': {
-                        'from': 'bannedusers',
-                        'localField': '_id',
-                        'foreignField': 'user',
-                        'as': 'bannedUser'
-                    }
                 }, {
                     '$match': userQuery,
                 }, {'$project': {'password': 0}}
@@ -307,7 +301,11 @@ class UserService {
             for (const user of users) { //attach org details
 
                 let organization = await Organization.findOne({_id: user.organization}, {_id: 1, name: 1});
-                user.organization = organization
+                user.organization = organization;
+
+                let bannedUser = await BannedUser.findOne({user:user._id})
+                user.bannedUser = bannedUser;
+
             }
             let count;
             if (usersCount && usersCount.length > 0) {
