@@ -375,7 +375,7 @@ class UserService {
 
             let d1 = new Date(),
                 d2 = new Date(d1.getTime());
-            d2.setMinutes(d1.getMinutes() + 10);
+            d2.setMinutes(d1.getMinutes() + 30);
 
             if (params.success) { //login attempt is success
                 //check if login user is banned and compare with timestamp
