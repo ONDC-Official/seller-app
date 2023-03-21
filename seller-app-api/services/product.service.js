@@ -1117,7 +1117,7 @@ class ProductService {
                     },
                     "title": result?.data?.productName,
                     "@ondc/org/title_type": "item",
-                    "price": isQtyAvailable?item.price:0
+                    "price": isQtyAvailable?item.price:{value: "0", currency: "INR"}
                 }
 
                 if(isServiceable){
