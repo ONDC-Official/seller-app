@@ -447,7 +447,7 @@ exports.getConfirm = async (data) => {
                 "id":data.message.order.order_id,
                 "state":"Created",
                 "provider": data.message.order.provider,
-                "items": data.items,
+                "items": data.qouteItems,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
                 "quote":data.message.order.quote,

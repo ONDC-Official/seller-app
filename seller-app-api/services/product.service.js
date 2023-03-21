@@ -865,7 +865,7 @@ class ProductService {
         //get search criteria
         // const items = requestQuery.message.order.items
 
-        const confirmRequest = requestQuery.retail_confirm[0]//select first select request
+        let confirmRequest = requestQuery.retail_confirm[0]//select first select request
         const items = confirmRequest.message.order.items
         const logisticData = requestQuery.logistics_on_confirm[0]
 
@@ -878,13 +878,15 @@ class ProductService {
         let confirmData = confirmRequest.message.order
 
         let itemList = []
-        for(const item of confirmRequest.message.order.items){
-                item.state = logisticData.message.order.fulfillments[0].state?.descriptor?.code??"Pending"
+        let qouteItems = confirmRequest.message.order.items.map((item)=>{
+            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            delete item.state
+            return item;
+        });
 
-                let qouteItem = confirmRequest.message.order.quote.breakup.find((data)=>{ return data['@ondc/org/item_id'=== item.id]})
-                item.MRP = qouteItem?.price?.value
-                itemList.push(item);
-        }
+        console.log("qouteItems-->>>>--",qouteItems)
+        //confirmRequest.message.order.items = qouteItems;
 
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
@@ -927,7 +929,7 @@ class ProductService {
 
 
         const productData = await getConfirm({
-            //qouteItems: qouteItems,
+            qouteItems: qouteItems,
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,
