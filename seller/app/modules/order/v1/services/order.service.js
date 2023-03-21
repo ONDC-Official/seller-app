@@ -153,8 +153,7 @@ class OrderService {
 
             order.items=items;
 
-            //await Order.findOneAndUpdate({_id:orderId},{items:items});
-
+            await Order.findOneAndUpdate({_id:orderId},{items:items});
 
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
