@@ -869,8 +869,8 @@ class ProductService {
         const items = confirmRequest.message.order.items
         const logisticData = requestQuery.logistics_on_confirm[0]
 
-        let qouteItems = []
-        let detailedQoute = []
+        //let qouteItems = []
+       // let detailedQoute = []
         let totalPrice = 0
 
         let headers = {};
@@ -886,8 +886,8 @@ class ProductService {
                 itemList.push(item);
         }
 
-        let orderItems = confirmRequest.message.order.quote
-        confirmData["order_items"] = orderItems
+        let detailedQoute = confirmRequest.message.order.quote
+        //confirmData["order_items"] = orderItems
         confirmData.items = itemList;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
@@ -927,7 +927,7 @@ class ProductService {
 
 
         const productData = await getConfirm({
-            qouteItems: qouteItems,
+            //qouteItems: qouteItems,
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,

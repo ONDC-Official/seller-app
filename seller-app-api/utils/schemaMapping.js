@@ -450,7 +450,7 @@ exports.getConfirm = async (data) => {
                 "items": data.items,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
-                "quote":data.message.quote,
+                "quote":data.message.order.quote,
                 "payment": data.message.order.payment
             }
         }
