@@ -135,19 +135,16 @@ class OrderService {
 
             //update order item level status
 
-            //TODO: add check for single item cancellation is not allowed
-
             if(order.items.length===1){
                 throw new BadRequestParameterError(MESSAGES.SINGLE_ITEM_CANNOT_CANCEL);
             }
             let items =[];
-            for(let updateItem of data){
-                
-                let item = order.items.find((i)=>{return i.id===updateItem.id; });
+            for(let updateItem of order.items){
+                let item = data.find((i)=>{return i.id===updateItem.id; });
                 if(item){
-                    item.state = 'Cancelled';
-                    item.reason_code = updateItem.cancellation_reason_id;
-                    items.push(item);
+                    updateItem.state = 'Cancelled';
+                    updateItem.reason_code = item.cancellation_reason_id;
+                    items.push(updateItem);
                 }else{
                     items.push(updateItem);
                 }
@@ -155,18 +152,19 @@ class OrderService {
             }
 
             order.items=items;
-            console.log("order.items--->",order.items);
 
-            await Order.findOneAndUpdate({_id:orderId},{items:items});
+            //await Order.findOneAndUpdate({_id:orderId},{items:items});
+
+
             //notify client to update order status ready to ship to logistics
-            // let httpRequest = new HttpRequest(
-            //     mergedEnvironmentConfig.intraServiceApiEndpoints.client,
-            //     '/api/client/status/updateOrderItems',
-            //     'PUT',
-            //     {data:order},
-            //     {}
-            // );
-            // await httpRequest.send();
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/client/status/updateOrderItems',
+                'PUT',
+                {data:order},
+                {}
+            );
+            await httpRequest.send();
 
             return order;
 

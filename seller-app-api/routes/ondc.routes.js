@@ -33,6 +33,9 @@ router.post('/client/status/cancel',
 router.put('/client/status/updateOrder',
     logisticController.orderStatusUpdate);
 
+router.put('/client/status/updateOrderItems',
+    logisticController.orderStatusUpdateItems);
+
 router.post('/client/update',
     logisticController.orderUpdate);
 

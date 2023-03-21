@@ -1481,6 +1481,91 @@ class OndcService {
         }
     }
 
+    async orderStatusUpdateItems(payload = {}, req = {}) {
+        try {
+            const {criteria = {}, payment = {}} = req || {};
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    retailOrderId: payload.data.orderId
+                }
+            })
+
+            console.log("")
+
+            const logistics = confirmRequest.selectedLogistics;
+
+            const order = payload.data;
+            const selectMessageId = uuidv4();//payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            const trackRequest = {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "action": "update",
+                    "core_version": "1.1.0",
+                    "bap_id": config.get("sellerConfig").BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                    "transaction_id": logistics.context.transaction_id,
+                    "message_id": logisticsMessageId,
+                    "city": "std:080", //TODO: take it from request
+                    "country": "IND",
+                    "timestamp": new Date()
+                },
+                "message": {
+                    "order": {
+                        "id": order.orderId,
+                        "state": "Accepted",
+                        "items": logistics.items,
+                        "@ondc/org/linked_order": {
+                            "items": [{ //TODO: get valid item from list and update the fields
+                                "descriptor": {
+                                    "name": "KIT KAT"
+                                },
+                                "quantity": {
+                                    "count": 2,
+                                    "measure": {
+                                        "value": 200,
+                                        "unit": "Gram"
+                                    }
+                                },
+                                "price": {
+                                    "currency": "INR",
+                                    "value": "200.00"
+                                },
+                                "category_id": "Grocery"
+                            }]
+                        },
+                        "fulfillments": [{
+                            "id": logistics.message.order.fulfillments[0].id,
+                            "type": logistics.message.order.fulfillments[0].type,
+                            "tracking": logistics.message.order.fulfillments[0].tracking,
+                            "tags": {
+                                "@ondc/org/order_ready_to_ship": "yes" //TBD: passing this value for update triggers logistics workflow
+                            }
+                        }],
+                        "updated_at":new Date()
+                    },
+                    "update_target": "fulfillment"
+                }
+
+            }
+
+
+            payload = {message:{order:order},context:{...confirmRequest.confirmRequest.context,message_id:uuidv4()}};
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            //setTimeout(() => {
+                this.postUpdateItemRequest(payload,trackRequest,logisticsMessageId, selectMessageId);
+            //}, 5000); //TODO move to config
+
+            return {status:'ACK'}
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
     async postStatusRequest(searchRequest,logisticsMessageId,selectMessageId){
 
@@ -1552,6 +1637,83 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                this.buildUpdateRequest(orderData,logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
+    async postUpdateItemRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            // try { //TODO: post this request for update items
+            //
+            //     console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
+            //     console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
+            //     let headers = {};
+            //     let httpRequest = new HttpRequest(
+            //         config.get("sellerConfig").BPP_URI,
+            //         `/protocol/logistics/v1/update`,
+            //         'POST',
+            //         searchRequest,
+            //         headers
+            //     );
+            //
+            //
+            //     let result = await httpRequest.send();
+            //     console.log("------result ->>>",result )
+            //
+            // } catch (e) {
+            //     logger.error('error', `[Ondc Service] post http select response : `, e);
+            //     return e
+            // }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+               this.buildUpdateRequest(orderData,logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }    async postUpdateItemRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            // try { //TODO: post this request for update items
+            //
+            //     console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
+            //     console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
+            //     let headers = {};
+            //     let httpRequest = new HttpRequest(
+            //         config.get("sellerConfig").BPP_URI,
+            //         `/protocol/logistics/v1/update`,
+            //         'POST',
+            //         searchRequest,
+            //         headers
+            //     );
+            //
+            //
+            //     let result = await httpRequest.send();
+            //     console.log("------result ->>>",result )
+            //
+            // } catch (e) {
+            //     logger.error('error', `[Ondc Service] post http select response : `, e);
+            //     return e
+            // }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+               this.buildUpdateItemRequest(orderData,logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
         }catch (e){
             logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -1797,6 +1959,24 @@ class OndcService {
             //2. if data present then build select response
 
             let statusResponse = await productService.productUpdate(logisticsResponse)
+
+            //3. post to protocol layer
+            await this.postUpdateResponse(statusResponse);
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    async buildUpdateItemRequest(statusRequest,logisticsMessageId, initMessageId) {
+
+        try {
+            //1. look up for logistics
+            let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'update')
+            //2. if data present then build select response
+
+            let statusResponse = await productService.productUpdateItem(statusRequest,logisticsResponse)
 
             //3. post to protocol layer
             await this.postUpdateResponse(statusResponse);
