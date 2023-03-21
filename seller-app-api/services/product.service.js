@@ -558,6 +558,8 @@ class ProductService {
             return item;
         });
 
+        console.log("items----->",items);
+        console.log("items----->",items);
         updateOrder.items = items;
         updateOrder.order_id = updateOrder.orderId;
 
@@ -890,7 +892,7 @@ class ProductService {
 
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
-        confirmData.items = itemList;
+        confirmData.items = detailedQoute;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
         // confirmData.state = confirmData.id
