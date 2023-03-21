@@ -498,9 +498,12 @@ class ProductService {
         return productData
     }
 
-    async productStatus(requestQuery) {
+    async productStatus(requestQuery,statusRequest={}) {
 
-        const statusRequest = requestQuery.retail_status[0]//select first select request
+        if(Object.keys(statusRequest).length === 0){
+            statusRequest = requestQuery.retail_status[0]//select first select request
+        }
+
         const logisticData = requestQuery.logistics_on_status[0]
 
 

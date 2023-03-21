@@ -774,6 +774,7 @@ class OndcService {
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.street
 
+            const isInvalidItem =false
             let itemDetails = []
             for(const items of payload.message.order.items){
                 let item = await productService.getForOndc(items.id)
@@ -943,10 +944,31 @@ class OndcService {
             //3. post to protocol layer
             await this.postConfirmResponse(selectResponse);
 
+
+            //4. trigger on_status call to BAP
+            const confirmRequest = logisticsResponse.retail_confirm[0]//select first select request
+            const context = {...confirmRequest.context,action:'on_status',timestamp:new Date(),message_id:uuidv4()}
+            const orderId = confirmRequest.message.order.order_id
+            await this.triggerOnStatus(context,orderId);
+
         } catch (e) {
             console.log(e)
             return e
         }
+    }
+
+    async triggerOnStatus(context,orderId){
+
+        console.log("context",context)
+        console.log("orderId",orderId)
+        let status = {
+            "context": context,
+            "message": {
+                "order_id": orderId
+            }
+        }
+
+        await this.orderStatus(status,{})
     }
 
 
@@ -1941,7 +1963,7 @@ class OndcService {
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response
 
-            let statusResponse = await productService.productStatus(logisticsResponse)
+            let statusResponse = await productService.productStatus(logisticsResponse,statusRequest)
 
             //3. post to protocol layer
             await this.postStatusResponse(statusResponse);
