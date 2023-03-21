@@ -105,7 +105,12 @@ class ProductController {
 
             let path = req.file.path;
 
-            var workbook = XLSX.readFile(path);
+            var workbook = XLSX.readFile(path,{
+                type: 'binary',
+                cellDates: true,
+                cellNF: false,
+                cellText: false
+            });
             var sheet_name_list = workbook.SheetNames;
             let jsonData = XLSX.utils.sheet_to_json(
                 workbook.Sheets[sheet_name_list[0]]
@@ -216,6 +221,7 @@ class ProductController {
                     }
                         
 
+                    console.log('manufactured date----->',row.manufacturedDate);
 
                     row.images = imageUrls;
                     try{
