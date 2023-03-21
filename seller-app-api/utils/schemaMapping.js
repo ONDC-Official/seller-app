@@ -304,6 +304,8 @@ exports.getStatus = async (data) => {
     context.bpp_id =BPP_ID
     context.bpp_uri =BPP_URI
     context.action ='on_status'
+
+    console.log("status------context>",context)
     const schema = {
         "context": {...context},
         "message":  {

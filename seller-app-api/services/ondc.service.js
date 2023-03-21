@@ -947,8 +947,10 @@ class OndcService {
 
             //4. trigger on_status call to BAP
             const confirmRequest = logisticsResponse.retail_confirm[0]//select first select request
-            const context = {...confirmRequest.context,action:'on_status',timestamp:new Date(),message_id:uuidv4()}
+            const context = {...selectResponse.context,action:'on_status',timestamp:new Date(),message_id:uuidv4()}
             const orderId = confirmRequest.message.order.order_id
+
+            console.log("context--->",context)
             await this.triggerOnStatus(context,orderId);
 
         } catch (e) {
@@ -968,7 +970,7 @@ class OndcService {
             }
         }
 
-        await this.orderStatus(status,{})
+        await this.orderStatus(status,{},true)
     }
 
 
@@ -1233,7 +1235,7 @@ class OndcService {
         }
     }
 
-    async orderStatus(payload = {}, req = {}) {
+    async orderStatus(payload = {}, req = {},unsoliciated=false) {
         try {
             const {criteria = {}, payment = {}} = req || {};
 
@@ -1250,7 +1252,7 @@ class OndcService {
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = {
+            const statusRequest = {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "status",
@@ -1275,7 +1277,7 @@ class OndcService {
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-                this.postStatusRequest(trackRequest,logisticsMessageId, selectMessageId)
+                this.postStatusRequest(statusRequest,logisticsMessageId, selectMessageId,unsoliciated,payload)
             //}, 5000); //TODO move to config
 
             return {status:'ACK'}
@@ -1589,7 +1591,7 @@ class OndcService {
     }
 
 
-    async postStatusRequest(searchRequest,logisticsMessageId,selectMessageId){
+    async postStatusRequest(statusRequest,logisticsMessageId,selectMessageId,unsoliciated,payload){
 
         try{
             //1. post http to protocol/logistics/v1/search
@@ -1601,7 +1603,7 @@ class OndcService {
                     config.get("sellerConfig").BPP_URI,
                     `/protocol/logistics/v1/status`,
                     'POST',
-                    searchRequest,
+                    statusRequest,
                     headers
                 );
 
@@ -1617,8 +1619,8 @@ class OndcService {
 
             //async post request
             setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
-                this.buildStatusRequest(searchRequest,logisticsMessageId, selectMessageId)
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,statusRequest);
+                this.buildStatusRequest(statusRequest,logisticsMessageId, selectMessageId,unsoliciated,payload)
             }, 10000); //TODO move to config
         }catch (e){
             logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -1956,14 +1958,15 @@ class OndcService {
             return e
         }
     }
-    async buildStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
+    async buildStatusRequest(statusRequest,logisticsMessageId, initMessageId,unsoliciated,payload) {
 
         try {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response
 
-            let statusResponse = await productService.productStatus(logisticsResponse, {})
+            console.log("statusRequest-----build>",statusRequest);
+            let statusResponse = await productService.productStatus(logisticsResponse, statusRequest,unsoliciated,payload)
 
             //3. post to protocol layer
             await this.postStatusResponse(statusResponse);

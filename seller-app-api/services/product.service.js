@@ -498,14 +498,20 @@ class ProductService {
         return productData
     }
 
-    async productStatus(requestQuery,statusRequest={}) {
+    async productStatus(requestQuery,statusRequest={},unsoliciated,payload) {
 
-        if(Object.keys(statusRequest).length === 0){
-            statusRequest = requestQuery.retail_status[0]//select first select request
+        if(!unsoliciated){
+            console.log("in eif")
+            statusRequest = requestQuery.retail_status[0];//select first select request
+        }else{
+            console.log("in else")
+            statusRequest = payload;
+
         }
 
-        const logisticData = requestQuery.logistics_on_status[0]
+        console.log("statusRequest---->",statusRequest.context)
 
+        const logisticData = requestQuery.logistics_on_status[0]
 
         let confirm = {}
         let httpRequest = new HttpRequest(
@@ -553,7 +559,7 @@ class ProductService {
         });
 
         updateOrder.items = items;
-        updateOrder.id = statusRequest.message.order_id;
+        updateOrder.order_id = updateOrder.orderId;
 
         const productData = await getStatus({
             context: statusRequest.context,
