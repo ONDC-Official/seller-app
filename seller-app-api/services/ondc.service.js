@@ -1963,7 +1963,7 @@ class OndcService {
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'status')
             //2. if data present then build select response
 
-            let statusResponse = await productService.productStatus(logisticsResponse,statusRequest)
+            let statusResponse = await productService.productStatus(logisticsResponse, {})
 
             //3. post to protocol layer
             await this.postStatusResponse(statusResponse);
