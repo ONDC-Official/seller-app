@@ -1087,6 +1087,7 @@ class ProductService {
             for (let item of items) {
                 let headers = {};
 
+                let itemLevelQtyStatus = true
                 let qouteItemsDetails = {}
                 let httpRequest = new HttpRequest(
                     serverUrl,
@@ -1105,6 +1106,7 @@ class ProductService {
                     let price
                     if(result?.data?.quantity ===0){
                         isQtyAvailable=false
+                        itemLevelQtyStatus=false
                         //add qty check
                         price= result?.data?.MRP * item.quantity.count
                         totalPrice += 0 //as item is not in qty
@@ -1122,11 +1124,11 @@ class ProductService {
                 qouteItemsDetails = {
                     "@ondc/org/item_id": item.id,
                     "@ondc/org/item_quantity": {
-                        "count": isQtyAvailable?item.quantity.count:0
+                        "count": itemLevelQtyStatus?item.quantity.count:0
                     },
                     "title": result?.data?.productName,
                     "@ondc/org/title_type": "item",
-                    "price": isQtyAvailable?item.price:{value: "0", currency: "INR"}
+                    "price": itemLevelQtyStatus?item.price:{value: "0", currency: "INR"}
                 }
 
                 if(isServiceable){
