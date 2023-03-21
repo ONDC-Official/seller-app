@@ -762,6 +762,7 @@ class ProductService {
 
         let updateResult = await httpRequest.send();
 
+        updateOrder.id = cancelData.message.order.orderId
         //update item level fulfillment status
         // let items = updateOrder.items.map((item)=>{
         //     item.tags={status:updateOrder.state};
@@ -770,7 +771,7 @@ class ProductService {
         // });
 
         //updateOrder.items = items;
-        updateOrder.id = cancelData.order_id;
+        //updateOrder.id = cancelData.order_id;
         const productData = await getCancel({
             context: cancelData.context,
             updateOrder:updateOrder
