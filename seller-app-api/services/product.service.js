@@ -1040,138 +1040,194 @@ class ProductService {
 
     async productSelect(requestQuery) {
 
-        const selectData = requestQuery.retail_select[0]//select first select request
-        const items = selectData.message.order.items
-        const logisticData = requestQuery.logistics_on_search
+        try{
+            const selectData = requestQuery.retail_select[0]//select first select request
+            const items = selectData.message.order.items
+            const logisticData = requestQuery.logistics_on_search
 
-        let qouteItems = []
-        let detailedQoute = []
-        let totalPrice = 0
+            let qouteItems = []
+            let detailedQoute = []
+            let totalPrice = 0
 
+            let isQtyAvailable=true
+            let isServiceable=true
 
-        let logisticProvider = {}
+            let logisticProvider = {}
 
-        for (let logisticData1 of logisticData) {
-            if (logisticData1.message) {
-                if (logisticData1.context.bpp_id === "ondc-preprod.loadshare.net") {//TODO: move to env
-                    logisticProvider = logisticData1
-                }
-            }
-        }
-
-        if (Object.keys(logisticProvider).length === 0) {
-            for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+            for (let logisticData1 of logisticData) {
                 if (logisticData1.message) {
-                    logisticProvider = logisticData1
+                    if (logisticData1.context.bpp_id === "ondc-preprod.loadshare.net") {//TODO: move to env
+                        logisticProvider = logisticData1
+                    }
                 }
             }
-        }
 
-        if (Object.keys(logisticProvider).length === 0) {
-            return {
-                context: {...selectData.context, action: 'on_select'}, error: { //TODO: return product details with valid code
-                    "type": "CORE-ERROR",
-                    "code": "60001",
-                    "message": "Pickup not servicable"
+            //TODO: uncomment to allow lookup for other providers
+            // if (Object.keys(logisticProvider).length === 0) {
+            //     for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+            //         if (logisticData1.message) {
+            //             logisticProvider = logisticData1
+            //         }
+            //     }
+            // }
+
+            if (Object.keys(logisticProvider).length === 0) {
+                isServiceable=false
+            }
+
+            for (let item of items) {
+                let headers = {};
+
+                let qouteItemsDetails = {}
+                let httpRequest = new HttpRequest(
+                    serverUrl,
+                    `/api/v1/products/${item.id}/ondcGet`,
+                    'get',
+                    {},
+                    headers
+                );
+
+                let result = await httpRequest.send();
+
+
+                console.log("result?.data",result?.data.quantity)
+
+                if (result?.data) {
+                    let price
+                    if(result?.data?.quantity ===0){
+                        isQtyAvailable=false
+                        //add qty check
+                        price= result?.data?.MRP * item.quantity.count
+                        totalPrice += 0 //as item is not in qty
+                    }else{
+                        //add qty check
+                        price= result?.data?.MRP * item.quantity.count
+                        totalPrice += price
+                    }
+
+                    item.price = {value: ""+price, currency: "INR"}
                 }
-            }
-        }
 
-        for (let item of items) {
-            let headers = {};
+                //TODO: check if quantity is available
 
-            let qouteItemsDetails = {}
-            let httpRequest = new HttpRequest(
-                serverUrl,
-                `/api/v1/products/${item.id}/ondcGet`,
-                'get',
-                {},
-                headers
-            );
+                qouteItemsDetails = {
+                    "@ondc/org/item_id": item.id,
+                    "@ondc/org/item_quantity": {
+                        "count": isQtyAvailable?item.quantity.count:0
+                    },
+                    "title": result?.data?.productName,
+                    "@ondc/org/title_type": "item",
+                    "price": isQtyAvailable?item.price:0
+                }
 
-            let result = await httpRequest.send();
-
-            if (result?.data) {
-                let price = result?.data?.MRP * item.quantity.count
-                totalPrice += price
-                item.price = {value: ""+price, currency: "INR"}
-            }
-
-            //TODO: check if quantity is available
-
-            qouteItemsDetails = {
-                "@ondc/org/item_id": item.id,
-                "@ondc/org/item_quantity": {
-                    "count": item.quantity.count
-                },
-                "title": result?.data?.productName,
-                "@ondc/org/title_type": "item",
-                "price": item.price
+                if(isServiceable){
+                    item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
+                }else{
+                    item.fulfillment_id = '1'
+                }
+                qouteItems.push(item)
+                detailedQoute.push(qouteItemsDetails)
             }
 
-            item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
-            qouteItems.push(item)
-            detailedQoute.push(qouteItemsDetails)
-        }
+            let savedLogistics = new SelectRequest()
 
-        let savedLogistics = new SelectRequest()
+            savedLogistics.transactionId = selectData.context.transaction_id
+            savedLogistics.packaging = "0"//TODO: select packaging option
+            savedLogistics.providerId = "0"//TODO: select from items provider id
+            savedLogistics.selectedLogistics = logisticProvider
 
-        savedLogistics.transactionId = selectData.context.transaction_id
-        savedLogistics.packaging = "0"//TODO: select packaging option
-        savedLogistics.providerId = "0"//TODO: select from items provider id
-        savedLogistics.selectedLogistics = logisticProvider
+            await savedLogistics.save();
 
-        await savedLogistics.save();
+            let deliveryCharges ={}
+            let fulfillments =[]
+            if(isServiceable){
+                //select logistic based on criteria-> for now first one will be picked up
+                deliveryCharges = {
+                    "title": "Delivery charges",
+                    "@ondc/org/title_type": "delivery",
+                    "@ondc/org/item_id":logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id,
+                    "price": {
+                        "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
+                        "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+                    }
+                }//TODO: need to map all items in the catalog to find out delivery charges
 
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "@ondc/org/item_id":logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id,
-            "price": {
-                "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
-                "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
-            }
-        }//TODO: need to map all items in the catalog to find out delivery charges
 
-        //added delivery charges in total price
-        totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
+                //added delivery charges in total price
+                totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
 
-        let fulfillments = [
-            {
-                "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
-                "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
-                "tracking": true, //Hard coded
-                "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
-                "@ondc/org/TAT": logisticProvider.message.catalog["bpp/providers"][0].items[0].time.duration,
-                "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
-                "type":"Delivery",//TODO: hard coded
-                "state":
+                fulfillments = [
                     {
-                        "descriptor":
+                        "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
+                        "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
+                        "tracking": true, //Hard coded
+                        "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
+                        "@ondc/org/TAT": logisticProvider.message.catalog["bpp/providers"][0].items[0].time.duration,
+                        "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
+                        "type":"Delivery",//TODO: hard coded
+                        "state":
                             {
-                                "code": "Serviceable"//Hard coded
-                            }
-                    }, end: selectData.message.order.fulfillments[0].end
-            }]
+                                "descriptor":
+                                    {
+                                        "code": "Serviceable"//Hard coded
+                                    }
+                            }, end: selectData.message.order.fulfillments[0].end
+                    }]
+            }else{
+                deliveryCharges = {
+                    "title": "Delivery charges",
+                    "@ondc/org/title_type": "delivery",
+                    "@ondc/org/item_id":"1",
+                    "price": {
+                        "currency": 'INR',
+                        "value": '0'
+                    }
+                }//TODO: need to map all items in the catalog to find out delivery charges
 
-        //update fulfillment
-        selectData.message.order.fulfillments = fulfillments
+                fulfillments = [
+                    {
+                        "id": '1', //TODO: check what needs to go here, ideally it should be item id
+                        "@ondc/org/provider_name": '1',//TODO: merchant name
+                        "tracking": false, //Hard coded
+                        "@ondc/org/category":"Next Day Delivery" ,
+                        "@ondc/org/TAT":"P1D",
+                        "provider_id": "1", //TODO: merchant name
+                        "type":"Delivery",
+                        "state":
+                            {
+                                "descriptor":
+                                    {
+                                        "code": "Non-serviceable"//Hard coded
+                                    }
+                            }, end: selectData.message.order.fulfillments[0].end
+                    }]
+            }
 
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
 
-        detailedQoute.push(deliveryCharges);
 
-        const productData = await getSelect({
-            qouteItems: qouteItems,
-            order: selectData.message.order,
-            totalPrice: totalPriceObj,
-            detailedQoute: detailedQoute,
-            context: selectData.context
-        });
+            //update fulfillment
+            selectData.message.order.fulfillments = fulfillments
 
-        return productData
-    }
+            let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+            detailedQoute.push(deliveryCharges);
+
+            const productData = await getSelect({
+                qouteItems: qouteItems,
+                order: selectData.message.order,
+                totalPrice: totalPriceObj,
+                detailedQoute: detailedQoute,
+                context: selectData.context,
+                isQtyAvailable,
+                isServiceable
+            });
+
+            return productData
+
+        }catch (e){
+            console.log(e)
+        }
+       }
 
 }
 

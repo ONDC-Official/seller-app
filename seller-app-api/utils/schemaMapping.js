@@ -193,34 +193,58 @@ exports.getProducts = async (data) => {
 
 exports.getSelect = async (data) => {
 
-    logger.log('info', `[Schema mapping ] build retail select request from :`, data);
+    try{
+        logger.log('info', `[Schema mapping ] build retail select request from :`, data);
 
-    let productAvailable = []
-    //set product items to schema
+        let productAvailable = []
+        //set product items to schema
 
-    let context = data.context
-    context.bpp_id =BPP_ID
-    context.bpp_uri =BPP_URI
-    context.action ='on_select'
-    const schema = {
-        "context": {...context},
-        "message": {
-            "order": {
-                "provider":data.order.provider,
-                "fulfillments":data.order.fulfillments,
-                "quote": {
-                    "price":data.totalPrice,
-                    "breakup": data.detailedQoute,
-                    "ttl": "P1D"
-                },
-                "items": data.qouteItems
-            }
+        let context = data.context
+        context.bpp_id =BPP_ID
+        context.bpp_uri =BPP_URI
+        context.action ='on_select'
+        let error ={}
+        if(!data.isQtyAvailable){
+            error = {
+                error:
+                    {
+                        type:"DOMAIN-ERROR",
+                        code:"40002"
+                    }}
+
         }
+        if(!data.isServiceable){
+            error = {
+                error:
+                    {
+                        type:"DOMAIN-ERROR",
+                        code:"30009"
+                    }}
+
+        }
+        const schema = {
+            "context": {...context},
+            "message": {
+                "order": {
+                    "provider":data.order.provider,
+                    "fulfillments":data.order.fulfillments,
+                    "quote": {
+                        "price":data.totalPrice,
+                        "breakup": data.detailedQoute,
+                        "ttl": "P1D"
+                    },
+                    "items": data.qouteItems
+                }
+            },error
+        }
+
+        logger.log('info', `[Schema mapping ] after build retail select request :`, schema);
+
+        return schema
+    }catch (e) {
+        console.log(e)
     }
 
-    logger.log('info', `[Schema mapping ] after build retail select request :`, schema);
-
-    return schema
 
 }
 
