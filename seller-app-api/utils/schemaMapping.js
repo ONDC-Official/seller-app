@@ -203,7 +203,7 @@ exports.getSelect = async (data) => {
         context.bpp_id =BPP_ID
         context.bpp_uri =BPP_URI
         context.action ='on_select'
-        let error ={}
+        let error
         if(!data.isQtyAvailable){
             error = {
                 error:
@@ -235,7 +235,10 @@ exports.getSelect = async (data) => {
                     },
                     "items": data.qouteItems
                 }
-            },error
+            }
+        }
+        if(error){
+            schema.error = error.error
         }
 
         logger.log('info', `[Schema mapping ] after build retail select request :`, schema);

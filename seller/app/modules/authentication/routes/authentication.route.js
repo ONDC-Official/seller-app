@@ -17,6 +17,12 @@ router.post(
     authenticationController.login
 );
 
+router.post(
+    '/v1/auth/logout',
+    authentication.middleware(),
+    authenticationController.logout
+);
+
 /**
  * API to generate 6 digit PIN
  */

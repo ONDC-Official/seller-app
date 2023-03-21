@@ -40,9 +40,19 @@ const passportJwtStrategy = new JwtStrategy(
         try {
             let user = {};
 
+
             // if jwt payload contains user obj then its an inter service communication call
             if (jwtPayload.user) {
                 user = jwtPayload.user;
+                user.userToken = tokenExtractor(req);
+                let cachedToken = myCache.get(`${user.id}-${user.userToken}`);
+
+                if(!cachedToken){
+                    throw new UnauthenticatedError(
+                        MESSAGES.LOGIN_ERROR_USER_ACCESS_TOKEN_INVALID
+                    );
+                }
+
             } else if (jwtPayload.userId) {
 
                 if (!user) {
@@ -56,6 +66,14 @@ const passportJwtStrategy = new JwtStrategy(
                 }
 
                 user = user.toJSON();
+                user.userToken = tokenExtractor(req);
+                let cachedToken = myCache.get(`${user.id}-${user.userToken}`);
+
+                if(!cachedToken){
+                    throw new UnauthenticatedError(
+                        MESSAGES.LOGIN_ERROR_USER_ACCESS_TOKEN_INVALID
+                    );
+                }
             }
             return done(null, user);
         } catch (err) {

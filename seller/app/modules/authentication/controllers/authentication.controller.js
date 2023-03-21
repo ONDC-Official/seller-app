@@ -28,6 +28,19 @@ class AuthenticationController {
             });
     }
 
+    logout(req, res, next) {
+        let user = req.user;
+        let token = req.userToken;
+
+        console.log('req---->',req.user)
+
+        myCache.del(`${req.user.id}-${req.user.userToken}`)
+
+        //console.log(myCache.get(`${req.user.id}-${JWTToken}`));
+        //global.sessionMap.push[{userId:currentUser._id,token:JWTToken}];
+        res.json({});
+    }
+
     /**
    * Forgot Password
    * @param {*} req    HTTP request object
