@@ -6,10 +6,13 @@ const BPP_URI = config.get("sellerConfig").BPP_URI
 
 exports.getProducts = async (data) => {
 
+    data.context.timestamp = new Date();
     let bppDetails ={}
     let bppProviders =[]
     for(const org of data?.data){
         let productAvailable = []
+        org.storeDetails.address.street = org.storeDetails.address.locality
+        delete org.storeDetails.address.locality
         for(let items of org.items){
             let item =  {
                 "id": items._id,
@@ -27,13 +30,13 @@ exports.getProducts = async (data) => {
                 },
                 "quantity": {
                     "available": {
-                        "count": items.quantity
+                        "count": `${items.quantity}`
                     },
                     "maximum": {
-                        "count": items.maxAllowedQty
+                        "count": `${items.maxAllowedQty}`
                     }
                 },
-                "category_id": items.productCategory,
+                "category_id": 'Fruits and Vegetables',//items.productCategory, //TODO: should be same as tags category
                 "location_id": org.storeDetails.location._id,
                 "fulfillment_id": org.storeDetails.location._id,
                 "matched": true,
@@ -93,6 +96,11 @@ exports.getProducts = async (data) => {
                     org.storeDetails.logo
                 ]
             },
+            "time":
+                {
+                    "label":"enable",
+                    "timestamp":data.context.timestamp
+                },
             "locations": [
                 {
                     "id": org.storeDetails.location._id, //org.storeDetails.location._id
@@ -103,7 +111,10 @@ exports.getProducts = async (data) => {
                             "start": "0000",
                             "end": "2359"
                         },
-                        "days": "1,2,3,4,5,6,7"
+                        "days": "1,2,3,4,5,6,7",
+                        "schedule": {
+                            "holidays": []
+                        }
                     }
                 }
             ],
@@ -223,7 +234,7 @@ exports.getSelect = async (data) => {
 
         }
         const schema = {
-            "context": {...context},
+            "context": {...context,timestamp: new Date()},
             "message": {
                 "order": {
                     "provider":data.order.provider,
@@ -266,7 +277,7 @@ exports.getInit = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_init'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
                 "provider":data.message.order.provider,
@@ -307,7 +318,7 @@ exports.getStatus = async (data) => {
 
     console.log("status------context>",context)
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
                 "provider":{"id":data.updateOrder.organization},
@@ -343,7 +354,7 @@ exports.getUpdate = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_update'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
                 "provider":{"id":data.updateOrder.organization},
@@ -379,7 +390,7 @@ exports.getCancel = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_cancel'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
                 "state":data.updateOrder.state,
@@ -405,7 +416,7 @@ exports.getTrack = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_track'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "tracking":
                     data.logisticData.message.tracking
@@ -425,7 +436,7 @@ exports.getSupport = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_support'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  data.logisticData.message
 
     }
@@ -441,7 +452,7 @@ exports.getConfirm = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_confirm'
     const schema = {
-        "context": {...context},
+        "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
                 "id":data.message.order.order_id,
@@ -451,7 +462,9 @@ exports.getConfirm = async (data) => {
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
                 "quote":data.message.order.quote,
-                "payment": data.message.order.payment
+                "payment": data.message.order.payment,
+                "created_at":context.created_at,
+                "updated_at":new Date()
             }
         }
     }

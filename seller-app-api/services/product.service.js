@@ -892,7 +892,7 @@ class ProductService {
 
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
-        confirmData.items = detailedQoute;
+        confirmData.items = qouteItems;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
         // confirmData.state = confirmData.id
@@ -930,6 +930,26 @@ class ProductService {
         await savedLogistics.save();
 
 
+        //update fulfillments
+        confirmRequest.message.order.fulfillments[0].start = logisticData.message.order.fulfillments[0].start
+        confirmRequest.message.order.fulfillments[0].time = logisticData.message.order.fulfillments[0].start
+        confirmRequest.message.order.fulfillments[0].tracking = false;
+        confirmRequest.message.order.fulfillments[0].state= {
+            "descriptor": {
+                "code": "Pending"
+            }
+        }
+
+        confirmRequest.message.order.fulfillments[0].time=
+        {
+            "range":
+            {
+                "start":new Date(),
+                "end":new Date().setDate(new Date() + 1)
+            }
+        }
+
+
         const productData = await getConfirm({
             qouteItems: qouteItems,
             detailedQoute: detailedQoute,
@@ -959,7 +979,7 @@ class ProductService {
         let org= await this.getOrgForOndc(initData.message.order.provider.id);
 
         let paymentDetails ={
-                "@ondc/org/buyer_app_finder_fee_type": "Percent", //TODO: for transaction id keep record to track this details
+                "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
                 "@ondc/org/buyer_app_finder_fee_amount": "3.0",
                 "@ondc/org/settlement_details": [
                     {
@@ -970,7 +990,7 @@ class ProductService {
                         "settlement_ifsc_code": org.providerDetail.bankDetails.IFSC,
                         "beneficiary_name": org.providerDetail.bankDetails.accHolderName,
                         "bank_name": org.providerDetail.bankDetails.bankName,
-                        "branch_name": org.providerDetail.bankDetails.branchName
+                        "branch_name": org.providerDetail.bankDetails.branchName??"Pune"
                     }
                 ]
 
@@ -980,6 +1000,7 @@ class ProductService {
         let deliveryCharges = {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
+            "@ondc/org/item_id": items[0].fulfillment_id,
             "price": {
                 "currency": '' + logisticData.message.order.quote.price.currency,
                 "value": '' + logisticData.message.order.quote.price.value
@@ -1132,7 +1153,21 @@ class ProductService {
                     },
                     "title": result?.data?.productName,
                     "@ondc/org/title_type": "item",
-                    "price": itemLevelQtyStatus?item.price:{value: "0", currency: "INR"}
+                    "price": itemLevelQtyStatus?item.price:{value: "0", currency: "INR"},
+                    "item": {
+                        "price": {
+                            "currency": "INR",
+                            "value": `${result?.data?.MRP}`
+                        },
+                        "quantity": {
+                            "available": {
+                                "count": `${result?.data?.quantity}`
+                            },
+                            "maximum": {
+                                "count": `${result?.data?.maxAllowedQty}`
+                            }
+                        }
+                    }
                 }
 
                 if(isServiceable){
@@ -1176,7 +1211,7 @@ class ProductService {
                         "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
                         "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
                         "tracking": true, //Hard coded
-                        "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
+                        "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].items[0].category_id,
                         "@ondc/org/TAT": logisticProvider.message.catalog["bpp/providers"][0].items[0].time.duration,
                         "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
                         "type":"Delivery",//TODO: hard coded
@@ -1192,7 +1227,7 @@ class ProductService {
                 deliveryCharges = {
                     "title": "Delivery charges",
                     "@ondc/org/title_type": "delivery",
-                    "@ondc/org/item_id":"1",
+                    "@ondc/org/item_id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id,
                     "price": {
                         "currency": 'INR',
                         "value": '0'

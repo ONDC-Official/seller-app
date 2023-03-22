@@ -12,6 +12,7 @@ class OrderService {
             let query = {};
 
             console.log('data----->',data);
+            console.log('data---items-->',data.data.items);
             // const organizationExist = await Product.findOne({productName:data.productName});
             // if (organizationExist) {
             //     throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
