@@ -38,7 +38,7 @@ exports.getProducts = async (data) => {
                 },
                 "category_id": 'Fruits and Vegetables',//items.productCategory, //TODO: should be same as tags category
                 "location_id": org.storeDetails.location._id,
-                "fulfillment_id": org.storeDetails.location._id,
+                "fulfillment_id": '1',//Delivery
                 "matched": true,
                 "@ondc/org/returnable":  items.isReturnable??false,
                 "@ondc/org/cancellable":  items.isCancellable??false,
@@ -46,7 +46,7 @@ exports.getProducts = async (data) => {
                 "@ondc/org/time_to_ship": "PT48H",
                 "@ondc/org/seller_pickup_return": true,
                 "@ondc/org/return_window": "P7D",
-                "@ondc/org/contact_details_consumer_care": `${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
+                "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
                 "@ondc/org/mandatory_reqs_veggies_fruits": {
                     "net_quantity": items.packQty
                 },

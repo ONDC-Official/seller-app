@@ -890,7 +890,26 @@ class ProductService {
         console.log("qouteItems-->>>>--",qouteItems)
         //confirmRequest.message.order.items = qouteItems;
 
-        confirmRequest.message.order.fulfillments[0].start = logisticData.message.order.fulfillments[0].start
+        let org= await this.getOrgForOndc(confirmData.provider.id);
+
+        let storeLocationEnd ={}
+        if(org.providerDetail.storeDetails){
+            storeLocationEnd =  {
+            "location": {
+                "id": org.providerDetail.storeDetails._id,
+                    "descriptor": {
+                    "name": org.name
+                },
+                "gps": `${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+
+            },
+            "contact": {
+                phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                    email: org.providerDetail.storeDetails.supportDetails.email
+            }
+        }}
+
+        confirmRequest.message.order.fulfillments[0].start = storeLocationEnd
         confirmRequest.message.order.fulfillments[0].tracking = false;
         confirmRequest.message.order.fulfillments[0].state= {
             "descriptor": {
@@ -1042,6 +1061,7 @@ class ProductService {
             }
 
             item.fulfillment_id =  item.fulfillment_id
+            delete item.price
             qouteItems.push(item)
             detailedQoute.push(qouteItemsDetails)
         }
@@ -1113,7 +1133,7 @@ class ProductService {
 
             for (let item of items) {
                 let headers = {};
-
+                let itemObj =item
                 let itemLevelQtyStatus = true
                 let qouteItemsDetails = {}
                 let httpRequest = new HttpRequest(
@@ -1174,11 +1194,14 @@ class ProductService {
 
                 console.log("isServiceable------>",isServiceable)
                 if(isServiceable){
-                    item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
+                    itemObj.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
                 }else{
-                    item.fulfillment_id = '1'
+                    itemObj.fulfillment_id = '1'
                 }
-                qouteItems.push(item)
+                delete itemObj.price;
+                delete itemObj.location_id;
+                delete itemObj.price;
+                qouteItems.push(itemObj)
                 detailedQoute.push(qouteItemsDetails)
             }
 
@@ -1216,15 +1239,13 @@ class ProductService {
                         "tracking": true, //Hard coded
                         "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].items[0].category_id,
                         "@ondc/org/TAT": logisticProvider.message.catalog["bpp/providers"][0].items[0].time.duration,
-                        "provider_id": logisticProvider.message.catalog["bpp/providers"][0].id,
-                        "type":"Delivery",//TODO: hard coded
                         "state":
                             {
                                 "descriptor":
                                     {
                                         "code": "Serviceable"//Hard coded
                                     }
-                            }, end: selectData.message.order.fulfillments[0].end
+                            }
                     }]
             }else{
                 deliveryCharges = {
