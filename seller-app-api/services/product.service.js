@@ -887,7 +887,25 @@ class ProductService {
             return item;
         });
 
+        let breakup = confirmData.quote.breakup
+
+        let updatedBreakup = []
+        for(let item of breakup){
+            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            if(item['@ondc/org/title_type']==='item'){
+               const product =  await this.getForOndc(item['@ondc/org/item_id'])
+                item.items = { price: {
+                    currency: "INR",
+                        value: `${product.MRP}`
+                }};
+            }
+            updatedBreakup.push(item);
+        };
+
+        confirmData.quote.breakup = updatedBreakup;
+        confirmRequest.message.order.quote.breakup = updatedBreakup;
         console.log("qouteItems-->>>>--",qouteItems)
+        console.log("qouteItems-->>>>breakup--",breakup)
         //confirmRequest.message.order.items = qouteItems;
 
         let org= await this.getOrgForOndc(confirmData.provider.id);
@@ -896,9 +914,9 @@ class ProductService {
         if(org.providerDetail.storeDetails){
             storeLocationEnd =  {
             "location": {
-                "id": org.providerDetail.storeDetails._id,
+                "id": org.providerDetail.storeDetails.location._id,
                     "descriptor": {
-                    "name": org.name
+                    "name": org.providerDetail.name
                 },
                 "gps": `${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
 
@@ -1057,7 +1075,10 @@ class ProductService {
                 },
                 "title": result?.data?.productName,
                 "@ondc/org/title_type": "item",
-                "price": item.price
+                "price": item.price,
+                "item": {
+                    "price": {value:""+result?.data?.MRP,currency: "INR"}
+                }
             }
 
             item.fulfillment_id =  item.fulfillment_id
@@ -1198,7 +1219,7 @@ class ProductService {
                 }else{
                     itemObj.fulfillment_id = '1'
                 }
-                delete itemObj.price;
+                delete itemObj.quantity;
                 delete itemObj.location_id;
                 delete itemObj.price;
                 qouteItems.push(itemObj)

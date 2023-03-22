@@ -336,7 +336,7 @@ exports.getStatus = async (data) => {
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.order_id,
                  "created_at":context.timestamp,
-                 "updated_at":context.timestamp,
+                 "updated_at":data.updateOrder.updatedAt,
             }
         }
     }
