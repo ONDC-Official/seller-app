@@ -890,6 +890,26 @@ class ProductService {
         console.log("qouteItems-->>>>--",qouteItems)
         //confirmRequest.message.order.items = qouteItems;
 
+        confirmRequest.message.order.fulfillments[0].start = logisticData.message.order.fulfillments[0].start
+        confirmRequest.message.order.fulfillments[0].tracking = false;
+        confirmRequest.message.order.fulfillments[0].state= {
+            "descriptor": {
+                "code": "Pending"
+            }
+        }
+        let today = new Date()
+        let tomorrow = new Date()
+        confirmRequest.message.order.fulfillments[0].time=
+            {
+                "range":
+                    {
+                        "start":today,
+                        "end":tomorrow.setDate(today.getDate() + 1)
+                    }
+            }
+        confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
+
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
         confirmData.items = qouteItems;
@@ -931,32 +951,6 @@ class ProductService {
 
 
         //update fulfillments
-        confirmRequest.message.order.fulfillments[0].start = logisticData.message.order.fulfillments[0].start
-        confirmRequest.message.order.fulfillments[0].time = logisticData.message.order.fulfillments[0].start
-        confirmRequest.message.order.fulfillments[0].tracking = false;
-        confirmRequest.message.order.fulfillments[0].state= {
-            "descriptor": {
-                "code": "Pending"
-            }
-        }
-
-
-        let today = new Date()
-        let tomorrow = new Date()
-
-
-
-        confirmRequest.message.order.fulfillments[0].time=
-        {
-            "range":
-            {
-                "start":today,
-                "end":tomorrow.setDate(today.getDate() + 1)
-            }
-        }
-
-        confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded
-        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
 
         const productData = await getConfirm({
             qouteItems: qouteItems,
