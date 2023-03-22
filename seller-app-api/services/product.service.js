@@ -1131,12 +1131,12 @@ class ProductService {
 
                 if (result?.data) {
                     let price
-                    if(result?.data?.quantity ===0){
+                    if(result?.data?.quantity < item.quantity.count){
                         isQtyAvailable=false
                         itemLevelQtyStatus=false
                         //add qty check
-                        price= result?.data?.MRP * item.quantity.count
-                        totalPrice += 0 //as item is not in qty
+                        price= result?.data?.MRP * result?.data?.quantity
+                        totalPrice += price //as item is not in qty
                     }else{
                         //add qty check
                         price= result?.data?.MRP * item.quantity.count
@@ -1151,11 +1151,11 @@ class ProductService {
                 qouteItemsDetails = {
                     "@ondc/org/item_id": item.id,
                     "@ondc/org/item_quantity": {
-                        "count": itemLevelQtyStatus?item.quantity.count:0
+                        "count": itemLevelQtyStatus?item.quantity.count:result?.data?.quantity
                     },
                     "title": result?.data?.productName,
                     "@ondc/org/title_type": "item",
-                    "price": itemLevelQtyStatus?item.price:{value: "0", currency: "INR"},
+                    "price": item.price,//itemLevelQtyStatus?item.price:{value: "0", currency: "INR"},
                     "item": {
                         "price": {
                             "currency": "INR",
@@ -1172,6 +1172,7 @@ class ProductService {
                     }
                 }
 
+                console.log("isServiceable------>",isServiceable)
                 if(isServiceable){
                     item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
                 }else{
@@ -1229,7 +1230,7 @@ class ProductService {
                 deliveryCharges = {
                     "title": "Delivery charges",
                     "@ondc/org/title_type": "delivery",
-                    "@ondc/org/item_id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id,
+                    "@ondc/org/item_id": '1',
                     "price": {
                         "currency": 'INR',
                         "value": '0'

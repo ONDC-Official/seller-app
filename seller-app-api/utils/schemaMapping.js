@@ -472,7 +472,7 @@ exports.getConfirm = async (data) => {
                 "fulfillments": data.message.order.fulfillments,
                 "quote":data.message.order.quote,
                 "payment": data.message.order.payment,
-                "created_at":context.timestamp,
+                "created_at":data.message.order.created_at, //TODO: this needs to be persisted
                 "updated_at":new Date()
             }
         }
