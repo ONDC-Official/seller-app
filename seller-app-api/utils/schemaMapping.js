@@ -472,7 +472,7 @@ exports.getConfirm = async (data) => {
                 "fulfillments": data.message.order.fulfillments,
                 "quote":data.message.order.quote,
                 "payment": data.message.order.payment,
-                "created_at":context.created_at,
+                "created_at":context.timestamp,
                 "updated_at":new Date()
             }
         }
