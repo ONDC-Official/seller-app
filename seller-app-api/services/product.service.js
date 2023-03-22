@@ -940,15 +940,23 @@ class ProductService {
             }
         }
 
+
+        let today = new Date()
+        let tomorrow = new Date()
+
+
+
         confirmRequest.message.order.fulfillments[0].time=
         {
             "range":
             {
-                "start":new Date(),
-                "end":new Date().setDate(new Date() + 1)
+                "start":today,
+                "end":tomorrow.setDate(today.getDate() + 1)
             }
         }
 
+        confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
 
         const productData = await getConfirm({
             qouteItems: qouteItems,

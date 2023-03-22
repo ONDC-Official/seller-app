@@ -328,7 +328,9 @@ exports.getStatus = async (data) => {
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
                 "payment": data.updateOrder.payment,
-                 "id" :  data.updateOrder.order_id
+                 "id" :  data.updateOrder.order_id,
+                 "created_at":context.timestamp,
+                 "updated_at":context.timestamp,
             }
         }
     }
@@ -448,11 +450,12 @@ exports.getConfirm = async (data) => {
     let productAvailable = []
     //set product items to schema
     let context = data.context
+    context.timestamp=new Date()
     context.bpp_id =BPP_ID
     context.bpp_uri =BPP_URI
     context.action ='on_confirm'
     const schema = {
-        "context": {...context,timestamp:new Date()},
+        "context": {...context},
         "message":  {
             "order": {
                 "id":data.message.order.order_id,
