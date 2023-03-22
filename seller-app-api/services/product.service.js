@@ -904,7 +904,7 @@ class ProductService {
                 "range":
                     {
                         "start":today,
-                        "end":tomorrow.setDate(today.getDate() + 1)
+                        "end":new Date(tomorrow.setDate(today.getDate() + 1))
                     }
             }
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded

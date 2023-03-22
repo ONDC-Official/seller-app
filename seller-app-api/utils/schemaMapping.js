@@ -321,7 +321,13 @@ exports.getStatus = async (data) => {
         "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
-                "provider":{"id":data.updateOrder.organization},
+                "provider":{"id":data.updateOrder.organization,        "locations":
+                        [
+                            {
+                                "id":"641599b84d433a4fbf8f40bb" //TODO: Hard coded
+                            }
+                        ]
+                },
                 "state":data.updateOrder.state,
                 "items": data.updateOrder.items,
                 "billing": data.updateOrder.billing,
