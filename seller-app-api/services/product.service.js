@@ -894,7 +894,7 @@ class ProductService {
             // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
             if(item['@ondc/org/title_type']==='item'){
                const product =  await this.getForOndc(item['@ondc/org/item_id'])
-                item.items = { price: {
+                item.item = { price: {
                     currency: "INR",
                         value: `${product.MRP}`
                 }};
