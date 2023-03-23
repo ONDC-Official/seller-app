@@ -77,7 +77,7 @@ exports.getSignedUrlForRead = async(data) => {
         const regionString = '-' + region;
         myBucket = myBucket.replace('/public-assets','');
 
-        let url = `https://${myBucket}.s3${regionString}.amazonaws.com/public-assets${myKey}`;
+        let url = `https://${myBucket}.s3${regionString}.amazonaws.com/public-assets/${myKey}`;
 
         return ({ url: url, path: myKey });
 
