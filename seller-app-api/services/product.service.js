@@ -936,12 +936,21 @@ class ProductService {
         }
         let today = new Date()
         let tomorrow = new Date()
-        confirmRequest.message.order.fulfillments[0].time=
+        let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
+        confirmRequest.message.order.fulfillments[0].start.time=
+            {
+                "range":
+                    {
+                        "start":today, //TODO: need to take this from seller time
+                        "end":endDate
+                    }
+            }
+        confirmRequest.message.order.fulfillments[0].end.time=
             {
                 "range":
                     {
                         "start":today,
-                        "end":new Date(tomorrow.setDate(today.getDate() + 1))
+                        "end":endDate
                     }
             }
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded

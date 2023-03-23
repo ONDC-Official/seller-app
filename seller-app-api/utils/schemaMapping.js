@@ -13,6 +13,8 @@ exports.getProducts = async (data) => {
         let productAvailable = []
         org.storeDetails.address.street = org.storeDetails.address.locality
         delete org.storeDetails.address.locality
+        delete org.storeDetails.address.building
+        delete org.storeDetails.address.country
         for(let items of org.items){
             let item =  {
                 "id": items._id,
@@ -43,9 +45,9 @@ exports.getProducts = async (data) => {
                 "@ondc/org/returnable":  items.isReturnable??false,
                 "@ondc/org/cancellable":  items.isCancellable??false,
                 "@ondc/org/available_on_cod": items.availableOnCod,
-                "@ondc/org/time_to_ship": "PT48H",
+                "@ondc/org/time_to_ship": "PT1H", //TODO: hard coded
                 "@ondc/org/seller_pickup_return": true,
-                "@ondc/org/return_window": "P7D",
+                "@ondc/org/return_window": "P7D", //TODO: hard coded
                 "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
                 "@ondc/org/mandatory_reqs_veggies_fruits": {
                     "net_quantity": items.packQty
@@ -336,7 +338,7 @@ exports.getStatus = async (data) => {
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.order_id,
                  "created_at":context.timestamp,
-                 "updated_at":data.updateOrder.updatedAt,
+                 "updated_at":context.timestamp,
             }
         }
     }
@@ -473,7 +475,7 @@ exports.getConfirm = async (data) => {
                 "quote":data.message.order.quote,
                 "payment": data.message.order.payment,
                 "created_at":data.message.order.created_at, //TODO: this needs to be persisted
-                "updated_at":new Date()
+                "updated_at":data.message.order.created_at
             }
         }
     }
