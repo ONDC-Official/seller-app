@@ -35,10 +35,14 @@ router.put('/v1/orders/:orderId/ondcUpdate',
 );
 
 router.post('/v1/orders/:orderId/cancel',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.cancel,
 );
 
 router.post('/v1/orders/:orderId/item/cancel',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.cancelItems,
 );
 

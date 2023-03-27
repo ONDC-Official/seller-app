@@ -13,7 +13,7 @@ import s3 from "../../../../lib/utils/s3Utils";
 //import axios from 'axios';
 //import ServiceApi from '../../../../lib/utils/serviceApi';
 
-const userService = new UserService()
+const userService = new UserService();
 class OrganizationService {
     async create(data) {
         try {
@@ -69,7 +69,7 @@ class OrganizationService {
         try {
             let doc = await Organization.findOne({_id:organizationId}).lean();
 
-            //console.log("organization----->",organization)
+            console.log("organization----->",doc)
             let user = await User.findOne({organization:organizationId},{password:0})
             if (doc) {
                 {

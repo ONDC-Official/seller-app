@@ -1,7 +1,7 @@
 import ProductService from '../v1/services/product.service';
-import {mergedEnvironmentConfig} from "../../../config/env.config";
+import {mergedEnvironmentConfig} from '../../../config/env.config';
 
-var XLSX = require('xlsx')
+var XLSX = require('xlsx');
 const productService = new ProductService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
@@ -12,7 +12,7 @@ class ProductController {
     async create(req, res, next) {
         try {
             const data = req.body;
-            data.organization = req.user.organization
+            data.organization = req.user.organization;
             const product = await productService.create(data);
             return res.send(product);
 
@@ -91,7 +91,7 @@ class ProductController {
     async uploadTemplate(req, res, next) {
         try {
 
-            const file = `app/modules/product/template/template.xlsx`;
+            const file = 'app/modules/product/template/template.xlsx';
             return res.download(file);
 
         } catch (error) {
@@ -105,18 +105,23 @@ class ProductController {
 
             let path = req.file.path;
 
-            var workbook = XLSX.readFile(path);
+            var workbook = XLSX.readFile(path,{
+                type: 'binary',
+                cellDates: true,
+                cellNF: false,
+                cellText: false
+            });
             var sheet_name_list = workbook.SheetNames;
             let jsonData = XLSX.utils.sheet_to_json(
                 workbook.Sheets[sheet_name_list[0]]
             );
 
-            console.log("jsonData--->", jsonData)
+            console.log('jsonData--->', jsonData);
             if (jsonData.length === 0) {
                 return res.status(400).json({
                     success: false,
-                    message: "xml sheet has no data",
-                    error:"xml sheet has no data"
+                    message: 'xml sheet has no data',
+                    error:'xml sheet has no data'
                 });
             } else {
 
@@ -136,7 +141,7 @@ class ProductController {
                     'instructions', 'isCancellable',
                     'longDescription', 'availableOnCod',
                     'description', 'images'
-                ]
+                ];
 
                 let inputKeys = Object.keys(jsonData[0]);
 
@@ -144,38 +149,38 @@ class ProductController {
                 if(validKeys.length !== inputKeys.length && inputKeys.every(e => !validKeys.includes(e))){
                     return res.status(400).json({
                         success: false,
-                        message: "Template is invalid",
-                        error:"Template is invalid"
+                        message: 'Template is invalid',
+                        error:'Template is invalid'
                     });
                 }
 
                 for (const row of jsonData) {
 
-                    row.organization = req.user.organization
+                    row.organization = req.user.organization;
 
-                    let images = row?.images?.split(',') ?? []
+                    let images = row?.images?.split(',') ?? [];
 
-                    let imageUrls = []
+                    let imageUrls = [];
 
                     for (const img of images) {
                         var keyName = req.user.organization + '/' + 'productImages' + '/' + uuid();
                         const region = mergedEnvironmentConfig.s3.region;
                         const bucket = mergedEnvironmentConfig.s3.bucket;
 
-                        const imageURL = img
-                        let res
+                        const imageURL = img;
+                        let res;
                         try {
-                            res = await fetch(imageURL)
+                            res = await fetch(imageURL);
                         } catch (e) {
-                            console.log(e)
+                            console.log(e);
                         }
 
                         if (res) {
-                            console.log("mime--->", res)
+                            console.log('mime--->', res);
 
-                            let extention = imageURL.split('.').slice(-1)[0]
-                            keyName = keyName + '.' + extention
-                            const blob = await res.buffer()
+                            let extention = imageURL.split('.').slice(-1)[0];
+                            keyName = keyName + '.' + extention;
+                            const blob = await res.buffer();
                             const s3 = new AWS.S3({
                                 useAccelerateEndpoint: true,
                                 region: region
@@ -185,7 +190,7 @@ class ProductController {
                                 Bucket: bucket,
                                 Key: keyName,
                                 Body: blob
-                            }).promise()
+                            }).promise();
 
                             //console.log("uploaded image --->",uploadedImage);
 
@@ -193,10 +198,37 @@ class ProductController {
                         }
 
                     }
-                    console.log("row---->", row)
 
-                    row.images = imageUrls
-                    await productService.create(row);
+                    if (row.isReturnable?.toLowerCase() === 'yes'){
+                        row.isReturnable=true;
+                    }else{
+                        row.isReturnable = false;
+                    }
+                    if (row.isVegetarian?.toLowerCase() === 'yes'){
+                        row.isVegetarian =true;
+                    }else{
+                        row.isVegetarian=false;
+                    }
+                    if (row.availableOnCod?.toLowerCase() === 'yes'){
+                        row.availableOnCod =true;
+                    }else{
+                        row.availableOnCod =false;
+                    }
+                    if (row.isCancellable?.toLowerCase() === 'yes'){
+                        row.isCancellable =true;
+                    }else{
+                        row.isCancellable =false;
+                    }
+                        
+
+                    console.log('manufactured date----->',row.manufacturedDate);
+
+                    row.images = imageUrls;
+                    try{
+                        await productService.create(row);
+                    }catch (e) {
+                        console.log('product failed to import', row);
+                    }
 
                 }
             }

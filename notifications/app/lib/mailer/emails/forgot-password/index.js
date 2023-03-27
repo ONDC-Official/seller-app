@@ -18,7 +18,7 @@ class ForgotPassword extends Email {
         // Application logo path
         const logo = `${mergedEnvironmentConfig.email.emailHeader}`;
         // Application login page url
-        const appLoginUrl = `${mergedEnvironmentConfig.intraServiceApiEndpoints.authService}/login`;
+        const appLoginUrl = `${mergedEnvironmentConfig.appUrl}`;
         const appUrl = `${mergedEnvironmentConfig.appUrl}`;
 
         resetPasswordLink = appUrl+'/'+resetPasswordLink;

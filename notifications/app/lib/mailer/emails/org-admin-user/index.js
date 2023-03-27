@@ -1,12 +1,12 @@
 import Email from '../../email';
 import path from 'path';
+// import config from '../../../config';
 import {mergedEnvironmentConfig} from '../../../../config/env.config.js';
-
-class SignUp extends Email {
+class ForgotPassword extends Email {
     /**
-   * @constructor
-   * @param {Object} options Options
-   */
+     * @constructor
+     * @param {Object} options Options
+     */
     constructor(options) {
         super(path.basename(__dirname), options);
         this.options = options;
@@ -14,25 +14,21 @@ class SignUp extends Email {
     }
 
     getLocals() {
-        const { temporaryPassword, user,organization } = this.options.data;
         // Application logo path
         const logo = `${mergedEnvironmentConfig.email.emailHeader}`;
         // Application login page url
         const appLoginUrl = `${mergedEnvironmentConfig.appUrl}`;
-        // Support email address
-        const supportEmail = mergedEnvironmentConfig.email.supportEmail;
-        let name = user.firstName;
-        if(user.lastName)
-            name = `${user.firstName} ${user.lastName}`;
+
+        let user = this.options.data.data.user;
+
+        console.log("org admin user detals -->",this.options.data.data)
+        let name = user.name;
+
         return {
-            temporaryPassword,
-            password:temporaryPassword,
             name: name,
             logo,
             appLoginUrl,
-            supportEmail,
-            organization
         };
     }
 }
-module.exports = SignUp;
+module.exports = ForgotPassword;

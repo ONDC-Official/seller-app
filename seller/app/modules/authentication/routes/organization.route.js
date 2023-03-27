@@ -46,4 +46,9 @@ router.get('/v1/organizations/:organizationId',
     organizationController.get,
 );
 
+router.get('/v1/organizations/:organizationId/ondcGet',
+    apiParamsValidator.middleware({ schema: organisationSchema.get() }),
+    organizationController.get,
+);
+
 module.exports = router;

@@ -12,11 +12,14 @@ import cors from 'cors';
 import './init/database.init';
 import logger from 'morgan';
 import Bootstrap from "./lib/bootstrap";
+import NodeCache from 'node-cache';
+global.myCache = new NodeCache ();
 /**
  * Express JS setup
  */
 const app = express();
 
+global.sessionMap=[{userid:'',token:''}]; //TODO: add redis cache here
 // Get port from environment and store in Express.
 let port = mergedEnvironmentConfig.servicePort || '3000';
 try {

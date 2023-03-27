@@ -8,8 +8,8 @@ import logger from 'morgan';
 import ondcRoutes from './routes/ondc.routes';
 import config from './lib/config';
 import Mailer from './lib/mailer';
-import initializeFirebase from './lib/firebase/initializeFirebase.js';
-initializeFirebase();
+//import initializeFirebase from './lib/firebase/initializeFirebase.js';
+//initializeFirebase();
 const mailer = new Mailer();
 
 const app = express();

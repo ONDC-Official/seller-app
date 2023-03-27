@@ -1,16 +1,18 @@
 
 import Order from '../../models/order.model';
 import Product from '../../../product/models/product.model';
-import HttpRequest from '../../../../lib/utils/HttpRequest'
-import {mergedEnvironmentConfig} from "../../../../config/env.config";
-import {ConflictError} from "../../../../lib/errors";
-
+import HttpRequest from '../../../../lib/utils/HttpRequest';
+import {mergedEnvironmentConfig} from '../../../../config/env.config';
+import {ConflictError} from '../../../../lib/errors';
+import MESSAGES from '../../../../lib/utils/messages';
+import BadRequestParameterError from "../../../../lib/errors/bad-request-parameter.error";
 class OrderService {
     async create(data) {
         try {
             let query = {};
 
-            console.log("data----->",data);
+            console.log('data----->',data);
+            console.log('data---items-->',data.data.items);
             // const organizationExist = await Product.findOne({productName:data.productName});
             // if (organizationExist) {
             //     throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
@@ -21,14 +23,14 @@ class OrderService {
                 if(item.quantity.count){
                     //reduce item quantity
                     let product = await Product.findOne({_id:item.id});
-                    product.quantity = product.quantity-item.quantity.count
+                    product.quantity = product.quantity-item.quantity.count;
                     if(product.quantity<0){
                         throw new ConflictError();
                     }
                     await product.save();
                 }
             }
-            data.data.organization=data.data.provider.id
+            data.data.organization=data.data.provider.id;
             let order = new Order(data.data);
             let savedOrder= await order.save();
 
@@ -49,24 +51,24 @@ class OrderService {
 
             for(const order of data ){
 
-                console.log("ordre----->",order);
-                console.log("ordre----itemsss->",order.items);
-                console.log("ordre----itemsss->0",order.items[0]);
+                console.log('ordre----->',order);
+                console.log('ordre----itemsss->',order.items);
+                console.log('ordre----itemsss->0',order.items[0]);
 
-                let items = []
+                let items = [];
                 for(const itemDetails of order.items){
 
-                    console.log("ordre----item->",itemDetails);
+                    console.log('ordre----item->',itemDetails);
 
-                    let item = await Product.findOne({_id:itemDetails.id})
+                    let item = await Product.findOne({_id:itemDetails.id});
                     itemDetails.details = item; //TODO:return images
-                    items.push(itemDetails)
+                    items.push(itemDetails);
                 }
-                order.items=items
-                console.log("items-----",items);
+                order.items=items;
+                console.log('items-----',items);
             }
-            console.log("data.items---->",data.items);
-            const count = await Order.count(query)
+            console.log('data.items---->',data.items);
+            const count = await Order.count(query);
             let orders={
                 count,
                 data
@@ -83,22 +85,22 @@ class OrderService {
         try {
             let order = await Order.findOne({_id:orderId}).lean();
 
-            console.log("order---->",order);
-            let items = []
+            console.log('order---->',order);
+            let items = [];
             for(const itemDetails of order.items){
 
-                console.log("ordre----item->",itemDetails);
+                console.log('ordre----item->',itemDetails);
 
-                let item = await Product.findOne({_id:itemDetails.id})
+                let item = await Product.findOne({_id:itemDetails.id});
                 itemDetails.details = item; //TODO:return images
-                items.push(itemDetails)
+                items.push(itemDetails);
             }
-            order.items=items
+            order.items=items;
 
             return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
             throw err;
         }
     }
@@ -111,19 +113,90 @@ class OrderService {
             order.state = data.status;
 
             //notify client to update order status ready to ship to logistics
-           let httpRequest = new HttpRequest(
-               mergedEnvironmentConfig.intraServiceApiEndpoints.client,
-                `/api/client/status/updateOrder`,
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/client/status/updateOrder',
                 'PUT',
                 {data:order},
                 {}
             );
-           await httpRequest.send();
+            await httpRequest.send();
 
             return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
+            throw err;
+        }
+    }    
+
+    async cancelItems(orderId,data) {
+        try {
+            let order = await Order.findOne({_id:orderId});//.lean();
+
+            //update order item level status
+
+            if(order.items.length===1){
+                throw new BadRequestParameterError(MESSAGES.SINGLE_ITEM_CANNOT_CANCEL);
+            }
+            let items =[];
+            for(let updateItem of order.items){
+                let item = data.find((i)=>{return i.id===updateItem.id; });
+                if(item){
+                    updateItem.state = 'Cancelled';
+                    updateItem.reason_code = item.cancellation_reason_id;
+                    items.push(updateItem);
+                }else{
+                    items.push(updateItem);
+                }
+
+            }
+
+            order.items=items;
+
+            await Order.findOneAndUpdate({_id:orderId},{items:items});
+
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/client/status/updateOrderItems',
+                'PUT',
+                {data:order},
+                {}
+            );
+            await httpRequest.send();
+
+            return order;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
+            throw err;
+        }
+    }
+
+    async cancel(orderId,data) {
+        try {
+            let order = await Order.findOne({_id:orderId}).lean();
+
+            //update order state
+            order.state = 'Cancelled';
+            order.cancellation_reason_id = data.cancellation_reason_id;
+            order.orderId = order.orderId;
+
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/client/status/cancel',
+                'POST',
+                {data:order},
+                {}
+            );
+            await httpRequest.send();
+
+            return order;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
             throw err;
         }
     }
@@ -135,7 +208,7 @@ class OrderService {
             return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
             throw err;
         }
     }
@@ -144,14 +217,14 @@ class OrderService {
         try {
             let order = await Order.findOne({orderId:orderId}).lean();
 
-            order.state = data.state
+            order.state = data.state;
 
             await order.save();
 
             return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
             throw err;
         }
     }
@@ -159,17 +232,17 @@ class OrderService {
     async OndcUpdate(orderId,data) {
         try {
 
-            let oldOrder = await Order.findOne({orderId:orderId}).lean()
+            let oldOrder = await Order.findOne({orderId:orderId}).lean();
 
-            console.log("oldOrder--->",orderId,oldOrder);
-            delete data.data._id
+            console.log('oldOrder--->',orderId,oldOrder);
+            delete data.data._id;
 
             if(data.data.state==='Cancelled'){
                 for(let item of data.data.items){
-                        //reduce item quantity
-                        let product = await Product.findOne({_id:item.id});
-                        product.quantity = product.quantity+item.quantity.count
-                        await product.save();
+                    //reduce item quantity
+                    let product = await Product.findOne({_id:item.id});
+                    product.quantity = product.quantity+item.quantity.count;
+                    await product.save();
                 }
             }
 
@@ -181,19 +254,19 @@ class OrderService {
                 if(item.state=='Cancelled'){ //check if old item state
                     //reduce item quantity
                     let product = await Product.findOne({_id:item.id});
-                    product.quantity = product.quantity-item.quantity.count
+                    product.quantity = product.quantity-item.quantity.count;
                     if(product.quantity<0){
                         throw new ConflictError();
                     }
                     await product.save();
                 }
             }
-            let order = await Order.findOneAndUpdate({orderId:orderId},data.data)
+            let order = await Order.findOneAndUpdate({orderId:orderId},data.data);
 
             return order;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -}`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
             throw err;
         }
     }

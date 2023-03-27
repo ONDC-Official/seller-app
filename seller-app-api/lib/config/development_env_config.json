@@ -37,12 +37,12 @@
   "email": {
     "transport": {
       "SMTP": {
-        "host": "email-smtp.us-west-2.amazonaws.com",
+        "host": "",
         "port": 587,
         "secure": false,
         "auth": {
-          "user": "AKIASIARTUPSNGAZRQZ4",
-          "pass": "BFHnEVgkYYIQtMsr4493ME+st9LoR8457ylSiX+V+HLU"
+          "user": "",
+          "pass": ""
         }
       },
       "local": {
@@ -51,8 +51,8 @@
         "path": "/usr/sbin/sendmail"
       }
     },
-    "sender": "dev@wemotiveforge.com",
-    "supportEmail": "dev@wemotiveforge.com",
+    "sender": "",
+    "supportEmail": "",
     "webClientUri": "http://34.123.120.224",
     "shareUrl": "https://www.google.com"
   },
@@ -72,14 +72,13 @@
   },
   "general": {
     "exceptionEmailRecipientList": [
-      "akshay@wemotiveforge.com"
     ]
   },
   "seller": {
     "serverUrl": "http://localhost:3019"
   },
   "firebase": {
-    "account": "lib/config/firebase-service-account.json"
+    "account": ""
   },
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",

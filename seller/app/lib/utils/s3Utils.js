@@ -14,7 +14,7 @@ const s3 = new AWS.S3({
 
 const signedUrlExpireSeconds = 60 * 60*60;
 
-const myBucket = bucket;
+let myBucket = bucket;
 
 const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
 
@@ -72,16 +72,25 @@ exports.getSignedUrlForRead = async(data) => {
             Key: myKey,
             Expires: signedUrlExpireSeconds
         };
-        return await new Promise(
-            (resolve, reject) => s3.getSignedUrl('getObject', params, function (err, url) {
-                if (err) {
-                    // console.log('Error getting presigned url from AWS S3');
-                    reject({success: false, message: 'Pre-Signed URL erro', urls: url});
-                } else {
-                    // console.log('Presigned URL: ', url);
-                    resolve({ url: url, path: data.path });
-                }
-            }));
+
+        //const {config :{params,region}} = s3Bucket;
+        const regionString = '-' + region;
+        myBucket = myBucket.replace('/public-assets','');
+
+        let url = `https://${myBucket}.s3${regionString}.amazonaws.com/public-assets/${myKey}`;
+
+        return ({ url: url, path: myKey });
+
+        // return await new Promise(
+        //     (resolve, reject) => s3.getSignedUrl('getObject', params, function (err, url) {
+        //         if (err) {
+        //             // console.log('Error getting presigned url from AWS S3');
+        //             reject({success: false, message: 'Pre-Signed URL erro', urls: url});
+        //         } else {
+        //             // console.log('Presigned URL: ', url);
+        //
+        //         }
+        //     }));
     } catch (err) {
         return err;
     }
