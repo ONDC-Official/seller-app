@@ -1,45 +1,45 @@
 import {Router} from 'express';
-import LogisticController from '../controllers/ondc.controller';
+import OndcController from '../controllers/ondc.controller';
 import { authentication } from '../middlewares/index.js';
 
 const router = new Router();
-const logisticController = new LogisticController();
+const ondcController = new OndcController();
 
 router.post('/client/search',
-    logisticController.productSearch);
+    ondcController.productSearch);
 
 //new changes
 router.post('/client/select',
-    logisticController.orderSelect);
+    ondcController.orderSelect);
 
 router.post('/client/Init',
-    logisticController.orderInit);
+    ondcController.orderInit);
 
 router.post('/client/confirm',
-    logisticController.orderConfirm);
+    ondcController.orderConfirm);
 
 router.post('/client/cancel',
-    logisticController.orderCancel);
+    ondcController.orderCancel);
 
 router.post('/client/track',
-    logisticController.orderTrack);
+    ondcController.orderTrack);
 
 router.post('/client/status',
-    logisticController.orderStatus);
+    ondcController.orderStatus);
 
 router.post('/client/status/cancel',
-    logisticController.orderCancelFromSeller);
+    ondcController.orderCancelFromSeller);
 
 router.put('/client/status/updateOrder',
-    logisticController.orderStatusUpdate);
+    ondcController.orderStatusUpdate);
 
 router.put('/client/status/updateOrderItems',
-    logisticController.orderStatusUpdateItems);
+    ondcController.orderStatusUpdateItems);
 
 router.post('/client/update',
-    logisticController.orderUpdate);
+    ondcController.orderUpdate);
 
 router.post('/client/support',
-    logisticController.orderSupport);
+    ondcController.orderSupport);
 
 export default router;
