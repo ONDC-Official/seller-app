@@ -1001,7 +1001,7 @@ class ProductService {
         savedLogistics.transactionId = confirmRequest.context.transaction_id
         savedLogistics.packaging = "0"//TODO: select packaging option
         savedLogistics.providerId = confirmRequest.message.order.provider.id//TODO: select from items provider id
-        savedLogistics.retailOrderId = confirmRequest.message.order.id
+        savedLogistics.retailOrderId = confirmData.order_id
         savedLogistics.orderId = logisticData.message.order.id
         savedLogistics.selectedLogistics = logisticData
         savedLogistics.confirmRequest = requestQuery.retail_confirm[0]
