@@ -5,9 +5,12 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4
         },
-        transactionId: {
+        transactionId: { //retail transaction id
             type: DataTypes.STRING,
             allowNull: false
+        },
+        logisticsTransactionId:{
+            type: DataTypes.STRING,
         },
         providerId: {
             type: DataTypes.STRING,
@@ -20,8 +23,13 @@ module.exports = (sequelize, DataTypes) => {
         selectedLogistics: {
             type: DataTypes.JSONB,
             allowNull: true
+        },
+        selectRequest:{
+            type: DataTypes.JSONB,
+        },
+        onSelectResponse:{
+            type: DataTypes.JSONB,
         }
-
     }, {
         freezeTableName: true
     });

@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        logisticsTransactionId: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         providerId: {
             type: DataTypes.STRING,
             allowNull: true
@@ -20,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         selectedLogistics: {
             type: DataTypes.JSONB,
             allowNull: true
+        },
+        initRequest:{
+            type: DataTypes.JSONB,
+        },
+        onInitResponse:{
+            type: DataTypes.JSONB,
         }
 
     }, {
