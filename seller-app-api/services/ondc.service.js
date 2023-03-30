@@ -12,6 +12,7 @@ const storeOpenSchedule = config.get("sellerConfig").storeOpenSchedule
 import ProductService from './product.service'
 const productService = new ProductService();
 import logger from '../lib/logger'
+import {UUIDV4} from "sequelize";
 
 class OndcService {
 
@@ -41,9 +42,7 @@ class OndcService {
 
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
-            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
-
-            //TODO:add validation for qty check
+            const logisticsMessageId = uuidv4();
 
             let storeLocationEnd = {}
             let totalProductValue = 0
@@ -72,7 +71,7 @@ class OndcService {
                     "core_version": "1.1.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
                     "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "transaction_id": payload.context.transaction_id,
+                    "transaction_id": uuidv4(),
                     "message_id": logisticsMessageId,
                     "timestamp": new Date(),
                     "ttl": "PT30S"
@@ -400,8 +399,12 @@ class OndcService {
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id
-                }
+                    transactionId: payload.context.transaction_id,
+                    providerId:payload.message.order.provider.id
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                ]
             })
 
   //          logger.log('info', `[Ondc Service] old select request :`,selectRequest);
@@ -450,7 +453,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id, //STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
+                    "transaction_id": logistics.context.transaction_id,
                     "message_id": logisticsMessageId,
                     "timestamp": contextTimeStamp,
                     "ttl": "PT30S"
@@ -724,14 +727,22 @@ class OndcService {
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id
-                }
+                    transactionId: payload.context.transaction_id,
+                    providerId:payload.message.order.provider.id
+                },
+                order: [
+                    ['createdAt', 'DESC'],
+                ]
             })
 
             const initRequest = await InitRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id
-                }
+                    transactionId: payload.context.transaction_id,
+                    providerId:payload.message.order.provider.id
+                },
+                order: [
+                    ['createdAt', 'DESC'],
+                ]
             })
 
             const logistics = selectRequest.selectedLogistics;
@@ -809,7 +820,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
+                    "transaction_id": initRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
@@ -1076,7 +1087,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.transactionId,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
@@ -1261,7 +1272,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
@@ -1310,7 +1321,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": logistics.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
@@ -1395,7 +1406,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": logistics.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
@@ -1447,7 +1458,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": logistics.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
@@ -1532,7 +1543,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": logistics.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
@@ -1860,7 +1871,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": payload.context.transaction_id,
+                    "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
@@ -2243,7 +2254,7 @@ class OndcService {
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": selectRequest.transactionId,
+                    "transaction_id": selectRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",

@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        logisticsTransactionId: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         orderId: {
             type: DataTypes.STRING,
             allowNull: true
@@ -28,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
         confirmRequest: {
             type: DataTypes.JSONB,
             allowNull: true
+        },
+        onConfirmResponse:{
+            type: DataTypes.JSONB,
         }
 
     }, {
