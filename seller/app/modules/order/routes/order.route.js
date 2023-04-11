@@ -15,6 +15,11 @@ router.get('/v1/orders',
     //authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.list,
 );
+router.get('/v1/orders/return/request',
+    authentication.middleware(),
+    //authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    orderController.listReturnRequests,
+);
 
 router.get('/v1/orders/:orderId',
     orderController.get,
@@ -44,6 +49,12 @@ router.post('/v1/orders/:orderId/item/cancel',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.cancelItems,
+);
+
+router.post('/v1/orders/:orderId/item/return',
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    orderController.updateReturnItem,
 );
 
 module.exports = router;
