@@ -6,6 +6,7 @@ import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
 import {ConflictError} from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
+import {RETURN_REASONS} from '../../../../lib/utils/constants';
 import BadRequestParameterError from '../../../../lib/errors/bad-request-parameter.error';
 class OrderService {
     async create(data) {
@@ -50,7 +51,14 @@ class OrderService {
             }
             const data = await ReturnItem.find(query).populate([{path:'organization',select:['name','_id','storeDetails']}]).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit).lean();
             for(const order of data ){
-                let item = await Product.findOne({_id:order.itemId});
+                let item = await Product.findOne({_id:order.itemId}).lean();
+
+                let code = RETURN_REASONS.find((codes)=>{
+                    return codes.key===order.reason;
+                });
+
+                console.log("reason--->",code)
+                order.reason = code.value;
                 order.item=item;
             }
             const count = await ReturnItem.count(query);
@@ -342,8 +350,9 @@ class OrderService {
                         itemId: item.id,
                         orderId:orderId,
                         state:item.state,
-                        qty:item.quantity,
-                        organization:oldOrder.organization
+                        qty:item.quantity.count,
+                        organization:oldOrder.organization,
+                        reason:item.reason_code
                     };
 
                     let returnItem = await ReturnItem.findOne({orderId:orderId,itemId:item.id});

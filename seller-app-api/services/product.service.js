@@ -600,17 +600,14 @@ class ProductService {
             if(updateItem?.tags?.update_type==='return'){
                 item.state = "Return_Initiated";
                 item.reason_code = updateItem.tags.reason_code;
-                item.quantity=updateItem.quantity.count
-            }
-            if(updateItem?.tags?.update_type==='return'){
-                item.state = "Return_Initiated";
-                item.reason_code = updateItem.tags.reason_code;
-                item.quantity=updateItem.quantity.count
+                //item.quantity=updateItem.quantity.count
             }
             updatedItems.push(item);
         }
 
         updateOrder.items =updatedItems;
+
+        console.log("updatedItems--->",updatedItems);
 
         //update order level state
         httpRequest = new HttpRequest(
@@ -638,6 +635,8 @@ class ProductService {
             delete item.reason_code
             return item;
         });
+
+        console.log("items--->",items);
 
         updateOrder.items = items;
         updateOrder.id = updateOrder.orderId;
