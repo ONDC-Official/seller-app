@@ -1,11 +1,12 @@
 
 import Order from '../../models/order.model';
 import Product from '../../../product/models/product.model';
+import ReturnItem from '../../models/returnItem.model';
 import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
 import {ConflictError} from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
-import BadRequestParameterError from "../../../../lib/errors/bad-request-parameter.error";
+import BadRequestParameterError from '../../../../lib/errors/bad-request-parameter.error';
 class OrderService {
     async create(data) {
         try {
@@ -41,6 +42,28 @@ class OrderService {
         }
     }
 
+    async listReturnRequests(params){
+        try {
+            let query={};
+            if(params.organization){
+                query.organization =params.organization;
+            }
+            const data = await ReturnItem.find(query).populate([{path:'organization',select:['name','_id','storeDetails']}]).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit).lean();
+            for(const order of data ){
+                let item = await Product.findOne({_id:order.itemId});
+                order.item=item;
+            }
+            const count = await ReturnItem.count(query);
+            let orders={
+                count,
+                data
+            };
+            return orders;
+        } catch (err) {
+            console.log('[OrderService] [getAll] Error in getting all return requests ',err);
+            throw err;
+        }
+    }
     async list(params) {
         try {
             let query={};
@@ -173,6 +196,50 @@ class OrderService {
             throw err;
         }
     }
+    async updateReturnItem(orderId,data) {
+        try {
+            let order = await Order.findOne({orderId:orderId});//.lean();
+
+            let returnRequest = await ReturnItem.findOne({_id:data.id});
+            //update order item level status
+            let items =[];
+            for(let updateItem of order.items){
+
+                console.log('returnRequest.itemId---.',returnRequest.itemId)
+                console.log('returnRequest.itemId-updateItem.id--.',updateItem.id)
+                if(updateItem.id===returnRequest.itemId){
+                    updateItem.state = data.state;
+                    items.push(updateItem);
+                }else{
+                    items.push(updateItem);
+                }
+            }
+
+            order.items=items;
+
+            returnRequest.state=data.state;
+            await returnRequest.save();
+
+            console.log("items--->",items);
+            await Order.findOneAndUpdate({_id:orderId},{items:items});
+
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/client/status/updateOrderItems',
+                'PUT',
+                {data:order},
+                {}
+            );
+            await httpRequest.send();
+
+            return order;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in getting organization by id -}',err);
+            throw err;
+        }
+    }
 
     async cancel(orderId,data) {
         try {
@@ -259,6 +326,30 @@ class OrderService {
                         throw new ConflictError();
                     }
                     await product.save();
+                }
+
+                if(item.state=='Return_Initiated'){ //check if old item state
+                    //reduce item quantity
+                    // let product = await Product.findOne({_id:item.id});
+                    // product.quantity = product.quantity-item.quantity.count;
+                    // if(product.quantity<0){
+                    //     throw new ConflictError();
+                    // }
+                    // await product.save();
+
+                    //step 1. add item to return model
+                    let returnData = {
+                        itemId: item.id,
+                        orderId:orderId,
+                        state:item.state,
+                        qty:item.quantity,
+                        organization:oldOrder.organization
+                    };
+
+                    let returnItem = await ReturnItem.findOne({orderId:orderId,itemId:item.id});
+                    if(!returnItem){
+                        await new ReturnItem(returnData).save();
+                    }
                 }
             }
             let order = await Order.findOneAndUpdate({orderId:orderId},data.data);

@@ -32,6 +32,21 @@ class OrderController {
         }
     }
 
+    async listReturnRequests(req, res, next) {
+        try {
+            const query = req.query;
+            query.offset = parseInt(query.offset??0);
+            query.limit = parseInt(query.limit??100);
+            query.organization = req.user.organization;
+            const products = await orderService.listReturnRequests(query);
+            return res.send(products);
+
+        } catch (error) {
+            console.log('[OrderController] [list] Error -', error);
+            next(error);
+        }
+    }
+
 
     async get(req, res, next) {
         try {
@@ -106,6 +121,23 @@ class OrderController {
             try {
                 const params = req.params;
                 const product = await orderService.cancelItems(params.orderId,req.body);
+                return res.send(product);
+
+            } catch (error) {
+                console.log('[OrderController] [get] Error -', error);
+                next(error);
+            }
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+    async updateReturnItem(req, res, next) {
+        try {
+            try {
+                const params = req.params;
+                const product = await orderService.updateReturnItem(params.orderId,req.body);
                 return res.send(product);
 
             } catch (error) {

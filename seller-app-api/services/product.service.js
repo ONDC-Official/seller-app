@@ -591,16 +591,22 @@ class ProductService {
 
         let updatedItems = []
         for (let item of updateOrder.items){
-
             let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
-
 
             if(updateItem?.tags?.update_type==='cancel'){
                 item.state = "Cancelled";
                 item.reason_code = updateItem.tags.reason_code;
             }
-
-
+            if(updateItem?.tags?.update_type==='return'){
+                item.state = "Return_Initiated";
+                item.reason_code = updateItem.tags.reason_code;
+                item.quantity=updateItem.quantity.count
+            }
+            if(updateItem?.tags?.update_type==='return'){
+                item.state = "Return_Initiated";
+                item.reason_code = updateItem.tags.reason_code;
+                item.quantity=updateItem.quantity.count
+            }
             updatedItems.push(item);
         }
 
@@ -622,6 +628,9 @@ class ProductService {
 
             if(item.state=='Cancelled'){
                 item.tags={status:'Cancelled'};
+            }
+            if(item.state=='Return_Initiated'){
+                item.tags={status:'Return_Initiated'};
             }
            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
             item.fulfillment_id = updateOrder.fulfillments[0].id

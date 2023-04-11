@@ -481,7 +481,7 @@ class OndcService {
                                 "country": order.billing.address.country,
                                 "area_code": order.billing.address.area_code
                             },
-                            "tax_number": org.PAN, //FIXME: take provider details
+                            "tax_number": org.PAN, //FIXME: take GSTN no
                             "phone": "9999999999", //FIXME: take provider details
                             "email": "test@gmail.com", //FIXME: take provider details
                             "created_at": contextTimeStamp,
@@ -853,7 +853,7 @@ class OndcService {
                             }
                         },
                         "id": order.id,
-                        "items": initRequest.selectedLogistics.message.order.items,
+                        "items": [selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items[0]], //TODO: fix this map to right item id from select request
                         "provider":initRequest.selectedLogistics.message.order.provider,
                         "fulfillments": [{
                             "id": order.fulfillments[0].id,
