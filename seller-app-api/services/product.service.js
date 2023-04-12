@@ -600,17 +600,14 @@ class ProductService {
             if(updateItem?.tags?.update_type==='return'){
                 item.state = "Return_Initiated";
                 item.reason_code = updateItem.tags.reason_code;
-                item.quantity=updateItem.quantity.count
-            }
-            if(updateItem?.tags?.update_type==='return'){
-                item.state = "Return_Initiated";
-                item.reason_code = updateItem.tags.reason_code;
-                item.quantity=updateItem.quantity.count
+                //item.quantity=updateItem.quantity.count
             }
             updatedItems.push(item);
         }
 
         updateOrder.items =updatedItems;
+
+        console.log("updatedItems--->",updatedItems);
 
         //update order level state
         httpRequest = new HttpRequest(
@@ -638,6 +635,8 @@ class ProductService {
             delete item.reason_code
             return item;
         });
+
+        console.log("items--->",items);
 
         updateOrder.items = items;
         updateOrder.id = updateOrder.orderId;
@@ -686,8 +685,15 @@ class ProductService {
         //update item level fulfillment status
         let items = data.message.order.items.map((item)=>{
 
+            console.log("item--->",item)
             if(item.state=='Cancelled'){
                 item.tags={status:'Cancelled'};
+            }
+            if(item.state=='Liquidated'){
+                item.tags={status:'Liquidated'};
+            }
+            if(item.state=='Rejected'){
+                item.tags={status:'Rejected'};
             }
            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
             item.fulfillment_id = data.message.order.fulfillments[0].id

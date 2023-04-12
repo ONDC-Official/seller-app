@@ -21,7 +21,7 @@ const returnItemSchema = new mongoose.Schema({
     orderId:{
         type:String
     },
-    reason_id:{
+    reason:{
         type:String
     },
     organization: { type: String, ref: 'Organization' },
