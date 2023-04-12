@@ -685,8 +685,15 @@ class ProductService {
         //update item level fulfillment status
         let items = data.message.order.items.map((item)=>{
 
+            console.log("item--->",item)
             if(item.state=='Cancelled'){
                 item.tags={status:'Cancelled'};
+            }
+            if(item.state=='Liquidated'){
+                item.tags={status:'Liquidated'};
+            }
+            if(item.state=='Rejected'){
+                item.tags={status:'Rejected'};
             }
            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
             item.fulfillment_id = data.message.order.fulfillments[0].id

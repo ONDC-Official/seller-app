@@ -1678,45 +1678,46 @@ class OndcService {
             return e
         }
     }
+    // async postUpdateItemRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
+    //
+    //     try{
+    //         //1. post http to protocol/logistics/v1/search
+    //
+    //         // try { //TODO: post this request for update items
+    //         //
+    //         //     console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
+    //         //     console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
+    //         //     let headers = {};
+    //         //     let httpRequest = new HttpRequest(
+    //         //         config.get("sellerConfig").BPP_URI,
+    //         //         `/protocol/logistics/v1/update`,
+    //         //         'POST',
+    //         //         searchRequest,
+    //         //         headers
+    //         //     );
+    //         //
+    //         //
+    //         //     let result = await httpRequest.send();
+    //         //     console.log("------result ->>>",result )
+    //         //
+    //         // } catch (e) {
+    //         //     logger.error('error', `[Ondc Service] post http select response : `, e);
+    //         //     return e
+    //         // }
+    //
+    //         //2. wait async to fetch logistics responses
+    //
+    //         //async post request
+    //         setTimeout(() => {
+    //             logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+    //            this.buildUpdateRequest(orderData,logisticsMessageId, selectMessageId)
+    //         }, 5000); //TODO move to config
+    //     }catch (e){
+    //         logger.error('error', `[Ondc Service] post http select response : `, e);
+    //         return e
+    //     }
+    // }
     async postUpdateItemRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
-
-        try{
-            //1. post http to protocol/logistics/v1/search
-
-            // try { //TODO: post this request for update items
-            //
-            //     console.log("------->>>",searchRequest,selectMessageId,logisticsMessageId)
-            //     console.log("------result ->>>",config.get("sellerConfig").BPP_URI )
-            //     let headers = {};
-            //     let httpRequest = new HttpRequest(
-            //         config.get("sellerConfig").BPP_URI,
-            //         `/protocol/logistics/v1/update`,
-            //         'POST',
-            //         searchRequest,
-            //         headers
-            //     );
-            //
-            //
-            //     let result = await httpRequest.send();
-            //     console.log("------result ->>>",result )
-            //
-            // } catch (e) {
-            //     logger.error('error', `[Ondc Service] post http select response : `, e);
-            //     return e
-            // }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
-               this.buildUpdateRequest(orderData,logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
-        }catch (e){
-            logger.error('error', `[Ondc Service] post http select response : `, e);
-            return e
-        }
-    }    async postUpdateItemRequest(orderData,searchRequest,logisticsMessageId,selectMessageId){
 
         try{
             //1. post http to protocol/logistics/v1/search
