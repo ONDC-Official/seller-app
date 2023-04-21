@@ -213,8 +213,6 @@ class OrderService {
             let items =[];
             for(let updateItem of order.items){
 
-                console.log('returnRequest.itemId---.',returnRequest.itemId)
-                console.log('returnRequest.itemId-updateItem.id--.',updateItem.id)
                 if(updateItem.id===returnRequest.itemId){
                     updateItem.state = data.state;
                     items.push(updateItem);
@@ -222,14 +220,12 @@ class OrderService {
                     items.push(updateItem);
                 }
             }
-
             order.items=items;
 
             returnRequest.state=data.state;
             await returnRequest.save();
 
-            console.log("items--->",items);
-            await Order.findOneAndUpdate({_id:orderId},{items:items});
+            await Order.findOneAndUpdate({orderId:orderId},{items:items});
 
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
