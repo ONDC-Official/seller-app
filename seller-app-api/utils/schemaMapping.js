@@ -39,7 +39,7 @@ exports.getProducts = async (data) => {
                     }
                 },
                 "category_id": 'Fruits and Vegetables',//items.productCategory, //TODO: should be same as tags category
-                "location_id": org.storeDetails.location._id,
+                "location_id": org.storeDetails?.location._id??"0",
                 "fulfillment_id": '1',//Delivery
                 "matched": true,
                 "@ondc/org/returnable":  items.isReturnable??false,
@@ -105,8 +105,8 @@ exports.getProducts = async (data) => {
                 },
             "locations": [
                 {
-                    "id": org.storeDetails.location._id, //org.storeDetails.location._id
-                    "gps": `${org.storeDetails.location.lat},${org.storeDetails.location.long}`, //TODO: hard coded for now,
+                    "id": org.storeDetails?.location._id??"0", //org.storeDetails.location._id
+                    "gps": `${org.storeDetails?.location?.lat??"0"},${org.storeDetails?.location?.long??"0"}`, //TODO: hard coded for now,
                     "address":org.storeDetails.address,
                     "time": { //TODO: hard coded for now
                         "range": {
@@ -138,7 +138,7 @@ exports.getProducts = async (data) => {
                     "list": [
                         {
                             "code": "location",
-                            "value": org.storeDetails.location._id
+                            "value": org.storeDetails?.location._id??"0"
                         },
                         {
                             "code": "category", //TODO: hard coded for now
