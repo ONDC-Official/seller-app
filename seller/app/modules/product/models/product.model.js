@@ -41,7 +41,14 @@ const productSchema = new mongoose.Schema({
     organization: { type: String, ref: 'Organization' },
     images: {type:Array},
     createdBy:{type:String},
-    published:{type:Boolean,default:true}
+    published:{type:Boolean,default:true},
+    manufacturerOrPackerName:{type:String},
+    manufacturerOrPackerAddress:{type:String},
+    commonOrGenericNameOfCommodity:{type:String},
+    monthYearOfManufacturePackingImport:{type:String},
+    importerFSSAILicenseNo:{type:String},
+    brandOwnerFSSAILicenseNo:{type:String}
+
 },{  
     strict: true,
     timestamps:true
