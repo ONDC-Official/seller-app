@@ -3,11 +3,11 @@ import ProductController from '../controllers/product.controller';
 import apiParamsValidator from '../v1/middleware/api.params.validator';
 import productSchema from '../v1/validationSchema/api-params-validation-schema/product.validate.schema';
 import express from 'express';
-import {authentication, authorisation} from "../../../lib/middlewares";
-import {SYSTEM_ROLE} from "../../../lib/utils/constants";
+import {authentication, authorisation} from '../../../lib/middlewares';
+import {SYSTEM_ROLE} from '../../../lib/utils/constants';
 const router = express.Router();
-const multer = require("multer");
-const upload = multer({ dest: 'uploads/' })
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const productController = new ProductController();
 
@@ -53,7 +53,7 @@ router.get('/v1/products/:productId/ondcGet',
 
 router.post('/v1/products/upload/bulk',
     authentication.middleware(),
-    upload.single("xlsx"),
+    upload.single('xlsx'),
     productController.uploadCatalog,
 );
 

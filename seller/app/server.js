@@ -11,7 +11,7 @@ const { sendNotificationEmail } = require('./modules/email/email.service');
 import cors from 'cors';
 import './init/database.init';
 import logger from 'morgan';
-import Bootstrap from "./lib/bootstrap";
+import Bootstrap from './lib/bootstrap';
 import NodeCache from 'node-cache';
 global.myCache = new NodeCache ();
 /**
@@ -49,16 +49,16 @@ server.on('error', (error) => {
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-        case 'EACCES':
-            console.error(`${bind} requires elevated privileges`);
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(`${bind} is already in use`);
-            process.exit(1);
-            break;
-        default:
-            throw error;
+    case 'EACCES':
+        console.error(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+    case 'EADDRINUSE':
+        console.error(`${bind} is already in use`);
+        process.exit(1);
+        break;
+    default:
+        throw error;
     }
 });
 

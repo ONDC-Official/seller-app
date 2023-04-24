@@ -2,13 +2,13 @@ import { v1 as uuidv1 } from 'uuid';
 import MESSAGES from '../../../../lib/utils/messages';
 import Organization from '../../models/organization.model';
 import User from '../../models/user.model';
-import UserService from "./user.service";
+import UserService from './user.service';
 import {
     NoRecordFoundError,
     DuplicateRecordFoundError,
     BadRequestParameterError,
 } from '../../../../lib/errors';
-import s3 from "../../../../lib/utils/s3Utils";
+import s3 from '../../../../lib/utils/s3Utils';
 
 //import axios from 'axios';
 //import ServiceApi from '../../../../lib/utils/serviceApi';
@@ -26,7 +26,7 @@ class OrganizationService {
                 throw new DuplicateRecordFoundError(MESSAGES.ORGANIZATION_ALREADY_EXISTS);
             }
 
-            let userExist = await User.findOne({email:data.user.email})
+            let userExist = await User.findOne({email:data.user.email});
 
             if (userExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
@@ -36,7 +36,7 @@ class OrganizationService {
             let savedOrg = await organization.save();
 
             //create a user
-            let user = await userService.create({...data.user,organization:organization._id,role:"Organization Admin"})
+            let user = await userService.create({...data.user,organization:organization._id,role:'Organization Admin'});
 
             return {user:user,providerDetail:organization};
 
@@ -53,7 +53,7 @@ class OrganizationService {
                 query.name = { $regex: params.name, $options: 'i' };
             }
             const organizations = await Organization.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
-            const count = await Organization.count(query)
+            const count = await Organization.count(query);
             let organizationData={
                 count,
                 organizations
@@ -69,28 +69,28 @@ class OrganizationService {
         try {
             let doc = await Organization.findOne({_id:organizationId}).lean();
 
-            console.log("organization----->",doc)
-            let user = await User.findOne({organization:organizationId},{password:0})
+            console.log('organization----->',doc);
+            let user = await User.findOne({organization:organizationId},{password:0});
             if (doc) {
                 {
                     let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
-                    doc.idProof =idProof
+                    doc.idProof =idProof;
 
                     let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
-                    doc.addressProof =addressProof
+                    doc.addressProof =addressProof;
 
                     let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
-                    doc.bankDetails.cancelledCheque =cancelledCheque
+                    doc.bankDetails.cancelledCheque =cancelledCheque;
 
                     let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
-                    doc.PAN.proof =PAN
+                    doc.PAN.proof =PAN;
 
                     let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
-                    doc.GSTN.proof =GSTN
+                    doc.GSTN.proof =GSTN;
 
                     if(doc.storeDetails){
                         let logo = await s3.getSignedUrlForRead({path:doc.storeDetails?.logo});
-                        doc.storeDetails.logo =logo
+                        doc.storeDetails.logo =logo;
                     }
                 }
 
@@ -106,7 +106,7 @@ class OrganizationService {
 
     async setStoreDetails(organizationId,data) {
         try {
-            let organization = await Organization.findOne({_id:organizationId})//.lean();
+            let organization = await Organization.findOne({_id:organizationId});//.lean();
             if (organization) {
                 organization.storeDetails =data;
                 organization.save();
@@ -122,16 +122,16 @@ class OrganizationService {
 
     async update(organizationId,data) {
         try {
-            let organization = await Organization.findOne({_id:organizationId})//.lean();
+            let organization = await Organization.findOne({_id:organizationId});//.lean();
             if (organization) {
 
-                let userExist = await User.findOne({mobile:data.user.mobile,organization:organizationId})
+                let userExist = await User.findOne({mobile:data.user.mobile,organization:organizationId});
 
                 if (userExist && userExist.organization !==organizationId ) {
                     throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
                 }
                 else{
-                    const updateUser  = await User.findOneAndUpdate({organization:organizationId},data.user)
+                    const updateUser  = await User.findOneAndUpdate({organization:organizationId},data.user);
                 }
 
                 let updateOrg = await Organization.findOneAndUpdate({_id:organizationId},data.providerDetails);
@@ -153,9 +153,9 @@ class OrganizationService {
 
                 if(organization?.storeDetails){
                     let logo = await s3.getSignedUrlForRead({path:organization?.storeDetails?.logo});
-                    organization.storeDetails.logo =logo
+                    organization.storeDetails.logo =logo;
                 }else{
-                    organization.storeDetails = {}
+                    organization.storeDetails = {};
                 }
 
                 return organization;

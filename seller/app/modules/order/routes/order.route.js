@@ -1,8 +1,8 @@
 
 import OrderController from '../controllers/order.controller';
 import express from 'express';
-import {authentication, authorisation} from "../../../lib/middlewares";
-import {SYSTEM_ROLE} from "../../../lib/utils/constants";
+import {authentication, authorisation} from '../../../lib/middlewares';
+import {SYSTEM_ROLE} from '../../../lib/utils/constants';
 const router = express.Router();
 
 const orderController = new OrderController();

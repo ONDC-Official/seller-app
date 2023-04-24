@@ -3,8 +3,8 @@ import OrganizationController from '../controllers/organization.controller';
 import apiParamsValidator from '../v1/middleware/api.params.validator';
 import organisationSchema from '../v1/validationSchema/api-params-validation-schema/organization.validate.schema';
 import express from 'express';
-import {authentication, authorisation} from "../../../lib/middlewares";
-import {SYSTEM_ROLE} from "../../../lib/utils/constants";
+import {authentication, authorisation} from '../../../lib/middlewares';
+import {SYSTEM_ROLE} from '../../../lib/utils/constants';
 const router = express.Router();
 
 const organizationController = new OrganizationController();

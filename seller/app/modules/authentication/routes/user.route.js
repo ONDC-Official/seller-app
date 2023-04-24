@@ -7,7 +7,7 @@ import AuthenticationController from '../controllers/authentication.controller';
 import apiParamsValidator from '../v1/middleware/api.params.validator';
 import {authentication,authorisation} from '../../../lib/middlewares';
 import userSchema from '../v1/validationSchema/api-params-validation-schema/user.validation.schema';
-import {SYSTEM_ROLE} from '../../../lib/utils/constants'
+import {SYSTEM_ROLE} from '../../../lib/utils/constants';
 const userController = new UserController();
 const authController = new AuthenticationController();
 // router.use('/auth', authentication.middleware());

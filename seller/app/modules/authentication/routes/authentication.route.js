@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import AuthenticationController from '../controllers/authentication.controller';
 import {authentication, authorisation} from '../../../lib/middlewares';
-import {SYSTEM_ROLE} from "../../../lib/utils/constants";
+import {SYSTEM_ROLE} from '../../../lib/utils/constants';
 // import { authSchema } from '../lib/api-params-validation-schema';
 
 const authenticationController = new AuthenticationController();

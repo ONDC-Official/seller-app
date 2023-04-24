@@ -57,7 +57,7 @@ class OrderService {
                     return codes.key===order.reason;
                 });
 
-                console.log("reason--->",code)
+                console.log('reason--->',code);
                 order.reason = code.value;
                 order.item=item;
             }

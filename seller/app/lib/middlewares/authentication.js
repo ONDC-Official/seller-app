@@ -9,7 +9,7 @@ exports.middleware =
   () =>
       (req, res, next) => {
 
-    console.log("authentication check---")
+          console.log('authentication check---');
           passport.authenticate(
               'jwt',
               {
@@ -17,8 +17,8 @@ exports.middleware =
               },
               (err, user) => {
 
-                  console.log("err---->",err)
-                  console.log("user---->",user)
+                  console.log('err---->',err);
+                  console.log('user---->',user);
                   if (user) {
                       req.user = user;
                       next();

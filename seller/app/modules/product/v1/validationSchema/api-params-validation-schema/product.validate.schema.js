@@ -79,6 +79,12 @@ module.exports = {
             longDescription: Joi.string(),
             description: Joi.string(),
             images: Joi.array(),
+            manufacturerOrPackerName:Joi.string(),
+            manufacturerOrPackerAddress:Joi.string(),
+            commonOrGenericNameOfCommodity:Joi.string(),
+            monthYearOfManufacturePackingImport:Joi.string(),
+            importerFSSAILicenseNo:Joi.string(),
+            brandOwnerFSSAILicenseNo:Joi.string()
         });
     },
     publish: () => {

@@ -20,7 +20,7 @@ class HttpRequest {
         this.data = data;
         this.headers = headers;
         this.options = options;
-    };
+    }
 
     /**
      * Send http request to server to write data to / read data from server
@@ -37,7 +37,7 @@ class HttpRequest {
             // console.log(`sending request to ${this.baseUrl}/${this.url}`)
             // console.log(`sending headers `,headers)
 
-            let result
+            let result;
             if (this.method.toLowerCase() == 'get') {
                 let headers = {...this.headers};
                 result = await axios({
@@ -66,7 +66,7 @@ class HttpRequest {
         } 
         catch (err) 
         {
-            console.log("err-------->",err);
+            console.log('err-------->',err);
 
             if (err.response) {
                 // The client was given an error response (5xx, 4xx)
@@ -84,7 +84,7 @@ class HttpRequest {
             throw err;
         }
        
-    };
+    }
 }
 
 export default HttpRequest;
