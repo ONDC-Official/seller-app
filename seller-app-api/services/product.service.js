@@ -1263,29 +1263,34 @@ class ProductService {
 
             let deliveryCharges ={}
             let fulfillments =[]
-            if(isServiceable){
+
+            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+
+            console.log("deliveryType--logisticProvider.message.catalog[\"bpp/providers\"][0].items->",logisticProvider.message.catalog["bpp/providers"][0].items);
+            console.log("deliveryType--->",deliveryType);
+            if(isServiceable && deliveryType ){
                 //select logistic based on criteria-> for now first one will be picked up
                 deliveryCharges = {
                     "title": "Delivery charges",
                     "@ondc/org/title_type": "delivery",
-                    "@ondc/org/item_id":logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id,
+                    "@ondc/org/item_id":deliveryType.fulfillment_id,
                     "price": {
-                        "currency": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.currency,
-                        "value": '' + logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value
+                        "currency": '' + deliveryType.price.currency,
+                        "value": '' + deliveryType.price.value
                     }
                 }//TODO: need to map all items in the catalog to find out delivery charges
-
 
                 //added delivery charges in total price
                 totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
 
                 fulfillments = [
+
                     {
-                        "id": logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
+                        "id": deliveryType.fulfillment_id, //TODO: check what needs to go here, ideally it should be item id
                         "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
                         "tracking": true, //Hard coded
-                        "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].items[0].category_id,
-                        "@ondc/org/TAT": logisticProvider.message.catalog["bpp/providers"][0].items[0].time.duration,
+                        "@ondc/org/category": deliveryType.category_id,
+                        "@ondc/org/TAT": deliveryType.time.duration,
                         "state":
                             {
                                 "descriptor":

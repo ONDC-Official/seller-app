@@ -442,6 +442,11 @@ class OndcService {
             const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
             const contextTimeStamp =new Date()
+
+
+            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+
+
             const initRequest =     {
                 "context": {
                     "domain": "nic2004:60232",
@@ -463,7 +468,7 @@ class OndcService {
                         "provider": {
                             "id": logistics.message.catalog["bpp/providers"][0].id
                         },
-                        "items": [logistics.message.catalog["bpp/providers"][0].items[0]],
+                        "items": [deliveryType],
                         "fulfillments": [{
                             "id": logistics.message.catalog["bpp/fulfillments"][0].id,
                             "type": logistics.message.catalog["bpp/fulfillments"][0].type,
@@ -810,6 +815,9 @@ class OndcService {
                 itemDetails.push(details)
             }
 
+
+            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+
             const contextTimestamp = new Date()
             const confirmRequest  = {
                 "context": {
@@ -832,16 +840,16 @@ class OndcService {
                             "items": itemDetails,
                             "provider": {
                                 "descriptor": {
-                                    "name": "Spice 9" //TODO: take details from seller service
+                                    name: org.providerDetail.name
                                 },
                                 "address": {
-                                    "name": "Spice 9",
-                                        "building": "12",
-                                        "locality": "prashanth nagar",
-                                        "city": "Bangalore",
-                                        "state": "Karnataka",
-                                        "country": "IND",
-                                        "area_code": "560036"
+                                    area_code: org.providerDetail.storeDetails.address.area_code,
+                                    name: org.providerDetail.name,
+                                    building: org.providerDetail.storeDetails.address.building,
+                                    locality: org.providerDetail.storeDetails.address.locality,
+                                    city: org.providerDetail.storeDetails.address.city,
+                                    state: org.providerDetail.storeDetails.address.state,
+                                    country: org.providerDetail.storeDetails.address.country
                                 }
                             },
                             "order": {
@@ -853,7 +861,7 @@ class OndcService {
                             }
                         },
                         "id": order.id,
-                        "items": [selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items[0]], //TODO: fix this map to right item id from select request
+                        "items": [deliveryType], //TODO: fix this map to right item id from select request
                         "provider":initRequest.selectedLogistics.message.order.provider,
                         "fulfillments": [{
                             "id": order.fulfillments[0].id,
@@ -870,23 +878,7 @@ class OndcService {
                                 "collected_by": "BAP",
                                 "@ondc/org/settlement_details": []
                         },
-                        "billing": { //TODO: hard coded
-                            "name": "Ek Second Technologies",
-                                "email": "ondc@ondc.org",
-                                "phone": "9000111111",
-                                "created_at": contextTimestamp,
-                                "updated_at": contextTimestamp,
-                                "address": {
-                                "name": "ONDC",
-                                    "building": "8-7-171/10/14/B",
-                                    "locality": "Old Bowenpally",
-                                    "city": "secunderabad",
-                                    "state": "Telangana",
-                                    "country": "India",
-                                    "area_code": "500011"
-                            },
-                            "tax_number": "ADFSDF34343"
-                        },
+                        "billing": {...payload.message.order.billing,"tax_number": "NA"},
                         state: "Created",
                         created_at:contextTimestamp,
                         updated_at:contextTimestamp

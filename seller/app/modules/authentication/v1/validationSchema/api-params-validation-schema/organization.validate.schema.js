@@ -97,7 +97,7 @@ module.exports = {
                 locality: Joi.string()
             },
             supportDetails:{
-            email:Joi.string(),
+                email:Joi.string(),
                 mobile:Joi.string()
             }
         });

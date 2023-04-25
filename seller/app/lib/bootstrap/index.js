@@ -9,7 +9,7 @@ const userService = new UserService();
 
 async function BootstrapData() {
 
-   // 1: Create Roles
+    // 1: Create Roles
     try {
         let promiseArray = Roles.map(async (roleObj) => {
 
@@ -25,7 +25,7 @@ async function BootstrapData() {
         let promiseArray = Users.map(async (userObj) => {
             let roles = await Role.find({});
             const role = roles.find(role => role.name === 'Super Admin');
-            userObj.role = role.name
+            userObj.role = role.name;
             const user = await userService.create(userObj);
             return user;
         });

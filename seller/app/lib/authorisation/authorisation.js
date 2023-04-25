@@ -1,4 +1,4 @@
-import {UnauthorisedError} from "../errors";
+import {UnauthorisedError} from '../errors';
 
 class Authorisation {
     /**
@@ -6,8 +6,8 @@ class Authorisation {
      * @param {*} roles  Role list
      */
     constructor(user, roles) {
-        console.log("this.user---->",JSON.stringify(user, null, 2));
-        console.log("this.roles---->",JSON.stringify(roles, null, 2));
+        console.log('this.user---->',JSON.stringify(user, null, 2));
+        console.log('this.roles---->',JSON.stringify(roles, null, 2));
         this.user = user;
         this.roles = roles;
     }

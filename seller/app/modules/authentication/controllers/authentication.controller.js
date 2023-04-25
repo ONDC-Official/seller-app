@@ -32,9 +32,9 @@ class AuthenticationController {
         let user = req.user;
         let token = req.userToken;
 
-        console.log('req---->',req.user)
+        console.log('req---->',req.user);
 
-        myCache.del(`${req.user.id}-${req.user.userToken}`)
+        myCache.del(`${req.user.id}-${req.user.userToken}`);
 
         //console.log(myCache.get(`${req.user.id}-${JWTToken}`));
         //global.sessionMap.push[{userId:currentUser._id,token:JWTToken}];

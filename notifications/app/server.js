@@ -45,16 +45,16 @@ server.on('error', (error) => {
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-        case 'EACCES':
-            console.error(`${bind} requires elevated privileges`);
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(`${bind} is already in use`);
-            process.exit(1);
-            break;
-        default:
-            throw error;
+    case 'EACCES':
+        console.error(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+    case 'EADDRINUSE':
+        console.error(`${bind} is already in use`);
+        process.exit(1);
+        break;
+    default:
+        throw error;
     }
 });
 
@@ -114,7 +114,7 @@ const corsOptionsDelegate = function (req, callback) {
         // Wait for the DB connection to setup and initialize the DB models
 
         // Resgister routes once the DB models are registered
-        app.use(`/api`, cors(corsOptionsDelegate) ,routes);
+        app.use('/api', cors(corsOptionsDelegate) ,routes);
         const routeDetails = getRoutes(app);
         console.log('Registered API paths are: \n', routeDetails);
         console.log('Registered API paths are: \n', mergedEnvironmentConfig);

@@ -24,7 +24,7 @@ const tokenExtractor = function (req) {
         tokenArray = token.split(' ');
     }
 
-    console.log("token--------->",tokenArray);
+    console.log('token--------->',tokenArray);
     return tokenArray[1];
 };
 

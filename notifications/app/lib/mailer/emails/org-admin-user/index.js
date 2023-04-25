@@ -21,7 +21,7 @@ class ForgotPassword extends Email {
 
         let user = this.options.data.data.user;
 
-        console.log("org admin user detals -->",this.options.data.data)
+        console.log('org admin user detals -->',this.options.data.data);
         let name = user.name;
 
         return {

@@ -12,7 +12,7 @@ import LoginAttempts from '../../models/loginAttempts.model';
 import BannedUser from '../../models/bannedUser.model';
 import Organization from '../../models/organization.model';
 import ServiceApi from '../../../../lib/utils/serviceApi';
-import s3 from '../../../../lib/utils/s3Utils'
+import s3 from '../../../../lib/utils/s3Utils';
 
 class UserService {
     /**
@@ -22,7 +22,7 @@ class UserService {
     async create(data) {
         try {
 
-            console.log("data to bootstrap--->", data);
+            console.log('data to bootstrap--->', data);
             // Find user by email or mobile
             let query = {email: data.email};
             let userExist = await User.findOne(query);
@@ -32,7 +32,7 @@ class UserService {
             if (!data.password)
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
-            data.email = data.email.toLowerCase()
+            data.email = data.email.toLowerCase();
             //const password = data.password;
             const password = data.password; //FIXME: reset to default random password once SES is activated
 
@@ -47,18 +47,18 @@ class UserService {
             data.createdAt = Date.now();
             data.updatedAt = Date.now();
             let user = new User();
-            user.organization = data.organization
+            user.organization = data.organization;
             user.name = data.name;
             user.mobile = data.mobile;
             user.email = data.email;
 
             user.password = data.password;
-            user.role = role._id
+            user.role = role._id;
             let savedUser = await user.save();
             //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
             let mailData = {temporaryPassword: password, user: data};
 
-            console.log("mailData------>", mailData)
+            console.log('mailData------>', mailData);
             // let notificationData = {
             //     receivers: [data.email],
             //     data: mailData,
@@ -87,7 +87,7 @@ class UserService {
     async invite(data) {
         try {
 
-            console.log("data to bootstrap--->", data);
+            console.log('data to bootstrap--->', data);
             // Find user by email or mobile
             let query = {email: data.email};
             let userExist = await User.findOne(query);
@@ -98,8 +98,8 @@ class UserService {
                 data.password = Math.floor(100000 + Math.random() * 900000);
 
 
-            let role = await Role.findOne({name: "Super Admin"});
-            data.email = data.email.toLowerCase()
+            let role = await Role.findOne({name: 'Super Admin'});
+            data.email = data.email.toLowerCase();
             const password = data.password; //FIXME: reset to default random password once SES is activated
             console.log(`password-${password}`);
             data.password = await encryptPIN('' + password);
@@ -109,17 +109,17 @@ class UserService {
             data.createdAt = Date.now();
             data.updatedAt = Date.now();
             let user = new User();
-            user.organizations = data.organizationId
+            user.organizations = data.organizationId;
             user.name = data.name;
             user.mobile = data.mobile;
             user.email = data.email;
             user.password = data.password;
-            user.role = role._id
+            user.role = role._id;
             let savedUser = await user.save();
             //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
             let mailData = {temporaryPassword: password, user: data};
 
-            console.log("mailData------>", mailData)
+            console.log('mailData------>', mailData);
 
 
             ServiceApi.sendEmail(
@@ -235,13 +235,13 @@ class UserService {
     async enable(userId, data) {
         try {
 
-            const users = await User.findOne({_id: userId})
+            const users = await User.findOne({_id: userId});
             console.log(users);
             if (!users) {
                 throw  new NoRecordFoundError(MESSAGES.USER_NOT_EXISTS);
             } else {
 
-                users.enabled = data.enabled
+                users.enabled = data.enabled;
                 await users.save();
                 return data;
             }
@@ -303,7 +303,7 @@ class UserService {
                 let organization = await Organization.findOne({_id: user.organization}, {_id: 1, name: 1});
                 user.organization = organization;
 
-                let bannedUser = await BannedUser.findOne({user:user._id})
+                let bannedUser = await BannedUser.findOne({user:user._id});
                 user.bannedUser = bannedUser;
 
             }
@@ -474,7 +474,7 @@ class UserService {
 
         } catch (err) {
             console.log(err);
-            throw err
+            throw err;
         }
     }
 }

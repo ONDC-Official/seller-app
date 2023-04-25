@@ -7,8 +7,8 @@ import {
     DuplicateRecordFoundError,
     BadRequestParameterError,
 } from '../../../../lib/errors';
-import s3 from "../../../../lib/utils/s3Utils";
-import {Organizations} from "aws-sdk";
+import s3 from '../../../../lib/utils/s3Utils';
+import {Organizations} from 'aws-sdk';
 
 class ProductService {
     async create(data) {
@@ -39,7 +39,7 @@ class ProductService {
                 query.organization =params.organization;
             }
             const data = await Product.find(query).sort({createdAt:1}).skip(params.offset*params.limit).limit(params.limit);
-            const count = await Product.count(query)
+            const count = await Product.count(query);
             let products={
                 count,
                 data
@@ -55,25 +55,25 @@ class ProductService {
         try {
             let query={};
 
-            console.log("params------->",params)
+            console.log('params------->',params);
             const orgs = await Organization.find({},).lean();
             let products = [];
             for(const org of orgs){
                 query.organization = org._id;
                 query.published = true;
-               // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
+                // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
                 const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
                 if(data.length>0){
                     for(const product of data){
-                        let productDetails = product
-                        let images = []
+                        let productDetails = product;
+                        let images = [];
                         for(const image of productDetails.images){
                             let imageData = await s3.getSignedUrlForRead({path:image});
                             images.push(imageData.url);
                         }
-                        product.images = images
+                        product.images = images;
                     }
-                    org.items = data
+                    org.items = data;
                     products.push(org);
                 }
             }
@@ -89,25 +89,25 @@ class ProductService {
         try {
             let doc = await Product.findOne({_id:productId}).lean();
 
-            let images = []
+            let images = [];
             for(const image of doc.images){
                 let data = await s3.getSignedUrlForRead({path:image});
-                images.push(data)
+                images.push(data);
             }
 
-            doc.images = images
+            doc.images = images;
 
             return doc;
 
         } catch (err) {
-            console.log(`[OrganizationService] [get] Error in getting organization by id -`,err);
+            console.log('[OrganizationService] [get] Error in getting organization by id -',err);
             throw err;
         }
     }
 
     async update(productId,data) {
         try {
-            let doc = await Product.findOneAndUpdate({_id:productId},data)//.lean();
+            let doc = await Product.findOneAndUpdate({_id:productId},data);//.lean();
             return doc;
 
         } catch (err) {
@@ -118,9 +118,9 @@ class ProductService {
 
     async publish(productId,data) {
         try {
-            console.log("req.body---->",data)
+            console.log('req.body---->',data);
             //TODO: add org level check and record not found validation
-            let doc = await Product.findOneAndUpdate({_id:productId},data)//.lean();
+            let doc = await Product.findOneAndUpdate({_id:productId},data);//.lean();
             return data;
 
         } catch (err) {

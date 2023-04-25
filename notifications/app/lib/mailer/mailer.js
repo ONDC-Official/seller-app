@@ -16,7 +16,7 @@ class Mailer {
                 user: mergedEnvironmentConfig.email.transport.auth.user, // sender's email id
                 pass: mergedEnvironmentConfig.email.transport.auth.pass,
             },
-        }
+        };
         this.sender = sender || mergedEnvironmentConfig.email.sender;
         this.transport = nodemailer.createTransport(transport);
         this.emailTemplate = new EmailTemplate({

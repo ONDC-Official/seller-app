@@ -9,11 +9,8 @@
     "start": "nodemon --exec babel-node ./app/server.js --trace-deprecation",
     "cron": "nodemon --exec babel-node ./bin/cron.js",
     "build": "npx babel . --out-dir dist --ignore \"node_modules/*\" --copy-files",
-    "dropall": "babel-node ./bin/dropAllDbs.js",
     "serve": "node ./dist/bin/www",
-    "prepare": "cd .. && husky install",
-    "pretest": "cross-env NODE_ENV=test npm run dropall",
-    "test": "cross-env NODE_ENV=test nyc --reporter text-summary --reporter json-summary --reporter json --reporter cobertura --reporter lcov mocha --require @babel/register --timeout 10000"
+    "prepare": "cd .. && husky install"
   },
   "dependencies": {
     "@jsreport/jsreport-chrome-pdf": "^3.1.0",

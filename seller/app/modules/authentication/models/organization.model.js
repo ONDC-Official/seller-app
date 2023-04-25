@@ -1,7 +1,7 @@
 import mongoose from'mongoose';
 import { uuid } from 'uuidv4';
-import s3 from '../../../lib/utils/s3Utils'
-import Joi from "joi";
+import s3 from '../../../lib/utils/s3Utils';
+import Joi from 'joi';
 const organizationSchema = new mongoose.Schema({ //Users who has login ability should go under User schema
     _id:{
         type: String, 
@@ -49,7 +49,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
             email:{type:String},
             mobile:{type:String}
         }
-        },
+    },
     createdBy:{type:String}
 },{  
     strict: true,

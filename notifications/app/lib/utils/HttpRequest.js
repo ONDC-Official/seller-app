@@ -20,7 +20,7 @@ class HttpRequest {
         this.data = data;
         this.headers = headers;
         this.options = options;
-    };
+    }
 
     /**
      * Send http request to server to write data to / read data from server
@@ -61,7 +61,7 @@ class HttpRequest {
                 reject(err);
             }
         });
-    };
+    }
 }
 
 export default HttpRequest;
