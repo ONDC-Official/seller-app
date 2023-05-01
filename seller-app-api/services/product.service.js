@@ -1170,7 +1170,7 @@ class ProductService {
 
             for (let logisticData1 of logisticData) {
                 if (logisticData1.message) {
-                    if (logisticData1.context.bpp_id === "ondc-preprod.loadshare.net") {//TODO: move to env
+                    if (logisticData1.context.bpp_id === "dev-ondc.shiprocket.in") {//TODO: move to env
                         logisticProvider = logisticData1
                     }
                 }
@@ -1264,7 +1264,7 @@ class ProductService {
             let deliveryCharges ={}
             let fulfillments =[]
 
-            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
 
             console.log("deliveryType--logisticProvider.message.catalog[\"bpp/providers\"][0].items->",logisticProvider.message.catalog["bpp/providers"][0].items);
             console.log("deliveryType--->",deliveryType);
@@ -1283,6 +1283,17 @@ class ProductService {
                 //added delivery charges in total price
                 totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
 
+                let categories = logisticProvider.message.catalog["bpp/providers"][0].categories
+                let duration = ''
+                if(deliveryType?.time?.duration){
+                    duration = deliveryType.time.duration
+                }else{
+                    let category = categories.find((cat)=>{
+                        return deliveryType.category_id===cat.id
+                    });
+                    duration = category.time.duration
+                }
+
                 fulfillments = [
 
                     {
@@ -1290,7 +1301,7 @@ class ProductService {
                         "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"].name,
                         "tracking": true, //Hard coded
                         "@ondc/org/category": deliveryType.category_id,
-                        "@ondc/org/TAT": deliveryType.time.duration,
+                        "@ondc/org/TAT": duration,
                         "state":
                             {
                                 "descriptor":
@@ -1318,7 +1329,7 @@ class ProductService {
                         "id": '1',
                         "@ondc/org/provider_name": org.providerDetail.name,//TODO: merchant name
                         "tracking": false, //Hard coded
-                        "@ondc/org/category":"Next Day Delivery" ,
+                        "@ondc/org/category":"Same Day Delivery" ,
                         "@ondc/org/TAT":"P1D",
                         "provider_id": selectData.message.order.provider.id,
                         "type":"Delivery",

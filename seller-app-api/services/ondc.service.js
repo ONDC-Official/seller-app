@@ -444,7 +444,7 @@ class OndcService {
             const contextTimeStamp =new Date()
 
 
-            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
 
 
             const initRequest =     {
@@ -486,8 +486,8 @@ class OndcService {
                                 "country": order.billing.address.country,
                                 "area_code": order.billing.address.area_code
                             },
-                            "tax_number": org.PAN, //FIXME: take GSTN no
-                            "phone": "9999999999", //FIXME: take provider details
+                            "tax_number": org.PAN??"27ACTPC1936E1ZN", //FIXME: take GSTN no
+                            "phone": "8983796135", //FIXME: take provider details
                             "email": "test@gmail.com", //FIXME: take provider details
                             "created_at": contextTimeStamp,
                             "updated_at": contextTimeStamp
@@ -816,7 +816,7 @@ class OndcService {
             }
 
 
-            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === 'Next Day Delivery'});
+            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
 
             const contextTimestamp = new Date()
             const confirmRequest  = {
@@ -878,7 +878,8 @@ class OndcService {
                                 "collected_by": "BAP",
                                 "@ondc/org/settlement_details": []
                         },
-                        "billing": {...payload.message.order.billing,"tax_number": "NA"},
+                        "billing": {...payload.message.order.billing,"tax_number": "27ACTPC1936E1ZN", "created_at": contextTimestamp,
+                            "updated_at": contextTimestamp},
                         state: "Created",
                         created_at:contextTimestamp,
                         updated_at:contextTimestamp
