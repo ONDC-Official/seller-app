@@ -1170,7 +1170,7 @@ class ProductService {
 
             for (let logisticData1 of logisticData) {
                 if (logisticData1.message) {
-                    if (logisticData1.context.bpp_id === "dev-ondc.shiprocket.in") {//TODO: move to env
+                    if (logisticData1.context.bpp_id === config.get("sellerConfig").LOGISTICS_BAP_ID) {//TODO: move to env
                         logisticProvider = logisticData1
                     }
                 }
@@ -1264,7 +1264,7 @@ class ProductService {
             let deliveryCharges ={}
             let fulfillments =[]
 
-            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
+            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
 
             console.log("deliveryType--logisticProvider.message.catalog[\"bpp/providers\"][0].items->",logisticProvider.message.catalog["bpp/providers"][0].items);
             console.log("deliveryType--->",deliveryType);
@@ -1329,7 +1329,7 @@ class ProductService {
                         "id": '1',
                         "@ondc/org/provider_name": org.providerDetail.name,//TODO: merchant name
                         "tracking": false, //Hard coded
-                        "@ondc/org/category":"Same Day Delivery" ,
+                        "@ondc/org/category":config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE ,
                         "@ondc/org/TAT":"P1D",
                         "provider_id": selectData.message.order.provider.id,
                         "type":"Delivery",

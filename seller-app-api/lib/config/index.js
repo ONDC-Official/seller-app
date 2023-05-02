@@ -35,6 +35,8 @@ if (env !== 'development') {
     nconf.set('sellerConfig:BPP_ID', process.env.BPP_ID);
     nconf.set('sellerConfig:BAP_URI', process.env.BAP_ID);
     nconf.set('sellerConfig:BAP_ID', process.env.BAP_URI);
+    nconf.set('sellerConfig:LOGISTICS_DELIVERY_TYPE', process.env.LOGISTICS_DELIVERY_TYPE);
+    nconf.set('sellerConfig:LOGISTICS_BAP_ID', process.env.LOGISTICS_BAP_ID);
 
     nconf.set('database:host', process.env.DATABASE_HOST);
     nconf.set('database:username', process.env.DATABASE_USERNAME);

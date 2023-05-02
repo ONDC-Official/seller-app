@@ -51,10 +51,12 @@
         "path": "/usr/sbin/sendmail"
       }
     },
-    "sender": "",
-    "supportEmail": "",
-    "webClientUri": "http://34.123.120.224",
-    "shareUrl": "https://www.google.com"
+    "sender": "dev@wemotiveforge.com",
+    "supportEmail": "dev@wemotiveforge.com",
+    "webClientUri": "http://192.168.0.11:3000"
+  },
+  "cors":  {
+    "whitelistUrls":  ["http://localhost:3000", "http://127.0.0.1:3000"]
   },
   "cors": {
     "whitelistUrls": [
@@ -82,9 +84,11 @@
   },
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
-    "BPP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
+    "BPP_URI": "https://c38b-2402-e280-3e33-24e-2d49-d6ad-2534-226e.ngrok-free.app",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
+    "BAP_URI": "https://c38b-2402-e280-3e33-24e-2d49-d6ad-2534-226e.ngrok-free.app",
+    "LOGISTICS_BAP_ID": "dev-ondc.shiprocket.in",
+    "LOGISTICS_DELIVERY_TYPE": "Same Day Delivery",
     "storeOpenSchedule": {
       "time": {
         "days": "1,2,3,4,5,6,7",
@@ -109,7 +113,7 @@
       "person": {
         "name": "Ramu"
       },
-        "location": {
+      "location": {
         "gps": "12.938382, 77.651775",
         "address": {
           "area_code": "560087",
@@ -129,12 +133,12 @@
     }
   },
   "settlement_details":   [
-  {
-    "settlement_counterparty": "buyer-app",
-    "settlement_type": "upi",
-    "upi_address": "gft@oksbi",
-    "settlement_bank_account_no": "XXXXXXXXXX",
-    "settlement_ifsc_code": "XXXXXXXXX"
-  }
-]
+    {
+      "settlement_counterparty": "buyer-app",
+      "settlement_type": "upi",
+      "upi_address": "gft@oksbi",
+      "settlement_bank_account_no": "XXXXXXXXXX",
+      "settlement_ifsc_code": "XXXXXXXXX"
+    }
+  ]
 }

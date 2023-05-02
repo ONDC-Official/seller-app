@@ -444,7 +444,7 @@ class OndcService {
             const contextTimeStamp =new Date()
 
 
-            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
+            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
 
 
             const initRequest =     {
@@ -789,6 +789,7 @@ class OndcService {
             let end = {...order.fulfillments[0].end}
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.street
+            end.person = {name:end.location.address.name}
 
             const isInvalidItem =false
             let itemDetails = []
@@ -803,7 +804,7 @@ class OndcService {
                         "currency": "INR",
                         "value": ""+item.MRP
                     },
-                    "category_id": item.categoryName,
+                    "category_id": item.productCategory,
                     "quantity": {
                         "count": items.quantity.count,
                         "measure": { //TODO: hard coded
@@ -816,7 +817,7 @@ class OndcService {
             }
 
 
-            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === 'Same Day Delivery'});
+            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
 
             const contextTimestamp = new Date()
             const confirmRequest  = {
@@ -856,7 +857,7 @@ class OndcService {
                                 "id": order.id,
                                     "weight": {//TODO: hard coded
                                     "unit": "Kilogram",
-                                        "value": 1
+                                        "value": 10
                                 }
                             }
                         },
@@ -879,7 +880,7 @@ class OndcService {
                                 "@ondc/org/settlement_details": []
                         },
                         "billing": {...payload.message.order.billing,"tax_number": "27ACTPC1936E1ZN", "created_at": contextTimestamp,
-                            "updated_at": contextTimestamp},
+                            "updated_at": contextTimestamp}, //TODO: pass valid GST number from seller
                         state: "Created",
                         created_at:contextTimestamp,
                         updated_at:contextTimestamp
