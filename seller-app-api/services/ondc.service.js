@@ -486,9 +486,9 @@ class OndcService {
                                 "country": order.billing.address.country,
                                 "area_code": order.billing.address.area_code
                             },
-                            "tax_number": org.PAN??"27ACTPC1936E1ZN", //FIXME: take GSTN no
-                            "phone": "8983796135", //FIXME: take provider details
-                            "email": "test@gmail.com", //FIXME: take provider details
+                            "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
                             "created_at": contextTimeStamp,
                             "updated_at": contextTimeStamp
                         },
@@ -757,6 +757,7 @@ class OndcService {
 
             let org= await productService.getOrgForOndc(payload.message.order.provider.id);
 
+            console.log("org details ---",org)
             let storeLocationEnd ={}
             if(org.providerDetail.storeDetails){
                 storeLocationEnd = {
@@ -879,7 +880,11 @@ class OndcService {
                                 "collected_by": "BAP",
                                 "@ondc/org/settlement_details": []
                         },
-                        "billing": {...payload.message.order.billing,"tax_number": "27ACTPC1936E1ZN", "created_at": contextTimestamp,
+                        "billing": {...payload.message.order.billing,
+                            "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                            "created_at": contextTimestamp,
                             "updated_at": contextTimestamp}, //TODO: pass valid GST number from seller
                         state: "Created",
                         created_at:contextTimestamp,
