@@ -1171,7 +1171,9 @@ class ProductService {
             for (let logisticData1 of logisticData) {
                 if (logisticData1.message) {
                     if (logisticData1.context.bpp_id === config.get("sellerConfig").LOGISTICS_BAP_ID) {//TODO: move to env
-                        logisticProvider = logisticData1
+                        if(logisticData1.message){
+                            logisticProvider = logisticData1
+                        }
                     }
                 }
             }
@@ -1188,7 +1190,7 @@ class ProductService {
             if (Object.keys(logisticProvider).length === 0) {
                 isServiceable=false
             }
-
+            let deliveryType = ''
             for (let item of items) {
                 let headers = {};
                 let itemObj =item
@@ -1251,6 +1253,9 @@ class ProductService {
 
                 if(isServiceable){
                     itemObj.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
+
+                    deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
+
                 }else{
                     itemObj.fulfillment_id = '1'
                 }
@@ -1264,10 +1269,6 @@ class ProductService {
             let deliveryCharges ={}
             let fulfillments =[]
 
-            let deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
-
-            console.log("deliveryType--logisticProvider.message.catalog[\"bpp/providers\"][0].items->",logisticProvider.message.catalog["bpp/providers"][0].items);
-            console.log("deliveryType--->",deliveryType);
             if(isServiceable && deliveryType ){
                 //select logistic based on criteria-> for now first one will be picked up
                 deliveryCharges = {
