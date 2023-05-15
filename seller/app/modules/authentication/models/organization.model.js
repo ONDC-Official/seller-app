@@ -48,7 +48,8 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         supportDetails:{
             email:{type:String},
             mobile:{type:String}
-        }
+        },
+        storeTiming:{type:Object}
     },
     createdBy:{type:String}
 },{  
