@@ -1,14 +1,8 @@
-import { v1 as uuidv1 } from 'uuid';
-import MESSAGES from '../../../../lib/utils/messages';
 import Product from '../../models/product.model';
 import Organization from '../../../authentication/models/organization.model';
-import {
-    NoRecordFoundError,
-    DuplicateRecordFoundError,
-    BadRequestParameterError,
-} from '../../../../lib/errors';
 import s3 from '../../../../lib/utils/s3Utils';
-import {Organizations} from 'aws-sdk';
+import Joi from "joi";
+
 
 class ProductService {
     async create(data) {
