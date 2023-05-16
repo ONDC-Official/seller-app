@@ -105,56 +105,6 @@ class OndcController {
         });
     }
 
-    /************Legacy API**********************/
-    init(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.init(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-
-    confirm(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.confirm(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    track(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.track(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    support(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.support(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    status(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.status(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    cancel(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.cancel(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
 
 }
 

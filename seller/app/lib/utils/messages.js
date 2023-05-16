@@ -1,6 +1,6 @@
 const MESSAGES = {
     USER_NOT_EXISTS: 'We couldn\'t find an account with those details',
-    INVALID_PIN: 'Incorrect username or password. Please check and try again',
+    INVALID_PIN: 'Incorrect username or password, Please check and try again',
     INVALID_INVITATION_CODE: 'Invalid invitation code. Please check and try again.',
     USER_ALREADY_EXISTS: 'A user with this phone number/email already exists',
     USER_PHONE_ALREADY_EXISTS: 'A user with the given phone already exists',

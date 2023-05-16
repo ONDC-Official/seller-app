@@ -76,7 +76,8 @@ module.exports = {
             supportDetails:{
                 email:Joi.string(),
                 mobile:Joi.string()
-            }
+            },
+            storeTiming:Joi.object()
         });
     },
     updateStoreDetails:()=>{
@@ -99,7 +100,8 @@ module.exports = {
             supportDetails:{
                 email:Joi.string(),
                 mobile:Joi.string()
-            }
+            },
+            storeTiming:Joi.object()
         });
     },
     get:()=>{

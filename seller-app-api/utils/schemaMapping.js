@@ -10,6 +10,7 @@ exports.getProducts = async (data) => {
     let bppDetails ={}
     let bppProviders =[]
     for(const org of data?.data){
+        let tags =[]
         let productAvailable = []
         org.storeDetails.address.street = org.storeDetails.address.locality
         delete org.storeDetails.address.locality
@@ -38,7 +39,7 @@ exports.getProducts = async (data) => {
                         "count": `${items.maxAllowedQty}`
                     }
                 },
-                "category_id": 'Fruits and Vegetables',//items.productCategory, //TODO: should be same as tags category
+                "category_id": items.productSubcategory1??"NA",
                 "location_id": org.storeDetails?.location._id??"0",
                 "fulfillment_id": '1',//Delivery
                 "matched": true,
@@ -47,7 +48,7 @@ exports.getProducts = async (data) => {
                 "@ondc/org/available_on_cod": items.availableOnCod,
                 "@ondc/org/time_to_ship": "PT1H", //TODO: hard coded
                 "@ondc/org/seller_pickup_return": true,
-                "@ondc/org/return_window": "P7D", //TODO: hard coded
+                "@ondc/org/return_window": items.returnWindow,
                 "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
                 "@ondc/org/mandatory_reqs_veggies_fruits": {
                     "net_quantity": items.packQty
@@ -55,18 +56,18 @@ exports.getProducts = async (data) => {
                 "@ondc/org/statutory_reqs_packaged_commodities":
                     {
                         "manufacturer_or_packer_name":items.manufacturerName,
-                        "manufacturer_or_packer_address":items.manufacturerName,//TODO need to add this field
-                            "common_or_generic_name_of_commodity":items.productName,//TODO need to add this field
-                            "net_quantity_or_measure_of_commodity_in_pkg":items.packQty, //TODO need clarity on this.
-                        "month_year_of_manufacture_packing_import":items.manufacturedDate //TODO need to add this field
+                        "manufacturer_or_packer_address":items.manufacturerOrPackerAddress,
+                            "common_or_generic_name_of_commodity":items.productName,
+                            "net_quantity_or_measure_of_commodity_in_pkg":items.packQty,
+                        "month_year_of_manufacture_packing_import":items.manufacturedDate
                     },
                 "@ondc/org/statutory_reqs_prepackaged_food":
                     {
                         "nutritional_info":items.nutritionalInfo,
                         "additives_info":items.additiveInfo,
-                        "brand_owner_FSSAI_license_no":org.FSSAI,
-                        "other_FSSAI_license_no":org.FSSAI, //TODO: need clarity on this field
-                        "importer_FSSAI_license_no":org.FSSAI
+                        "brand_owner_FSSAI_license_no":items.brandOwnerFSSAILicenseNo??"NA",
+                        "other_FSSAI_license_no":items.importerFSSAILicenseNo??"NA",
+                        "importer_FSSAI_license_no":items.importerFSSAILicenseNo??"NA"
                     },
                 "tags":
                     {
@@ -75,6 +76,34 @@ exports.getProducts = async (data) => {
                     }
 
         }
+
+               tags.push(
+                {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails?.location._id??"0"
+                        },
+                        {
+                            "code": "category",
+                            "value": items.productSubcategory1??"NA"
+                        },
+                        {
+                            "code": "type",
+                            "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
+
+                        },
+                        {
+                            "code": "val",
+                            "value": "IND"
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        }
+                    ]
+                })
             productAvailable.push(item)
         }
 
@@ -132,32 +161,7 @@ exports.getProducts = async (data) => {
                             }
                     }
                 ],
-            "tags": [
-                {
-                    "code": "serviceability",
-                    "list": [
-                        {
-                            "code": "location",
-                            "value": org.storeDetails?.location._id??"0"
-                        },
-                        {
-                            "code": "category", //TODO: hard coded for now
-                            "value": "Fruits and Vegetables"
-                        },
-                        {
-                            "code": "type",
-                            "value": "12"
-                        },
-                        {
-                            "code": "val",
-                            "value": "IND"
-                        },
-                        {
-                            "code": "unit",
-                            "value": "country"
-                        }
-                    ]
-                }],
+            "tags":tags,
             "@ondc/org/fssai_license_no": org.FSSAI
         })
 
@@ -173,7 +177,7 @@ exports.getProducts = async (data) => {
         "context": {...context},
         "message": {
             "catalog": {
-                "bpp/fulfillments":
+                "bpp/fulfillments"://TODO: mark this for development- set provider level
                     [
                         {
                             "id":"1",

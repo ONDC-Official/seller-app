@@ -6,6 +6,49 @@ const productService = new ProductService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import {uuid} from 'uuidv4';
+import Joi from "joi";
+
+const productValidationSchema = Joi.object({
+    productCode: Joi.string().required(),
+    productName: Joi.string().required(),
+    MRP: Joi.number().required(),
+    retailPrice: Joi.number().required(),
+    purchasePrice: Joi.number().required(),
+    HSNCode: Joi.string().required(),
+    GST_Percentage: Joi.number().required(),
+    productCategory: Joi.string().required(),
+    productSubcategory1: Joi.string().required(),
+    productSubcategory2: Joi.string(),
+    productSubcategory3: Joi.string(),
+    quantity: Joi.number().required(),
+    barcode: Joi.number().required(),
+    maxAllowedQty: Joi.number().required(),
+    packQty:Joi.any(),
+    UOM: Joi.string().required(),//units of measure
+    length: Joi.any().required(),
+    breadth: Joi.any().required(),
+    height: Joi.any().required(),
+    weight: Joi.any().required(),
+    isReturnable: Joi.string().required(),
+    returnWindow: Joi.string().required(),
+    isVegetarian: Joi.string(),
+    manufacturerName: Joi.string(),
+    manufacturedDate: Joi.string(),
+    nutritionalInfo: Joi.string(),
+    additiveInfo: Joi.string(),
+    instructions: Joi.string(),
+    isCancellable: Joi.string().required(),
+    availableOnCod: Joi.string().required(),
+    longDescription: Joi.string().required(),
+    description: Joi.string().required(),
+    images: Joi.string().required(),
+    manufacturerOrPackerName:Joi.string(),
+    manufacturerOrPackerAddress:Joi.string(),
+    commonOrGenericNameOfCommodity:Joi.string(),
+    monthYearOfManufacturePackingImport:Joi.string(),
+    importerFSSAILicenseNo:Joi.number(),
+    brandOwnerFSSAILicenseNo:Joi.number()
+}).options({ allowUnknown: true });
 
 class ProductController {
 
@@ -40,7 +83,7 @@ class ProductController {
 
     async search(req, res, next) {
         try {
-            const query = req.query;
+            let query = req.query;
             query.offset = 0;
             query.limit = 50;//default only 50 products will be sent
             const products = await productService.search(query);
@@ -103,6 +146,7 @@ class ProductController {
     async uploadCatalog(req, res, next) {
         try {
 
+            console.log("req.user",req.user)
             let path = req.file.path;
 
             var workbook = XLSX.readFile(path,{
@@ -156,79 +200,85 @@ class ProductController {
 
                 for (const row of jsonData) {
 
-                    row.organization = req.user.organization;
+                    const { rowData, error } = productValidationSchema.validate(row);
+                    if(!error){
+                        row.organization = req.user.organization;
 
-                    let images = row?.images?.split(',') ?? [];
+                        let images = row?.images?.split(',') ?? [];
 
-                    let imageUrls = [];
+                        let imageUrls = [];
 
-                    for (const img of images) {
-                        var keyName = req.user.organization + '/' + 'productImages' + '/' + uuid();
-                        const region = mergedEnvironmentConfig.s3.region;
-                        const bucket = mergedEnvironmentConfig.s3.bucket;
+                        for (const img of images) {
+                            var keyName = req.user.organization + '/' + 'productImages' + '/' + uuid();
+                            const region = mergedEnvironmentConfig.s3.region;
+                            const bucket = mergedEnvironmentConfig.s3.bucket;
 
-                        const imageURL = img;
-                        let res;
-                        try {
-                            res = await fetch(imageURL);
-                        } catch (e) {
-                            console.log(e);
+                            const imageURL = img;
+                            let res;
+                            try {
+                                res = await fetch(imageURL);
+                            } catch (e) {
+                                console.log(e);
+                            }
+
+                            if (res) {
+                                console.log('mime--->', res);
+
+                                let extention = imageURL.split('.').slice(-1)[0];
+                                keyName = keyName + '.' + extention;
+                                const blob = await res.buffer();
+                                const s3 = new AWS.S3({
+                                    useAccelerateEndpoint: true,
+                                    region: region
+                                });
+
+                                const uploadedImage = await s3.upload({
+                                    Bucket: bucket,
+                                    Key: keyName,
+                                    Body: blob
+                                }).promise();
+
+                                //console.log("uploaded image --->",uploadedImage);
+
+                                imageUrls.push(keyName);
+                            }
+
                         }
 
-                        if (res) {
-                            console.log('mime--->', res);
-
-                            let extention = imageURL.split('.').slice(-1)[0];
-                            keyName = keyName + '.' + extention;
-                            const blob = await res.buffer();
-                            const s3 = new AWS.S3({
-                                useAccelerateEndpoint: true,
-                                region: region
-                            });
-
-                            const uploadedImage = await s3.upload({
-                                Bucket: bucket,
-                                Key: keyName,
-                                Body: blob
-                            }).promise();
-
-                            //console.log("uploaded image --->",uploadedImage);
-
-                            imageUrls.push(keyName);
+                        if (row.isReturnable?.toLowerCase() === 'yes'){
+                            row.isReturnable=true;
+                        }else{
+                            row.isReturnable = false;
+                        }
+                        if (row.isVegetarian?.toLowerCase() === 'yes'){
+                            row.isVegetarian =true;
+                        }else{
+                            row.isVegetarian=false;
+                        }
+                        if (row.availableOnCod?.toLowerCase() === 'yes'){
+                            row.availableOnCod =true;
+                        }else{
+                            row.availableOnCod =false;
+                        }
+                        if (row.isCancellable?.toLowerCase() === 'yes'){
+                            row.isCancellable =true;
+                        }else{
+                            row.isCancellable =false;
                         }
 
+
+                        console.log('manufactured date----->',row.manufacturedDate);
+
+                        row.images = imageUrls;
+                        try{
+                            await productService.create(row);
+                        }catch (e) {
+                            console.log('product failed to import', row);
+                        }
+                    }else{
+                        console.log("error in row -->",error);
                     }
 
-                    if (row.isReturnable?.toLowerCase() === 'yes'){
-                        row.isReturnable=true;
-                    }else{
-                        row.isReturnable = false;
-                    }
-                    if (row.isVegetarian?.toLowerCase() === 'yes'){
-                        row.isVegetarian =true;
-                    }else{
-                        row.isVegetarian=false;
-                    }
-                    if (row.availableOnCod?.toLowerCase() === 'yes'){
-                        row.availableOnCod =true;
-                    }else{
-                        row.availableOnCod =false;
-                    }
-                    if (row.isCancellable?.toLowerCase() === 'yes'){
-                        row.isCancellable =true;
-                    }else{
-                        row.isCancellable =false;
-                    }
-                        
-
-                    console.log('manufactured date----->',row.manufacturedDate);
-
-                    row.images = imageUrls;
-                    try{
-                        await productService.create(row);
-                    }catch (e) {
-                        console.log('product failed to import', row);
-                    }
 
                 }
             }

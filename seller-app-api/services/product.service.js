@@ -32,15 +32,15 @@ class ProductService {
             logger.log('info', `[Product Service] search product : param :`,requestQuery);
 
             //get search criteria
-            const searchProduct = requestQuery.message.intent.item.descriptor.name
+            const searchProduct = requestQuery.message.intent.item?.descriptor?.name??""
+            const searchCategory = requestQuery.message.intent.category?.descriptor?.id??""
 
             let headers = {};
 
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/v1/products/search`, //TODO: allow $like query
+                `/api/v1/products/search?name=${searchProduct}&category=${searchCategory}`, //TODO: allow $like query
                 'get',
-                {name:searchProduct},
                 headers
             );
 
