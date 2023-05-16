@@ -55,6 +55,12 @@ class ProductService {
             for(const org of orgs){
                 query.organization = org._id;
                 query.published = true;
+                if(params.name){
+                    query.productName={ $regex: '.*' + params.name + '.*' };
+                }
+                if(params.category){
+                    query.productCategory ={ $regex: '.*' + params.category + '.*' };
+                }
                 // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
                 const data = await Product.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
                 if(data.length>0){

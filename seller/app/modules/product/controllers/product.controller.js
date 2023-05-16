@@ -83,7 +83,7 @@ class ProductController {
 
     async search(req, res, next) {
         try {
-            const query = req.query;
+            let query = req.query;
             query.offset = 0;
             query.limit = 50;//default only 50 products will be sent
             const products = await productService.search(query);
