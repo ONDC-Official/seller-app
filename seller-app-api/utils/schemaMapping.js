@@ -39,7 +39,7 @@ exports.getProducts = async (data) => {
                         "count": `${items.maxAllowedQty}`
                     }
                 },
-                "category_id": 'Fruits and Vegetables',//items.productCategory, //TODO: should be same as tags category
+                "category_id": items.productSubcategory1??"NA",
                 "location_id": org.storeDetails?.location._id??"0",
                 "fulfillment_id": '1',//Delivery
                 "matched": true,
@@ -77,7 +77,7 @@ exports.getProducts = async (data) => {
 
         }
 
-               tags.push( //TODO: build this tag in item loop
+               tags.push(
                 {
                     "code": "serviceability",
                     "list": [
