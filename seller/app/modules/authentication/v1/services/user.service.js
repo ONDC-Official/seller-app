@@ -84,6 +84,71 @@ class UserService {
         }
     }
 
+    async signup(data) {
+        try {
+
+            console.log('data to bootstrap--->', data);
+            // Find user by email or mobile
+            let query = {email: data.email};
+            let userExist = await User.findOne(query);
+            if (userExist) {
+                return userExist;
+            }
+            if (!data.password)
+                data.password = Math.floor(100000 + Math.random() * 900000);
+
+            data.email = data.email.toLowerCase();
+            //const password = data.password;
+            const password = data.password; //FIXME: reset to default random password once SES is activated
+
+            console.log(`password-${password}`);
+
+            let role = await Role.findOne({name: data.role});
+
+            data.password = await encryptPIN('' + password);
+            data.enabled = true;
+            data.lastLoginAt = null;
+            data.id = uuidv1();
+            data.createdAt = Date.now();
+            data.updatedAt = Date.now();
+            let user = new User();
+            user.organization = data.organization;
+            user.name = data.name;
+            user.mobile = data.mobile;
+            user.email = data.email;
+
+            user.password = data.password;
+            user.role = role._id;
+            let savedUser = await user.save();
+            //const organization = await Organization.findOne({_id:data.organizationId},{name:1});
+            // let mailData = {temporaryPassword: password, user: data};
+
+            // console.log('mailData------>', mailData);
+            // let notificationData = {
+            //     receivers: [data.email],
+            //     data: mailData,
+            //     template:name
+            // };
+
+            //
+            // ServiceApi.sendEmail(
+            //     {
+            //         receivers: [data.email],
+            //         template: 'SIGN_UP',
+            //         data: mailData,
+            //     },
+            //     user, null
+            // );
+
+
+            return data;
+        } catch (err) {
+            if (err.statusCode === 404)
+                throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
+            throw err;
+        }
+    }
+
     async invite(data) {
         try {
 

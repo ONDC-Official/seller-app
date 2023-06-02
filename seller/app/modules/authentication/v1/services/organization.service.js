@@ -45,6 +45,36 @@ class OrganizationService {
             throw err;
         }
     }
+    async signup(data) {
+        try {
+            let query = {};
+
+            let orgDetails = data.providerDetails;
+            const organizationExist = await Organization.findOne({name:orgDetails.name});
+
+            if (organizationExist) {
+                throw new DuplicateRecordFoundError(MESSAGES.ORGANIZATION_ALREADY_EXISTS);
+            }
+
+            let userExist = await User.findOne({email:data.user.email});
+
+            if (userExist) {
+                throw new DuplicateRecordFoundError(MESSAGES.USER_ALREADY_EXISTS);
+            }
+
+            let  organization = new Organization(orgDetails);
+            let savedOrg = await organization.save();
+
+            //create a user
+            let user = await userService.signup({...data.user,organization:organization._id,role:'Organization Admin'});
+
+            return {user:user,providerDetail:organization};
+
+        } catch (err) {
+            console.log(`[OrganizationService] [create] Error in creating organization ${data.organizationId}`,err);
+            throw err;
+        }
+    }
 
     async list(params) {
         try {

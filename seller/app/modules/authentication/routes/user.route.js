@@ -42,7 +42,6 @@ router.get('/v1/users',
 );
 
 router.post('/v1/upload/:category',
-    authentication.middleware(),
     userController.upload
 );
 
