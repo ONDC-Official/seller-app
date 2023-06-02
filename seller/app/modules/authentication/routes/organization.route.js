@@ -15,6 +15,10 @@ router.post('/v1/organizations',
     apiParamsValidator.middleware({ schema: organisationSchema.create() }),
     organizationController.create);
 
+router.post('/v1/organizations/signup',
+    apiParamsValidator.middleware({ schema: organisationSchema.signup() }),
+    organizationController.signup);
+
 router.put('/v1/organizations/:id/',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),

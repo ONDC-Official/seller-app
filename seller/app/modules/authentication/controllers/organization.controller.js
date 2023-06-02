@@ -22,6 +22,18 @@ class OrganizationController {
         }     
     }
 
+    async signup(req, res, next) {
+        try {
+            const data = req.body;
+            const organization = await organizationService.signup(data);
+            return res.send(organization);
+
+        } catch (error) {
+            console.log('[OrderController] [create] Error -', error);
+            next(error);
+        }
+    }
+
 
     /**
    * Get all org
