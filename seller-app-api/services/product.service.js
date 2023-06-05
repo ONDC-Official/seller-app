@@ -1168,9 +1168,20 @@ class ProductService {
 
             let logisticProvider = {}
 
+
+            const org = await this.getOrgForOndc(selectData.message.order.provider.id);
+            let logisticsToSelect = config.get("sellerConfig").LOGISTICS_BAP_ID
+
+            if(org.providerDetail.storeDetails.logisticsBppId){
+                logisticsToSelect = org.providerDetail.storeDetails.logisticsBppId
+            }
+
+            console.log({logisticsToSelect});
+            console.log(org.providerDetail.storeDetails);
+
             for (let logisticData1 of logisticData) {
                 if (logisticData1.message) {
-                    if (logisticData1.context.bpp_id === config.get("sellerConfig").LOGISTICS_BAP_ID) {//TODO: move to env
+                    if (logisticData1.context.bpp_id === logisticsToSelect) {//TODO: move to env
                         if(logisticData1.message){
                             logisticProvider = logisticData1
                         }
@@ -1315,7 +1326,6 @@ class ProductService {
 
                 //get org name from provider id
 
-               const org = await this.getOrgForOndc(selectData.message.order.provider.id);
                 deliveryCharges = {
                     "title": "Delivery charges",
                     "@ondc/org/title_type": "delivery",

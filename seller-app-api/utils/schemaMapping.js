@@ -135,18 +135,33 @@ exports.getProducts = async (data) => {
             "locations": [
                 {
                     "id": org.storeDetails?.location._id??"0", //org.storeDetails.location._id
-                    "gps": `${org.storeDetails?.location?.lat??"0"},${org.storeDetails?.location?.long??"0"}`, //TODO: hard coded for now,
+                    "gps": `${org.storeDetails?.location?.lat??"0"},${org.storeDetails?.location?.long??"0"}`,
                     "address":org.storeDetails.address,
-                    "time": { //TODO: hard coded for now
-                        "range": {
-                            "start": "0000",
-                            "end": "2359"
-                        },
-                        "days": "1,2,3,4,5,6,7",
-                        "schedule": {
-                            "holidays": []
+                    "time":
+                        {
+                            "days":org.storeDetails?.storeTiming?.days?.join(",")??
+                                "1,2,3,4,5,6,7",
+                            "schedule": {
+                                "holidays": org.storeDetails?.storeTiming?.schedule?.holidays?? [],
+                                "frequency": org.storeDetails?.storeTiming?.schedule?.frequency??"",
+                                "times": org.storeDetails?.storeTiming?.schedule?.times?.map((str)=>{
+                                    return str.replace(':','')
+                                })??[]
+                            },
+                            "range": {
+                                "start": org.storeDetails?.storeTiming?.range?.start?.replace(':','')??"0000",
+                                "end": org.storeDetails?.storeTiming?.range?.end?.replace(':','')??"2300"
+                            }
+                    },
+                    "circle":
+                        {
+                            "gps":`${org.storeDetails?.location?.lat??"0"},${org.storeDetails?.location?.long??"0"}`,
+                            "radius":org.storeDetails?.radius??
+                                {
+                                    "unit":"km",
+                                    "value":"3"
+                                }
                         }
-                    }
                 }
             ],
             "ttl": "PT24H",
