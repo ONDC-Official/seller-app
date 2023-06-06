@@ -25,8 +25,9 @@ const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
         if(data.organizationId){
             orgId = data.organizationId;
         }else{
-            orgId = data.currentUser.organization;
+            orgId = data?.currentUser?.organization??uuidv4();
         }
+
 
         const myKey = orgId+'/'+data.path+'/' + data?.fileName + data?.fileType?.replace(/^\.?/, '.');
         const params = {
@@ -56,6 +57,7 @@ const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
                 }));
 
     } catch (err) {
+        console.log("err",err)
         return err;
     }
 };
