@@ -1,5 +1,5 @@
-const config = require("../lib/config");
-const logger = require("../lib/logger");
+const config = require("../../lib/config");
+const logger = require("../../lib/logger");
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI

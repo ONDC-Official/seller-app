@@ -2,7 +2,7 @@ import Product from '../../models/product.model';
 import ProductAttribute from '../../models/productAttribute.model';
 import VariantGroup from '../../models/variantGroup.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
-//import Organization from '../../../organization/models/organization.model';
+import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import Joi from "joi";
 

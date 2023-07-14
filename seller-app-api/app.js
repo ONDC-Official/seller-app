@@ -5,7 +5,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
-import ondcRoutes from './routes/ondc.routes';
+import ondcRoutesv1 from './routes/v1/ondc.routes';
+import ondcRoutesv2 from './routes/v2/ondc.routes';
 import config from './lib/config';
 import Mailer from './lib/mailer';
 //import initializeFirebase from './lib/firebase/initializeFirebase.js';
@@ -45,7 +46,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Application REST APIs
-app.use('/api', cors(corsOptionsDelegate), ondcRoutes);
+app.use('/api/v1', cors(corsOptionsDelegate), ondcRoutesv1);
+app.use('/api/v2', cors(corsOptionsDelegate), ondcRoutesv2);
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}));
 

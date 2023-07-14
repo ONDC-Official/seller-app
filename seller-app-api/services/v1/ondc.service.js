@@ -1,11 +1,11 @@
 import {v4 as uuidv4} from 'uuid';
-import config from "../lib/config";
-import HttpRequest from "../utils/HttpRequest";
-import {InitRequest, ConfirmRequest, SelectRequest} from '../models'
+import config from "../../lib/config";
+import HttpRequest from "../../utils/HttpRequest";
+import {InitRequest, ConfirmRequest, SelectRequest} from '../../models'
 
 import ProductService from './product.service'
 const productService = new ProductService();
-import logger from '../lib/logger'
+import logger from '../../lib/logger'
 class OndcService {
 
     async productSearch(payload = {}, req = {}) {
