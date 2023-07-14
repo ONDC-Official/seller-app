@@ -60,7 +60,7 @@ app.use(function (err, req, res, next) {
 
     // Send an exception email to dev users
     const exceptionEmailRecipients = config.get('general').exceptionEmailRecipientList;
-     mailer.exceptionEmail({receivers: exceptionEmailRecipients, data: {err}}).send();
+     //mailer.exceptionEmail({receivers: exceptionEmailRecipients, data: {err}}).send();
 
     console.log("errr--------------->",err)
     // If no custom error is thrown then return 500(server side error/exception)

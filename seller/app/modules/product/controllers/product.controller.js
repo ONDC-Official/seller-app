@@ -66,6 +66,20 @@ class ProductController {
     }
 
 
+    async createWithVariants(req, res, next) {
+        try {
+            const data = req.body;
+            data.organization = req.user.organization;
+            const product = await productService.createWithVariants(data,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [create] Error -', error);
+            next(error);
+        }
+    }
+
+
     async list(req, res, next) {
         try {
             const query = req.query;

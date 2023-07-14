@@ -2,12 +2,13 @@ import mongoose from'mongoose';
 import { uuid } from 'uuidv4';
 const productSchema = new mongoose.Schema({
     _id:{
-        type: String, 
+        type: String,
         required:true,
         default: () => uuid(),
     },
     productCode: {type:String},
     productName: {type:String,required:true},
+    variantGroup : {type:String,ref:'VariantGroup'},
     MRP: {type:Number},
     retailPrice: {type:Number},
     purchasePrice: {type:Number},
@@ -49,7 +50,7 @@ const productSchema = new mongoose.Schema({
     importerFSSAILicenseNo:{type:String},
     brandOwnerFSSAILicenseNo:{type:String}
 
-},{  
+},{
     strict: true,
     timestamps:true
 });

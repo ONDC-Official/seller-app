@@ -160,7 +160,7 @@ const corsOptionsDelegate = function (req, callback) {
                 };
 
                 // Send an exception email to dev users
-                sendNotificationEmail({templateName: 'EXCEPTION_EMAIL', bindingParams});
+                //sendNotificationEmail({templateName: 'EXCEPTION_EMAIL', bindingParams});
 
             }
             res.status(500).json({ error: 'Something went wrong. Please try again' });

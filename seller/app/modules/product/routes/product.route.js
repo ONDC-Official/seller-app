@@ -10,12 +10,18 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 const productController = new ProductController();
+//
+// router.post('/v1/products',
+//     authentication.middleware(),
+//     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+//     apiParamsValidator.middleware({ schema: productSchema.create() }),
+//     productController.create);
 
 router.post('/v1/products',
     authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.create() }),
-    productController.create);
+    productController.createWithVariants);
 
 router.put('/v1/products/:productId',
     authentication.middleware(),
