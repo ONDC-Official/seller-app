@@ -17,6 +17,25 @@ const productController = new ProductController();
 //     apiParamsValidator.middleware({ schema: productSchema.create() }),
 //     productController.create);
 
+
+router.post('/v1/productWithVariant',
+    authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    apiParamsValidator.middleware({ schema: productSchema.createWithVariant() }),
+    productController.createWithVariants);
+
+router.put('/v1/products/:productId',
+    authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    apiParamsValidator.middleware({ schema: productSchema.update() }),
+    productController.update);
+
+router.put('/v1/productWithVariant',
+    authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    apiParamsValidator.middleware({ schema: productSchema.updateWithVariant() }),
+    productController.updateWithVariants);
+
 router.post('/v1/products',
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),

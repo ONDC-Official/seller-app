@@ -64,8 +64,6 @@ class ProductController {
             next(error);
         }
     }
-
-
     async createWithVariants(req, res, next) {
         try {
             const data = req.body;
@@ -79,6 +77,29 @@ class ProductController {
         }
     }
 
+    async updateWithVariants(req, res, next) {
+        try {
+            // const params = req.params;
+            const product = await productService.updateWithVariants(req.body,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async getWithVariants(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.getWithVariants(params.productId,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
 
     async list(req, res, next) {
         try {

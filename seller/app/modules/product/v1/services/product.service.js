@@ -1,5 +1,5 @@
 import Product from '../../models/product.model';
-import ProductAttribute from '../../models/productAttribute.model';
+import ProductAttribute from '../../models/variantAttribute.model';
 import VariantGroup from '../../models/variantGroup.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
 import Organization from '../../../authentication/models/organization.model';
@@ -58,12 +58,44 @@ class ProductService {
 
             return {success:true};
         } catch (err) {
-            console.log(`[ProductService] [create] Error in creating product ${data.organizationId}`,err);
+            console.log(`[ProductService] [create] Error in creating product ${data.currentUser.organization}`,err);
             throw err;
         }
     }
 
+    async updateWithVariants(data,currentUser) {
+        try {
+            const commonDetails = data.commonDetails;
+            const commonAttributesValues = data.commonAttributesValues;
+            const variantSpecificDetails = data.variantSpecificDetails;
+            for(const productVariant of variantSpecificDetails){
+                let variantProduct = await Product.findOne({_id:productVariant._id,organization:currentUser.organization}).lean();
+                if(variantProduct){
+                    let productObj = {...variantProduct,...commonDetails };
+                    productObj.quantity = productVariant.quantity;
+                    productObj.organization = currentUser.organization;
+                    productObj.MRP = productVariant.MRP;
+                    productObj.retailPrice = productVariant.retailPrice;
+                    productObj.purchasePrice = productVariant.purchasePrice;
+                    productObj.HSNCode = productVariant.HSNCode;
+                    productObj.images = productVariant.images;
+                    await Product.updateOne({_id:productVariant._id,organization:currentUser.organization},productObj);
+                    let varientAttributes = productVariant.varientAttributes;
+                    let attributeObj = {
+                        ...commonAttributesValues,...varientAttributes
+                    };
+                    if(attributeObj){
+                        await this.createAttribute({product:variantProduct._id,attributes:attributeObj},currentUser);
+                    }
+                }
+            }
+            return {success:true};
 
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${currentUser.organization}`,err);
+            throw err;
+        }
+    }
     async createAttribute(data,currentUser){
         try {
             let attributes = data.attributes;
@@ -72,7 +104,7 @@ class ProductService {
                 if (attributes.hasOwnProperty(attribute)) {
                     let attributeExist = await ProductAttribute.findOne({product:data.product,code:attribute,organization:currentUser.organization},{value:attributes[attribute]});
                     if(attributeExist){
-                        await ProductAttribute.updateOne({product:data.product,code:attribute,organization:currentUser.organization})
+                        await ProductAttribute.updateOne({product:data.product,code:attribute,organization:currentUser.organization});
                     }else{
 
                         let productAttribute = new ProductAttribute();
@@ -86,10 +118,11 @@ class ProductService {
             }
             return {success:true};
         } catch (err) {
-            console.log(`[ProductService] [createAttribute] Error in - ${data.organizationId}`,err);
+            console.log(`[ProductService] [createAttribute] Error in - ${data.currentUser.organization}`,err);
             throw err;
         }
     }
+
 
     async getWithVariants(productId,currentUser) {
         try {

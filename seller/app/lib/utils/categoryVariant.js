@@ -125,8 +125,8 @@ const Attributes = [
             { 'name': 'Compact', 'type': 'text', 'example': '', 'variationAllowed': true },
             { 'name': 'Number of Items', 'type': 'number', 'example': 'Small', 'variationAllowed': true },
             { 'name': 'Full-Size', 'type': 'text', 'example': 'Small', 'variationAllowed': true },
-            { 'name': 'Color', 'type': 'text', 'example': 'Small', 'variationAllowed': true },
-            { 'name': 'stylename', 'type': 'text', 'example': 'Small', 'variationAllowed': true }
+            { 'name': 'Color', 'type': 'text', 'example': 'Small', 'variationAllowed': false },
+            { 'name': 'stylename', 'type': 'text', 'example': 'Small', 'variationAllowed': false }
         ]
     }, {
         'category': 'Electronics',
