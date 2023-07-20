@@ -10,13 +10,12 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 const productController = new ProductController();
-//
-// router.post('/v1/products',
-//     authentication.middleware(),
-//     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-//     apiParamsValidator.middleware({ schema: productSchema.create() }),
-//     productController.create);
 
+router.post('/v1/products',
+    authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    apiParamsValidator.middleware({ schema: productSchema.create() }),
+    productController.create);
 
 router.post('/v1/productWithVariant',
     authentication.middleware(),
@@ -36,18 +35,6 @@ router.put('/v1/productWithVariant',
     apiParamsValidator.middleware({ schema: productSchema.updateWithVariant() }),
     productController.updateWithVariants);
 
-router.post('/v1/products',
-    authentication.middleware(),
-    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    apiParamsValidator.middleware({ schema: productSchema.create() }),
-    productController.createWithVariants);
-
-router.put('/v1/products/:productId',
-    authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    apiParamsValidator.middleware({ schema: productSchema.update() }),
-    productController.update);
-
 router.put('/v1/products/:productId/publish',
     authentication.middleware(),
     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
@@ -56,7 +43,7 @@ router.put('/v1/products/:productId/publish',
 
 router.get('/v1/products',
     authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.list() }),
     productController.list,
 );
@@ -69,6 +56,12 @@ router.get('/v1/products/:productId',
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.get() }),
     productController.get,
+);
+
+router.get('/v1/productWithVariant/:productId',
+    authentication.middleware(),
+    apiParamsValidator.middleware({ schema: productSchema.get() }),
+    productController.getWithVariants,
 );
 
 router.get('/v1/products/:productId/ondcGet',
@@ -85,6 +78,19 @@ router.post('/v1/products/upload/bulk',
 router.get('/v1/products/upload/bulk/template',
     //authentication.middleware(),
     productController.uploadTemplate,
+);
+
+router.get('/v1/product/categorySubcategoryAttributes',
+    //authentication.middleware(),
+    productController.categorySubcategoryAttributeList,
+);
+router.get('/v1/product/categorySubcategories',
+    //authentication.middleware(),
+    productController.categorySubcategoryList,
+);
+router.get('/v1/product/categories',
+    //authentication.middleware(),
+    productController.categoryList,
 );
 
 module.exports = router;

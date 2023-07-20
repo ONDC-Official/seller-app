@@ -45,7 +45,7 @@ module.exports = {
                 barcode: Joi.number(),
                 images: Joi.array(),
             }),
-            attributesValues: Joi.object(),
+            commonAttributesValues: Joi.object(),
         });
     },
     createWithVariant: () => {
@@ -146,7 +146,7 @@ module.exports = {
                 barcode: Joi.number(),
                 images: Joi.array(),
             }),
-            attributesValues: Joi.object(),
+            commonAttributesValues: Joi.object(),
         });
     },
     updateWithVariant: () => {
@@ -201,6 +201,7 @@ module.exports = {
             ),
         });
     },
+
     publish: () => {
         return Joi.object({
             published: Joi.boolean().required(),
