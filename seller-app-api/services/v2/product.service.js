@@ -1,5 +1,6 @@
 import HttpRequest from '../../utils/HttpRequest';
 import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
+import {domainNameSpace} from "../../utils/constants";
 import {ConfirmRequest, InitRequest, SelectRequest} from "../../models";
 import logger from "../../lib/logger";
 
@@ -37,9 +38,26 @@ class ProductService {
 
             let headers = {};
 
+            /*TODO:
+            1. Get product based on category and subcategory
+            2. Maintain context for v1.2.0
+            3. handle heavy responses for catalog  - Paginated on_search responses
+            4. Check if request is coming for catalogue pull if yes maintain message id and request -
+            if we get request for stop then discard further on_search
+            5. provider specific multiple on_search
+            * */
+
+            //map domain namespace to category
+
+            requestQuery.context.domain = 'ONDC:RET10'; //FIXME: remove this once
+           let category = domainNameSpace.find((cat)=>{
+                return cat.domain === requestQuery.context.domain
+            })
+
+            console.log("category---->",category)
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/v1/products/search?name=${searchProduct}&category=${searchCategory}`, //TODO: allow $like query
+                `/api/v1/products/search/increamentalPull/${category.name}`, //TODO: allow $like query
                 'get',
                 headers
             );
@@ -48,9 +66,9 @@ class ProductService {
 
             logger.log('info', `[Product Service] search product : result :`, result.data);
 
-            const productData = await getProducts({data: result.data, context: requestQuery.context});
+            const productData= {} = await getProducts({data: result.data, context: requestQuery.context}); //should return org specific array of responses
 
-            logger.log('info', `[Product Service] search product transformed: result :`, productData);
+           // logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
             return productData
         }catch (e) {
