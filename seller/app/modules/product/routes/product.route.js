@@ -52,6 +52,10 @@ router.get('/v1/products/search',
     productController.search,
 );
 
+router.get('/v1/products/search/increamentalPull/:category',
+    productController.searchIncrementalPull,
+);
+
 router.get('/v1/products/:productId',
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.get() }),

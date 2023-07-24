@@ -108,6 +108,20 @@ class ProductController {
         }
     }
 
+    async searchIncrementalPull(req, res, next) {
+        try {
+            let query = req.query;
+            query.offset = 0;
+            query.limit = 50;//default only 50 products will be sent
+            const products = await productService.searchIncrementalPull(query);
+            return res.send(products);
+
+        } catch (error) {
+            console.log('[OrderController] [list] Error -', error);
+            next(error);
+        }
+    }
+
     async get(req, res, next) {
         try {
             const params = req.params;

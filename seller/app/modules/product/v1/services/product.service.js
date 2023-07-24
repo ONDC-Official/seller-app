@@ -197,6 +197,50 @@ class ProductService {
         }
     }
 
+    async searchIncrementalPull(params) {
+        try {
+            let query={};
+
+            console.log('params------->',params);
+            const orgs = await Organization.find({},).lean();
+            let products = [];
+            for(const org of orgs){
+                query.organization = org._id;
+                query.published = true;
+                if(params.name){
+                    query.productName={ $regex: '.*' + params.name + '.*' };
+                }
+                if(params.category){
+                    query.productCategory ={ $regex: '.*' + params.category + '.*' };
+                }
+                // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
+                //let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();
+
+                const data = await Product.find(query).populate('variantGroup').sort({createdAt:1}).skip(params.offset).limit(params.limit).lean();
+                if(data.length>0){
+                    for(const product of data){
+                        let productDetails = product;
+                        let images = [];
+                        for(const image of productDetails.images){
+                            let imageData = await s3.getSignedUrlForRead({path:image});
+                            images.push(imageData.url);
+                        }
+                        product.images = images;
+                        const attributes = await ProductAttribute.find({product:product._id});
+                        product.attributes = attributes;
+                    }
+                    org.items = data;
+                    products.push(org);
+                }
+            }
+            //collect all store details by
+            return products;
+        } catch (err) {
+            console.log('[OrderService] [getAll] Error in getting all from organization ',err);
+            throw err;
+        }
+    }
+
     async get(productId,currentUser) {
         try {
             let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();
