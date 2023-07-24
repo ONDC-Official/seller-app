@@ -46,20 +46,16 @@ class ProductService {
             let variantGroup = new VariantGroup();
             variantGroup.organization = currentUser.organization;
             variantGroup.name = data.variantType;
+            variantGroup.variationOn = data.variationOn;
             await variantGroup.save();
             for(const variant of variantSpecificDetails){
                 const varientAttributes = variant.varientAttributes;
+                delete variant.varientAttributes;
                 let productObj = {};
-                productObj = {...commonDetails };
+                productObj = {...commonDetails,...variant };
                 productObj.variantGroup = variantGroup._id;
+                productObj.organization = currentUser.organization;
                 let product = new Product(productObj);
-                product.quantity = variant.quantity;
-                product.organization = currentUser.organization;
-                product.MRP = variant.MRP;
-                product.retailPrice = variant.retailPrice;
-                product.purchasePrice = variant.purchasePrice;
-                product.HSNCode = variant.HSNCode;
-                product.images = variant.images;
                 await product.save();
                 let attributeObj = {
                     ...commonAttributesValues,...varientAttributes
@@ -69,7 +65,7 @@ class ProductService {
 
             return {success:true};
         } catch (err) {
-            console.log(`[ProductService] [create] Error in creating product ${data.currentUser.organization}`,err);
+            console.log(`[ProductService] [create] Error in creating product ${currentUser.organization}`,err);
             throw err;
         }
     }

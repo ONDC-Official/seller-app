@@ -8,6 +8,7 @@ const variantGroupSchema = new mongoose.Schema({
     },
     organization: {type:String},
     name: { type: Array },
+    variationOn : {type :String},
     createdAt: {
         type: Number,
         default: Date.now()

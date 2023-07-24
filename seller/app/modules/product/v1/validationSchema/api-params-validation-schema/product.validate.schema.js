@@ -93,6 +93,7 @@ module.exports = {
             variantSpecificDetails: Joi.array().items(
                 Joi.object({
                     varientAttributes: Joi.object(),
+                    UOMValue : Joi.string(),
                     quantity: Joi.number(),
                     MRP: Joi.number(),
                     retailPrice: Joi.number(),
@@ -101,6 +102,7 @@ module.exports = {
                     images: Joi.array(),
                 })
             ),
+            variationOn: Joi.string(),
             variantType: Joi.array().items(
                 Joi.string()
             )

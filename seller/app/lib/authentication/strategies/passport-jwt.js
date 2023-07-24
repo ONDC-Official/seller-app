@@ -45,9 +45,15 @@ const passportJwtStrategy = new JwtStrategy(
             if (jwtPayload.user) {
                 user = jwtPayload.user;
                 user.userToken = tokenExtractor(req);
-                let cachedToken = myCache.get(`${user.id}-${user.userToken}`);
 
-                if(!cachedToken){
+                // let cachedToken = myCache.get(`${user.id}-${user.userToken}`); TODO @akshay need to fix that cache token later
+
+                // if(!cachedToken){
+                //     throw new UnauthenticatedError(
+                //         MESSAGES.LOGIN_ERROR_USER_ACCESS_TOKEN_INVALID
+                //     );
+                // }
+                if(!user.userToken){ 
                     throw new UnauthenticatedError(
                         MESSAGES.LOGIN_ERROR_USER_ACCESS_TOKEN_INVALID
                     );
@@ -67,6 +73,7 @@ const passportJwtStrategy = new JwtStrategy(
 
                 user = user.toJSON();
                 user.userToken = tokenExtractor(req);
+
                 let cachedToken = myCache.get(`${user.id}-${user.userToken}`);
 
                 if(!cachedToken){

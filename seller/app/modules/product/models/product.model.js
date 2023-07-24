@@ -23,6 +23,7 @@ const productSchema = new mongoose.Schema({
     maxAllowedQty: {type:Number},
     packQty:{type:String},
     UOM: {type:String},//units of measure
+    UOMValue: {type:String},//units of measure
     length: {type:String},
     breadth: {type:String},
     height: {type:String},
