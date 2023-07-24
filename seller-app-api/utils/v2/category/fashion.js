@@ -19,13 +19,14 @@ export async function mapFashionData(data) {
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
         let categories = [];
+        let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
 
                 let category = {
                     "id": items.variantGroup._id,
                     "descriptor": {
-                        "name": items.variantGroup._id //Fixme: name should be human readable
+                        "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
                     },
                     "tags": [
                         {
@@ -56,6 +57,9 @@ export async function mapFashionData(data) {
                 }
                 categories.push(category);
             }
+
+            variantGroupSequence=variantGroupSequence+1;
+
             let item = itemSchema({...items, org: org})
             productAvailable.push(item)
         }
@@ -240,7 +244,7 @@ function itemSchema(items) {
         },
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": "F1",
+        "fulfillment_id": "F1", //TODO: TBD with Suprio
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,
