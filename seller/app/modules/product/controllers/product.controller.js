@@ -1,8 +1,10 @@
 import ProductService from '../v1/services/product.service';
+import ProductCustomizationService from '../v1/services/productCustomization.service';
 import {mergedEnvironmentConfig} from '../../../config/env.config';
 
 var XLSX = require('xlsx');
 const productService = new ProductService();
+const productCustomizationService = new ProductCustomizationService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import {uuid} from 'uuidv4';
@@ -208,6 +210,18 @@ class ProductController {
             next(error);
         }
     }
+
+    async customizations(req, res, next) {
+        try {
+            const params = req.params;
+            const categoryVariant = await productCustomizationService.get(params.productId,req.user);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
     async uploadCatalog(req, res, next) {
         try {

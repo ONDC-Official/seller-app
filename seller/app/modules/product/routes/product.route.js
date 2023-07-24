@@ -93,4 +93,9 @@ router.get('/v1/product/categories',
     productController.categoryList,
 );
 
+router.get('/v1/product/:productId/customizations',
+    authentication.middleware(),
+    productController.customizations,
+);
+
 module.exports = router;

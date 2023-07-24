@@ -46,6 +46,10 @@ module.exports = {
                 images: Joi.array(),
             }),
             commonAttributesValues: Joi.object(),
+            customizationDetails: Joi.object({
+                customizationGroups: Joi.array(),
+                customizations: Joi.array(),
+            }),
         });
     },
     createWithVariant: () => {
@@ -147,6 +151,10 @@ module.exports = {
                 images: Joi.array(),
             }),
             commonAttributesValues: Joi.object(),
+            customizationDetails: Joi.object({
+                customizationGroups: Joi.array(),
+                customizations: Joi.array(),
+            }),
         });
     },
     updateWithVariant: () => {
@@ -201,7 +209,7 @@ module.exports = {
             ),
         });
     },
-
+    
     publish: () => {
         return Joi.object({
             published: Joi.boolean().required(),
@@ -214,9 +222,9 @@ module.exports = {
             }),
         });
     },
+    
 
-
-
+    
     list:()=>{
         return Joi.object({
             name:Joi.string().empty(''),

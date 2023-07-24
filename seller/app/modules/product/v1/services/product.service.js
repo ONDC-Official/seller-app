@@ -1,5 +1,6 @@
 import Product from '../../models/product.model';
 import ProductAttribute from '../../models/productAttribute.model';
+import ProductCustomizationService from './productCustomization.service';
 import VariantGroup from '../../models/variantGroup.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
 import Organization from '../../../authentication/models/organization.model';
@@ -7,7 +8,8 @@ import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
 import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 
-
+const productCustomizationService = new ProductCustomizationService();
+ 
 class ProductService {
     async create(data,currentUser) {
         try {
@@ -22,8 +24,13 @@ class ProductService {
             product.updatedBy = currentUser.id;
             product.organization = currentUser.organization;
             await product.save();
-            await this.createAttribute({product:product._id,attributes:data.commonAttributesValues},currentUser);
-            return product;
+            if(data.commonAttributesValues){
+                await this.createAttribute({product:product._id,attributes:data.commonAttributesValues},currentUser);
+            }
+            if(data.customizationDetails){
+                await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
+            }
+            return {data:product};
         } catch (err) {
             console.log(`[ProductService] [create] Error in creating product ${currentUser.organization}`,err);
             throw err;
@@ -71,11 +78,11 @@ class ProductService {
         try {
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
-            const variantSpecificDetails = data.variantSpecificDetails;
+            const variantSpecificDetails = data.variantSpecificDetails;            
             for(const productVariant of variantSpecificDetails){
                 let variantProduct = await Product.findOne({_id:productVariant._id,organization:currentUser.organization}).lean();
                 if(variantProduct){
-                    let productObj = {...variantProduct,...commonDetails };
+                    let productObj = {...variantProduct,...commonDetails };           
                     productObj.quantity = productVariant.quantity;
                     productObj.organization = currentUser.organization;
                     productObj.MRP = productVariant.MRP;
@@ -90,7 +97,7 @@ class ProductService {
                     };
                     if(attributeObj){
                         await this.createAttribute({product:variantProduct._id,attributes:attributeObj},currentUser);
-                    }
+                    } 
                 }
             }
             return {success:true};
@@ -102,13 +109,13 @@ class ProductService {
     }
     async createAttribute(data,currentUser){
         try {
-            let attributes = data.attributes;
-            for (var attribute in attributes) {
+            const attributes = data.attributes;
+            for (const attribute in attributes) { 
                 // eslint-disable-next-line no-prototype-builtins
                 if (attributes.hasOwnProperty(attribute)) {
-                    let attributeExist = await ProductAttribute.findOne({product:data.product,code:attribute,organization:currentUser.organization},{value:attributes[attribute]});
+                    let attributeExist = await ProductAttribute.findOne({product:data.product,code:attribute,organization:currentUser.organization});
                     if(attributeExist){
-                        await ProductAttribute.updateOne({product:data.product,code:attribute,organization:currentUser.organization});
+                        await ProductAttribute.updateOne({product:data.product,code:attribute,organization:currentUser.organization},{value:attributes[attribute]});
                     }else{
 
                         let productAttribute = new ProductAttribute();
@@ -119,7 +126,7 @@ class ProductService {
                         await productAttribute.save();
                     }
                 }
-            }
+            }        
             return {success:true};
         } catch (err) {
             console.log(`[ProductService] [createAttribute] Error in - ${data.currentUser.organization}`,err);
@@ -204,7 +211,7 @@ class ProductService {
                 }
                 product.images = images;
             }
-            const attributes = await ProductAttribute.find({product:productId,organization:currentUser.organization});
+            const attributes = await ProductAttribute.find({product:productId,organization:currentUser.organization}); 
             let attributeObj = {};
             for(const attribute of attributes){
                 attributeObj[attribute.code] = attribute.value;
@@ -225,7 +232,7 @@ class ProductService {
     async getWithVariants(productId,currentUser) {
         try {
             let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
-            let variants = [];
+            let variants = [];  
             variants = await Product.find({_id:{$ne:product._id},variantGroup:product.variantGroup,organization:currentUser.organization});
 
             let images = [];
@@ -234,7 +241,7 @@ class ProductService {
                 images.push(data);
             }
             product.images = images;
-            const attributes = await ProductAttribute.find({product:productId});
+            const attributes = await ProductAttribute.find({product:productId}); 
             product.attributes = attributes;
             product.variants = variants;
 
@@ -252,12 +259,14 @@ class ProductService {
             const commonAttributesValues = data.commonAttributesValues;
             const product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
             let productObj = {...product,...commonDetails };
-            console.log({productObj})
             await Product.updateOne({_id:productId,organization:currentUser.organization},productObj);
             if(commonAttributesValues){
-                await this.createAttribute({product:product._id,attributes:commonAttributesValues},currentUser);
+                await this.createAttribute({product:productId,attributes:commonAttributesValues},currentUser);
+            } 
+            if(data.customizationDetails){
+                await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
             }
-            return {success:true};
+            return {data:productObj};
 
         } catch (err) {
             console.log(`[OrganizationService] [get] Error in getting organization by id - ${currentUser.organization}`,err);
@@ -317,9 +326,8 @@ class ProductService {
         } catch (err) {
             console.log(`[OrganizationService] [get] Error in getting organization by id - ${currentUser.organization}`,err);
             throw err;
-        }
+        }   
     }
-
 
 }
 export default ProductService;
