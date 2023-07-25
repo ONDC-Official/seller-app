@@ -258,7 +258,8 @@ class ProductService {
             }
             let productData = {
                 commonDetails:product,
-                commonAttributesValues:attributeObj
+                commonAttributesValues:attributeObj,
+                customizationDetails: await productCustomizationService.get(productId,currentUser)
             };
 
             return productData;

@@ -52,14 +52,11 @@ class ProductCustomizationService {
         try {
             const product = await Product.findOne({_id: productId,organization:currentUser.organization});
             if(product){
-                let customizations = [];
-                let customizationGroups = await ProductCustomizationGroup.find({product: productId,organization:currentUser.organization}).lean();
-                for(const customizationGroup of customizationGroups){
-                    let customizationData = await ProductCustomization.find({parent: customizationGroup.id,organization:currentUser.organization});
-                    let customizationGroupObj ={...customizationGroup,customizations:customizationData};
-                    customizations.push(customizationGroupObj);
-                }
-                return {data:customizations};
+                return {
+                    customizationGroups : await ProductCustomizationGroup.find({product: productId,organization:currentUser.organization}),
+                    customizations : await ProductCustomization.find({product: productId,organization:currentUser.organization}),
+                };
+           
             }
             throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
         } catch (err) {
