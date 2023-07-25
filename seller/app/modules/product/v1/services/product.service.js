@@ -140,7 +140,7 @@ class ProductService {
             if(params.organization){
                 query.organization =params.organization;
             }
-            const data = await Product.find(query).sort({createdAt:1}).skip(params.offset*params.limit).limit(params.limit);
+            const data = await Product.find(query).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit);
             const count = await Product.count(query);
             let products={
                 count,
