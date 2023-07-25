@@ -15,6 +15,7 @@ module.exports = {
                 maxAllowedQty: Joi.number(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
+                UOMValue : Joi.string().allow(''),
                 length: Joi.any(),
                 breadth: Joi.any(),
                 height: Joi.any(),
@@ -66,6 +67,7 @@ module.exports = {
                 maxAllowedQty: Joi.number(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
+                UOMValue : Joi.string().allow(''),
                 length: Joi.any(),
                 breadth: Joi.any(),
                 height: Joi.any(),
