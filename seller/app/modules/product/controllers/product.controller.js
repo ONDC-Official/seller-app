@@ -112,7 +112,7 @@ class ProductController {
             let query = req.query;
             query.offset = 0;
             query.limit = 50;//default only 50 products will be sent
-            const products = await productService.searchIncrementalPull(query);
+            const products = await productService.searchIncrementalPull(query,req.params.category);
             return res.send(products);
 
         } catch (error) {

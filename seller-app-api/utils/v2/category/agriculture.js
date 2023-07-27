@@ -1,10 +1,10 @@
 import config from "../../../lib/config";
-import {FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY} from './../../constants'
+import {FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY} from '../../constants'
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
-export async function mapFnBData(data) {
+export async function mapAgricultureData(data) {
 
     let orgCatalogs = []
     data.context.timestamp = new Date();
@@ -74,21 +74,6 @@ export async function mapFnBData(data) {
         }
         bppProviders.push({
             "id": org._id,
-            "time":
-                {
-                    "label": "enable",
-                    "timestamp": data.context.timestamp
-                },
-            "fulfillments":
-            [
-                {
-                    "contact":
-                        {
-                            "phone": org.storeDetails.supportDetails.mobile,
-                            "email": org.storeDetails.supportDetails.email
-                        }
-                }
-            ],
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
@@ -98,8 +83,12 @@ export async function mapFnBData(data) {
                     org.storeDetails.logo
                 ]
             },
-            // "@ondc/org/fssai_license_no":"12345678901234",
-            "ttl": "PT24H",
+            "time":
+                {
+                    "label": "enable",
+                    "timestamp": data.context.timestamp
+                },
+            "categories": categories,
             "locations": [
                 {
                     "id": org.storeDetails?.location._id ?? "0", //org.storeDetails.location._id
@@ -132,9 +121,20 @@ export async function mapFnBData(data) {
                         }
                 }
             ],
-            "categories": categories,
+            "ttl": "PT24H",
             "items": productAvailable,
+            "fulfillments":
+                [
+                    {
+                        "contact":
+                            {
+                                "phone": org.storeDetails.supportDetails.mobile,
+                                "email": org.storeDetails.supportDetails.email
+                            }
+                    }
+                ],
             "tags": tags,
+            //"@ondc/org/fssai_license_no": org.FSSAI
         })
         tags.push(
             {
@@ -146,7 +146,7 @@ export async function mapFnBData(data) {
                     },
                     {
                         "code": "category",
-                        "value": 'F&B'
+                        "value": 'Agriculture'
                     },
                     {
                         "code": "type",

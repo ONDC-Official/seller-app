@@ -1,8 +1,16 @@
 const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
-import {mapGroceryData} from './category/grocery'
+import {mapGroceryData} from './category/grocery';
 import {mapFashionData} from './category/fashion'
+import {mapFnBData} from './category/fnb';
+import {mapElectronicsData} from './category/electronics';
+import {mapHealthnWellnessData} from './category/health&wellness';
+import {mapHomenDecorData} from './category/home&decor';
+import {mapAppliancesData} from './category/appliances';
+import {mapBPCData} from './category/bpc';
+import {mapAgricultureData} from './category/agriculture';
+import {mapToysnGamesData} from './category/toys&games';
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
@@ -21,6 +29,30 @@ exports.getProducts = async (data) => {
         }
         case 'Fashion': {
             mappedCatalog = await mapFashionData(data);
+        }
+        case 'F&B': {
+            mappedCatalog = await mapFnBData(data);
+        }
+        case 'Electronics': {
+            mappedCatalog = await mapElectronicsData(data);
+        }
+        case 'Health & Wellness': {
+            mappedCatalog = await mapHealthnWellnessData(data);
+        }
+        case 'Home & Decor': {
+            mappedCatalog = await mapHomenDecorData(data);
+        }
+        case 'Appliances': {
+            mappedCatalog = await mapAppliancesData(data);
+        }
+        case 'BPC': {
+            mappedCatalog = await mapBPCData(data);
+        }
+        case 'Agriculture': {
+            mappedCatalog = await mapAgricultureData(data);
+        }
+        case 'Toys & Games': {
+            mappedCatalog = await mapToysnGamesData(data);
         }
     }
     return mappedCatalog;

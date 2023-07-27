@@ -193,7 +193,7 @@ class ProductService {
         }
     }
 
-    async searchIncrementalPull(params) {
+    async searchIncrementalPull(params,category) {
         try {
             let query={};
 
@@ -203,11 +203,8 @@ class ProductService {
             for(const org of orgs){
                 query.organization = org._id;
                 query.published = true;
-                if(params.name){
-                    query.productName={ $regex: '.*' + params.name + '.*' };
-                }
-                if(params.category){
-                    query.productCategory ={ $regex: '.*' + params.category + '.*' };
+                if(category){
+                    query.productCategory ={ $regex: '.*' + category + '.*' };
                 }
                 // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
                 //let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();

@@ -1,0 +1,210 @@
+{
+    "context": {
+        "domain": "ONDC:RET18",
+        "country": "IND",
+        "city": "std:080",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "buyer-app.ondc.org",
+        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "transaction_id": "{{transaction_id}}",
+        "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
+        "timestamp": "2023-07-27T06:15:34.909Z",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+    },
+    "message": {
+        "catalog": {
+            "bpp/fulfillments": [
+                {
+                    "id": "1",
+                    "type": "Delivery"
+                },
+                {
+                    "id": "2",
+                    "type": "Self-Pickup"
+                },
+                {
+                    "id": "3",
+                    "type": "Delivery and Self-Pickup"
+                }
+            ],
+            "bpp/descriptor": {
+                "name": "Wemotive1org",
+                "symbol": "/bucket/img.pdf",
+                "short_desc": "",
+                "long_desc": "",
+                "images": [
+                    "/bucket/img.pdf"
+                ]
+            },
+            "bpp/providers": [
+                {
+                    "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                    "descriptor": {
+                        "name": "Wemotive1org",
+                        "symbol": "/bucket/img.pdf",
+                        "short_desc": "",
+                        "long_desc": "",
+                        "images": [
+                            "/bucket/img.pdf"
+                        ]
+                    },
+                    "time": {
+                        "label": "enable",
+                        "timestamp": "2023-07-27T06:15:34.909Z"
+                    },
+                    "categories": [],
+                    "locations": [
+                        {
+                            "id": "6463928731fadaf31cd63a2e",
+                            "gps": "12.909639,77.634306",
+                            "address": {
+                                "city": "Pune",
+                                "state": "Maharashtra",
+                                "area_code": "560095"
+                            },
+                            "time": {
+                                "days": "1",
+                                "schedule": {
+                                    "holidays": [
+                                        "2023-05-18",
+                                        "2023-05-19"
+                                    ],
+                                    "frequency": "",
+                                    "times": [
+                                        "0800"
+                                    ]
+                                },
+                                "range": {
+                                    "start": "0800",
+                                    "end": "2000"
+                                }
+                            },
+                            "circle": {
+                                "gps": "12.909639,77.634306",
+                                "radius": {
+                                    "unit": "km",
+                                    "value": "123"
+                                }
+                            }
+                        }
+                    ],
+                    "ttl": "PT24H",
+                    "items": [
+                        {
+                            "id": "cf32ec66-f7cd-4e76-b80a-25c1f1771a59",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-27T05:57:53.160Z"
+                            },
+                            "parent_item_id": "",
+                            "descriptor": {
+                                "name": "Pestside",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "NA",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "cream"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Amul"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Rainy Season"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillments": [
+                        {
+                            "contact": {
+                                "phone": "090909090909",
+                                "email": "support@wemotiveforge.com"
+                            }
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "code": "serviceability",
+                            "list": [
+                                {
+                                    "code": "location",
+                                    "value": "6463928731fadaf31cd63a2e"
+                                },
+                                {
+                                    "code": "category",
+                                    "value": "Toys & Games"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "12"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "10"
+                                },
+                                {
+                                    "code": "unit",
+                                    "value": "km"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

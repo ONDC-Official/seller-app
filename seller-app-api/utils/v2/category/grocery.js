@@ -12,12 +12,87 @@ export async function mapGroceryData(data) {
         let bppDetails = {}
         let bppProviders = []
         let tags = []
+        let categories = [];
+        let variantGroupSequence = 1
         let productAvailable = []
         org.storeDetails.address.street = org.storeDetails.address.locality
         delete org.storeDetails.address.locality
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
+
         for (let items of org.items) {
+            if(items.variantGroup){
+                if (items.variantGroup.variationOn === 'UOM') {
+                    let category = {
+                        "id": items.variantGroup._id,
+                        "descriptor": {
+                            "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "variant_group"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    category.tags.push({
+                        "code": "attr",
+                        "list": [
+                            {
+                                "code": "name",
+                                "value": 'item.quantity.unitized.measure'
+                            },
+                            {
+                                "code": "seq",
+                                "value": '1'
+                            }
+                        ]
+                    });
+                    categories.push(category);
+                    variantGroupSequence +=1;
+                } else if (items.variantGroup.variationOn === 'ATTRIBUTE'){
+                    let category = {
+                        "id": items.variantGroup._id,
+                        "descriptor": {
+                            "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "variant_group"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    for (let i=0; i < items.variantGroup.name.length; i++) {
+                        category.tags.push({
+                            "code": "attr",
+                            "list": [
+                                {
+                                    "code": "name",
+                                    "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                },
+                                {
+                                    "code": "seq",
+                                    "value": `${i+1}`
+                                }
+                            ]
+                        });
+                    }
+                    categories.push(category);
+                    variantGroupSequence +=1;
+                }
+            }
+        
             let item = itemSchema({...items,org:org})
             productAvailable.push(item)
         }
@@ -79,6 +154,7 @@ export async function mapGroceryData(data) {
                     }
                 ],
                 "ttl": "PT24H",
+                "categories": categories,
                 "items": productAvailable,
                 "fulfillments":
                     [
