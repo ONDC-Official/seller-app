@@ -65,5 +65,22 @@ class ProductCustomizationService {
         }
     }
 
+    async getforApi(productId){
+        try {
+            const product = await Product.findOne({_id: productId});
+            if(product){
+                return {
+                    customizationGroups : await ProductCustomizationGroup.find({product: productId}),
+                    customizations : await ProductCustomization.find({product: productId}),
+                };
+           
+            }
+            throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
+        } catch (err) {
+            console.log('[ProductCustomizationService] [get] Error ',err);
+            throw err;
+        }
+    }
+
 }
 export default ProductCustomizationService;

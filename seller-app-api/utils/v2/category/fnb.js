@@ -19,14 +19,13 @@ export async function mapFnBData(data) {
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
         let categories = [];
-        let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
 
                 let category = {
                     "id": items.variantGroup._id,
                     "descriptor": {
-                        "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
+                        "name": 'Variant HARSH Group '+ variantGroupSequence//Fixme: name should be human readable
                     },
                     "tags": [
                         {
@@ -58,10 +57,33 @@ export async function mapFnBData(data) {
                 categories.push(category);
             }
 
-            variantGroupSequence=variantGroupSequence+1;
+            const customizationDetails = items.customizationDetails;
+            if(customizationDetails){
+                const customizationGroups = customizationDetails.customizationGroups;
+                const customizations = customizationDetails.customizations;
+                console.log('start----------------------------------------------->')
+                let customGroup = [];
+                for(const customizationGroup of customizationGroups){
+                    let groupObj = {
+                        code: "id",
+                        value: customizationGroup.id
+                    };
+                    customGroup.push(groupObj);
+                }
+                console.log('customGroup----------------------------------------------->',customGroup)
+                let item = itemSchema({...items, org: org},customGroup)
+                console.log('itemSchema----------------------------------------------->')
 
-            let item = itemSchema({...items, org: org})
-            productAvailable.push(item)
+                productAvailable.push(item)
+                console.log('customizations----------------------------------------------->',customizations)
+                
+                for(const customization of customizations){
+                    let customizationData = customizationSchema(customization)
+                    productAvailable.push(customizationData)
+                }
+            }
+            console.log('final data--------------------------------------------------------------------------->')
+            console.log({productAvailable})
         }
         bppDetails = {
             "name": org.name,
@@ -74,21 +96,6 @@ export async function mapFnBData(data) {
         }
         bppProviders.push({
             "id": org._id,
-            "time":
-                {
-                    "label": "enable",
-                    "timestamp": data.context.timestamp
-                },
-            "fulfillments":
-            [
-                {
-                    "contact":
-                        {
-                            "phone": org.storeDetails.supportDetails.mobile,
-                            "email": org.storeDetails.supportDetails.email
-                        }
-                }
-            ],
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
@@ -98,8 +105,12 @@ export async function mapFnBData(data) {
                     org.storeDetails.logo
                 ]
             },
-            // "@ondc/org/fssai_license_no":"12345678901234",
-            "ttl": "PT24H",
+            "time":
+                {
+                    "label": "enable",
+                    "timestamp": data.context.timestamp
+                },
+            "categories": categories,
             "locations": [
                 {
                     "id": org.storeDetails?.location._id ?? "0", //org.storeDetails.location._id
@@ -132,9 +143,20 @@ export async function mapFnBData(data) {
                         }
                 }
             ],
-            "categories": categories,
+            "ttl": "PT24H",
             "items": productAvailable,
+            "fulfillments":
+                [
+                    {
+                        "contact":
+                            {
+                                "phone": org.storeDetails.supportDetails.mobile,
+                                "email": org.storeDetails.supportDetails.email
+                            }
+                    }
+                ],
             "tags": tags,
+            //"@ondc/org/fssai_license_no": org.FSSAI
         })
         tags.push(
             {
@@ -192,17 +214,16 @@ export async function mapFnBData(data) {
             }
         }
         orgCatalogs.push(schema)
-
     }
-
+   
+    
     return orgCatalogs
 
 }
 
 
-function itemSchema(items) {
+function itemSchema(items,customGroup) {
 
-    console.log("variant group---->", items)
     let attributes = items.attributes.map((attribute) => {
         return {code: attribute.code, value: attribute.value};
     });
@@ -254,13 +275,50 @@ function itemSchema(items) {
         "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
         "tags": [
             {
-                "code": "origin", //TODO: Implementation pending
-                "list": [
+                "code":"type",
+                "list":[
                     {
-                        "code": "country",
-                        "value": "IND"
+                        "code":"type",
+                        "value":"item"
                     }
                 ]
+            },
+            {
+                "code":"custom_group",
+                "list":customGroup
+                
+            },
+            {
+                "code":"timing", //todo
+                "list":
+                [
+                  {
+                    "code":"day_from",
+                    "value":"1"
+                  },
+                  {
+                    "code":"day_to",
+                    "value":"5"
+                  },
+                  {
+                    "code":"time_from",
+                    "value":"1800"
+                  },
+                  {
+                    "code":"time_to",
+                    "value":"2200"
+                  }
+                ]
+              },
+            {
+            "code":"veg_nonveg",
+            "list":
+            [
+                {
+                "code":"veg",
+                "value":"yes"
+                }
+            ]
             },
             {
                 "code": "attributes",
@@ -272,4 +330,87 @@ function itemSchema(items) {
 
 }
 
-
+function customizationSchema(customizations) {
+    let data =  {
+        "id":customizations.id,
+        "descriptor":
+        {
+          "name":customizations.name
+        },
+        "quantity":
+        {
+          "unitized":
+          {
+            "measure":
+            {
+              "unit":"unit",
+              "value":"1"
+            }
+          },
+          "available":
+          {
+            "count":"99"
+          },
+          "maximum":
+          {
+            "count":"99"
+          }
+        },
+        "price":
+        {
+          "currency":"INR",
+          "value":customizations.price,
+          "maximum_value":"0.0"
+        },
+        "category_id":"F&B",
+        "related":true,
+        "tags":
+        [
+          {
+            "code":"type",
+            "list":
+            [
+              {
+                "code":"type",
+                "value":"customization"
+              }
+            ]
+          },
+          {
+            "code":"parent",
+            "list":
+            [
+              {
+                "code":"id",
+                "value":customizations.parent
+              },
+              {
+                "code":"default",
+                "value":"yes"
+              }
+            ]
+          },
+          {
+            "code":"child",
+            "list":
+            [
+              {
+                "code":"id",
+                "value":customizations.child
+              }
+            ]
+          },
+          {
+            "code":"veg_nonveg",
+            "list":
+            [
+              {
+                "code":"veg",
+                "value":"yes"
+              }
+            ]
+          }
+        ]
+      };
+      return data;
+}

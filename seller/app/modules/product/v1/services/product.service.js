@@ -221,6 +221,9 @@ class ProductService {
                         product.images = images;
                         const attributes = await ProductAttribute.find({product:product._id});
                         product.attributes = attributes;
+                        if(category ==='F&B'){
+                            product.customizationDetails = await productCustomizationService.getforApi(product._id);
+                        }
                     }
                     org.items = data;
                     products.push(org);
