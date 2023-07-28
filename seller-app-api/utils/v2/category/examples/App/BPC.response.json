@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-26T13:17:03.731Z",
+        "timestamp": "2023-07-28T07:08:01.296Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://0dea-2401-4900-1c5b-6ae7-f880-361e-772-3c44.ngrok-free.app"
+        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,7 +52,7 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-26T13:17:03.731Z"
+                        "timestamp": "2023-07-28T07:08:01.296Z"
                     },
                     "categories": [],
                     "locations": [

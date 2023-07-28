@@ -49,7 +49,7 @@ class ProductService {
 
             //map domain namespace to category
 
-            requestQuery.context.domain = 'ONDC:RET10'; //FIXME: remove this once
+            requestQuery.context.domain = 'ONDC:RET19'; //FIXME: remove this once
            let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
             })
@@ -70,6 +70,7 @@ class ProductService {
 
            // logger.log('info', `[Product Service] search product transformed: result :`, productData);
 
+           console.log({productData:JSON.stringify(productData)})
             return productData
         }catch (e) {
             console.log(e)

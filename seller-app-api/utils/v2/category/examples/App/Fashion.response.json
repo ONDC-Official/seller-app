@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-26T05:21:17.280Z",
+        "timestamp": "2023-07-28T07:06:32.614Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://0dea-2401-4900-1c5b-6ae7-f880-361e-772-3c44.ngrok-free.app"
+        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -41,18 +41,6 @@
             "bpp/providers": [
                 {
                     "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
-                    "time": {
-                        "label": "enable",
-                        "timestamp": "2023-07-26T05:21:17.280Z"
-                    },
-                    "fulfillments": [
-                        {
-                            "contact": {
-                                "phone": "090909090909",
-                                "email": "support@wemotiveforge.com"
-                            }
-                        }
-                    ],
                     "descriptor": {
                         "name": "Wemotive1org",
                         "symbol": "/bucket/img.pdf",
@@ -62,7 +50,11 @@
                             "/bucket/img.pdf"
                         ]
                     },
-                    "ttl": "PT24H",
+                    "time": {
+                        "label": "enable",
+                        "timestamp": "2023-07-28T07:06:32.614Z"
+                    },
+                    "categories": [],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -70,7 +62,8 @@
                             "address": {
                                 "city": "Pune",
                                 "state": "Maharashtra",
-                                "area_code": "560095"
+                                "area_code": "560095",
+                                "street": "ok"
                             },
                             "time": {
                                 "days": "1",
@@ -98,7 +91,7 @@
                             }
                         }
                     ],
-                    "categories": [],
+                    "ttl": "PT24H",
                     "items": [
                         {
                             "id": "66c287f0-f107-4179-9931-444c91849062",
@@ -176,6 +169,14 @@
                             ]
                         }
                     ],
+                    "fulfillments": [
+                        {
+                            "contact": {
+                                "phone": "090909090909",
+                                "email": "support@wemotiveforge.com"
+                            }
+                        }
+                    ],
                     "tags": [
                         {
                             "code": "serviceability",
@@ -186,7 +187,7 @@
                                 },
                                 {
                                     "code": "category",
-                                    "value": "F&B"
+                                    "value": "Grocery"
                                 },
                                 {
                                     "code": "type",

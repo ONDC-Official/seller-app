@@ -26,33 +26,43 @@ exports.getProducts = async (data) => {
     switch (category.name){
         case 'Grocery': {
             mappedCatalog = await mapGroceryData(data);
+            break;
         }
         case 'Fashion': {
             mappedCatalog = await mapFashionData(data);
+            break;
         }
         case 'F&B': {
             mappedCatalog = await mapFnBData(data);
+            break;
         }
         case 'Electronics': {
             mappedCatalog = await mapElectronicsData(data);
+            break;
         }
         case 'Health & Wellness': {
             mappedCatalog = await mapHealthnWellnessData(data);
+            break;
         }
         case 'Home & Decor': {
             mappedCatalog = await mapHomenDecorData(data);
+            break;
         }
         case 'Appliances': {
             mappedCatalog = await mapAppliancesData(data);
+            break;
         }
         case 'BPC': {
             mappedCatalog = await mapBPCData(data);
+            break;
         }
         case 'Agriculture': {
             mappedCatalog = await mapAgricultureData(data);
+            break;
         }
         case 'Toys & Games': {
             mappedCatalog = await mapToysnGamesData(data);
+            break;
         }
     }
     return mappedCatalog;

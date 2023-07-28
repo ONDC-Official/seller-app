@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-27T06:50:15.385Z",
+        "timestamp": "2023-07-28T07:03:34.480Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
     },
@@ -52,182 +52,8 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-27T06:50:15.385Z"
+                        "timestamp": "2023-07-28T07:03:34.480Z"
                     },
-                    "categories": [
-                        {
-                            "id": "a8749311-f986-4a33-9455-af1b5de697c6",
-                            "descriptor": {
-                                "name": "Variant Group 2"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.size"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.color"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "2"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "a8749311-f986-4a33-9455-af1b5de697c6",
-                            "descriptor": {
-                                "name": "Variant Group 3"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.size"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.color"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "2"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
-                            "descriptor": {
-                                "name": "Variant Group 4"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.size"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.color"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "2"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
-                            "descriptor": {
-                                "name": "Variant Group 5"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.size"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attr",
-                                    "list": [
-                                        {
-                                            "code": "name",
-                                            "value": "item.tags.attribute.color"
-                                        },
-                                        {
-                                            "code": "seq",
-                                            "value": "2"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -235,7 +61,8 @@
                             "address": {
                                 "city": "Pune",
                                 "state": "Maharashtra",
-                                "area_code": "560095"
+                                "area_code": "560095",
+                                "street": "ok"
                             },
                             "time": {
                                 "days": "1",
@@ -264,255 +91,87 @@
                         }
                     ],
                     "ttl": "PT24H",
+                    "categories": [
+                        {
+                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.quantity.unitized.measure"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.quantity.unitized.measure"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "items": [
-                        {
-                            "id": "e81a022b-ee56-41f0-9d4f-11f787fc25fe",
-                            "time": {
-                                "label": "enable",
-                                "timestamp": "2023-07-25T17:17:12.499Z"
-                            },
-                            "parent_item_id": "",
-                            "descriptor": {
-                                "name": "Rice",
-                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                "short_desc": "description",
-                                "long_desc": "long",
-                                "images": [
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
-                                ]
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "kilogram",
-                                        "value": "1"
-                                    }
-                                },
-                                "available": {
-                                    "count": "100"
-                                },
-                                "maximum": {
-                                    "count": "1"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": "12345",
-                                "maximum_value": "12345"
-                            },
-                            "category_id": "NA",
-                            "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
-                            "@ondc/org/returnable": true,
-                            "@ondc/org/cancellable": true,
-                            "@ondc/org/available_on_cod": true,
-                            "@ondc/org/time_to_ship": "PT1H",
-                            "@ondc/org/seller_pickup_return": true,
-                            "@ondc/org/return_window": "PT30M",
-                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
-                            "tags": [
-                                {
-                                    "code": "origin",
-                                    "list": [
-                                        {
-                                            "code": "country",
-                                            "value": "IND"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "cream"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "Amul"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Rainy Season"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "8a16701e-2b81-4d1b-acc3-4d00a3bb51f4",
-                            "time": {
-                                "label": "enable",
-                                "timestamp": "2023-07-27T06:42:51.656Z"
-                            },
-                            "parent_item_id": "a8749311-f986-4a33-9455-af1b5de697c6",
-                            "descriptor": {
-                                "name": "TV",
-                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                "short_desc": "description",
-                                "long_desc": "long",
-                                "images": [
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
-                                ]
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "kilogram",
-                                        "value": "1"
-                                    }
-                                },
-                                "available": {
-                                    "count": "100"
-                                },
-                                "maximum": {
-                                    "count": "1"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": "12345",
-                                "maximum_value": "12345"
-                            },
-                            "category_id": "NA",
-                            "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
-                            "@ondc/org/returnable": true,
-                            "@ondc/org/cancellable": true,
-                            "@ondc/org/available_on_cod": true,
-                            "@ondc/org/time_to_ship": "PT1H",
-                            "@ondc/org/seller_pickup_return": true,
-                            "@ondc/org/return_window": "PT30M",
-                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
-                            "tags": [
-                                {
-                                    "code": "origin",
-                                    "list": [
-                                        {
-                                            "code": "country",
-                                            "value": "IND"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "Steel"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "LG"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Modern"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "XL"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "red"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "b2258361-2274-4889-81af-f958da9a35b1",
-                            "time": {
-                                "label": "enable",
-                                "timestamp": "2023-07-27T06:42:51.677Z"
-                            },
-                            "parent_item_id": "a8749311-f986-4a33-9455-af1b5de697c6",
-                            "descriptor": {
-                                "name": "TV",
-                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                "short_desc": "description",
-                                "long_desc": "long",
-                                "images": [
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
-                                ]
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "kilogram",
-                                        "value": "1"
-                                    }
-                                },
-                                "available": {
-                                    "count": "10"
-                                },
-                                "maximum": {
-                                    "count": "1"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": "123",
-                                "maximum_value": "123"
-                            },
-                            "category_id": "NA",
-                            "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
-                            "@ondc/org/returnable": true,
-                            "@ondc/org/cancellable": true,
-                            "@ondc/org/available_on_cod": true,
-                            "@ondc/org/time_to_ship": "PT1H",
-                            "@ondc/org/seller_pickup_return": true,
-                            "@ondc/org/return_window": "PT30M",
-                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
-                            "tags": [
-                                {
-                                    "code": "origin",
-                                    "list": [
-                                        {
-                                            "code": "country",
-                                            "value": "IND"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "Steel"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "LG"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Modern"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "L"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "blue"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
                         {
                             "id": "883ad85d-7415-4e3e-9687-96bcd2f9b535",
                             "time": {
                                 "label": "enable",
                                 "timestamp": "2023-07-27T06:43:10.269Z"
                             },
-                            "parent_item_id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "parent_item_id": {
+                                "_id": "35044870-e051-46ff-8487-17899e7ae74f",
+                                "name": [
+                                    "size",
+                                    "color"
+                                ],
+                                "createdAt": 1690434174280,
+                                "updatedAt": 1690434174280,
+                                "organization": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                                "variationOn": "UOM",
+                                "__v": 0
+                            },
                             "descriptor": {
                                 "name": "TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -563,27 +222,11 @@
                                     ]
                                 },
                                 {
-                                    "code": "attributes",
+                                    "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "Material",
-                                            "value": "Steel"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "LG"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Modern"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "XL"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "red"
+                                            "code": "veg",
+                                            "value": "yes"
                                         }
                                     ]
                                 }
@@ -595,7 +238,18 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-27T06:43:10.291Z"
                             },
-                            "parent_item_id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "parent_item_id": {
+                                "_id": "35044870-e051-46ff-8487-17899e7ae74f",
+                                "name": [
+                                    "size",
+                                    "color"
+                                ],
+                                "createdAt": 1690434174280,
+                                "updatedAt": 1690434174280,
+                                "organization": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                                "variationOn": "UOM",
+                                "__v": 0
+                            },
                             "descriptor": {
                                 "name": "TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -646,27 +300,11 @@
                                     ]
                                 },
                                 {
-                                    "code": "attributes",
+                                    "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "Material",
-                                            "value": "Steel"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "LG"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Modern"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "L"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "blue"
+                                            "code": "veg",
+                                            "value": "yes"
                                         }
                                     ]
                                 }
@@ -691,7 +329,7 @@
                                 },
                                 {
                                     "code": "category",
-                                    "value": "Toys & Games"
+                                    "value": "Grocery"
                                 },
                                 {
                                     "code": "type",
