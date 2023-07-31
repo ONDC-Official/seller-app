@@ -103,7 +103,21 @@ const SubCategories = [
     {
         'category': 'Food and Beverages',
         'subCategories': [
-
+            'Fruits and Vegetables',
+            'Masala & Seasoning',
+            'Oil & Ghee',
+            'Gourmet & World Foods',
+            'Foodgrains',
+            'Eggs, Meat & Fish',
+            'Cleaning & Household',
+            'Beverages',
+            'Beauty & Hygiene',
+            'Bakery, Cakes & Dairy',
+            'Kitchen Accessories',
+            'Baby Care',
+            'Snacks & Branded Foods',
+            'Pet Care',
+            'Stationery'
         ]
     }
 ];
