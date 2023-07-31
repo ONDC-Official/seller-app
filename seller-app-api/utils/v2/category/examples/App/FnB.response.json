@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-28T06:29:21.261Z",
+        "timestamp": "2023-07-31T05:30:53.472Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,7 +52,7 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-28T06:29:21.261Z"
+                        "timestamp": "2023-07-31T05:30:53.472Z"
                     },
                     "categories": [],
                     "locations": [
@@ -94,14 +94,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "71260c5b-5668-46a4-ba74-035670f6a5b8",
+                            "id": "f1e7f821-b719-4953-9333-7b2a34a78990",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T12:49:53.857Z"
+                                "timestamp": "2023-07-31T05:07:58.011Z"
                             },
                             "parent_item_id": "",
                             "descriptor": {
-                                "name": "Cup Cake",
+                                "name": "Farm House Pizza",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -129,7 +129,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Pizza",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -201,15 +201,15 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "cheeze"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Domino"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "Fifa Taste"
                                         }
                                     ]
                                 }

@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-28T07:03:34.480Z",
+        "timestamp": "2023-07-31T05:33:31.970Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,7 +52,7 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-28T07:03:34.480Z"
+                        "timestamp": "2023-07-31T05:33:31.970Z"
                     },
                     "locations": [
                         {
@@ -93,7 +93,7 @@
                     "ttl": "PT24H",
                     "categories": [
                         {
-                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "id": "ca844bcf-f3ef-470b-b422-ed0137d7a016",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -123,7 +123,7 @@
                             ]
                         },
                         {
-                            "id": "35044870-e051-46ff-8487-17899e7ae74f",
+                            "id": "ca844bcf-f3ef-470b-b422-ed0137d7a016",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -155,25 +155,14 @@
                     ],
                     "items": [
                         {
-                            "id": "883ad85d-7415-4e3e-9687-96bcd2f9b535",
+                            "id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T06:43:10.269Z"
+                                "timestamp": "2023-07-31T05:01:12.437Z"
                             },
-                            "parent_item_id": {
-                                "_id": "35044870-e051-46ff-8487-17899e7ae74f",
-                                "name": [
-                                    "size",
-                                    "color"
-                                ],
-                                "createdAt": 1690434174280,
-                                "updatedAt": 1690434174280,
-                                "organization": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
-                                "variationOn": "UOM",
-                                "__v": 0
-                            },
+                            "parent_item_id": "ca844bcf-f3ef-470b-b422-ed0137d7a016",
                             "descriptor": {
-                                "name": "TV",
+                                "name": "Wheat Bread",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -201,7 +190,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Masala & Seasoning",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -233,23 +222,12 @@
                             ]
                         },
                         {
-                            "id": "dca27f9f-649a-4d27-9b6c-7d347fceae54",
+                            "id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T06:43:10.291Z"
+                                "timestamp": "2023-07-31T05:01:12.462Z"
                             },
-                            "parent_item_id": {
-                                "_id": "35044870-e051-46ff-8487-17899e7ae74f",
-                                "name": [
-                                    "size",
-                                    "color"
-                                ],
-                                "createdAt": 1690434174280,
-                                "updatedAt": 1690434174280,
-                                "organization": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
-                                "variationOn": "UOM",
-                                "__v": 0
-                            },
+                            "parent_item_id": "ca844bcf-f3ef-470b-b422-ed0137d7a016",
                             "descriptor": {
                                 "name": "TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -279,7 +257,7 @@
                                 "value": "123",
                                 "maximum_value": "123"
                             },
-                            "category_id": "NA",
+                            "category_id": "Masala & Seasoning",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,

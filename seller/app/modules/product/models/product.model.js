@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
     productCategory: {type:String},
     productSubcategory1: {type:String},
     productSubcategory2: {type:String},
-    productSubcategory3: {type: String},
+    productSubcategory3: {type: String},    
     quantity: {type:Number},
     barcode: {type:Number},
     maxAllowedQty: {type:Number},

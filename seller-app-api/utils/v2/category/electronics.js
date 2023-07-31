@@ -40,20 +40,22 @@ export async function mapElectronicsData(data) {
                         }
                     ]
                 }
-                for (let i=0; i < items.variantGroup.name.length; i++) {
-                    category.tags.push({
-                        "code": "attr",
-                        "list": [
-                            {
-                                "code": "name",
-                                "value": `item.tags.attribute.${items.variantGroup.name[i]}`
-                            },
-                            {
-                                "code": "seq",
-                                "value": `${i+1}`
-                            }
-                        ]
-                    });
+                if(items.variantGroup.name && items.variantGroup.name.length > 0){
+                    for (let i=0; i < items.variantGroup.name.length; i++) {
+                        category.tags.push({
+                            "code": "attr",
+                            "list": [
+                                {
+                                    "code": "name",
+                                    "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                },
+                                {
+                                    "code": "seq",
+                                    "value": `${i+1}`
+                                }
+                            ]
+                        });
+                    }
                 }
                 categories.push(category);
             }

@@ -244,7 +244,7 @@ function itemSchema(items) {
             "label": "enable",
             "timestamp": items.updatedAt //timestamp for item event;
         },
-        "parent_item_id": items.variantGroup??'', //need to map variant / customizations
+        "parent_item_id": items.variantGroup?._id??'', //need to map variant / customizations
         "descriptor": {
             "name": items.productName,
             "symbol": items.images[0],

@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-28T07:06:32.614Z",
+        "timestamp": "2023-07-31T05:58:04.728Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,9 +52,96 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-28T07:06:32.614Z"
+                        "timestamp": "2023-07-31T05:58:04.728Z"
                     },
-                    "categories": [],
+                    "categories": [
+                        {
+                            "id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -94,14 +181,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "66c287f0-f107-4179-9931-444c91849062",
+                            "id": "95317115-fa9d-4904-b131-3e109f592342",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-26T05:11:35.002Z"
+                                "timestamp": "2023-07-31T05:45:42.907Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "70fc7dce-1404-42df-b654-48ce258acf1b",
                             "descriptor": {
-                                "name": "Jeans",
+                                "name": "Allen Soly Mens",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -129,7 +216,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Jeans",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -154,15 +241,106 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Cotton"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Allen Soly"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "Modern"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "XL"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "red"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "fe2aee55-eaaa-418a-97b9-6099fddc0600",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:45:42.936Z"
+                            },
+                            "parent_item_id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "descriptor": {
+                                "name": "Allen Soly Mens",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Jeans",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Cotton"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Allen Soly"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Modern"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "L"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "blue"
                                         }
                                     ]
                                 }

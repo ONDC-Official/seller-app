@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-28T07:10:56.248Z",
+        "timestamp": "2023-07-31T06:09:04.140Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,9 +52,130 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-28T07:10:56.248Z"
+                        "timestamp": "2023-07-31T06:09:04.140Z"
                     },
-                    "categories": [],
+                    "categories": [
+                        {
+                            "id": "03834bae-6ae5-48f0-8ace-8272e867b989",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "03834bae-6ae5-48f0-8ace-8272e867b989",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1938d61a-3a40-441d-87e9-904a9bf5e8f7",
+                            "descriptor": {
+                                "name": "Variant Group 3"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1938d61a-3a40-441d-87e9-904a9bf5e8f7",
+                            "descriptor": {
+                                "name": "Variant Group 4"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -94,14 +215,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "d85874fb-0a7d-4de0-b1e4-9554c6e3df8b",
+                            "id": "02d2fae7-5627-48e3-b9b6-db5118f6caf0",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-26T12:24:05.223Z"
+                                "timestamp": "2023-07-31T05:16:40.700Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "03834bae-6ae5-48f0-8ace-8272e867b989",
                             "descriptor": {
-                                "name": "Satin Double Bedsheet with Two Pillow Covers",
+                                "name": "Wall Papers",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -129,7 +250,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Decoration",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -154,15 +275,272 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Plastic"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Yodrej"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "red"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6b9258bc-5d01-4ff9-a63c-82186f2dcd3b",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:16:40.730Z"
+                            },
+                            "parent_item_id": "03834bae-6ae5-48f0-8ace-8272e867b989",
+                            "descriptor": {
+                                "name": "Wall Papers",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Decoration",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Plastic"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Yodrej"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "medium"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "blue"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "92a562a3-2307-4fae-afd1-36a412084339",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:50:25.491Z"
+                            },
+                            "parent_item_id": "1938d61a-3a40-441d-87e9-904a9bf5e8f7",
+                            "descriptor": {
+                                "name": "Flower Pot",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Decoration",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Glass"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Sonk"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "red"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "09d5619f-d165-45b9-99f5-e7f3a1071c94",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:50:25.520Z"
+                            },
+                            "parent_item_id": "1938d61a-3a40-441d-87e9-904a9bf5e8f7",
+                            "descriptor": {
+                                "name": "Flower Pot",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Decoration",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Glass"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Sonk"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Medium"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "blue"
                                         }
                                     ]
                                 }

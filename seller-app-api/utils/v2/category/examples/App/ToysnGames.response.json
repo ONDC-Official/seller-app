@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-28T07:12:12.264Z",
+        "timestamp": "2023-07-31T06:09:49.846Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://6729-122-161-65-231.ngrok-free.app"
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,9 +52,96 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-28T07:12:12.264Z"
+                        "timestamp": "2023-07-31T06:09:49.846Z"
                     },
-                    "categories": [],
+                    "categories": [
+                        {
+                            "id": "1e9c0074-efd0-41a8-a364-5704fc3b0541",
+                            "descriptor": {
+                                "name": "Variant Group 3"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1e9c0074-efd0-41a8-a364-5704fc3b0541",
+                            "descriptor": {
+                                "name": "Variant Group 4"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -94,14 +181,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "edbe82f4-d831-46f1-83c7-cd49bf600bba",
+                            "id": "3bf634e3-afaf-48d3-bcc0-bfef2b50c889",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T06:01:22.384Z"
+                                "timestamp": "2023-07-31T05:21:44.269Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "8e7cb3fa-64f2-4886-83f1-2917dbdf9d7f",
                             "descriptor": {
-                                "name": "Chess",
+                                "name": "Wodden chess board",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -129,7 +216,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Indoor",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -154,29 +241,37 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Wood"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Coral"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "2ecb3b69-e895-4070-af4d-3956951653db",
+                            "id": "6b9d3580-53bc-42fe-af0a-14f493f8055f",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T06:01:24.657Z"
+                                "timestamp": "2023-07-31T05:21:44.295Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "8e7cb3fa-64f2-4886-83f1-2917dbdf9d7f",
                             "descriptor": {
-                                "name": "Chess",
+                                "name": "Wodden chess board",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -193,7 +288,7 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "100"
+                                    "count": "10"
                                 },
                                 "maximum": {
                                     "count": "1"
@@ -201,10 +296,10 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": "12345",
-                                "maximum_value": "12345"
+                                "value": "123",
+                                "maximum_value": "123"
                             },
-                            "category_id": "NA",
+                            "category_id": "Indoor",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -229,29 +324,37 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Wood"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Coral"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Large"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "11ddbcf1-ab08-4877-b2d7-dc1712574278",
+                            "id": "1de2c23a-0cdf-4a02-92b0-f93f49cb37d5",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T06:01:35.837Z"
+                                "timestamp": "2023-07-31T05:51:39.597Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "1e9c0074-efd0-41a8-a364-5704fc3b0541",
                             "descriptor": {
-                                "name": "Chess",
+                                "name": "Wooden chess",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -279,7 +382,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "NA",
+                            "category_id": "Indoor",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -304,29 +407,37 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Wood"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Sonk"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white n Black"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "19411caf-975a-4bd6-80e6-af314ced8bc4",
+                            "id": "008ab9c2-3991-40ca-8ce1-e605e7adcad4",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-27T12:44:48.111Z"
+                                "timestamp": "2023-07-31T05:51:39.638Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "1e9c0074-efd0-41a8-a364-5704fc3b0541",
                             "descriptor": {
-                                "name": "Chess",
+                                "name": "Wooden chess",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -343,7 +454,7 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "100"
+                                    "count": "10"
                                 },
                                 "maximum": {
                                     "count": "1"
@@ -351,10 +462,10 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": "12345",
-                                "maximum_value": "12345"
+                                "value": "123",
+                                "maximum_value": "123"
                             },
-                            "category_id": "NA",
+                            "category_id": "Indoor",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "F1",
                             "@ondc/org/returnable": true,
@@ -379,15 +490,23 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cream"
+                                            "value": "Wood"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Amul"
+                                            "value": "Sonk"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Rainy Season"
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Medium"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white n Black"
                                         }
                                     ]
                                 }
