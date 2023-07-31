@@ -17,6 +17,10 @@ const productCustomizationSchema = new mongoose.Schema({
     parent :{ type: String },
     product :{ type: String },
     child :{ type: String },
+    UOM: { type: String },
+    UOMValue: { type: String },
+    available: { type :Number},
+    maximum: { type :Number},
     createdBy: { type: String },
     updatedBy: { type: String },
     createdAt: {
