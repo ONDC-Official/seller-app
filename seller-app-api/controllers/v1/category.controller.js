@@ -1,4 +1,4 @@
-import {CategoryService} from '../services';
+import {CategoryService} from '../../services/v1';
 
 const categoryService = new CategoryService();
 

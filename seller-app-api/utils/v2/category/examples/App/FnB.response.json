@@ -1,0 +1,668 @@
+{
+    "context": {
+        "domain": "ONDC:RET11",
+        "country": "IND",
+        "city": "std:080",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "buyer-app.ondc.org",
+        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "transaction_id": "{{transaction_id}}",
+        "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
+        "timestamp": "2023-07-31T05:30:53.472Z",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
+    },
+    "message": {
+        "catalog": {
+            "bpp/fulfillments": [
+                {
+                    "id": "1",
+                    "type": "Delivery"
+                },
+                {
+                    "id": "2",
+                    "type": "Self-Pickup"
+                },
+                {
+                    "id": "3",
+                    "type": "Delivery and Self-Pickup"
+                }
+            ],
+            "bpp/descriptor": {
+                "name": "Wemotive1org",
+                "symbol": "/bucket/img.pdf",
+                "short_desc": "",
+                "long_desc": "",
+                "images": [
+                    "/bucket/img.pdf"
+                ]
+            },
+            "bpp/providers": [
+                {
+                    "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                    "descriptor": {
+                        "name": "Wemotive1org",
+                        "symbol": "/bucket/img.pdf",
+                        "short_desc": "",
+                        "long_desc": "",
+                        "images": [
+                            "/bucket/img.pdf"
+                        ]
+                    },
+                    "time": {
+                        "label": "enable",
+                        "timestamp": "2023-07-31T05:30:53.472Z"
+                    },
+                    "categories": [],
+                    "locations": [
+                        {
+                            "id": "6463928731fadaf31cd63a2e",
+                            "gps": "12.909639,77.634306",
+                            "address": {
+                                "city": "Pune",
+                                "state": "Maharashtra",
+                                "area_code": "560095",
+                                "street": "ok"
+                            },
+                            "time": {
+                                "days": "1",
+                                "schedule": {
+                                    "holidays": [
+                                        "2023-05-18",
+                                        "2023-05-19"
+                                    ],
+                                    "frequency": "",
+                                    "times": [
+                                        "0800"
+                                    ]
+                                },
+                                "range": {
+                                    "start": "0800",
+                                    "end": "2000"
+                                }
+                            },
+                            "circle": {
+                                "gps": "12.909639,77.634306",
+                                "radius": {
+                                    "unit": "km",
+                                    "value": "123"
+                                }
+                            }
+                        }
+                    ],
+                    "ttl": "PT24H",
+                    "items": [
+                        {
+                            "id": "f1e7f821-b719-4953-9333-7b2a34a78990",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:07:58.011Z"
+                            },
+                            "parent_item_id": "",
+                            "descriptor": {
+                                "name": "Farm House Pizza",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Pizza",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "F1",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "timing",
+                                    "list": [
+                                        {
+                                            "code": "day_from",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "code": "day_to",
+                                            "value": "5"
+                                        },
+                                        {
+                                            "code": "time_from",
+                                            "value": "1800"
+                                        },
+                                        {
+                                            "code": "time_to",
+                                            "value": "2200"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "cheeze"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Domino"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Fifa Taste"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C1",
+                            "descriptor": {
+                                "name": "Hand tossed"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 0,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C2",
+                            "descriptor": {
+                                "name": "Thin crust"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C3",
+                            "descriptor": {
+                                "name": "Regular"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 50,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C4",
+                            "descriptor": {
+                                "name": "Large"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C5",
+                            "descriptor": {
+                                "name": "Small"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 30,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C6",
+                            "descriptor": {
+                                "name": "Large"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "unit",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "99"
+                                },
+                                "maximum": {
+                                    "count": "99"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 120,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillments": [
+                        {
+                            "contact": {
+                                "phone": "090909090909",
+                                "email": "support@wemotiveforge.com"
+                            }
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "code": "serviceability",
+                            "list": [
+                                {
+                                    "code": "location",
+                                    "value": "6463928731fadaf31cd63a2e"
+                                },
+                                {
+                                    "code": "category",
+                                    "value": "F&B"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "12"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "10"
+                                },
+                                {
+                                    "code": "unit",
+                                    "value": "km"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -136,3 +136,73 @@ export const FIELD_NOT_ALLOWED_BASED_ON_PROTOCOL_KEY = {
     "@ondc/org/statutory_reqs_packaged_commodities": ["nutritionalInfo", "additiveInfo", "importerFSSAILicenseNo", "brandOwnerFSSAILicenseNo"],
     "@ondc/org/statutory_reqs_prepackaged_food": ["manufacturerOrPackerName", "manufacturerOrPackerAddress", "commonOrGenericNameOfCommodity", "packQty", "monthYearOfManufacturePackingImport"],
 }
+
+export const FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY = {
+    "Fruits and Vegetables":"@ondc/org/mandatory_reqs_veggies_fruits",
+    "Masala & Seasoning":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Gourmet & World Foods":"@ondc/org/statutory_reqs_prepackaged_food",
+    "Bakery, Cakes & Dairy":"@ondc/org/statutory_reqs_prepackaged_food",
+    "Snacks & Branded Foods":"@ondc/org/statutory_reqs_prepackaged_food",
+    "Beverages":"@ondc/org/statutory_reqs_prepackaged_food",
+    "Foodgrains":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Eggs, Meat & Fish":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Cleaning & Household":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Beauty & Hygiene":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Kitchen Accessories":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Baby Care":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Pet Care":"@ondc/org/statutory_reqs_packaged_commodities",
+    "Stationery":"@ondc/org/statutory_reqs_packaged_commodities"
+}
+
+export const domainNameSpace=
+    [
+        {
+            "name":"Grocery",
+            "domain":"ONDC:RET10"
+        },
+        {
+            "name":"F&B",
+            "domain":"ONDC:RET11"
+        },
+        {
+            "name":"Fashion",
+            "domain":"ONDC:RET12"
+        },
+        {
+            "name":"BPC",
+            "domain":"ONDC:RET13"
+        },
+        {
+            "name":"Electronics",
+            "domain":"ONDC:RET14"
+        },
+        {
+            "name":"Appliances",
+            "domain":"ONDC:RET15"
+        },
+        {
+            "name":"Home & Decor",
+            "domain":"ONDC:RET16"
+        },
+        {
+            "name":"Toys & Games",
+            "domain":"ONDC:RET17"
+        },
+        {
+            "name":"Agriculture",
+            "domain":"ONDC:RET18"
+        },
+        {
+            "name":"Health & Wellness",
+            "domain":"ONDC:RET19"
+        }
+    ]
+
+
+
+
+
+
+
+
+

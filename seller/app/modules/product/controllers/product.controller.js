@@ -1,8 +1,10 @@
 import ProductService from '../v1/services/product.service';
+import ProductCustomizationService from '../v1/services/productCustomization.service';
 import {mergedEnvironmentConfig} from '../../../config/env.config';
 
 var XLSX = require('xlsx');
 const productService = new ProductService();
+const productCustomizationService = new ProductCustomizationService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import {uuid} from 'uuidv4';
@@ -56,7 +58,7 @@ class ProductController {
         try {
             const data = req.body;
             data.organization = req.user.organization;
-            const product = await productService.create(data);
+            const product = await productService.create(data,req.user);
             return res.send(product);
 
         } catch (error) {
@@ -64,7 +66,17 @@ class ProductController {
             next(error);
         }
     }
+    async createWithVariants(req, res, next) {
+        try {
+            const data = req.body;
+            const product = await productService.createWithVariants(data,req.user);
+            return res.send(product);
 
+        } catch (error) {
+            console.log('[OrderController] [create] Error -', error);
+            next(error);
+        }
+    }
 
     async list(req, res, next) {
         try {
@@ -95,10 +107,36 @@ class ProductController {
         }
     }
 
+    async searchIncrementalPull(req, res, next) {
+        try {
+            let query = req.query;
+            query.offset = 0;
+            query.limit = 50;//default only 50 products will be sent
+            const products = await productService.searchIncrementalPull(query,req.params.category);
+            return res.send(products);
+
+        } catch (error) {
+            console.log('[OrderController] [list] Error -', error);
+            next(error);
+        }
+    }
+
     async get(req, res, next) {
         try {
             const params = req.params;
-            const product = await productService.get(params.productId);
+            const product = await productService.get(params.productId,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async getWithVariants(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.getWithVariants(params.productId,req.user);
             return res.send(product);
 
         } catch (error) {
@@ -110,7 +148,19 @@ class ProductController {
     async update(req, res, next) {
         try {
             const params = req.params;
-            const product = await productService.update(params.productId, req.body);
+            const product = await productService.update(params.productId, req.body,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async updateWithVariants(req, res, next) {
+        try {
+            // const params = req.params;
+            const product = await productService.updateWithVariants(req.body,req.user);
             return res.send(product);
 
         } catch (error) {
@@ -142,6 +192,49 @@ class ProductController {
             next(error);
         }
     }
+
+    async categorySubcategoryAttributeList(req, res, next) {
+        try {
+            const params = req.query;
+            const categoryVariant = await productService.categorySubcategoryAttributeList(params);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+    async categorySubcategoryList(req, res, next) {
+        try {
+            const params = req.query;
+            const categoryVariant = await productService.categorySubcategoryList(params);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+    async categoryList(req, res, next) {
+        try {
+            const params = req.query;
+            const categoryVariant = await productService.categoryList(params);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async customizations(req, res, next) {
+        try {
+            const params = req.params;
+            const categoryVariant = await productCustomizationService.get(params.productId,req.user);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
     async uploadCatalog(req, res, next) {
         try {

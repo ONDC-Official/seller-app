@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import OndcController from '../controllers/ondc.controller';
-import { authentication } from '../middlewares/index.js';
+import OndcController from '../../controllers/v2/ondc.controller';
+import { authentication } from '../../middlewares';
 
 const router = new Router();
 const ondcController = new OndcController();

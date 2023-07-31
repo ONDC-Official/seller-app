@@ -1,111 +1,106 @@
-import {OndcService} from '../services';
+import {ProductService} from '../../services/v2';
 
-const ondcService = new OndcService();
+const productService = new ProductService();
 
-class OndcController {
+class ProductController {
 
 
-    productSearch(req, res, next) {
+    list(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.productSearch(req.body,req).then(data => {
+        productService.list().then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
-
-    orderSelect(req, res, next) {
+    get(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderSelect(req.body,req).then(data => {
+        let {id} = req.params
+        productService.get(id).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
-    orderInit(req, res, next) {
+    search(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderInit(req.body,req).then(data => {
+        //  req.params
+        productService.search( req.body).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
-    orderConfirm(req, res, next) {
+    select(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderConfirm(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderTrack(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderTrack(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderCancel(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderCancel(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderStatus(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderStatus(req.body,req).then(data => {
+        //  req.params
+        productService.select( req.body).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
 
-    orderStatusUpdate(req, res, next) {
+    init(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderStatusUpdate(req.body,req).then(data => {
+        //  req.params
+        productService.init( req.body).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
 
-    orderStatusUpdateItems(req, res, next) {
+    confirm(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderStatusUpdateItems(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderCancelFromSeller(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderCancelFromSeller(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderUpdate(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderUpdate(req.body,req).then(data => {
-            res.json(data);
-        }).catch((err) => {
-            next(err);
-        });
-    }
-    orderSupport(req, res, next) {
-        // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderSupport(req.body,req).then(data => {
+        //  req.params
+        productService.confirm( req.body).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
     }
 
+    orderList(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        productService.orderList( req.body).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    getOrderById(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        //  req.params
+        let {id} = req.params
+        productService.getOrderById( id).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    update(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        let data = req.body
+        let {id} = req.params
+        productService.update(data,id).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    create(req, res, next) {
+        let data =req.body
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        productService.create(data).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
 
 }
 
-module.exports = OndcController;
+module.exports = ProductController;

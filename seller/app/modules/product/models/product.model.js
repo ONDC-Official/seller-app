@@ -8,6 +8,7 @@ const productSchema = new mongoose.Schema({
     },
     productCode: {type:String},
     productName: {type:String,required:true},
+    variantGroup : {type:String,ref:'VariantGroup'},
     MRP: {type:Number},
     retailPrice: {type:Number},
     purchasePrice: {type:Number},
@@ -16,12 +17,13 @@ const productSchema = new mongoose.Schema({
     productCategory: {type:String},
     productSubcategory1: {type:String},
     productSubcategory2: {type:String},
-    productSubcategory3: {type: String},
+    productSubcategory3: {type: String},    
     quantity: {type:Number},
     barcode: {type:Number},
     maxAllowedQty: {type:Number},
     packQty:{type:String},
     UOM: {type:String},//units of measure
+    UOMValue: {type:String},//units of measure
     length: {type:String},
     breadth: {type:String},
     height: {type:String},
