@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
     purchasePrice: {type:Number},
     HSNCode: {type:String},
     vegNonVeg :{type:String},
+    fulfillmentOption:{type:String},
     timing : {type:Object},
     fulfilmentId : {type:String},
     countryOfOrigin :{ type : String},
