@@ -7,6 +7,9 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.object(),
+                fulfilmentId : Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 productSubcategory1: Joi.string(),
@@ -60,6 +63,9 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.object(),
+                fulfilmentId : Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 productSubcategory1: Joi.string(),
@@ -118,6 +124,9 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.object(),
+                fulfilmentId : Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 countryOfOrigin :Joi.string(),
@@ -171,6 +180,9 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.object(),
+                fulfilmentId : Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 countryOfOrigin :Joi.string(),
@@ -228,7 +240,7 @@ module.exports = {
             }),
         });
     },
-    
+
     publish: () => {
         return Joi.object({
             published: Joi.boolean().required(),

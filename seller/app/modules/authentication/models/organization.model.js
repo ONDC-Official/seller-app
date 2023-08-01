@@ -22,6 +22,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         bankName:{type:String},
         branchName:{type:String}
     },
+    fulfilments : {type : Array},
     PAN:{PAN:{type:String},proof:{type:String}},
     GSTN:{GSTN:{type:String},proof:{type:String}},
     FSSAI:{type:String},

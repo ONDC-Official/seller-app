@@ -21,6 +21,7 @@ const productCustomizationSchema = new mongoose.Schema({
     UOMValue: { type: String },
     available: { type :Number},
     maximum: { type :Number},
+    vegNonVeg :{type:String},
     createdBy: { type: String },
     updatedBy: { type: String },
     createdAt: {

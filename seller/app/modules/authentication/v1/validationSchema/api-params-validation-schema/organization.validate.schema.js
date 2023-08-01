@@ -14,6 +14,7 @@ module.exports = {
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
+                fulfilments : Joi.array(),
                 idProof: Joi.string(),
                 bankDetails: {
                     accHolderName: Joi.string(),
@@ -38,6 +39,7 @@ module.exports = {
             providerDetails: {
                 name: Joi.string(),
                 address: Joi.string(),
+                fulfilments : Joi.array(),
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
