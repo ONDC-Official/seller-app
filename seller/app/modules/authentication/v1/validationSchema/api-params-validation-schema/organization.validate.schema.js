@@ -14,7 +14,7 @@ module.exports = {
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
-                fulfilments : Joi.array(),
+                fulfillments : Joi.array(),
                 idProof: Joi.string(),
                 bankDetails: {
                     accHolderName: Joi.string(),
@@ -39,7 +39,7 @@ module.exports = {
             providerDetails: {
                 name: Joi.string(),
                 address: Joi.string(),
-                fulfilments : Joi.array(),
+                fulfillments : Joi.array(),
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
@@ -65,7 +65,7 @@ module.exports = {
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),
-            fulfilments : Joi.array(),
+            fulfillments : Joi.array(),
             defaultCancellable:Joi.boolean(),
             defaultReturnable:Joi.boolean(),
             address: {
@@ -89,7 +89,7 @@ module.exports = {
         return Joi.object({
             categories: Joi.array(),
             logo: Joi.string(),
-            fulfilments : Joi.array(),
+            fulfillments : Joi.array(),
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),
