@@ -13,6 +13,7 @@ module.exports = {
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
                 maxAllowedQty: Joi.number(),
+                countryOfOrigin :Joi.string(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
                 UOMValue : Joi.string().allow(''),
@@ -64,6 +65,7 @@ module.exports = {
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 maxAllowedQty: Joi.number(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
@@ -118,6 +120,7 @@ module.exports = {
                 HSNCode: Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
@@ -170,6 +173,7 @@ module.exports = {
                 HSNCode: Joi.string(),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),

@@ -13,6 +13,7 @@ const productSchema = new mongoose.Schema({
     retailPrice: {type:Number},
     purchasePrice: {type:Number},
     HSNCode: {type:String},
+    countryOfOrigin :{ type : String},
     GST_Percentage: {type:Number},
     productCategory: {type:String},
     productSubcategory1: {type:String},
