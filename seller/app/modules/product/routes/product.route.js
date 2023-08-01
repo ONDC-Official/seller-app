@@ -99,7 +99,13 @@ router.get('/v1/product/categories',
 
 router.get('/v1/product/:productId/customizations',
     authentication.middleware(),
-    productController.customizations,
+    productController.getCustomizations,
+);
+
+router.post('/v1/product/:productId/customizations',
+    authentication.middleware(),
+    apiParamsValidator.middleware({ schema: productSchema.createCustomization() }),
+    productController.storeCustomizations,
 );
 
 module.exports = router;

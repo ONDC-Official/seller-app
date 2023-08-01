@@ -8,7 +8,7 @@ const productCustomizationService = new ProductCustomizationService();
 import AWS from 'aws-sdk';
 import fetch from 'node-fetch';
 import {uuid} from 'uuidv4';
-import Joi from "joi";
+import Joi from 'joi';
 
 const productValidationSchema = Joi.object({
     productCode: Joi.string().required(),
@@ -224,7 +224,7 @@ class ProductController {
         }
     }
 
-    async customizations(req, res, next) {
+    async getCustomizations(req, res, next) {
         try {
             const params = req.params;
             const categoryVariant = await productCustomizationService.get(params.productId,req.user);
@@ -235,11 +235,21 @@ class ProductController {
         }
     }
 
+    async storeCustomizations(req, res, next) {
+        try {
+            const params = req.params;
+            const categoryVariant = await productCustomizationService.create(params.productId,req.body,req.user);
+            return res.send(categoryVariant);
+
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async uploadCatalog(req, res, next) {
         try {
 
-            console.log("req.user",req.user)
+            console.log('req.user',req.user)
             let path = req.file.path;
 
             var workbook = XLSX.readFile(path,{
@@ -331,7 +341,7 @@ class ProductController {
                                     Body: blob
                                 }).promise();
 
-                                //console.log("uploaded image --->",uploadedImage);
+                                //console.log('uploaded image --->',uploadedImage);
 
                                 imageUrls.push(keyName);
                             }
@@ -369,7 +379,7 @@ class ProductController {
                             console.log('product failed to import', row);
                         }
                     }else{
-                        console.log("error in row -->",error);
+                        console.log('error in row -->',error);
                     }
 
 
@@ -392,3 +402,4 @@ class ProductController {
 }
 
 export default ProductController;
+

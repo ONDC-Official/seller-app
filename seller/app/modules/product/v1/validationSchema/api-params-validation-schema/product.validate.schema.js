@@ -219,6 +219,15 @@ module.exports = {
             ),
         });
     },
+
+    createCustomization :() =>{
+        return Joi.object({
+            customizationDetails: Joi.object({
+                customizationGroups: Joi.array(),
+                customizations: Joi.array(),
+            }),
+        });
+    },
     
     publish: () => {
         return Joi.object({
