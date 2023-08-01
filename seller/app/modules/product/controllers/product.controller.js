@@ -238,7 +238,8 @@ class ProductController {
     async storeCustomizations(req, res, next) {
         try {
             const params = req.params;
-            const categoryVariant = await productCustomizationService.create(params.productId,req.body,req.user);
+            const data = req.body;
+            const categoryVariant = await productCustomizationService.create(params.productId,data.customizationDetails,req.user);
             return res.send(categoryVariant);
 
         } catch (error) {
