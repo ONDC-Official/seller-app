@@ -65,6 +65,7 @@ module.exports = {
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),
+            fulfilments : Joi.array(),
             defaultCancellable:Joi.boolean(),
             defaultReturnable:Joi.boolean(),
             address: {
@@ -88,6 +89,7 @@ module.exports = {
         return Joi.object({
             categories: Joi.array(),
             logo: Joi.string(),
+            fulfilments : Joi.array(),
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),

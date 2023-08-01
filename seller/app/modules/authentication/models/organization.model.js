@@ -38,6 +38,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         city:{type:Object},
         defaultCancellable:{type:Boolean},
         defaultReturnable:{type:Boolean},
+        fulfilments : {type : Array},
         address: {
             building: {type:String},
             city: {type:String},
