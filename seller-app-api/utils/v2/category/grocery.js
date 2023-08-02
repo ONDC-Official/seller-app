@@ -274,7 +274,7 @@ function itemSchema(items) {
         },
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": "F1",
+        "fulfillment_id": items.fulfilmentId ?? "NA",
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,
