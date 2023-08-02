@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema({
     HSNCode: {type:String},
     vegNonVeg :{type:String},
     fulfillmentOption:{type:String},
-    timing : {type:Object},
+    timing : {type:Array},
     fulfilmentId : {type:String},
     countryOfOrigin :{ type : String},
     GST_Percentage: {type:Number},
