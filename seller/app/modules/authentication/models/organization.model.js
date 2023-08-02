@@ -22,6 +22,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         bankName:{type:String},
         branchName:{type:String}
     },
+    fulfillments : {type : Array},
     PAN:{PAN:{type:String},proof:{type:String}},
     GSTN:{GSTN:{type:String},proof:{type:String}},
     FSSAI:{type:String},
@@ -37,6 +38,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         city:{type:Object},
         defaultCancellable:{type:Boolean},
         defaultReturnable:{type:Boolean},
+        fulfillments : {type : Array},
         address: {
             building: {type:String},
             city: {type:String},

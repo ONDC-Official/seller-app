@@ -14,6 +14,7 @@ module.exports = {
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
+                fulfillments : Joi.array(),
                 idProof: Joi.string(),
                 bankDetails: {
                     accHolderName: Joi.string(),
@@ -38,6 +39,7 @@ module.exports = {
             providerDetails: {
                 name: Joi.string(),
                 address: Joi.string(),
+                fulfillments : Joi.array(),
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
@@ -63,6 +65,7 @@ module.exports = {
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),
+            fulfillments : Joi.array(),
             defaultCancellable:Joi.boolean(),
             defaultReturnable:Joi.boolean(),
             address: {
@@ -79,13 +82,14 @@ module.exports = {
             },
             storeTiming:Joi.object(),
             radius:Joi.object(),
-            logisticsBppId:Joi.string()
+            logisticsBppId:Joi.string().allow('')
         });
     },
     updateStoreDetails:()=>{
         return Joi.object({
             categories: Joi.array(),
             logo: Joi.string(),
+            fulfillments : Joi.array(),
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),
             city:Joi.array(),
@@ -105,7 +109,7 @@ module.exports = {
             },
             storeTiming:Joi.object(),
             radius:Joi.object(),
-            logisticsBppId:Joi.string()
+            logisticsBppId:Joi.string().allow('')
         });
     },
     get:()=>{

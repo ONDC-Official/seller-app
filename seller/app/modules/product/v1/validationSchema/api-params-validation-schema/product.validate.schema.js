@@ -7,12 +7,17 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG','NONVEG','EGG').allow(''),
+                timing : Joi.array(),
+                fulfilmentId : Joi.string().allow(''),
+                fulfillmentOption :Joi.string().allow(''),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
                 maxAllowedQty: Joi.number(),
+                countryOfOrigin :Joi.string(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
                 UOMValue : Joi.string().allow(''),
@@ -59,11 +64,16 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG','NONVEG','EGG').allow(''),
+                timing : Joi.array(),
+                fulfillmentOption :Joi.string().allow(''),
+                fulfilmentId : Joi.string().allow(''),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 maxAllowedQty: Joi.number(),
                 packQty:Joi.any(),
                 UOM: Joi.string(),//units of measure
@@ -116,8 +126,13 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.array(),
+                fulfillmentOption :Joi.string().allow(''),
+                fulfilmentId : Joi.string().allow(''),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
@@ -168,8 +183,13 @@ module.exports = {
                 productCode: Joi.string(),
                 productName: Joi.string(),
                 HSNCode: Joi.string(),
+                vegNonVeg : Joi.string().valid('VEG', 'NONVEG','EGG').allow(''),
+                timing : Joi.array(),
+                fulfillmentOption :Joi.string().allow(''),
+                fulfilmentId : Joi.string().allow(''),
                 GST_Percentage: Joi.number(),
                 productCategory: Joi.string(),
+                countryOfOrigin :Joi.string(),
                 productSubcategory1: Joi.string(),
                 productSubcategory2: Joi.string(),
                 productSubcategory3: Joi.string(),
@@ -215,7 +235,16 @@ module.exports = {
             ),
         });
     },
-    
+
+    createCustomization :() =>{
+        return Joi.object({
+            customizationDetails: Joi.object({
+                customizationGroups: Joi.array(),
+                customizations: Joi.array(),
+            }),
+        });
+    },
+
     publish: () => {
         return Joi.object({
             published: Joi.boolean().required(),
