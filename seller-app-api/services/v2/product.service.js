@@ -68,7 +68,7 @@ class ProductService {
 
             const productData= {} = await getProducts({data: result.data, context: requestQuery.context}); //should return org specific array of responses
 
-           // logger.log('info', `[Product Service]9search product transformed: result :`, productData);
+           // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
            console.log({productData:JSON.stringify(productData)})
             return productData

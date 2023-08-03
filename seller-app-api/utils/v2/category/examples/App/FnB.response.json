@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-02T11:25:53.083Z",
+        "timestamp": "2023-08-03T09:51:20.472Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,7 +52,7 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-02T11:25:53.083Z"
+                        "timestamp": "2023-08-03T09:51:20.472Z"
                     },
                     "categories": [],
                     "locations": [
@@ -223,15 +223,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -277,7 +277,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -292,15 +292,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -346,7 +346,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -361,15 +361,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -414,7 +414,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -429,15 +429,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -482,7 +482,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -497,15 +497,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -550,7 +550,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -565,15 +565,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -618,7 +618,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -723,7 +723,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -755,15 +755,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -809,7 +809,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -824,15 +824,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -878,7 +878,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -893,15 +893,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -946,7 +946,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -961,15 +961,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -1014,7 +1014,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -1029,15 +1029,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -1082,7 +1082,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]
@@ -1097,15 +1097,15 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "unit",
-                                        "value": "1"
+                                        "unit": "cm",
+                                        "value": "10"
                                     }
                                 },
                                 "available": {
-                                    "count": "99"
+                                    "count": 100
                                 },
                                 "maximum": {
-                                    "count": "99"
+                                    "count": 2
                                 }
                             },
                             "price": {
@@ -1150,7 +1150,7 @@
                                     "code": "veg_nonveg",
                                     "list": [
                                         {
-                                            "code": "veg",
+                                            "code": "egg",
                                             "value": "yes"
                                         }
                                     ]

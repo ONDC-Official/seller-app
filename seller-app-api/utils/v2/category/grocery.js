@@ -282,13 +282,29 @@ function itemSchema(items) {
         "@ondc/org/seller_pickup_return": true, //TODO: hard coded, Implementation pending
         "@ondc/org/return_window": items.returnWindow,
         "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
+        "@ondc/org/statutory_reqs_packaged_commodities":
+        {
+          "manufacturer_or_packer_name":items.manufacturerOrPackerName ?? "NA",
+          "manufacturer_or_packer_address":items.manufacturerOrPackerAddress ?? "NA",
+          "common_or_generic_name_of_commodity":items.commonOrGenericNameOfCommodity ?? "NA",
+          "month_year_of_manufacture_packing_import":items.monthYearOfManufacturePackingImport ?? "NA",
+        },
+        "@ondc/org/statutory_reqs_prepackaged_food":
+        {
+          "nutritional_info":items.nutritionalInfo ?? "NA",
+          "additives_info":items.additiveInfo ?? "NA",
+          "brand_owner_FSSAI_license_no":items.brandOwnerFSSAILicenseNo ?? "NA",
+          "other_FSSAI_license_no":items.brandOwnerFSSAILicenseNo ?? "NA",
+          "importer_FSSAI_license_no":items.importerFSSAILicenseNo ?? "NA"
+        },
+
         "tags": [
             {
                 "code": "origin", //TODO: Implementation pending
                 "list": [
                     {
                         "code": "country",
-                        "value": "IND"
+                        "value": items.countryOfOrigin ?? 'NA'
                     }
                 ]
             },

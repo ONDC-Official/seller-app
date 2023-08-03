@@ -309,13 +309,13 @@ function itemSchema(items,customGroup) {
                     "value":"2200"
                   }
                 ]
-              },
+            },
             {
             "code":"veg_nonveg",
             "list":
             [
                 {
-                "code":"veg",
+                "code": (items.vegNonVeg === 'VEG' ?'veg' :(items.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
                 "value":"yes"
                 }
             ]
@@ -343,17 +343,17 @@ function customizationSchema(customizations) {
           {
             "measure":
             {
-              "unit":"unit",
-              "value":"1"
+              "unit":customizations.UOM ?? 'NA',
+              "value":customizations.UOMValue ?? 'NA'
             }
           },
           "available":
           {
-            "count":"99"
+            "count":customizations.available ?? 'NA'
           },
           "maximum":
           {
-            "count":"99"
+            "count":customizations.maximum ?? 'NA'
           }
         },
         "price":
@@ -405,7 +405,7 @@ function customizationSchema(customizations) {
             "list":
             [
               {
-                "code":"veg",
+                "code": (customizations.vegNonVeg === 'VEG' ?'veg' :(customizations.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
                 "value":"yes"
               }
             ]
