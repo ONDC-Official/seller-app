@@ -135,10 +135,13 @@ class ProductService {
         try {
             let query={};
             if(params.name){
-                query.name = { $regex: params.name, $options: 'i' };
+                query.productName = { $regex: params.name, $options: 'i' };
             }
-            if(params.organization){
-                query.organization =params.organization;
+            if(params.category){
+                query.productCategory = params.category;
+            }
+            if(params.quantity){
+                query.quantity = params.quantity;
             }
             const data = await Product.find(query).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit);
             const count = await Product.count(query);

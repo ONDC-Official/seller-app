@@ -82,6 +82,15 @@ class OrganizationService {
             if(params.name){
                 query.name = { $regex: params.name, $options: 'i' };
             }
+            if(params.mobile){
+                query.contactMobile = params.mobile;
+            }
+            if(params.email){
+                query.contactEmail = params.email;
+            }
+            if(params.storeName){
+                query['storeDetails.name'] = { $regex: params.storeName, $options: 'i' };
+            }
             const organizations = await Organization.find(query).sort({createdAt:1}).skip(params.offset).limit(params.limit);
             const count = await Organization.count(query);
             let organizationData={

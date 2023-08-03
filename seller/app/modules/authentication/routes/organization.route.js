@@ -39,7 +39,7 @@ router.get('/v1/organizations/:organizationId/storeDetails',
 
 router.get('/v1/organizations',
     authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
     apiParamsValidator.middleware({ schema: organisationSchema.list() }),
     organizationController.list,
 );

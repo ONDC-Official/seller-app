@@ -31,6 +31,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         default:Date.now()
     },
     storeDetails:{
+        name: {type:String},
         categories: {type:Object},
         logo: {type:String},
         location: new mongoose.Schema({lat:{type:Number},long:{type:Number}},{ _id: true }),
