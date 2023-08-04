@@ -25,6 +25,7 @@ class ProductService {
             product.organization = currentUser.organization;
             await product.save();
             if(data.commonAttributesValues){
+
                 await this.createAttribute({product:product._id,attributes:data.commonAttributesValues},currentUser);
             }
             if(data.customizationDetails){
@@ -257,16 +258,22 @@ class ProductService {
             const attributes = await ProductAttribute.find({product:productId,organization:currentUser.organization}); 
             let attributeObj = {};
             for(const attribute of attributes){
-                attributeObj[attribute.code] = attribute.value;
+                let value = attribute.value;
+                if(attribute.code === 'size_chart'){
+                    value = await s3.getSignedUrlForRead({path:attribute.value});
+                }
+                attributeObj[attribute.code] = value;
             }
-            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
             let productData = {
                 commonDetails:product,
                 commonAttributesValues:attributeObj,
                 customizationDetails: await productCustomizationService.get(productId,currentUser),
-                variationOn:variantGroup.variationOn,
-                variantType:variantGroup.name
             };
+            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
+            if(variantGroup){
+                productData.variationOn = variantGroup.variationOn ?? 'NA';
+                productData.variantType = variantGroup.name ?? [];
+            } 
 
             return productData;
 
