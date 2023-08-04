@@ -242,7 +242,7 @@ class ProductService {
 
     async get(productId,currentUser) {
         try {
-            let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();
+            let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
             if(!product){
                 throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
             }
@@ -259,10 +259,13 @@ class ProductService {
             for(const attribute of attributes){
                 attributeObj[attribute.code] = attribute.value;
             }
+            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
             let productData = {
                 commonDetails:product,
                 commonAttributesValues:attributeObj,
-                customizationDetails: await productCustomizationService.get(productId,currentUser)
+                customizationDetails: await productCustomizationService.get(productId,currentUser),
+                variationOn:variantGroup.variationOn,
+                variantType:variantGroup.name
             };
 
             return productData;
