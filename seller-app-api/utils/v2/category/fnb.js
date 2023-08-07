@@ -70,12 +70,9 @@ export async function mapFnBData(data) {
                     };
                     customGroup.push(groupObj);
                 }
-                console.log('customGroup----------------------------------------------->',customGroup)
                 let item = itemSchema({...items, org: org},customGroup)
-                console.log('itemSchema----------------------------------------------->')
 
                 productAvailable.push(item)
-                console.log('customizations----------------------------------------------->',customizations)
                 
                 for(const customization of customizations){
                     let customizationData = customizationSchema(customization)
@@ -132,7 +129,7 @@ export async function mapFnBData(data) {
                                 "end": org.storeDetails?.storeTiming?.range?.end?.replace(':', '') ?? "2300"
                             }
                         },
-                    "circle":
+                    "circle"://TODO: @akshay this will be deprecated in v1.2.0 phase 2,//Note: current values are hard coded for now
                         {
                             "gps": `${org.storeDetails?.location?.lat ?? "0"},${org.storeDetails?.location?.long ?? "0"}`,
                             "radius": org.storeDetails?.radius ??
@@ -349,11 +346,11 @@ function customizationSchema(customizations) {
           },
           "available":
           {
-            "count":customizations.available ?? 'NA'
+            "count":`${customizations.available}` ?? 'NA'
           },
           "maximum":
           {
-            "count":customizations.maximum ?? 'NA'
+            "count":`${customizations.maximum}` ?? 'NA'
           }
         },
         "price":

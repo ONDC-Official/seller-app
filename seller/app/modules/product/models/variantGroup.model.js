@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-import { uuid } from 'uuidv4';
+// import { uuid } from 'uuidv4';
+import ShortUniqueId from 'short-unique-id';
+const uid = new ShortUniqueId({ length: 6 });
 const variantGroupSchema = new mongoose.Schema({
     _id: {
         type: String,
         required: true,
-        default: () => uuid(),
+        default: () => uid(),
     },
     organization: {type:String},
     name: { type: Array },

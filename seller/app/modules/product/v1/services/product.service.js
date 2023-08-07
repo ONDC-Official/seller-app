@@ -43,6 +43,7 @@ class ProductService {
         try {
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
+            const commonCustomizationDetails = data.commonCustomizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
             let variantGroup = new VariantGroup();
             variantGroup.organization = currentUser.organization;
@@ -61,6 +62,9 @@ class ProductService {
                 let attributeObj = {
                     ...commonAttributesValues,...varientAttributes
                 };
+                if(commonCustomizationDetails){
+                    await productCustomizationService.create(product._id,data.commonCustomizationDetails,currentUser);
+                }
                 await this.createAttribute({product:product._id,attributes:attributeObj},currentUser);
             }
 
@@ -225,9 +229,7 @@ class ProductService {
                         product.images = images;
                         const attributes = await ProductAttribute.find({product:product._id});
                         product.attributes = attributes;
-                        if(category ==='F&B'){
-                            product.customizationDetails = await productCustomizationService.getforApi(product._id);
-                        }
+                        product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
                     }
                     org.items = data;
                     products.push(org);

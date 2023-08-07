@@ -117,7 +117,11 @@ module.exports = {
             variationOn: Joi.string(),
             variantType: Joi.array().items(
                 Joi.string()
-            )
+            ),
+            commonCustomizationDetails: Joi.object({
+                customizationGroups: Joi.array(),
+                customizations: Joi.array(),
+            }),
         });
     },
     update: () => {

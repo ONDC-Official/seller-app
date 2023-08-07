@@ -8,7 +8,6 @@ class ProductCustomizationService {
     async create(productId,customizationDetails,currentUser) {
         try {
             // let query = {};
-
             const customizationExist = await ProductCustomizationGroup.find({product:productId,organization:currentUser.organization});
             if (customizationExist) {
                 await ProductCustomizationGroup.deleteMany({product:productId,organization:currentUser.organization});

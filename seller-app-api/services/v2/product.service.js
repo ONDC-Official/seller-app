@@ -48,8 +48,48 @@ class ProductService {
             * */
 
             //map domain namespace to category
+            // {
+            //     "name":"Grocery",
+            //     "domain":"ONDC:RET10"
+            // },
+            // {
+            //     "name":"F&B",
+            //     "domain":"ONDC:RET11"
+            // },
+            // {
+            //     "name":"Fashion",
+            //     "domain":"ONDC:RET12"
+            // },
+            // {
+            //     "name":"BPC",
+            //     "domain":"ONDC:RET13"
+            // },
+            // {
+            //     "name":"Electronics",
+            //     "domain":"ONDC:RET14"
+            // },
+            // {
+            //     "name":"Appliances",
+            //     "domain":"ONDC:RET15"
+            // },
+            // {
+            //     "name":"Home & Decor",
+            //     "domain":"ONDC:RET16"
+            // },
+            // {
+            //     "name":"Toys & Games",
+            //     "domain":"ONDC:RET17"
+            // },
+            // {
+            //     "name":"Agriculture",
+            //     "domain":"ONDC:RET18"
+            // },
+            // {
+            //     "name":"Health & Wellness",
+            //     "domain":"ONDC:RET19"
+            // }
 
-            requestQuery.context.domain = 'ONDC:RET19'; //FIXME: remove this once
+            requestQuery.context.domain = 'ONDC:RET11'; //FIXME: remove this once
            let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
             })

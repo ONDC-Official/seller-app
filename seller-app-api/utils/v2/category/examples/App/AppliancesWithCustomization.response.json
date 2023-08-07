@@ -1,6 +1,6 @@
 {
     "context": {
-        "domain": "ONDC:RET11",
+        "domain": "ONDC:RET15",
         "country": "IND",
         "city": "std:080",
         "action": "on_search",
@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-07T14:03:01.738Z",
+        "timestamp": "2023-08-07T14:01:27.608Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,9 +52,96 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-07T14:03:01.738Z"
+                        "timestamp": "2023-08-07T14:01:27.608Z"
                     },
-                    "categories": [],
+                    "categories": [
+                        {
+                            "id": "nRifDx",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "nRifDx",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -94,14 +181,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                            "id": "4a345d64-e2a8-426a-8190-d8bc35938aa1",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-08-07T13:58:43.887Z"
+                                "timestamp": "2023-08-07T14:00:49.273Z"
                             },
-                            "parent_item_id": "",
+                            "parent_item_id": "nRifDx",
                             "descriptor": {
-                                "name": "Farm House Pizza",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -129,9 +216,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "Pizza",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -139,6 +226,12 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "type",
@@ -155,44 +248,15 @@
                                         {
                                             "code": "id",
                                             "value": "CG1"
-                                        },
-                                        {
-                                            "code": "id",
-                                            "value": "CG2"
-                                        },
-                                        {
-                                            "code": "id",
-                                            "value": "CG3"
                                         }
                                     ]
                                 },
                                 {
-                                    "code": "timing",
+                                    "code": "origin",
                                     "list": [
                                         {
-                                            "code": "day_from",
-                                            "value": "1"
-                                        },
-                                        {
-                                            "code": "day_to",
-                                            "value": "5"
-                                        },
-                                        {
-                                            "code": "time_from",
-                                            "value": "1800"
-                                        },
-                                        {
-                                            "code": "time_to",
-                                            "value": "2200"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "veg",
-                                            "value": "yes"
+                                            "code": "country",
+                                            "value": "IND"
                                         }
                                     ]
                                 },
@@ -201,15 +265,23 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "cheeze"
+                                            "value": "Fibre"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "Domino"
+                                            "value": "Sony"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Fifa Taste"
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
                                         }
                                     ]
                                 }
@@ -218,76 +290,7 @@
                         {
                             "id": "C1",
                             "descriptor": {
-                                "name": "Hand tossed"
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "inch",
-                                        "value": "tt"
-                                    }
-                                },
-                                "available": {
-                                    "count": "null"
-                                },
-                                "maximum": {
-                                    "count": "null"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": 0,
-                                "maximum_value": "0.0"
-                            },
-                            "category_id": "F&B",
-                            "related": true,
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "CG1"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "CG2"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "egg",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "C2",
-                            "descriptor": {
-                                "name": "Thin crust"
+                                "name": "Dragon Print"
                             },
                             "quantity": {
                                 "unitized": {
@@ -341,22 +344,13 @@
                                             "value": "CG3"
                                         }
                                     ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "egg",
-                                            "value": "yes"
-                                        }
-                                    ]
                                 }
                             ]
                         },
                         {
-                            "id": "C3",
+                            "id": "C2",
                             "descriptor": {
-                                "name": "Regular"
+                                "name": "Stone Print"
                             },
                             "quantity": {
                                 "unitized": {
@@ -409,40 +403,198 @@
                                             "code": "id"
                                         }
                                     ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "c47b212e-51da-428e-ba2e-e10dd41dbd52",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-08-07T14:00:49.313Z"
+                            },
+                            "parent_item_id": "nRifDx",
+                            "descriptor": {
+                                "name": "Android TV",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
                                 },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Home Entertainment",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "NA",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "tags": [
                                 {
-                                    "code": "veg_nonveg",
+                                    "code": "type",
                                     "list": [
                                         {
-                                            "code": "egg",
-                                            "value": "yes"
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IND"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Fibre"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Sony"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Medium"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "Black"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "C4",
+                            "id": "C1",
                             "descriptor": {
-                                "name": "Large"
+                                "name": "Dragon Print"
                             },
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "NA",
-                                        "value": "NA"
+                                        "unit": "inch",
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
-                                    "count": "undefined"
+                                    "count": "null"
                                 },
                                 "maximum": {
-                                    "count": "undefined"
+                                    "count": "null"
                                 }
                             },
                             "price": {
                                 "currency": "INR",
                                 "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "C2",
+                            "descriptor": {
+                                "name": "Stone Print"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": "null"
+                                },
+                                "maximum": {
+                                    "count": "null"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 50,
                                 "maximum_value": "0.0"
                             },
                             "category_id": "F&B",
@@ -477,151 +629,6 @@
                                             "code": "id"
                                         }
                                     ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "egg",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "C5",
-                            "descriptor": {
-                                "name": "Small"
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "inch",
-                                        "value": "tt"
-                                    }
-                                },
-                                "available": {
-                                    "count": "null"
-                                },
-                                "maximum": {
-                                    "count": "null"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": 30,
-                                "maximum_value": "0.0"
-                            },
-                            "category_id": "F&B",
-                            "related": true,
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "CG3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "egg",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "C6",
-                            "descriptor": {
-                                "name": "Large"
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "inch",
-                                        "value": "tt"
-                                    }
-                                },
-                                "available": {
-                                    "count": "null"
-                                },
-                                "maximum": {
-                                    "count": "null"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": 120,
-                                "maximum_value": "0.0"
-                            },
-                            "category_id": "F&B",
-                            "related": true,
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "CG3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "veg_nonveg",
-                                    "list": [
-                                        {
-                                            "code": "egg",
-                                            "value": "yes"
-                                        }
-                                    ]
                                 }
                             ]
                         }
@@ -644,7 +651,7 @@
                                 },
                                 {
                                     "code": "category",
-                                    "value": "F&B"
+                                    "value": "Appliances"
                                 },
                                 {
                                     "code": "type",
