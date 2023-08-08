@@ -45,14 +45,23 @@ class ProductService {
             const commonAttributesValues = data.commonAttributesValues;
             const commonCustomizationDetails = data.commonCustomizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
-            let variantGroup = new VariantGroup();
-            variantGroup.organization = currentUser.organization;
-            variantGroup.name = data.variantType;
-            variantGroup.variationOn = data.variationOn;
-            await variantGroup.save();
+            let variantGroup = {};
+            let variantType = [];
+            let i = 0;
             for(const variant of variantSpecificDetails){
                 const varientAttributes = variant.varientAttributes;
                 delete variant.varientAttributes;
+                if(i===0){
+                    for (const attribute in varientAttributes) {
+                        variantType.push(attribute);
+                    }
+                    variantGroup = new VariantGroup();
+                    variantGroup.organization = currentUser.organization;
+                    variantGroup.name = variantType;
+                    variantGroup.variationOn = data.variationOn;
+                    await variantGroup.save();
+                }
+                i++;
                 let productObj = {};
                 productObj = {...commonDetails,...variant };
                 productObj.variantGroup = variantGroup._id;
