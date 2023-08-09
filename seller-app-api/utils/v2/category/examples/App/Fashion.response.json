@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-03T09:53:00.803Z",
+        "timestamp": "2023-08-09T07:25:27.539Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,11 +52,11 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-03T09:53:00.803Z"
+                        "timestamp": "2023-08-09T07:25:27.539Z"
                     },
                     "categories": [
                         {
-                            "id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "id": "ih2WKP",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -99,7 +99,7 @@
                             ]
                         },
                         {
-                            "id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "id": "ih2WKP",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -186,7 +186,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:45:42.907Z"
                             },
-                            "parent_item_id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "parent_item_id": "ih2WKP",
                             "descriptor": {
                                 "name": "Allen Soly Mens",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -275,7 +275,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:45:42.936Z"
                             },
-                            "parent_item_id": "70fc7dce-1404-42df-b654-48ce258acf1b",
+                            "parent_item_id": "ih2WKP",
                             "descriptor": {
                                 "name": "Allen Soly Mens",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -382,10 +382,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

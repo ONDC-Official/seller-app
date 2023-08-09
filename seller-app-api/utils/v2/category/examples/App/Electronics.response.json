@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-03T09:54:39.563Z",
+        "timestamp": "2023-08-09T07:51:37.898Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,11 +52,11 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-03T09:54:39.563Z"
+                        "timestamp": "2023-08-09T07:51:37.898Z"
                     },
                     "categories": [
                         {
-                            "id": "f9d3315f-a452-47fd-b8cb-cfd40c617601",
+                            "id": "i92WKP",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -73,7 +73,7 @@
                             ]
                         },
                         {
-                            "id": "f9d3315f-a452-47fd-b8cb-cfd40c617601",
+                            "id": "i92WKP",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -90,7 +90,7 @@
                             ]
                         },
                         {
-                            "id": "fef111e9-0318-4287-b287-2e3a115d74bb",
+                            "id": "ih2WKO",
                             "descriptor": {
                                 "name": "Variant Group 3"
                             },
@@ -133,7 +133,7 @@
                             ]
                         },
                         {
-                            "id": "fef111e9-0318-4287-b287-2e3a115d74bb",
+                            "id": "ih2WKO",
                             "descriptor": {
                                 "name": "Variant Group 4"
                             },
@@ -220,7 +220,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:13:40.928Z"
                             },
-                            "parent_item_id": "f9d3315f-a452-47fd-b8cb-cfd40c617601",
+                            "parent_item_id": "i92WKP",
                             "descriptor": {
                                 "name": "Mouse",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -309,7 +309,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:13:40.960Z"
                             },
-                            "parent_item_id": "f9d3315f-a452-47fd-b8cb-cfd40c617601",
+                            "parent_item_id": "i92WKP",
                             "descriptor": {
                                 "name": "Mouse",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -594,10 +594,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

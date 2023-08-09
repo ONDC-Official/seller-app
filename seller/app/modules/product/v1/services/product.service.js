@@ -25,7 +25,6 @@ class ProductService {
             product.organization = currentUser.organization;
             await product.save();
             if(data.commonAttributesValues){
-
                 await this.createAttribute({product:product._id,attributes:data.commonAttributesValues},currentUser);
             }
             if(data.customizationDetails){
@@ -43,7 +42,7 @@ class ProductService {
         try {
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
-            const commonCustomizationDetails = data.commonCustomizationDetails;
+            const customizationDetails = data.customizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
             let variantGroup = {};
             let variantType = [];
@@ -71,8 +70,8 @@ class ProductService {
                 let attributeObj = {
                     ...commonAttributesValues,...varientAttributes
                 };
-                if(commonCustomizationDetails){
-                    await productCustomizationService.create(product._id,data.commonCustomizationDetails,currentUser);
+                if(customizationDetails){
+                    await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
                 }
                 await this.createAttribute({product:product._id,attributes:attributeObj},currentUser);
             }

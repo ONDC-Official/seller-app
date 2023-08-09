@@ -74,7 +74,7 @@ class ProductService {
             // },
             // {
             //     "name":"Home & Decor",
-            //     "domain":"ONDC:RET16"
+            //     "domain":"ONDC:RET16
             // },
             // {
             //     "name":"Toys & Games",
@@ -89,7 +89,7 @@ class ProductService {
             //     "domain":"ONDC:RET19"
             // }
 
-            requestQuery.context.domain = 'ONDC:RET11'; //FIXME: remove this once
+            requestQuery.context.domain = 'ONDC:RET19'; //FIXME: remove this once
            let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
             })

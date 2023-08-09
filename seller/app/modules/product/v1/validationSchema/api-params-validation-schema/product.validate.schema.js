@@ -118,7 +118,7 @@ module.exports = {
             variantType: Joi.array().items(
                 Joi.string()
             ),
-            commonCustomizationDetails: Joi.object({
+            customizationDetails: Joi.object({
                 customizationGroups: Joi.array(),
                 customizations: Joi.array(),
             }),

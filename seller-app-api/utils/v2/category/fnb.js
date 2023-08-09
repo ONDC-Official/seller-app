@@ -66,7 +66,7 @@ export async function mapFnBData(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                 }
@@ -75,7 +75,7 @@ export async function mapFnBData(data) {
                 productAvailable.push(item)
                 
                 for(const customization of customizations){
-                    let customizationData = customizationSchema(customization)
+                    let customizationData = customizationSchema(customization,items)
                     productAvailable.push(customizationData)
                 }
             }
@@ -170,10 +170,6 @@ export async function mapFnBData(data) {
                     {
                         "code": "type",
                         "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                    },
-                    {
-                        "code": "type",
-                        "value": "10"
                     },
                     {
                         "code": "unit",
@@ -316,10 +312,6 @@ function itemSchema(items,customGroup) {
                 "value":"yes"
                 }
             ]
-            },
-            {
-                "code": "attributes",
-                "list": attributes
             }
         ]
     }
@@ -327,9 +319,9 @@ function itemSchema(items,customGroup) {
 
 }
 
-function customizationSchema(customizations) {
+function customizationSchema(customizations,item) {
     let data =  {
-        "id":customizations.id,
+        "id":customizations._id,
         "descriptor":
         {
           "name":customizations.name
@@ -359,7 +351,7 @@ function customizationSchema(customizations) {
           "value":customizations.price,
           "maximum_value":"0.0"
         },
-        "category_id":"F&B",
+        "category_id":item.productSubcategory1 ?? "NA",
         "related":true,
         "tags":
         [
@@ -393,7 +385,7 @@ function customizationSchema(customizations) {
             [
               {
                 "code":"id",
-                "value":customizations.child
+                "value":customizations.child ??'NA'
               }
             ]
           },

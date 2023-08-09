@@ -83,7 +83,7 @@ export async function mapBPCData(data) {
                 productAvailable.push(item)
                 
                 for(const customization of customizations){
-                    let customizationData = customizationSchema(customization)
+                    let customizationData = customizationSchema(customization,items)
                     productAvailable.push(customizationData)
                 }
             }
@@ -176,10 +176,6 @@ export async function mapBPCData(data) {
                     {
                         "code": "type",
                         "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                    },
-                    {
-                        "code": "type",
-                        "value": "10"
                     },
                     {
                         "code": "unit",
@@ -395,7 +391,7 @@ function itemSchemaWithCustomGroup(items,customGroup) {
 
 }
 
-function customizationSchema(customizations) {
+function customizationSchema(customizations,item) {
     let data =  {
         "id":customizations.id,
         "descriptor":
@@ -427,7 +423,7 @@ function customizationSchema(customizations) {
           "value":customizations.price,
           "maximum_value":"0.0"
         },
-        "category_id":"F&B",
+        "category_id":item.productSubcategory1 ?? "NA",
         "related":true,
         "tags":
         [

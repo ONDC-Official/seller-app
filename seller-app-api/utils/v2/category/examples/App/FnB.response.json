@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-07T14:03:01.738Z",
+        "timestamp": "2023-08-09T07:22:20.587Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,7 +52,7 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-07T14:03:01.738Z"
+                        "timestamp": "2023-08-09T07:22:20.587Z"
                     },
                     "categories": [],
                     "locations": [
@@ -154,15 +154,15 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "WXDkz1"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "7h2WUP"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "QEnRdo"
                                         }
                                     ]
                                 },
@@ -195,28 +195,11 @@
                                             "value": "yes"
                                         }
                                     ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "cheeze"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "Domino"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "Fifa Taste"
-                                        }
-                                    ]
                                 }
                             ]
                         },
                         {
-                            "id": "C1",
+                            "id": "5C5LCL",
                             "descriptor": {
                                 "name": "Hand tossed"
                             },
@@ -224,14 +207,14 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -239,7 +222,7 @@
                                 "value": 0,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -285,7 +268,7 @@
                             ]
                         },
                         {
-                            "id": "C2",
+                            "id": "m1nzlK",
                             "descriptor": {
                                 "name": "Thin crust"
                             },
@@ -293,14 +276,14 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -308,7 +291,7 @@
                                 "value": 100,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -354,7 +337,7 @@
                             ]
                         },
                         {
-                            "id": "C3",
+                            "id": "5yrMK3",
                             "descriptor": {
                                 "name": "Regular"
                             },
@@ -362,14 +345,14 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -377,7 +360,7 @@
                                 "value": 50,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -406,7 +389,8 @@
                                     "code": "child",
                                     "list": [
                                         {
-                                            "code": "id"
+                                            "code": "id",
+                                            "value": "NA"
                                         }
                                     ]
                                 },
@@ -422,22 +406,22 @@
                             ]
                         },
                         {
-                            "id": "C4",
+                            "id": "HIlKXx",
                             "descriptor": {
                                 "name": "Large"
                             },
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "NA",
-                                        "value": "NA"
+                                        "unit": "inch",
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "undefined"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "undefined"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -445,7 +429,7 @@
                                 "value": 100,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -474,7 +458,8 @@
                                     "code": "child",
                                     "list": [
                                         {
-                                            "code": "id"
+                                            "code": "id",
+                                            "value": "NA"
                                         }
                                     ]
                                 },
@@ -490,7 +475,7 @@
                             ]
                         },
                         {
-                            "id": "C5",
+                            "id": "sYMVwO",
                             "descriptor": {
                                 "name": "Small"
                             },
@@ -498,14 +483,14 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -513,7 +498,7 @@
                                 "value": 30,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -542,7 +527,8 @@
                                     "code": "child",
                                     "list": [
                                         {
-                                            "code": "id"
+                                            "code": "id",
+                                            "value": "NA"
                                         }
                                     ]
                                 },
@@ -558,7 +544,7 @@
                             ]
                         },
                         {
-                            "id": "C6",
+                            "id": "xTupHf",
                             "descriptor": {
                                 "name": "Large"
                             },
@@ -566,14 +552,14 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "5"
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "100"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "2"
                                 }
                             },
                             "price": {
@@ -581,7 +567,7 @@
                                 "value": 120,
                                 "maximum_value": "0.0"
                             },
-                            "category_id": "F&B",
+                            "category_id": "Pizza",
                             "related": true,
                             "tags": [
                                 {
@@ -610,7 +596,8 @@
                                     "code": "child",
                                     "list": [
                                         {
-                                            "code": "id"
+                                            "code": "id",
+                                            "value": "NA"
                                         }
                                     ]
                                 },
@@ -649,10 +636,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",
