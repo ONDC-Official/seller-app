@@ -153,8 +153,10 @@ class ProductService {
             if(params.category){
                 query.productCategory = params.category;
             }
-            if(params.quantity){
-                query.quantity = params.quantity;
+            if(params.stock && params.stock === 'inStock'){
+                query.quantity = {$gt:0};
+            }else if(params.stock && params.stock === 'outOfStock'){
+                query.quantity = {$lte:0};
             }
             const data = await Product.find(query).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit);
             const count = await Product.count(query);
