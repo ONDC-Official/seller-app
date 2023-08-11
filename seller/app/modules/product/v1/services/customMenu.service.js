@@ -79,6 +79,9 @@ class CustomMenuService {
             if(params.name){
                 query.name = { $regex: params.name, $options: 'i' };
             }
+            if(params.category){
+                query.category = params.category;
+            }
             const menuData = await CustomMenu.find(query).sort({seq:'ASC'}).skip(params.offset*params.limit).limit(params.limit);
             const count = await CustomMenu.count(query);
             return{
