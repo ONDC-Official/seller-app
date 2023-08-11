@@ -41,25 +41,6 @@ router.post('/v1/menuOrdering',
     customMenuController.menuOrdering,
 );
 
-router.post('/v1/menuProductOrdering',
-    authentication.middleware(),
-    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    customMenuController.menuProductOrdering,
-);
-
-
-router.post('/v1/menuProduct/:menuId/add',
-    authentication.middleware(),
-    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    customMenuController.addMenuProduct,
-);
-
-router.post('/v1/menuProduct/:menuId/remove',
-    authentication.middleware(),
-    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    customMenuController.deleteMenuProduct,
-);
-
 router.get('/v1/menuProducts/:menuId',
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),

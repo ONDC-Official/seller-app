@@ -42,6 +42,16 @@ class CustomMenuService {
                     menu.shortDescription = data.shortDescription;
                     menu.images = data.images;
                     await menu.save();
+                    const products = data.products;
+                    await CustomMenuProduct.deleteMany({organization:currentUser.organization,customMenu:menuId});
+                    for(const product of products){
+                        let menuProduct = new CustomMenuProduct();
+                        menuProduct.organization = currentUser.organization;
+                        menuProduct.customMenu = menuId;
+                        menuProduct.product = product.id;
+                        menuProduct.seq = product.seq;
+                        await menuProduct.save();
+                    } 
                     return menu;
                 }else{
                     throw new DuplicateRecordFoundError(MESSAGES.MENU_EXISTS);
@@ -95,7 +105,7 @@ class CustomMenuService {
         }
     }
 
-    async getMenu(menuId,params,currentUser){
+    async getMenu(menuId,currentUser){
         try {
             let query = {
                 organization:currentUser.organization,
@@ -111,14 +121,14 @@ class CustomMenuService {
                     }
                     menu.images = images;
                 }
-                if(params.menuProducts){
-                    let menuQuery = {
-                        organization:currentUser.organization,
-                        customMenu : menuId
-                    };
-                    let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
-                    menu.products = menuProducts;
-                }
+                
+                let menuQuery = {
+                    organization:currentUser.organization,
+                    customMenu : menuId
+                };
+                let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
+                menu.products = menuProducts;
+            
                 return menu;
             }else
                 throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
@@ -161,67 +171,6 @@ class CustomMenuService {
             return {success :true};
         } catch (err) {
             console.log(`[CustomMenuService] [menuOrdering] Error - ${currentUser.organization}`,err);
-            throw err;
-        }
-    }
-    async menuProductOrdering(menuId,data,currentUser){
-        try {
-            if(data && data.length >0){
-                for(const menuProduct of data){
-                    await CustomMenuProduct.updateOne({_id:menuProduct._id,customMenu:menuId,organization:currentUser.organization},{seq:menuProduct.seq});
-                }
-            }
-            return {success :true};
-        } catch (err) {
-            console.log(`[CustomMenuService] [menuOrdering] Error - ${currentUser.organization}`,err);
-            throw err;
-        }
-    }
-    async addMenuProduct(menuId,data,currentUser){
-        try {
-            let query = {
-                organization:currentUser.organization,
-                _id : menuId
-            };
-            const menu = await CustomMenu.findOne(query);
-            if(menu){
-                const products = data.products;
-                for(const product of products){
-                    let productExist = await CustomMenuProduct.findOne({organization:currentUser.organization,customMenu:menuId,product : product});
-                    if(!productExist){
-                        const menuProduct = new CustomMenuProduct();
-                        menuProduct.organization = currentUser.organization;
-                        menuProduct.customMenu = menuId;
-                        menuProduct.product = product;
-                        await menuProduct.save();
-                    } 
-                } 
-                return {success :true};
-            }else{
-                throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
-            }
-        } catch (err) {
-            console.log(`[CustomMenuService] [addMenuProduct] Error - ${currentUser.organization}`,err);
-            throw err;
-        }
-    }
-
-    async deleteMenuProduct(menuId,data,currentUser){
-        try {
-            let query = {
-                organization:currentUser.organization,
-                _id : menuId
-            };
-            const menu = await CustomMenu.findOne(query);
-            if(menu){
-                const products = data.products;
-                await CustomMenuProduct.deleteMany({organization:currentUser.organization,customMenu:menuId,product:{$in:products}});
-                return {suceess : true};
-            }else{
-                throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
-            }
-        } catch (err) {
-            console.log(`[CustomMenuService] [deleteMenuProduct] Error - ${currentUser.organization}`,err);
             throw err;
         }
     }

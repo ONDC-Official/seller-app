@@ -16,7 +16,8 @@ module.exports = {
             seq: Joi.number(),
             longDescription: Joi.string(),
             shortDescription: Joi.string(),
-            images: Joi.array()
+            images: Joi.array(),
+            products:Joi.array(),
         });
     },
 };

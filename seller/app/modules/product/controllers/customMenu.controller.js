@@ -53,8 +53,7 @@ class CustomMenuController {
 
     async getMenu(req, res, next) {
         try {
-            const query = req.query;
-            const product = await customMenuService.getMenu(req.params.menuId,query,req.user);
+            const product = await customMenuService.getMenu(req.params.menuId,req.user);
             return res.send(product);
 
         } catch (error) {
@@ -88,43 +87,6 @@ class CustomMenuController {
             next(error);
         }
     }
-
-    async menuProductOrdering(req, res, next) {
-        try {
-            const data = req.body;
-            const product = await customMenuService.menuProductOrdering(req.params.menuId,data,req.user);
-            return res.send(product);
-
-        } catch (error) {
-            console.log('[CustomMenuController] [menuProductOrdering] Error -', error);
-            next(error);
-        }
-    }
-
-    async addMenuProduct(req, res, next) {
-        try {
-            const data = req.body;
-            const product = await customMenuService.addMenuProduct(req.params.menuId,data,req.user);
-            return res.send(product);
-
-        } catch (error) {
-            console.log('[CustomMenuController] [addMenuProduct] Error -', error);
-            next(error);
-        }
-    }
-
-    async deleteMenuProduct(req, res, next) {
-        try {
-            const data = req.body;
-            const product = await customMenuService.deleteMenuProduct(req.params.menuId,data,req.user);
-            return res.send(product);
-
-        } catch (error) {
-            console.log('[CustomMenuController] [deleteMenuProduct] Error -', error);
-            next(error);
-        }
-    }
-
 
 }
 
