@@ -127,7 +127,17 @@ class CustomMenuService {
                     customMenu : menuId
                 };
                 let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
-                menu.products = menuProducts;
+                let productData = [];
+                for(const menuProduct of menuProducts){
+                    let productObj = {
+                        id:menuProduct.product._id,
+                        name:menuProduct.product.productName,
+                        seq:menuProduct.seq,
+
+                    };
+                    productData.push(productObj);
+                }
+                menu.products = productData;
             
                 return menu;
             }else
