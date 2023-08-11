@@ -60,4 +60,10 @@ router.post('/v1/menuProduct/:menuId/remove',
     customMenuController.deleteMenuProduct,
 );
 
+router.get('/v1/menuProducts/:menuId',
+    authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    customMenuController.getMenuProducts);
+
+
 module.exports = router;

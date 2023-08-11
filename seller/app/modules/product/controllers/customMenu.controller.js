@@ -63,6 +63,20 @@ class CustomMenuController {
         }
     }
 
+    async getMenuProducts(req, res, next) {
+        try {
+            const query = req.query;
+            query.offset = parseInt(query.offset ?? 0);
+            query.limit = parseInt(query.limit ?? 100);
+            const product = await customMenuService.getMenuProducts(req.params.menuId,query,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[CustomMenuController] [getMenu] Error -', error);
+            next(error);
+        }
+    }
+
     async menuOrdering(req, res, next) {
         try {
             const data = req.body;

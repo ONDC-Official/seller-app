@@ -1,6 +1,7 @@
 import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
 import CustomMenu from '../../models/customMenu.model';
+import Product from '../../models/product.model';
 import CustomMenuProduct from '../../models/customMenuProduct.model';
 import s3 from '../../../../lib/utils/s3Utils';
 
@@ -121,6 +122,29 @@ class CustomMenuService {
                 return menu;
             }else
                 throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
+        } catch (err) {
+            console.log(`[CustomMenuService] [get] Error - ${currentUser.organization}`,err);
+            throw err;
+        }
+    }
+
+    async getMenuProducts(menuId,params,currentUser){
+        try {
+            let query = {
+                organization:currentUser.organization,
+                _id : menuId
+            };
+            let menu = await CustomMenu.findOne(query);
+            if(menu){
+                let menuQuery = {
+                    organization:currentUser.organization,
+                    customMenu : menuId
+                };
+                const menuProducts = await CustomMenuProduct.find(menuQuery,{product:1,_id:0});
+                const productList = await Product.find({organization:currentUser.organization,productCategory:menu.category,_id:{$nin : menuProducts}},{productName:1});
+                return productList;
+            }
+            throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
         } catch (err) {
             console.log(`[CustomMenuService] [get] Error - ${currentUser.organization}`,err);
             throw err;
