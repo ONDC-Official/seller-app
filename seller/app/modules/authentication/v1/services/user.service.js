@@ -325,9 +325,19 @@ class UserService {
     async list(currentUser, queryData) {
         try {
             let query = {};
-            if (queryData.storeName) {
+            if (queryData.storeName || queryData.storeEmail || queryData.storeMobile) {
+                let andQuery = [];
+                if(queryData.storeName){
+                    andQuery.push({name:{ $regex: queryData.storeName, $options: 'i' }});
+                }
+                if(queryData.storeEmail){
+                    andQuery.push({contactEmail:{ $regex: queryData.storeEmail, $options: 'i' }});
+                }
+                if(queryData.storeMobile){
+                    andQuery.push({contactMobile:{ $regex: queryData.storeMobile, $options: 'i' }});
+                }
                 let orgQuery = {
-                    name:{ $regex: queryData.storeName, $options: 'i' }
+                    $and:andQuery
                 };
                 const organizations = await Organization.find(orgQuery,{_id:1});
                 const organizationIds = organizations.map((organization)=> {return organization._id})
@@ -375,7 +385,7 @@ class UserService {
 
             for (const user of users) { //attach org details
 
-                let organization = await Organization.findOne({ _id: user.organization }, { _id: 1, name: 1 });
+                let organization = await Organization.findOne({ _id: user.organization }, { _id: 1, name: 1 ,contactEmail:1,contactMobile:1});
                 user.organization = organization;
 
                 let bannedUser = await BannedUser.findOne({ user: user._id });
