@@ -324,9 +324,7 @@ class UserService {
      */
     async list(currentUser, queryData) {
         try {
-            let query = {
-                organization : currentUser.organization
-            };
+            let query = {};
             if (queryData.storeName) {
                 let orgQuery = {
                     name:{ $regex: queryData.storeName, $options: 'i' }
