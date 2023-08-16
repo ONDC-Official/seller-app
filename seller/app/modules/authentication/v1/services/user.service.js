@@ -343,7 +343,7 @@ class UserService {
             if (queryData.email) {
                 query.email = { $regex: queryData.email, $options: 'i' };
             }
-            query.role = { $ne: '' };
+            query.role = { $ne: [] };
             let roleQuery = { name: queryData.role };
             const users = await User.aggregate([
                 {
