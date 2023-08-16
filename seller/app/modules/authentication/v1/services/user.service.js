@@ -322,19 +322,31 @@ class UserService {
      * @param {Object} currentUser Current user is fetched from JWT token which is used to make a request
      * @param {Object} permission Current users permission
      */
-    async list(organizationId, queryData) {
+    async list(currentUser, queryData) {
         try {
-            //building query            
-            let query = {};
-            // query.organizationId = organizationId;
-            // if(queryData.role){
-            //     query.role = 'Super Admin';
-            // }
-            //{path: 'path',select : ['fields'],match:query}
-            //const users = await User.find(query,{password:0}).populate({path: 'role',match: {name:queryData.role}}).sort({createdAt:1}).skip(queryData.offset).limit(queryData.limit);
-
-            let userQuery = {role: {$ne: []}};
-            let roleQuery = {name: queryData.role};
+            let query = {
+                organization : currentUser.organization
+            };
+            if (queryData.storeName) {
+                let orgQuery = {
+                    name:{ $regex: queryData.storeName, $options: 'i' }
+                };
+                const organizations = await Organization.find(orgQuery,{_id:1});
+                const organizationIds = organizations.map((organization)=> {return organization._id})
+                query.organization = { $in: organizationIds };
+            }   
+         
+            if (queryData.name) {
+                query.name = { $regex: queryData.name, $options: 'i' };
+            }
+            if (queryData.mobile) {
+                query.mobile = { $regex: queryData.mobile, $options: 'i' };
+            }
+            if (queryData.email) {
+                query.email = { $regex: queryData.email, $options: 'i' };
+            }
+            query.role = { $ne: '' };
+            let roleQuery = { name: queryData.role };
             const users = await User.aggregate([
                 {
                     '$lookup': {
@@ -342,12 +354,12 @@ class UserService {
                         'localField': 'role',
                         'foreignField': '_id',
                         'as': 'role',
-                        'pipeline': [{'$match': roleQuery}]
+                        'pipeline': [{ '$match': roleQuery }]
                     },
                 }, {
-                    '$match': userQuery,
-                }, {'$project': {'password': 0}}
-            ]).sort({createdAt: 1}).skip(queryData.offset * queryData.limit).limit(queryData.limit);
+                    '$match': query,
+                }, { '$project': { 'password': 0 } }
+            ]).sort({ createdAt: 1 }).skip(queryData.offset * queryData.limit).limit(queryData.limit);
 
             const usersCount = await User.aggregate([
                 {
@@ -356,19 +368,19 @@ class UserService {
                         'localField': 'role',
                         'foreignField': '_id',
                         'as': 'role',
-                        'pipeline': [{'$match': roleQuery}]
+                        'pipeline': [{ '$match': roleQuery }]
                     }
                 }, {
-                    '$match': userQuery,
+                    '$match': query,
                 },
             ]).count('count');
 
             for (const user of users) { //attach org details
 
-                let organization = await Organization.findOne({_id: user.organization}, {_id: 1, name: 1});
+                let organization = await Organization.findOne({ _id: user.organization }, { _id: 1, name: 1 });
                 user.organization = organization;
 
-                let bannedUser = await BannedUser.findOne({user:user._id});
+                let bannedUser = await BannedUser.findOne({ user: user._id });
                 user.bannedUser = bannedUser;
 
             }
@@ -381,7 +393,7 @@ class UserService {
 
             //const count = await User.count(query);
 
-            return {count: count, data: users};
+            return { count: count, data: users };
 
         } catch (err) {
             throw err;

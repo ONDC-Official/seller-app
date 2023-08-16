@@ -37,7 +37,7 @@ router.put('/v1/users/:userId/enable',
 
 router.get('/v1/users',
     authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.SUPER_ADMIN]}),
     userController.getUsers
 );
 
