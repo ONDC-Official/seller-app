@@ -18,6 +18,7 @@ module.exports = {
             shortDescription: Joi.string(),
             images: Joi.array(),
             products:Joi.array(),
+            timings:Joi.array(),
         });
     },
 };

@@ -1,6 +1,7 @@
 import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
 import CustomMenu from '../../models/customMenu.model';
+import CustomMenuTiming from '../../models/customMenuTiming.model';
 import Product from '../../models/product.model';
 import CustomMenuProduct from '../../models/customMenuProduct.model';
 import s3 from '../../../../lib/utils/s3Utils';
@@ -51,7 +52,18 @@ class CustomMenuService {
                         menuProduct.product = product.id;
                         menuProduct.seq = product.seq;
                         await menuProduct.save();
-                    } 
+                    }
+                    let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menuId,organization:currentUser.organization});
+                    if(customMenuTiming){
+                        customMenuTiming.timings = data.timings;
+                        await customMenuTiming.save();
+                    }else{
+                        customMenuTiming = new CustomMenuTiming();
+                        customMenuTiming.customMenu = menuId;
+                        customMenuTiming.organization = currentUser.organization;
+                        customMenuTiming.timings = data.timings;
+                        await customMenuTiming.save();
+                    }
                     return menu;
                 }else{
                     throw new DuplicateRecordFoundError(MESSAGES.MENU_EXISTS);
@@ -71,6 +83,7 @@ class CustomMenuService {
             if(menu){
                 await CustomMenu.deleteOne({organization:currentUser.organization,_id:menuId});
                 await CustomMenuProduct.deleteMany({organization:currentUser.organization,customMenu:menuId });
+                await CustomMenuTiming.deleteMany({organization:currentUser.organization,customMenu:menuId });
                 return {success :true};
 
             }else{
@@ -138,7 +151,8 @@ class CustomMenuService {
                     productData.push(productObj);
                 }
                 menu.products = productData;
-            
+                let customMenuTiming = await CustomMenuTiming.findOne(menuQuery);
+                menu.timings = customMenuTiming.timings ?? [];
                 return menu;
             }else
                 throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
