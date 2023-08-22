@@ -11,7 +11,7 @@
         "message_id": "M2",
         "city": "std:080",
         "country": "IND",
-        "timestamp": "2023-08-21T17:30:07.978Z",
+        "timestamp": "2023-08-22T12:13:31.287Z",
         "ttl": "PT30S"
     },
     "message": {
@@ -34,15 +34,7 @@
                     "provider_id": "wd6t46r",
                     "state": {
                         "descriptor": {
-                            "name": ""
-                        }
-                    },
-                    "end": {
-                        "location": {
-                            "gps": "12.453544,77.928379",
-                            "address": {
-                                "area_code": "560001"
-                            }
+                            "code": "Serviceable"
                         }
                     }
                 }
@@ -61,8 +53,34 @@
                         "title": "Farm House Pizza",
                         "@ondc/org/title_type": "item",
                         "price": {
-                            "value": 100,
-                            "currency": "INR"
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -72,7 +90,36 @@
                         },
                         "title": "Hand tossed",
                         "@ondc/org/title_type": "customization",
-                        "price": 0
+                        "price": {
+                            "currency": "INR",
+                            "value": "0"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "0"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     },
                     {
                         "@ondc/org/item_id": "C7",
@@ -80,7 +127,36 @@
                             "count": 1
                         },
                         "@ondc/org/title_type": "customization",
-                        "price": 20
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     },
                     {
                         "@ondc/org/item_id": "C14",
@@ -88,7 +164,36 @@
                             "count": 1
                         },
                         "@ondc/org/title_type": "customization",
-                        "price": 20
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     },
                     {
                         "@ondc/org/item_id": "C16",
@@ -96,13 +201,42 @@
                             "count": 1
                         },
                         "@ondc/org/title_type": "customization",
-                        "price": 20
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     },
                     {
                         "title": "Delivery charges",
                         "@ondc/org/title_type": "delivery",
                         "price": {
-                            "currency": "INR",
+                            "currency": "100",
                             "value": "100"
                         }
                     }
@@ -113,10 +247,6 @@
                 {
                     "id": "660658e2-8b7b-4327-b3ed-44698087012b",
                     "parent_item_id": "DI1",
-                    "location_id": "L1",
-                    "quantity": {
-                        "count": 1
-                    },
                     "tags": [
                         {
                             "code": "type",
@@ -131,15 +261,12 @@
                     "price": {
                         "value": 100,
                         "currency": "INR"
-                    }
+                    },
+                    "fulfillment_id": "F1123"
                 },
                 {
                     "id": "C1",
                     "parent_item_id": "DI1",
-                    "location_id": "L1",
-                    "quantity": {
-                        "count": 1
-                    },
                     "tags": [
                         {
                             "code": "type",
@@ -159,15 +286,12 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "fulfillment_id": "F1123"
                 },
                 {
                     "id": "C7",
                     "parent_item_id": "DI1",
-                    "location_id": "L1",
-                    "quantity": {
-                        "count": 1
-                    },
                     "tags": [
                         {
                             "code": "type",
@@ -187,15 +311,12 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "fulfillment_id": "F1123"
                 },
                 {
                     "id": "C14",
                     "parent_item_id": "DI1",
-                    "location_id": "L1",
-                    "quantity": {
-                        "count": 1
-                    },
                     "tags": [
                         {
                             "code": "type",
@@ -215,15 +336,12 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "fulfillment_id": "F1123"
                 },
                 {
                     "id": "C16",
                     "parent_item_id": "DI1",
-                    "location_id": "L1",
-                    "quantity": {
-                        "count": 1
-                    },
                     "tags": [
                         {
                             "code": "type",
@@ -243,13 +361,10 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "fulfillment_id": "F1123"
                 }
             ]
         }
-    },
-    "error": {
-        "type": "DOMAIN-ERROR",
-        "code": "30009"
     }
 }

@@ -242,8 +242,8 @@ class ProductService {
         //get search criteria
         const items = requestQuery.message.order.items
         const logisticData = requestQuery?.logistics_on_search ?? []
-        console.log({items})
-
+        let isQtyAvailable = true;
+        let isServiceable = true;
         let qouteItems = []
         let detailedQoute = []
         let itemType= ''
@@ -252,15 +252,9 @@ class ProductService {
         let itemData ={};
         for (let item of items) { 
             let tags = item.tags;
-            if(tags && tags.length >0){
-                for(const tag of tags){
-                    for(const tagList of tag.list){
-                        if(tagList.code === 'type'){
-                            itemType = tagList.value
-                        }
-                    } 
-                }
-            }
+            let tagData = tags.find((tag)=>{return tag.code === 'type'})
+            let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+            itemType = tagTypeData.value;
             if(itemType === 'customization'){
                 resultData = itemData?.customizationDetails?.customizations.find((row) => {
                     return row.id === item.id
@@ -275,7 +269,44 @@ class ProductService {
                     },
                     "title": resultData?.name,
                     "@ondc/org/title_type": "customization",
-                    "price": resultData?.price
+                    "price":
+                    {
+                      "currency":"INR",
+                      "value":`${resultData?.price}`
+                    },
+                    "item":
+                    {
+                      "parent_item_id":`${item.parent_item_id}`,
+                      "quantity":
+                      {
+                        "available":
+                        {
+                          "count": `${resultData?.available}`
+                        },
+                        "maximum":
+                        {
+                          "count": `${resultData?.available}`
+                        }
+                      },
+                      "price":
+                      {
+                        "currency":"INR",
+                        "value":`${resultData?.price}`
+                      },
+                      "tags":
+                      [
+                        {
+                          "code":"type",
+                          "list":
+                          [
+                            {
+                              "code":"type",
+                              "value":"customization"
+                            }
+                          ]
+                        }
+                      ]
+                    }
                 }
                 detailedQoute.push(qouteItemsDetails)
             }else{
@@ -296,10 +327,50 @@ class ProductService {
                     },
                     "title": resultData?.commonDetails?.productName,
                     "@ondc/org/title_type": "item",
-                    "price": item.price
+                    "price":
+                    {
+                      "currency":"INR",
+                      "value":`${resultData?.commonDetails?.retailPrice}`
+                    },
+                    "item":
+                    {
+                      "parent_item_id":`${item.parent_item_id}`,
+                      "quantity":
+                      {
+                        "available":
+                        {
+                          "count": `${resultData?.commonDetails?.quantity}`
+                        },
+                        "maximum":
+                        {
+                          "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                        }
+                      },
+                      "price":
+                      {
+                        "currency":"INR",
+                        "value":`${resultData?.commonDetails?.retailPrice}`
+                      },
+                      "tags":
+                      [
+                        {
+                          "code":"type",
+                          "list":
+                          [
+                            {
+                              "code":"type",
+                              "value":"item"
+                            }
+                          ]
+                        }
+                      ]
+                    }
                 }
                 detailedQoute.push(qouteItemsDetails)
             }
+            item.fulfillment_id = "F1123" //TODO static for now
+            delete item.location_id
+            delete item.quantity
             qouteItems.push(item)
         }
 
@@ -348,9 +419,9 @@ class ProductService {
                     {
                         "descriptor":
                             {
-                                "name": logisticProvider?.message?.catalog["bpp/providers"][0]?.descriptor?.name ?? ''
+                                "code": logisticProvider?.message?.catalog["bpp/providers"][0]?.descriptor?.name ?? 'Serviceable' //TODO static for now
                             }
-                    }, end: requestQuery?.message?.order?.fulfillments[0]?.end
+                    }
             }]
 
         //update fulfillment
@@ -365,7 +436,9 @@ class ProductService {
             order: requestQuery.message.order,
             totalPrice: totalPriceObj,
             detailedQoute: detailedQoute,
-            context: requestQuery.context
+            context: requestQuery.context,
+            isQtyAvailable,
+            isServiceable
         });
 
         return productData
