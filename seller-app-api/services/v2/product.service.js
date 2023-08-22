@@ -235,6 +235,141 @@ class ProductService {
 
         return productData
     }
+    async selectV2(requestQuery) {
+
+        logger.log('info', `[Product Service] product select :`, requestQuery);
+
+        //get search criteria
+        const items = requestQuery.message.order.items
+        const logisticData = requestQuery?.logistics_on_search ?? []
+        console.log({items})
+
+        let qouteItems = []
+        let detailedQoute = []
+        let itemType= ''
+        let totalPrice = 0
+        let resultData;
+        let itemData ={};
+        for (let item of items) { 
+            let tags = item.tags;
+            if(tags && tags.length >0){
+                for(const tag of tags){
+                    for(const tagList of tag.list){
+                        if(tagList.code === 'type'){
+                            itemType = tagList.value
+                        }
+                    } 
+                }
+            }
+            if(itemType === 'customization'){
+                resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                    return row.id === item.id
+                })
+
+                console.log({resultData})
+
+                let qouteItemsDetails = {
+                    "@ondc/org/item_id": item.id,
+                    "@ondc/org/item_quantity": {
+                        "count": item.quantity.count
+                    },
+                    "title": resultData?.name,
+                    "@ondc/org/title_type": "customization",
+                    "price": resultData?.price
+                }
+                detailedQoute.push(qouteItemsDetails)
+            }else{
+                resultData = await this.getForOndc(item.id)
+                itemData = resultData; 
+                if (resultData?.commonDetails) {
+                    let price = resultData?.commonDetails?.retailPrice * item.quantity.count
+                    totalPrice += price
+                    item.price = {value: price, currency: "INR"}
+                }
+    
+                //TODO: check if quantity is available
+    
+                let qouteItemsDetails = {
+                    "@ondc/org/item_id": item.id,
+                    "@ondc/org/item_quantity": {
+                        "count": item.quantity.count
+                    },
+                    "title": resultData?.commonDetails?.productName,
+                    "@ondc/org/title_type": "item",
+                    "price": item.price
+                }
+                detailedQoute.push(qouteItemsDetails)
+            }
+            qouteItems.push(item)
+        }
+
+        logger.log('info', `[Product Service] checking if logistics provider available from :`, logisticData);
+
+        let logisticProvider = {}
+        for (let logisticData1 of logisticData) { //check if any logistics available who is serviceable
+
+            if (logisticData1.message) {
+                logisticProvider = logisticData1
+            }
+        }
+
+        // if (Object.keys(logisticProvider).length === 0  ) {
+        //     return {context: {...requestQuery.context,action:'on_select'},message:{
+        //         "type": "CORE-ERROR",
+        //         "code": "60001",
+        //         "message": "Pickup not servicable"
+        //     }}
+        // }
+
+        logger.log('info', `[Product Service] logistics provider available  :`, logisticProvider);
+
+        //select logistic based on criteria-> for now first one will be picked up
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": '' + logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.currency ?? 'INR', //todo hardcoded,
+                "value": '' + logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value ?? '100' //todo hardcoded
+            }
+        }//TODO: need to map all items in the catalog to find out delivery charges
+
+        //added delivery charges in total price
+        totalPrice += logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value ?? '100' //todo hardcoded
+
+        let fulfillments = [
+            {
+                "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
+                "@ondc/org/provider_name": logisticProvider?.message?.catalog["bpp/descriptor"] ?? 'WEM',
+                "tracking": false,
+                "@ondc/org/category": logisticProvider?.message?.catalog["bpp/providers"][0]?.category_id ?? 'Standard',
+                "@ondc/org/TAT": "PT45M",
+                "provider_id": logisticProvider?.context?.bpp_id ?? 'wd6t46r',
+                "state":
+                    {
+                        "descriptor":
+                            {
+                                "name": logisticProvider?.message?.catalog["bpp/providers"][0]?.descriptor?.name ?? ''
+                            }
+                    }, end: requestQuery?.message?.order?.fulfillments[0]?.end
+            }]
+
+        //update fulfillment
+        requestQuery.message.order.fulfillments = fulfillments
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        const productData = await getSelect({
+            qouteItems: qouteItems,
+            order: requestQuery.message.order,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: requestQuery.context
+        });
+
+        return productData
+    }
 
     async init(requestQuery) {
 

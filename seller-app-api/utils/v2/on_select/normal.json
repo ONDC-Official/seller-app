@@ -1,0 +1,117 @@
+{
+    "context": {
+        "domain": "nic2004:52110",
+        "action": "on_select",
+        "core_version": "1.1.0",
+        "bap_id": "buyer-app.ondc.org",
+        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://9aa9-2401-4900-1c5c-13eb-75b8-ff9-8555-cc4d.ngrok-free.app",
+        "transaction_id": "{{transaction_id}}",
+        "message_id": "c4a428f0-56eb-4b9d-911f-168a83b57ea0",
+        "country": "IND",
+        "city": "std:080",
+        "timestamp": "2023-08-21T08:06:19.699Z",
+        "ttl": "PT30S"
+    },
+    "message": {
+        "order": {
+            "provider": {
+                "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                "locations": [
+                    {
+                        "id": "65426587829"
+                    }
+                ]
+            },
+            "fulfillments": [
+                {
+                    "id": "Fulfillment1",
+                    "@ondc/org/provider_name": "WEM",
+                    "tracking": false,
+                    "@ondc/org/category": "Standard",
+                    "@ondc/org/TAT": "PT45M",
+                    "provider_id": "wd6t46r",
+                    "state": {
+                        "descriptor": {
+                            "name": ""
+                        }
+                    },
+                    "end": {
+                        "location": {
+                            "gps": "13.0007580000001, 77.6165090000001",
+                            "address": {
+                                "area_code": "560085"
+                            }
+                        }
+                    }
+                }
+            ],
+            "quote": {
+                "price": {
+                    "value": "440100",
+                    "currency": "INR"
+                },
+                "breakup": [
+                    {
+                        "@ondc/org/item_id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
+                        "@ondc/org/item_quantity": {
+                            "count": 4
+                        },
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "value": 400,
+                            "currency": "INR"
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
+                        "@ondc/org/item_quantity": {
+                            "count": 4
+                        },
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "value": 40,
+                            "currency": "INR"
+                        }
+                    },
+                    {
+                        "title": "Delivery charges",
+                        "@ondc/org/title_type": "delivery",
+                        "price": {
+                            "currency": "undefined",
+                            "value": "undefined"
+                        }
+                    }
+                ],
+                "ttl": "P1D"
+            },
+            "items": [
+                {
+                    "id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
+                    "quantity": {
+                        "count": 4
+                    },
+                    "price": {
+                        "value": 400,
+                        "currency": "INR"
+                    }
+                },
+                {
+                    "id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
+                    "quantity": {
+                        "count": 4
+                    },
+                    "price": {
+                        "value": 40,
+                        "currency": "INR"
+                    }
+                }
+            ]
+        }
+    },
+    "error": {
+        "type": "DOMAIN-ERROR",
+        "code": "30009"
+    }
+}

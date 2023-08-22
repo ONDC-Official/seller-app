@@ -70,7 +70,7 @@ router.get('/v1/productWithVariant/:productId',
 
 router.get('/v1/products/:productId/ondcGet',
     apiParamsValidator.middleware({ schema: productSchema.get() }),
-    productController.get,
+    productController.ondcGet,
 );
 
 router.post('/v1/products/upload/bulk',

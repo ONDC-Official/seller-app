@@ -9,8 +9,11 @@ router.post('/client/search',
     ondcController.productSearch);
 
 //new changes
+// router.post('/client/select',
+//     ondcController.orderSelect);
+
 router.post('/client/select',
-    ondcController.orderSelect);
+    ondcController.orderSelectWithoutlogistic);
 
 router.post('/client/Init',
     ondcController.orderInit);

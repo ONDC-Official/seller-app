@@ -295,6 +295,47 @@ class ProductService {
         }
     }
 
+    async ondcGet(productId) {
+        try {
+            let product = await Product.findOne({_id:productId}).lean();
+            if(!product){
+                throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
+            }
+            let images = [];
+            if(product.images && product.images.length > 0){
+                for(const image of product.images){
+                    let data = await s3.getSignedUrlForRead({path:image});
+                    images.push(data);
+                }
+                product.images = images;
+            }
+            const attributes = await ProductAttribute.find({product:productId}); 
+            let attributeObj = {};
+            for(const attribute of attributes){
+                let value = attribute.value;
+                if(attribute.code === 'size_chart'){
+                    value = await s3.getSignedUrlForRead({path:attribute.value});
+                }
+                attributeObj[attribute.code] = value;
+            }
+            let productData = {
+                commonDetails:product,
+                commonAttributesValues:attributeObj,
+                customizationDetails: await productCustomizationService.get(productId,{organization:product.organization}),
+            };
+            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
+            if(variantGroup){
+                productData.variationOn = variantGroup.variationOn ?? 'NA';
+                productData.variantType = variantGroup.name ?? [];
+            } 
+
+            return productData;
+
+        } catch (err) {
+            console.log('[OrganizationService] [ondcGet] Error in getting organization by id -',err);
+            throw err;
+        }
+    }
     async getWithVariants(productId,currentUser) {
         try {
             let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();

@@ -133,6 +133,18 @@ class ProductController {
         }
     }
 
+    async ondcGet(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.ondcGet(params.productId);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
     async getWithVariants(req, res, next) {
         try {
             const params = req.params;

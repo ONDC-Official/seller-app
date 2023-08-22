@@ -114,6 +114,65 @@ class OndcService {
         }
     }
 
+    async orderSelectWithoutlogistic(payload = {}, req = {}) {
+        try {
+            console.log({payload})
+            logger.log('info', `[Ondc Service] search logistics payload : param :`,payload);
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4();
+            const searchRequest = await productService.selectV2(payload);
+            //process select request and send it to protocol layer
+            this.postSelectRequestV2(searchRequest,logisticsMessageId, selectMessageId)
+
+            return searchRequest
+        } catch (err) {
+            logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
+            throw err;
+        }
+    }
+    async postSelectRequestV2(searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/v1/on_select`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+                console.error("Here  -- 3")
+
+
+                await httpRequest.send();
+
+            console.error("Here  -- 4")
+
+
+            } catch (e) {
+                logger.error('error', `[Ondc Service] post http select response : `, e);
+                return e
+            }
+            console.error("Here  -- 5")
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            // setTimeout(() => {
+            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+            //     this.buildSelectRequest(logisticsMessageId, selectMessageId)
+            // }, 10000); //TODO move to config
+            // console.error("Here  -- 6")
+
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
+
     async postSelectRequest(searchRequest,logisticsMessageId,selectMessageId){
 
         try{
