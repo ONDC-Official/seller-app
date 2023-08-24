@@ -1,17 +1,17 @@
 {
     "context": {
-        "domain": "nic2004:52110",
+        "domain": "ONDC:RET11",
         "action": "on_select",
-        "core_version": "1.1.0",
-        "bap_id": "buyer-app.ondc.org",
-        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "core_version": "1.2.0",
+        "bap_id": "buyerNP.com",
+        "bap_uri": "https://buyerNP.com/ondc",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://9aa9-2401-4900-1c5c-13eb-75b8-ff9-8555-cc4d.ngrok-free.app",
-        "transaction_id": "{{transaction_id}}",
-        "message_id": "c4a428f0-56eb-4b9d-911f-168a83b57ea0",
-        "country": "IND",
+        "transaction_id": "c5cbd9a1-9725-4415-9ce1-53ab92ca1dfe",
+        "message_id": "f8aec991-f721-4e59-8916-cf0ae802e9ef",
         "city": "std:080",
-        "timestamp": "2023-08-21T08:06:19.699Z",
+        "country": "IND",
+        "timestamp": "2023-08-24T05:47:53.841Z",
         "ttl": "PT30S"
     },
     "message": {
@@ -20,7 +20,7 @@
                 "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
                 "locations": [
                     {
-                        "id": "65426587829"
+                        "id": "L1"
                     }
                 ]
             },
@@ -34,45 +34,129 @@
                     "provider_id": "wd6t46r",
                     "state": {
                         "descriptor": {
-                            "name": ""
-                        }
-                    },
-                    "end": {
-                        "location": {
-                            "gps": "13.0007580000001, 77.6165090000001",
-                            "address": {
-                                "area_code": "560085"
-                            }
+                            "code": "Serviceable"
                         }
                     }
                 }
             ],
             "quote": {
                 "price": {
-                    "value": "440100",
+                    "value": "210100",
                     "currency": "INR"
                 },
                 "breakup": [
                     {
-                        "@ondc/org/item_id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
+                        "@ondc/org/item_id": "e43afe00-9b2a-402c-86f7-20fc477aeb26",
                         "@ondc/org/item_quantity": {
-                            "count": 4
+                            "count": 1
                         },
+                        "title": "Air Purifier",
                         "@ondc/org/title_type": "item",
                         "price": {
-                            "value": 400,
-                            "currency": "INR"
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
-                        "@ondc/org/item_id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
+                        "@ondc/org/item_id": "e5fbbfe0-abad-4ba2-9b4f-ca4caa34b0b7",
                         "@ondc/org/item_quantity": {
-                            "count": 4
+                            "count": 1
                         },
+                        "title": "Mouse",
                         "@ondc/org/title_type": "item",
                         "price": {
-                            "value": 40,
-                            "currency": "INR"
+                            "currency": "INR",
+                            "value": "10"
+                        },
+                        "item": {
+                            "parent_item_id": "DI122",
+                            "quantity": {
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "10"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "ffe79e10-1da7-47fa-99e2-e562e7493979",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Mouse",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI122",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     },
                     {
@@ -88,30 +172,54 @@
             },
             "items": [
                 {
-                    "id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
-                    "quantity": {
-                        "count": 4
-                    },
-                    "price": {
-                        "value": 400,
-                        "currency": "INR"
-                    }
+                    "id": "e43afe00-9b2a-402c-86f7-20fc477aeb26",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
                 },
                 {
-                    "id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
-                    "quantity": {
-                        "count": 4
-                    },
-                    "price": {
-                        "value": 40,
-                        "currency": "INR"
-                    }
+                    "id": "e5fbbfe0-abad-4ba2-9b4f-ca4caa34b0b7",
+                    "parent_item_id": "DI122",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
+                },
+                {
+                    "id": "ffe79e10-1da7-47fa-99e2-e562e7493979",
+                    "parent_item_id": "DI122",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
                 }
             ]
         }
-    },
-    "error": {
-        "type": "DOMAIN-ERROR",
-        "code": "30009"
     }
 }
