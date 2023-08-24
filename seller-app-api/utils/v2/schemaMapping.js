@@ -88,7 +88,7 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"DOMAIN-ERROR",
+                        type:"Item quantity unavailable",
                         code:"40002"
                     }}
 
@@ -97,8 +97,26 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"DOMAIN-ERROR",
+                        type:"Location Serviceability error",
                         code:"30009"
+                    }}
+
+        }
+        if(!data.isValidOrg){
+            error = {
+                error:
+                    {
+                        type:"Provider not found",
+                        code:"30001"
+                    }}
+
+        }
+        if(!data.isValidItem){
+            error = {
+                error:
+                    {
+                        type:"Item not found",
+                        code:"30004"
                     }}
 
         }

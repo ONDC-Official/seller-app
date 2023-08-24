@@ -74,6 +74,18 @@ class OrganizationController {
         }
     }
 
+    async ondcGet(req, res, next) {
+        try {
+            const params = req.params;
+            const organizations = await organizationService.ondcGet(params.organizationId);
+            return res.send(organizations);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
     async setStoreDetails(req, res, next) {
         try {
             const params = req.params;

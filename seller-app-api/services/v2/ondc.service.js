@@ -116,7 +116,8 @@ class OndcService {
 
     async orderSelectWithoutlogistic(payload = {}, req = {}) {
         try {
-            console.log({payload})
+            const items = payload.message.order.items
+            console.log({items})
             logger.log('info', `[Ondc Service] search logistics payload : param :`,payload);
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4();

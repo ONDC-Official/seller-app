@@ -299,7 +299,7 @@ class ProductService {
         try {
             let product = await Product.findOne({_id:productId}).lean();
             if(!product){
-                throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
+                return '';
             }
             let images = [];
             if(product.images && product.images.length > 0){

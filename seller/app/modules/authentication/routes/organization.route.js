@@ -52,7 +52,7 @@ router.get('/v1/organizations/:organizationId',
 
 router.get('/v1/organizations/:organizationId/ondcGet',
     apiParamsValidator.middleware({ schema: organisationSchema.get() }),
-    organizationController.get,
+    organizationController.ondcGet,
 );
 
 module.exports = router;

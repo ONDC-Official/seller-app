@@ -235,14 +235,19 @@ class ProductService {
 
         return productData
     }
+//30000	Seller App *  Invalid request error /	Generic invalid request error
+//30001	Seller App *  Provider not found	/ When Seller App is unable to find the provider id sent by the Buyer App
+//30002	Seller App *  Provider location not found /	When Seller App is unable to find the provider location id sent by the Buyer App
+//30004	Seller App *  Item not found /	When Seller App is unable to find the item id sent by the Buyer App
+
     async selectV2(requestQuery) {
-
         logger.log('info', `[Product Service] product select :`, requestQuery);
-
         //get search criteria
         const items = requestQuery.message.order.items
         const logisticData = requestQuery?.logistics_on_search ?? []
         let isQtyAvailable = true;
+        let isValidOrg = true;
+        let isValidItem = true;
         let isServiceable = true;
         let qouteItems = []
         let detailedQoute = []
@@ -250,6 +255,13 @@ class ProductService {
         let totalPrice = 0
         let resultData;
         let itemData ={};
+        let org = await this.getOrgForOndc(requestQuery.message.order.provider.id);
+        console.log({org})
+
+        if(!org){            
+            isValidOrg = false;
+            console.log({isValidOrg})
+        }
         for (let item of items) { 
             let tags = item.tags;
             let tagData = tags.find((tag)=>{return tag.code === 'type'})
@@ -259,114 +271,126 @@ class ProductService {
                 resultData = itemData?.customizationDetails?.customizations.find((row) => {
                     return row.id === item.id
                 })
-
-                console.log({resultData})
-
-                let qouteItemsDetails = {
-                    "@ondc/org/item_id": item.id,
-                    "@ondc/org/item_quantity": {
-                        "count": item.quantity.count
-                    },
-                    "title": resultData?.name,
-                    "@ondc/org/title_type": "customization",
-                    "price":
-                    {
-                      "currency":"INR",
-                      "value":`${resultData?.price}`
-                    },
-                    "item":
-                    {
-                      "parent_item_id":`${item.parent_item_id}`,
-                      "quantity":
-                      {
-                        "available":
-                        {
-                          "count": `${resultData?.available}`
+                if(resultData){
+                    console.log({custqty:resultData.maximum})
+                    if(resultData.maximum < item.quantity.count){
+                        isQtyAvailable = false
+                    }
+                    let qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
                         },
-                        "maximum":
+                        "title": resultData?.name,
+                        "@ondc/org/title_type": "customization",
+                        "price":
                         {
-                          "count": `${resultData?.available}`
-                        }
-                      },
-                      "price":
-                      {
                         "currency":"INR",
                         "value":`${resultData?.price}`
-                      },
-                      "tags":
-                      [
+                        },
+                        "item":
                         {
-                          "code":"type",
-                          "list":
-                          [
+                        "parent_item_id":`${item.parent_item_id}`,
+                        "quantity":
+                        {
+                            "available":
                             {
-                              "code":"type",
-                              "value":"customization"
+                            "count": `${resultData?.available}`
+                            },
+                            "maximum":
+                            {
+                            "count": `${resultData?.available}`
                             }
-                          ]
+                        },
+                        "price":
+                        {
+                            "currency":"INR",
+                            "value":`${resultData?.price}`
+                        },
+                        "tags":
+                        [
+                            {
+                            "code":"type",
+                            "list":
+                            [
+                                {
+                                "code":"type",
+                                "value":"customization"
+                                }
+                            ]
+                            }
+                        ]
                         }
-                      ]
                     }
+                    detailedQoute.push(qouteItemsDetails)
+                }else{
+                    isValidItem = false;
                 }
-                detailedQoute.push(qouteItemsDetails)
             }else{
                 resultData = await this.getForOndc(item.id)
-                itemData = resultData; 
-                if (resultData?.commonDetails) {
-                    let price = resultData?.commonDetails?.retailPrice * item.quantity.count
-                    totalPrice += price
-                    item.price = {value: price, currency: "INR"}
-                }
-    
-                //TODO: check if quantity is available
-    
-                let qouteItemsDetails = {
-                    "@ondc/org/item_id": item.id,
-                    "@ondc/org/item_quantity": {
-                        "count": item.quantity.count
-                    },
-                    "title": resultData?.commonDetails?.productName,
-                    "@ondc/org/title_type": "item",
-                    "price":
-                    {
-                      "currency":"INR",
-                      "value":`${resultData?.commonDetails?.retailPrice}`
-                    },
-                    "item":
-                    {
-                      "parent_item_id":`${item.parent_item_id}`,
-                      "quantity":
-                      {
-                        "available":
-                        {
-                          "count": `${resultData?.commonDetails?.quantity}`
+                console.log({itemqty:resultData?.commonDetails.maxAllowedQty})
+                if(resultData){
+                    if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                        isQtyAvailable = false
+                    }
+                    itemData = resultData; 
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.retailPrice * item.quantity.count
+                        totalPrice += price
+                    }
+        
+                    //TODO: check if quantity is available
+        
+                    let qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
                         },
-                        "maximum":
+                        "title": resultData?.commonDetails?.productName,
+                        "@ondc/org/title_type": "item",
+                        "price":
                         {
-                          "count": `${resultData?.commonDetails?.maxAllowedQty}`
-                        }
-                      },
-                      "price":
-                      {
                         "currency":"INR",
                         "value":`${resultData?.commonDetails?.retailPrice}`
-                      },
-                      "tags":
-                      [
+                        },
+                        "item":
                         {
-                          "code":"type",
-                          "list":
-                          [
+                        "parent_item_id":`${item.parent_item_id}`,
+                        "quantity":
+                        {
+                            "available":
                             {
-                              "code":"type",
-                              "value":"item"
+                            "count": `${resultData?.commonDetails?.quantity}`
+                            },
+                            "maximum":
+                            {
+                            "count": `${resultData?.commonDetails?.maxAllowedQty}`
                             }
-                          ]
+                        },
+                        "price":
+                        {
+                            "currency":"INR",
+                            "value":`${resultData?.commonDetails?.retailPrice}`
+                        },
+                        "tags":
+                        [
+                            {
+                            "code":"type",
+                            "list":
+                            [
+                                {
+                                "code":"type",
+                                "value":"item"
+                                }
+                            ]
+                            }
+                        ]
                         }
-                      ]
                     }
+                    detailedQoute.push(qouteItemsDetails)
+                }else{
+                    isValidItem = false;
                 }
-                detailedQoute.push(qouteItemsDetails)
             }
             item.fulfillment_id = "F1123" //TODO static for now
             delete item.location_id
@@ -438,7 +462,9 @@ class ProductService {
             detailedQoute: detailedQoute,
             context: requestQuery.context,
             isQtyAvailable,
-            isServiceable
+            isServiceable,
+            isValidItem,
+            isValidOrg
         });
 
         return productData

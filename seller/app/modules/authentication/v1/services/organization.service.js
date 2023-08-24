@@ -143,6 +143,44 @@ class OrganizationService {
         }
     }
 
+    async ondcGet(organizationId) {
+        try {
+            let doc = await Organization.findOne({_id:organizationId}).lean();
+
+            let user = await User.findOne({organization:organizationId},{password:0});
+            if (doc) {
+                {
+                    let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
+                    doc.idProof =idProof;
+
+                    let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
+                    doc.addressProof =addressProof;
+
+                    let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
+                    doc.bankDetails.cancelledCheque =cancelledCheque;
+
+                    let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
+                    doc.PAN.proof =PAN;
+
+                    let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
+                    doc.GSTN.proof =GSTN;
+
+                    if(doc.storeDetails){
+                        let logo = await s3.getSignedUrlForRead({path:doc.storeDetails?.logo});
+                        doc.storeDetails.logo =logo;
+                    }
+                }
+
+                return {user:user,providerDetail:doc};
+            } else {
+                return '';
+            }
+        } catch (err) {
+            console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
+            throw err;
+        }
+    }
+
     async setStoreDetails(organizationId,data) {
         try {
             let organization = await Organization.findOne({_id:organizationId});//.lean();
