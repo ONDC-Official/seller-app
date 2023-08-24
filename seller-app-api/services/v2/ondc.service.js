@@ -6,6 +6,8 @@ import {InitRequest, ConfirmRequest, SelectRequest} from '../../models'
 import ProductService from './product.service'
 const productService = new ProductService();
 import logger from '../../lib/logger'
+const BPP_ID = config.get("sellerConfig").BPP_ID
+const BPP_URI = config.get("sellerConfig").BPP_URI
 class OndcService {
 
     async productSearch(payload = {}, req = {}) {
@@ -356,6 +358,15 @@ class OndcService {
         try {
            // const {criteria = {}, payment = {}} = req || {};
 
+           console.log('########(  )#############')
+           console.log('#########/ \##############')
+           console.log('#######(.) (.)#################')
+           console.log('########\   /#############')
+           console.log('#########|  |#############')
+           console.log('########( ^  )#############')
+           console.log('########/ /| |############')
+           console.log('#######| | | |###########')
+           console.log('#######| | | |############')
             logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
@@ -367,12 +378,12 @@ class OndcService {
                     ['createdAt', 'DESC']
                 ]
             })
-
+            
   //          logger.log('info', `[Ondc Service] old select request :`,selectRequest);
 
             let org= await productService.getOrgForOndc(payload.message.order.provider.id);
 
-            const logistics = selectRequest.selectedLogistics;
+            const logistics = selectRequest?.selectedLogistics ?? ''; //TODO empty for now
 
             let storeLocationEnd ={}
             if(org.providerDetail.storeDetails){
@@ -405,8 +416,8 @@ class OndcService {
             const contextTimeStamp =new Date()
 
 
-            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
-
+            // let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
+            let deliveryType = payload.message.order.items
 
             const initRequest =     {
                 "context": {
@@ -415,27 +426,30 @@ class OndcService {
                     "city": "std:080", //TODO: take city from retail context
                     "action": "init",
                     "core_version": "1.1.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "bpp_id": logistics.context.bpp_id, //STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": logistics.context.transaction_id,
+                    "bap_id": BPP_ID,
+                    "bap_uri": BPP_URI,
+                    "bpp_id": logistics?.context?.bpp_id ?? 'DF1233', //STORED OBJECT TODO static for now
+                    "bpp_uri": logistics?.context?.bpp_uri ?? 'TH5643', //STORED OBJECT TODO static for now
+                    "transaction_id": logistics?.context?.transaction_id ?? 'TH5664', //TODO static for now
                     "message_id": logisticsMessageId,
                     "timestamp": contextTimeStamp,
                     "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
+                        "id":"O1",
+                        "state":"Created",
                         "provider": {
-                            "id": logistics.message.catalog["bpp/providers"][0].id
+                            "id": logistics?.message?.catalog["bpp/providers"][0]?.id ?? "123", //TODO static for now
+                            "locations":
+                            [
+                              {
+                                "id":"L1"
+                              }
+                            ]
                         },
                         "items": [deliveryType],
-                        "fulfillments": [{
-                            "id": logistics.message.catalog["bpp/fulfillments"][0].id,
-                            "type": logistics.message.catalog["bpp/fulfillments"][0].type,
-                            "start": storeLocationEnd,
-                            "end": order.fulfillments[0].end
-                        }],
+                        "fulfillments": payload.message.order.fulfillments,
                         "billing": { //TODO: discuss whos details should go here buyer or seller
                             "name": order.billing.name,
                             "address": {
@@ -447,7 +461,7 @@ class OndcService {
                                 "country": order.billing.address.country,
                                 "area_code": order.billing.address.area_code
                             },
-                            "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+                            "tax_number": order?.billing?.tax_number ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
                             "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
                             "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
                             "created_at": contextTimeStamp,
@@ -481,7 +495,7 @@ class OndcService {
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/init`,
+                    `/protocol/v1/on_init`,
                     'POST',
                     searchRequest,
                     headers
