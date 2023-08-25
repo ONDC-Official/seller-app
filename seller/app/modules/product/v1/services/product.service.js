@@ -58,7 +58,7 @@ class ProductService {
                     variantGroup.organization = currentUser.organization;
                     variantGroup.name = variantType;
                     variantGroup.variationOn = data.variationOn;
-                    await variantGroup.save();
+                    await variantGroup.save();retailPrice
                 }
                 i++;
                 let productObj = {};
@@ -299,7 +299,7 @@ class ProductService {
         try {
             let product = await Product.findOne({_id:productId}).lean();
             if(!product){
-                return '';
+                return {};
             }
             let images = [];
             if(product.images && product.images.length > 0){

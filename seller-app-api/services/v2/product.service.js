@@ -328,8 +328,7 @@ class ProductService {
                 }
             }else{
                 resultData = await this.getForOndc(item.id)
-                console.log({itemqty:resultData?.commonDetails.maxAllowedQty})
-                if(resultData){
+                if(Object.keys(resultData).length === 0){
                     if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
                         isQtyAvailable = false
                     }
@@ -351,7 +350,7 @@ class ProductService {
                         "price":
                         {
                         "currency":"INR",
-                        "value":`${resultData?.commonDetails?.retailPrice}`
+                        "value":`${resultData?.commonDetails?.MRP}`
                         },
                         "item":
                         {
@@ -370,7 +369,7 @@ class ProductService {
                         "price":
                         {
                             "currency":"INR",
-                            "value":`${resultData?.commonDetails?.retailPrice}`
+                            "value":`${resultData?.commonDetails?.MRP}`
                         },
                         "tags":
                         [
