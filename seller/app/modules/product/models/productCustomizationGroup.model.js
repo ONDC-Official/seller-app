@@ -16,6 +16,8 @@ const productCustomizationGroupSchema = new mongoose.Schema({
     organization: {type:String,ref:'Organozation'},
     product: {type:String, ref:'Product'},
     name: {type:String},
+    defaultCustomizationId : {type:String},
+    isMandatory : {type:Boolean}, 
     inputType: {type:String},
     minQuantity: {type:Number},
     maxQuantity: {type:Number},

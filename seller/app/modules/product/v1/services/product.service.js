@@ -6,7 +6,7 @@ import { Categories, SubCategories, Attributes } from '../../../../lib/utils/cat
 import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
-import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
+import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 
 const productCustomizationService = new ProductCustomizationService();
  
@@ -14,7 +14,21 @@ class ProductService {
     async create(data,currentUser) {
         try {
             // let query = {};
-
+            // let customizations =  data.customizationDetails.customizations;
+            let customizationGroups =  data.customizationDetails.customizationGroups;
+            if(customizationGroups && customizationGroups.length  > 0){
+                for(const customizationGroup of customizationGroups){
+                    if(customizationGroup.isMandatory){
+                        if(customizationGroup.minQuantity !== 1){
+                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+                        }
+                    }else{
+                        if(customizationGroup.minQuantity !== 0){
+                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+                        }
+                    }
+                }
+            }
             const productExist = await Product.findOne({productName:data.productName,organization:currentUser.organization});
             if (productExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
@@ -44,6 +58,20 @@ class ProductService {
             const commonAttributesValues = data.commonAttributesValues;
             const customizationDetails = data.customizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
+            let customizationGroups =  customizationDetails.customizationGroups;
+            if(customizationGroups && customizationGroups.length  > 0){
+                for(const customizationGroup of customizationGroups){
+                    if(customizationGroup.isMandatory){
+                        if(customizationGroup.minQuantity !== 1){
+                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+                        }
+                    }else{
+                        if(customizationGroup.minQuantity !== 0){
+                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+                        }
+                    }
+                }
+            }
             let variantGroup = {};
             let variantType = [];
             let i = 0;
@@ -58,7 +86,7 @@ class ProductService {
                     variantGroup.organization = currentUser.organization;
                     variantGroup.name = variantType;
                     variantGroup.variationOn = data.variationOn;
-                    await variantGroup.save();retailPrice
+                    await variantGroup.save();
                 }
                 i++;
                 let productObj = {};
@@ -362,6 +390,20 @@ class ProductService {
 
     async update(productId,data,currentUser) {
         try {
+            let customizationGroups =  data.customizationDetails.customizationGroups;
+            if(customizationGroups && customizationGroups.length  > 0){
+                for(const customizationGroup of customizationGroups){
+                    if(customizationGroup.isMandatory){
+                        if(customizationGroup.minQuantity !== 1){
+                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+                        }
+                    }else{
+                        if(customizationGroup.minQuantity !== 0){
+                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+                        }
+                    }
+                }
+            }
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
             const product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();

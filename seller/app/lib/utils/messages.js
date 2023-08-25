@@ -28,6 +28,8 @@ const MESSAGES = {
     PRODUCT_NOT_EXISTS:'We weren\'t able to find any product with this detail',
     MENU_EXISTS:'A menu with the given name already exists',
     MENU_NOT_EXISTS:'We weren\'t able to find Menu with this detail',
+    MIN_IS_MANDATORY :'Mininum Qty value must be 1 when Customization Group is mendatory',
+    MIN_ISNOT_MANDATORY :'Mininum Qty value must be 0 when Customization Group is not mendatory',
 
 };
 
