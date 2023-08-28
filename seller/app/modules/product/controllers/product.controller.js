@@ -14,7 +14,6 @@ const productValidationSchema = Joi.object({
     productCode: Joi.string().required(),
     productName: Joi.string().required(),
     MRP: Joi.number().required(),
-    retailPrice: Joi.number().required(),
     purchasePrice: Joi.number().required(),
     HSNCode: Joi.string().required(),
     GST_Percentage: Joi.number().required(),
@@ -287,7 +286,7 @@ class ProductController {
 
                 const validKeys = [
                     'productCode', 'productName',
-                    'MRP', 'retailPrice',
+                    'MRP',
                     'purchasePrice', 'HSNCode',
                     'GST_Percentage', 'productCategory',
                     'quantity', 'barcode',

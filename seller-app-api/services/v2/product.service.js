@@ -334,7 +334,7 @@ class ProductService {
                     }
                     itemData = resultData; 
                     if (resultData?.commonDetails) {
-                        let price = resultData?.commonDetails?.retailPrice * item.quantity.count
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
                         totalPrice += price
                     }
         

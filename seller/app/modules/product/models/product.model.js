@@ -10,7 +10,6 @@ const productSchema = new mongoose.Schema({
     productName: {type:String,required:true},
     variantGroup : {type:String,ref:'VariantGroup'},
     MRP: {type:Number},
-    retailPrice: {type:Number},
     purchasePrice: {type:Number},
     HSNCode: {type:String},
     vegNonVeg :{type:String},

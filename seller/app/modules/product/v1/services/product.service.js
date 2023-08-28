@@ -15,20 +15,20 @@ class ProductService {
         try {
             // let query = {};
             // let customizations =  data.customizationDetails.customizations;
-            let customizationGroups =  data.customizationDetails.customizationGroups;
-            if(customizationGroups && customizationGroups.length  > 0){
-                for(const customizationGroup of customizationGroups){
-                    if(customizationGroup.isMandatory){
-                        if(customizationGroup.minQuantity !== 1){
-                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-                        }
-                    }else{
-                        if(customizationGroup.minQuantity !== 0){
-                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-                        }
-                    }
-                }
-            }
+            // let customizationGroups =  data.customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             const productExist = await Product.findOne({productName:data.productName,organization:currentUser.organization});
             if (productExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
@@ -58,20 +58,20 @@ class ProductService {
             const commonAttributesValues = data.commonAttributesValues;
             const customizationDetails = data.customizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
-            let customizationGroups =  customizationDetails.customizationGroups;
-            if(customizationGroups && customizationGroups.length  > 0){
-                for(const customizationGroup of customizationGroups){
-                    if(customizationGroup.isMandatory){
-                        if(customizationGroup.minQuantity !== 1){
-                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-                        }
-                    }else{
-                        if(customizationGroup.minQuantity !== 0){
-                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-                        }
-                    }
-                }
-            }
+            // let customizationGroups =  customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             let variantGroup = {};
             let variantType = [];
             let i = 0;
@@ -123,7 +123,6 @@ class ProductService {
                     productObj.quantity = productVariant.quantity;
                     productObj.organization = currentUser.organization;
                     productObj.MRP = productVariant.MRP;
-                    productObj.retailPrice = productVariant.retailPrice;
                     productObj.purchasePrice = productVariant.purchasePrice;
                     productObj.HSNCode = productVariant.HSNCode;
                     productObj.images = productVariant.images;
@@ -390,20 +389,20 @@ class ProductService {
 
     async update(productId,data,currentUser) {
         try {
-            let customizationGroups =  data.customizationDetails.customizationGroups;
-            if(customizationGroups && customizationGroups.length  > 0){
-                for(const customizationGroup of customizationGroups){
-                    if(customizationGroup.isMandatory){
-                        if(customizationGroup.minQuantity !== 1){
-                            throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-                        }
-                    }else{
-                        if(customizationGroup.minQuantity !== 0){
-                            throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-                        }
-                    }
-                }
-            }
+            // let customizationGroups =  data.customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
             const product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();

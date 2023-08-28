@@ -46,7 +46,6 @@ module.exports = {
                 varientAttributes: Joi.object(),
                 quantity: Joi.number(),
                 MRP: Joi.number(),
-                retailPrice: Joi.number(),
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
@@ -108,7 +107,7 @@ module.exports = {
                     UOMValue : Joi.string(),
                     quantity: Joi.number(),
                     MRP: Joi.number(),
-                    retailPrice: Joi.number(),
+
                     purchasePrice: Joi.number(),
                     barcode: Joi.number(),
                     images: Joi.array(),
@@ -169,7 +168,6 @@ module.exports = {
                 varientAttributes: Joi.object(),
                 quantity: Joi.number(),
                 MRP: Joi.number(),
-                retailPrice: Joi.number(),
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
@@ -231,7 +229,7 @@ module.exports = {
                     _id:Joi.string(),
                     quantity: Joi.number(),
                     MRP: Joi.number(),
-                    retailPrice: Joi.number(),
+
                     purchasePrice: Joi.number(),
                     barcode: Joi.number(),
                     images: Joi.array(),
