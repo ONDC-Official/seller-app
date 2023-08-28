@@ -42,9 +42,13 @@ class ProductCustomizationService {
                     await productCustomizationGroup.save();
                 }
                 for(const customization of customizations){
+                    let childGroup = await ProductCustomizationGroup.findOne({product:productId,organization:currentUser.organization,id:customization.child});
+                    let parentGroup = await ProductCustomizationGroup.findOne({product:productId,organization:currentUser.organization,id:customization.parent});
                     let customizationObj = {
                         ...customization,
                         product:productId,
+                        childId:childGroup?._id ?? '',
+                        parentId:parentGroup?._id ?? '',
                         organization : currentUser.organization,
                         updatedBy : currentUser.id,
                         createdBy : currentUser.id,

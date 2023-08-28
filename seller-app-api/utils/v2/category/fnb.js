@@ -59,7 +59,6 @@ export async function mapFnBData(data) {
             if(customizationDetails){
                 const customizationGroups = customizationDetails.customizationGroups;
                 const customizations = customizationDetails.customizations;
-                console.log('start----------------------------------------------->')
                 let customGroup = [];
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
@@ -91,19 +90,19 @@ export async function mapFnBData(data) {
                             [
                               {
                                 "code":"min",
-                                "value":customizationGroup.minQuantity
+                                "value":`${customizationGroup.minQuantity}`
                               },
                               {
                                 "code":"max",
-                                "value":customizationGroup.maxQuantity
+                                "value":`${customizationGroup.maxQuantity}`
                               },
                               {
                                 "code":"input",
-                                "value":customizationGroup.inputType ?? "select"
+                                "value":`${customizationGroup.inputType}`
                               },
                               {
                                 "code":"seq",
-                                "value":customizationGroup.seq
+                                "value":`${customizationGroup.seq}`
                               }
                             ]
                           }
@@ -294,8 +293,8 @@ function itemSchema(items,customGroup) {
         },
         "price": {
             "currency": "INR",
-            "value": items.MRP + "",
-            "maximum_value": items.MRP + ""
+            "value": `${items.MRP}`,
+            "maximum_value": `${items.MRP}`
         },
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
@@ -339,6 +338,62 @@ function itemSchema(items,customGroup) {
 }
 
 function customizationSchema(customizations,item) {
+    let customizationTag = [];
+    customizationTag.push(
+        {
+        "code":"type",
+        "list":
+        [
+            {
+            "code":"type",
+            "value":"customization"
+            }
+        ]
+        }
+    );
+    if(customizations.parentId){
+        customizationTag.push(
+            {
+            "code":"parent",
+            "list":
+            [
+                {
+                    "code":"id",
+                    "value":`${customizations.parentId}`
+                },
+                {
+                    "code":"default",
+                    "value":customizations.default
+                }
+            ]
+            }
+        )
+    }
+    if(customizations.childId){
+        customizationTag.push(
+            {
+            "code":"child",
+            "list":
+            [
+            {
+                "code":"id",
+                "value":`${customizations.childId}`
+            }
+            ]
+        });
+    }
+    customizationTag.push(
+      {
+        "code":"veg_nonveg",
+        "list":
+        [
+          {
+            "code": (customizations.vegNonVeg === 'VEG' ?'veg' :(customizations.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
+            "value":"yes"
+          }
+        ]
+      }
+    );
     let data =  {
         "id":customizations._id,
         "descriptor":
@@ -352,7 +407,7 @@ function customizationSchema(customizations,item) {
             "measure":
             {
               "unit":customizations.UOM ?? 'NA',
-              "value":customizations.UOMValue ?? 'NA'
+              "value":`${customizations.UOMValue}` ?? 'NA'
             }
           },
           "available":
@@ -367,8 +422,8 @@ function customizationSchema(customizations,item) {
         "price":
         {
           "currency":"INR",
-          "value":customizations.price,
-          "maximum_value":"0.0"
+          "value":`${customizations.price}`,
+          "maximum_value":`${customizations.price}`
         },
         "category_id":item.productSubcategory1 ?? "NA",
         "related":true,
@@ -390,11 +445,11 @@ function customizationSchema(customizations,item) {
             [
               {
                 "code":"id",
-                "value":customizations.parent
+                "value":`${customizations.parentId}`
               },
               {
                 "code":"default",
-                "value":"yes"
+                "value":customizations.default
               }
             ]
           },
@@ -404,7 +459,7 @@ function customizationSchema(customizations,item) {
             [
               {
                 "code":"id",
-                "value":customizations.child ??'NA'
+                "value":`${customizations.childId}`
               }
             ]
           },
