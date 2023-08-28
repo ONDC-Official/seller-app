@@ -427,53 +427,7 @@ function customizationSchema(customizations,item) {
         },
         "category_id":item.productSubcategory1 ?? "NA",
         "related":true,
-        "tags":
-        [
-          {
-            "code":"type",
-            "list":
-            [
-              {
-                "code":"type",
-                "value":"customization"
-              }
-            ]
-          },
-          {
-            "code":"parent",
-            "list":
-            [
-              {
-                "code":"id",
-                "value":`${customizations.parentId}`
-              },
-              {
-                "code":"default",
-                "value":customizations.default
-              }
-            ]
-          },
-          {
-            "code":"child",
-            "list":
-            [
-              {
-                "code":"id",
-                "value":`${customizations.childId}`
-              }
-            ]
-          },
-          {
-            "code":"veg_nonveg",
-            "list":
-            [
-              {
-                "code": (customizations.vegNonVeg === 'VEG' ?'veg' :(customizations.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
-                "value":"yes"
-              }
-            ]
-          }
-        ]
+        "tags":customizationTag
       };
       return data;
 }
