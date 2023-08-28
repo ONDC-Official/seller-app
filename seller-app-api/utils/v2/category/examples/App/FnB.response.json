@@ -9,9 +9,9 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-09T07:22:20.587Z",
+        "timestamp": "2023-08-28T10:19:09.749Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
-        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
+        "bpp_uri": "https://0cdc-122-161-69-2.ngrok-free.app"
     },
     "message": {
         "catalog": {
@@ -52,9 +52,340 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-09T07:22:20.587Z"
+                        "timestamp": "2023-08-28T10:19:09.749Z"
                     },
-                    "categories": [],
+                    "categories": [
+                        {
+                            "id": "jLX4sn",
+                            "descriptor": {
+                                "name": "Crust(Select any 1)"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "max",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "eEyTdH",
+                            "descriptor": {
+                                "name": "Size(Select any 1)"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "max",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "eCyEvB",
+                            "descriptor": {
+                                "name": "Size(Select any 1)"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "max",
+                                            "value": 1
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "zhG52s",
+                            "descriptor": {
+                                "name": "Bread"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "NuvjaJ",
+                            "descriptor": {
+                                "name": "Size(Select any 1)"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "1gXteb",
+                            "descriptor": {
+                                "name": "Toping"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "x476UA",
+                            "descriptor": {
+                                "name": "Bread"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 1
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "rlLysk",
+                            "descriptor": {
+                                "name": "Size(Select any 1)"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "859ScR",
+                            "descriptor": {
+                                "name": "AddOns"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "config",
+                                    "list": [
+                                        {
+                                            "code": "min"
+                                        },
+                                        {
+                                            "code": "max"
+                                        },
+                                        {
+                                            "code": "input",
+                                            "value": "select"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": 2
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
                     "locations": [
                         {
                             "id": "6463928731fadaf31cd63a2e",
@@ -154,36 +485,15 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "WXDkz1"
+                                            "value": "jLX4sn"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "7h2WUP"
+                                            "value": "eEyTdH"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "QEnRdo"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "timing",
-                                    "list": [
-                                        {
-                                            "code": "day_from",
-                                            "value": "1"
-                                        },
-                                        {
-                                            "code": "day_to",
-                                            "value": "5"
-                                        },
-                                        {
-                                            "code": "time_from",
-                                            "value": "1800"
-                                        },
-                                        {
-                                            "code": "time_to",
-                                            "value": "2200"
+                                            "value": "eCyEvB"
                                         }
                                     ]
                                 },
@@ -199,7 +509,7 @@
                             ]
                         },
                         {
-                            "id": "5C5LCL",
+                            "id": "m4X3ww",
                             "descriptor": {
                                 "name": "Hand tossed"
                             },
@@ -268,7 +578,7 @@
                             ]
                         },
                         {
-                            "id": "m1nzlK",
+                            "id": "2l2CGL",
                             "descriptor": {
                                 "name": "Thin crust"
                             },
@@ -337,7 +647,7 @@
                             ]
                         },
                         {
-                            "id": "5yrMK3",
+                            "id": "uNQB9O",
                             "descriptor": {
                                 "name": "Regular"
                             },
@@ -406,7 +716,7 @@
                             ]
                         },
                         {
-                            "id": "HIlKXx",
+                            "id": "3w5Zcm",
                             "descriptor": {
                                 "name": "Large"
                             },
@@ -475,7 +785,7 @@
                             ]
                         },
                         {
-                            "id": "sYMVwO",
+                            "id": "gioQmJ",
                             "descriptor": {
                                 "name": "Small"
                             },
@@ -544,7 +854,7 @@
                             ]
                         },
                         {
-                            "id": "xTupHf",
+                            "id": "mwAY35",
                             "descriptor": {
                                 "name": "Large"
                             },
@@ -560,6 +870,1002 @@
                                 },
                                 "maximum": {
                                     "count": "2"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 120,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "10828697-e8d6-4314-8b6b-af5897ccef62",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-08-22T12:47:46.557Z"
+                            },
+                            "parent_item_id": "",
+                            "descriptor": {
+                                "name": "Maxican Sandwich",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Pizza",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "zhG52s"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "NuvjaJ"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "1gXteb"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "7pUm77",
+                            "descriptor": {
+                                "name": "Hand tossed"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 0,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "gFmyJg",
+                            "descriptor": {
+                                "name": "Thin crust"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "ZiZmiQ",
+                            "descriptor": {
+                                "name": "Regular"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 50,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "kMvCxs",
+                            "descriptor": {
+                                "name": "Large"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "NA",
+                                        "value": "NA"
+                                    }
+                                },
+                                "available": {
+                                    "count": "undefined"
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "sAH30o",
+                            "descriptor": {
+                                "name": "cheeze"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 30,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "FQtDyy",
+                            "descriptor": {
+                                "name": "Olive"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 120,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "41d69a28-4e5b-43a0-845a-f4f5f6ea5dfc",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-08-22T12:50:58.710Z"
+                            },
+                            "parent_item_id": "",
+                            "descriptor": {
+                                "name": "Veg Burger",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Pizza",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "x476UA"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "rlLysk"
+                                        },
+                                        {
+                                            "code": "id",
+                                            "value": "859ScR"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "PJ4mlz",
+                            "descriptor": {
+                                "name": "Hand tossed"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 0,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "jewP0e",
+                            "descriptor": {
+                                "name": "Thin crust"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6tNx2g",
+                            "descriptor": {
+                                "name": "Regular"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 50,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "Ho6TXq",
+                            "descriptor": {
+                                "name": "Large"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "NA",
+                                        "value": "NA"
+                                    }
+                                },
+                                "available": {
+                                    "count": "undefined"
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "Fb3dx8",
+                            "descriptor": {
+                                "name": "Extra Cheeze"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 30,
+                                "maximum_value": "0.0"
+                            },
+                            "category_id": "Pizza",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "CG3"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NA"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "egg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "sYN9en",
+                            "descriptor": {
+                                "name": "veggies"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": ""
+                                },
+                                "maximum": {
+                                    "count": "3"
                                 }
                             },
                             "price": {

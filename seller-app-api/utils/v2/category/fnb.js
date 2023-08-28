@@ -8,36 +8,35 @@ export async function mapFnBData(data) {
 
     let orgCatalogs = []
     data.context.timestamp = new Date();
-
-    for (const org of data?.data) {
+    
+    for (const org of data?.data?.products) {
         let bppDetails = {}
         let bppProviders = []
         let tags = []
         let productAvailable = []
-        org.storeDetails.address.street = org.storeDetails.address.locality
+        org.storeDetails.address.street = org.storeDetails.address.locality 
         delete org.storeDetails.address.locality
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
         let categories = [];
+        let itemTags = [];
         for (let items of org.items) {
             if (items.variantGroup) {
-
+                itemTags.push({
+                    "code": "type",
+                    "list": [
+                        {
+                            "code": "type",
+                            "value": "variant_group"
+                        }
+                    ]
+                })
                 let category = {
                     "id": items.variantGroup._id,
                     "descriptor": {
                         "name": 'Variant HARSH Group '+ variantGroupSequence//Fixme: name should be human readable
                     },
-                    "tags": [
-                        {
-                            "code": "type",
-                            "list": [
-                                {
-                                    "code": "type",
-                                    "value": "variant_group"
-                                }
-                            ]
-                        }
-                    ]
+                    "tags": itemTags
                 }
                 for (let i=0; i < items.variantGroup.name.length; i++) {
                     category.tags.push({
@@ -56,7 +55,6 @@ export async function mapFnBData(data) {
                 }
                 categories.push(category);
             }
-
             const customizationDetails = items.customizationDetails;
             if(customizationDetails){
                 const customizationGroups = customizationDetails.customizationGroups;
@@ -69,6 +67,49 @@ export async function mapFnBData(data) {
                         value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
+                    let categoryGroupObj = {
+                        "id":customizationGroup._id,
+                        "descriptor":
+                        {
+                          "name": customizationGroup.name
+                        },
+                        "tags":
+                        [
+                          {
+                            "code":"type",
+                            "list":
+                            [
+                              {
+                                "code":"type",
+                                "value":"custom_group"
+                              }
+                            ]
+                          },
+                          {
+                            "code":"config",
+                            "list":
+                            [
+                              {
+                                "code":"min",
+                                "value":customizationGroup.minQuantity
+                              },
+                              {
+                                "code":"max",
+                                "value":customizationGroup.maxQuantity
+                              },
+                              {
+                                "code":"input",
+                                "value":customizationGroup.inputType ?? "select"
+                              },
+                              {
+                                "code":"seq",
+                                "value":customizationGroup.seq
+                              }
+                            ]
+                          }
+                        ]
+                    };
+                    categories.push(categoryGroupObj)
                 }
                 let item = itemSchema({...items, org: org},customGroup)
 
@@ -280,28 +321,6 @@ function itemSchema(items,customGroup) {
                 "code":"custom_group",
                 "list":customGroup
                 
-            },
-            {
-                "code":"timing", //todo
-                "list":
-                [
-                  {
-                    "code":"day_from",
-                    "value":"1"
-                  },
-                  {
-                    "code":"day_to",
-                    "value":"5"
-                  },
-                  {
-                    "code":"time_from",
-                    "value":"1800"
-                  },
-                  {
-                    "code":"time_to",
-                    "value":"2200"
-                  }
-                ]
             },
             {
             "code":"veg_nonveg",

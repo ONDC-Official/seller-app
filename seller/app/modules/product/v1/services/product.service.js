@@ -2,6 +2,8 @@ import Product from '../../models/product.model';
 import ProductAttribute from '../../models/productAttribute.model';
 import ProductCustomizationService from './productCustomization.service';
 import VariantGroup from '../../models/variantGroup.model';
+import CustomMenu from '../../models/customMenu.model';
+import CustomMenuTiming from '../../models/customMenuTiming.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
 import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
@@ -245,6 +247,7 @@ class ProductService {
             console.log('params------->',params);
             const orgs = await Organization.find({},).lean();
             let products = [];
+            let customMenu = [];
             for(const org of orgs){
                 query.organization = org._id;
                 query.published = true;
@@ -270,10 +273,21 @@ class ProductService {
                     }
                     org.items = data;
                     products.push(org);
+
+                }
+                let menus = await CustomMenu.find({category:category,organization:org._id}).lean();
+                for(const menu of menus){
+                    let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menu._id,organization:org._id});
+                    customMenu.push({
+                        id:menu._id,
+                        name:menu.name,
+                        seq:menu.seq,
+                        timings:customMenuTiming?.timings ?? []
+                    });
                 }
             }
             //collect all store details by
-            return products;
+            return {products,customMenu};
         } catch (err) {
             console.log('[OrderService] [getAll] Error in getting all from organization ',err);
             throw err;

@@ -8,7 +8,7 @@ export async function mapGroceryData(data) {
     let orgCatalogs = []
     data.context.timestamp = new Date();
 
-    for (const org of data?.data) {
+    for (const org of data?.data?.products) {
         let bppDetails = {}
         let bppProviders = []
         let tags = []

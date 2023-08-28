@@ -89,8 +89,8 @@ class ProductService {
             //     "domain":"ONDC:RET19"
             // }
 
-            requestQuery.context.domain = 'ONDC:RET19'; //FIXME: remove this once
-           let category = domainNameSpace.find((cat)=>{
+            requestQuery.context.domain = 'ONDC:RET11'; //FIXME: remove this once
+            let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
             })
 
