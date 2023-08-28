@@ -13,7 +13,7 @@ const productCustomizationSchema = new mongoose.Schema({
         required: true,
     },
     organization: {type:String},
-    default : {type:String,default : 'NO'},
+    default : {type:String,default : 'No'},
     name: {type:String},
     price: { type: Number },
     inStock: { type: Boolean },
