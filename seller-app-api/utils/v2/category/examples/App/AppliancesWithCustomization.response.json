@@ -247,7 +247,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "E5tuY1"
                                         }
                                     ]
                                 },
@@ -300,16 +300,16 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "50"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "50"
                                 }
                             },
                             "price": {
                                 "currency": "INR",
                                 "value": 100,
-                                "maximum_value": "0.0"
+                                "maximum_value": "100"
                             },
                             "category_id": "F&B",
                             "related": true,
@@ -328,7 +328,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "E5tuY1"
                                         },
                                         {
                                             "code": "default",
@@ -341,7 +341,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "E5tuY3"
                                         }
                                     ]
                                 }
@@ -360,16 +360,16 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "50"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "50"
                                 }
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 50,
-                                "maximum_value": "0.0"
+                                "value": "50",
+                                "maximum_value": "100"
                             },
                             "category_id": "F&B",
                             "related": true,
@@ -388,7 +388,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "E5tuY2"
                                         },
                                         {
                                             "code": "default",
@@ -473,7 +473,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "E5tuY1"
                                         }
                                     ]
                                 },
@@ -526,16 +526,16 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "50"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "50"
                                 }
                             },
                             "price": {
                                 "currency": "INR",
                                 "value": 100,
-                                "maximum_value": "0.0"
+                                "maximum_value": "100"
                             },
                             "category_id": "F&B",
                             "related": true,
@@ -554,7 +554,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "E5tuY1"
                                         },
                                         {
                                             "code": "default",
@@ -567,7 +567,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "E5tuY3"
                                         }
                                     ]
                                 }
@@ -586,16 +586,16 @@
                                     }
                                 },
                                 "available": {
-                                    "count": "null"
+                                    "count": "50"
                                 },
                                 "maximum": {
-                                    "count": "null"
+                                    "count": "50"
                                 }
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 50,
-                                "maximum_value": "0.0"
+                                "value": "50",
+                                "maximum_value": "100"
                             },
                             "category_id": "F&B",
                             "related": true,
@@ -614,7 +614,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "E5tuY2"
                                         },
                                         {
                                             "code": "default",

@@ -75,11 +75,11 @@
                                     "list": [
                                         {
                                             "code": "min",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "max",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "input",
@@ -87,7 +87,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 1
+                                            "value": "1"
                                         }
                                     ]
                                 }
@@ -113,11 +113,11 @@
                                     "list": [
                                         {
                                             "code": "min",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "max",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "input",
@@ -125,7 +125,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -151,11 +151,11 @@
                                     "list": [
                                         {
                                             "code": "min",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "max",
-                                            "value": 1
+                                            "value": "1"
                                         },
                                         {
                                             "code": "input",
@@ -163,7 +163,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -199,7 +199,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 1
+                                            "value": "1"
                                         }
                                     ]
                                 }
@@ -235,7 +235,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -271,7 +271,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -307,7 +307,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 1
+                                            "value": "1"
                                         }
                                     ]
                                 }
@@ -343,7 +343,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -379,7 +379,7 @@
                                         },
                                         {
                                             "code": "seq",
-                                            "value": 2
+                                            "value": "2"
                                         }
                                     ]
                                 }
@@ -530,7 +530,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 0,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -549,7 +549,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -562,7 +562,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         }
                                     ]
                                 },
@@ -578,7 +578,7 @@
                             ]
                         },
                         {
-                            "id": "2l2CGL",
+                            "id": "2l2gY7thL",
                             "descriptor": {
                                 "name": "Thin crust"
                             },
@@ -598,8 +598,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -618,7 +618,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -631,7 +631,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         }
                                     ]
                                 },
@@ -668,7 +668,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 50,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -687,7 +687,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -700,7 +700,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -736,8 +736,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -756,7 +756,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -769,7 +769,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -806,7 +806,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 30,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -825,7 +825,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -838,7 +838,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -875,7 +875,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 120,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -894,7 +894,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -907,7 +907,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1015,7 +1015,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "77"
                                     }
                                 },
                                 "available": {
@@ -1028,7 +1028,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 0,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1047,7 +1047,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -1060,7 +1060,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         }
                                     ]
                                 },
@@ -1084,7 +1084,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1096,8 +1096,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1116,7 +1116,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -1129,7 +1129,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         }
                                     ]
                                 },
@@ -1153,7 +1153,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "44"
                                     }
                                 },
                                 "available": {
@@ -1165,8 +1165,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 50,
-                                "maximum_value": "0.0"
+                                "value": "50",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1185,7 +1185,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -1198,7 +1198,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1221,12 +1221,12 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "NA",
-                                        "value": "NA"
+                                        "unit": "CM",
+                                        "value": "80"
                                     }
                                 },
                                 "available": {
-                                    "count": "undefined"
+                                    "count": "100"
                                 },
                                 "maximum": {
                                     "count": "3"
@@ -1234,8 +1234,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1254,7 +1254,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -1267,7 +1267,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1291,7 +1291,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1303,8 +1303,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 30,
-                                "maximum_value": "0.0"
+                                "value": "30",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1323,7 +1323,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -1336,7 +1336,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1360,7 +1360,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "50"
                                     }
                                 },
                                 "available": {
@@ -1372,8 +1372,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 120,
-                                "maximum_value": "0.0"
+                                "value": "120",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1392,7 +1392,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -1405,7 +1405,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "gY7th8"
                                         }
                                     ]
                                 },
@@ -1513,7 +1513,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1526,7 +1526,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 0,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1545,7 +1545,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -1558,7 +1558,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         }
                                     ]
                                 },
@@ -1582,7 +1582,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1594,8 +1594,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1614,7 +1614,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG1"
+                                            "value": "gY7th1"
                                         },
                                         {
                                             "code": "default",
@@ -1627,7 +1627,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         }
                                     ]
                                 },
@@ -1651,7 +1651,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1664,7 +1664,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": 50,
-                                "maximum_value": "0.0"
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1683,7 +1683,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -1696,7 +1696,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1719,8 +1719,8 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "NA",
-                                        "value": "NA"
+                                        "unit": "CM",
+                                        "value": "60"
                                     }
                                 },
                                 "available": {
@@ -1732,8 +1732,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 100,
-                                "maximum_value": "0.0"
+                                "value": "100",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1752,7 +1752,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG2"
+                                            "value": "gY7th2"
                                         },
                                         {
                                             "code": "default",
@@ -1765,7 +1765,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1789,7 +1789,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1801,8 +1801,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 30,
-                                "maximum_value": "0.0"
+                                "value": "30",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1821,7 +1821,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -1834,7 +1834,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1858,7 +1858,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "tt"
+                                        "value": "32"
                                     }
                                 },
                                 "available": {
@@ -1870,8 +1870,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 120,
-                                "maximum_value": "0.0"
+                                "value": "120",
+                                "maximum_value": "123"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1890,7 +1890,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "CG3"
+                                            "value": "gY7th3"
                                         },
                                         {
                                             "code": "default",
@@ -1903,7 +1903,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "NA"
+                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },

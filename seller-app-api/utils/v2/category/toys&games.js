@@ -19,26 +19,25 @@ export async function mapToysnGamesData(data) {
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
         let categories = [];
+        let itemTags = [];
         let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
-
+                itemTags.push({
+                    "code": "type",
+                    "list": [
+                        {
+                            "code": "type",
+                            "value": "variant_group"
+                        }
+                    ]
+                })
                 let category = {
                     "id": items.variantGroup._id,
                     "descriptor": {
                         "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
                     },
-                    "tags": [
-                        {
-                            "code": "type",
-                            "list": [
-                                {
-                                    "code": "type",
-                                    "value": "variant_group"
-                                }
-                            ]
-                        }
-                    ]
+                    "tags": itemTags
                 }
                 if(items.variantGroup.name && items.variantGroup.name.length > 0){
                     for (let i=0; i < items.variantGroup.name.length; i++) {
@@ -75,6 +74,49 @@ export async function mapToysnGamesData(data) {
                         value: customizationGroup.id
                     };
                     customGroup.push(groupObj);
+                    let categoryGroupObj = {
+                        "id":customizationGroup._id,
+                        "descriptor":
+                        {
+                          "name": customizationGroup.name
+                        },
+                        "tags":
+                        [
+                          {
+                            "code":"type",
+                            "list":
+                            [
+                              {
+                                "code":"type",
+                                "value":"custom_group"
+                              }
+                            ]
+                          },
+                          {
+                            "code":"config",
+                            "list":
+                            [
+                              {
+                                "code":"min",
+                                "value":`${customizationGroup.minQuantity}`
+                              },
+                              {
+                                "code":"max",
+                                "value":`${customizationGroup.maxQuantity}`
+                              },
+                              {
+                                "code":"input",
+                                "value":`${customizationGroup.inputType}`
+                              },
+                              {
+                                "code":"seq",
+                                "value":`${customizationGroup.seq}`
+                              }
+                            ]
+                          }
+                        ]
+                    };
+                    categories.push(categoryGroupObj)
                 }
                 let item = itemSchemaWithCustomGroup({...items, org: org},customGroup)
 
@@ -259,8 +301,8 @@ function itemSchema(items) {
         },
         "price": {
             "currency": "INR",
-            "value": items.MRP + "",
-            "maximum_value": items.MRP + ""
+            "value": `${items.MRP}`,
+            "maximum_value": `${items.MRP}`
         },
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
@@ -338,8 +380,8 @@ function itemSchemaWithCustomGroup(items,customGroup) {
         },
         "price": {
             "currency": "INR",
-            "value": items.MRP + "",
-            "maximum_value": items.MRP + ""
+            "value": `${items.MRP}`,
+            "maximum_value": `${items.MRP}`
         },
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
@@ -393,76 +435,96 @@ function itemSchemaWithCustomGroup(items,customGroup) {
 }
 
 function customizationSchema(customizations,item) {
-    let data =  {
-        "id":customizations.id,
-        "descriptor":
+    let customizationTag = [];
+    customizationTag.push(
         {
-          "name":customizations.name
-        },
-        "quantity":
-        {
-          "unitized":
-          {
-            "measure":
-            {
-              "unit":customizations.UOM ?? 'NA',
-              "value":customizations.UOMValue ?? 'NA'
-            }
-          },
-          "available":
-          {
-            "count":`${customizations.available}` ?? 'NA'
-          },
-          "maximum":
-          {
-            "count":`${customizations.maximum}` ?? 'NA'
-          }
-        },
-        "price":
-        {
-          "currency":"INR",
-          "value":customizations.price,
-          "maximum_value":"0.0"
-        },
-        "category_id":item.productSubcategory1 ?? "NA",
-        "related":true,
-        "tags":
+        "code":"type",
+        "list":
         [
-          {
+            {
             "code":"type",
-            "list":
-            [
-              {
-                "code":"type",
-                "value":"customization"
-              }
-            ]
-          },
-          {
+            "value":"customization"
+            }
+        ]
+        }
+    );
+    if(customizations.parentId){
+        customizationTag.push(
+            {
             "code":"parent",
             "list":
             [
-              {
-                "code":"id",
-                "value":customizations.parent
-              },
-              {
-                "code":"default",
-                "value":"yes"
-              }
+                {
+                    "code":"id",
+                    "value":`${customizations.parentId}`
+                },
+                {
+                    "code":"default",
+                    "value":customizations.default
+                }
             ]
-          },
-          {
+            }
+        )
+    }
+    if(customizations.childId){
+        customizationTag.push(
+            {
             "code":"child",
             "list":
             [
-              {
+            {
                 "code":"id",
-                "value":customizations.child
-              }
+                "value":`${customizations.childId}`
+            }
             ]
+        });
+    }
+    customizationTag.push(
+      {
+        "code":"veg_nonveg",
+        "list":
+        [
+          {
+            "code": (customizations.vegNonVeg === 'VEG' ?'veg' :(customizations.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
+            "value":"yes"
           }
         ]
-      };
-      return data;
+      }
+    );
+    let data =  {
+    "id":customizations.id,
+    "descriptor":
+    {
+        "name":customizations.name
+    },
+    "quantity":
+    {
+        "unitized":
+        {
+        "measure":
+        {
+            "unit":customizations.UOM ?? 'NA',
+            "value":`${customizations.UOMValue}` ?? 'NA'
+        }
+        },
+        "available":
+        {
+        "count":`${customizations.available}` ?? 'NA'
+        },
+        "maximum":
+        {
+        "count":`${customizations.maximum}` ?? 'NA'
+        }
+    },
+    "price":
+    {
+        "currency":"INR",
+        "value":`${customizations.price}`,
+        "maximum_value":`${customizations.price}`
+    },
+    "category_id":item.productSubcategory1 ?? "NA",
+    "related":true,
+    "tags":customizationTag      
+    };
+    return data;
 }

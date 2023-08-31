@@ -20,6 +20,7 @@ export async function mapFnBData(data) {
         delete org.storeDetails.address.country
         let categories = [];
         let itemTags = [];
+        let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
                 itemTags.push({
@@ -55,6 +56,7 @@ export async function mapFnBData(data) {
                 }
                 categories.push(category);
             }
+            variantGroupSequence=variantGroupSequence+1;
             const customizationDetails = items.customizationDetails;
             if(customizationDetails){
                 const customizationGroups = customizationDetails.customizationGroups;
@@ -119,8 +121,6 @@ export async function mapFnBData(data) {
                     productAvailable.push(customizationData)
                 }
             }
-            console.log('final data--------------------------------------------------------------------------->')
-            console.log({productAvailable})
         }
         bppDetails = {
             "name": org.name,
