@@ -176,7 +176,9 @@ class ProductService {
 
     async list(params) {
         try {
-            let query={};
+            let query={
+                organization:params.organization
+            };
             if(params.name){
                 query.productName = { $regex: params.name, $options: 'i' };
             }
