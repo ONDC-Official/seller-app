@@ -270,8 +270,21 @@ class ProductService {
                             images.push(imageData.url);
                         }
                         product.images = images;
+                        let attributeData =[];
                         const attributes = await ProductAttribute.find({product:product._id});
-                        product.attributes = attributes;
+                        for(const attribute of attributes){
+                            let value = attribute.value; 
+                            if(attribute.code === 'size_chart'){
+                                let sizeChart = await s3.getSignedUrlForRead({path:attribute.value});
+                                value = sizeChart?.url ?? '';
+                            }
+                            const attributeObj = {
+                                'code' : attribute.code,
+                                'value':value
+                            };
+                            attributeData.push(attributeObj);
+                        }
+                        product.attributes = attributeData;
                         product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
                     }
                     org.items = data;
