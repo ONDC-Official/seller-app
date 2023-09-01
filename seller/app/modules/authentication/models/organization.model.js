@@ -33,6 +33,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
     storeDetails:{
         name: {type:String},
         categories: {type:Object},
+        category: {type:String},
         logo: {type:String},
         location: new mongoose.Schema({lat:{type:Number},long:{type:Number}},{ _id: true }),
         locationAvailabilityPANIndia:{type:Boolean},
