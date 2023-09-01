@@ -234,7 +234,7 @@ class OrganizationService {
                 }else{
                     organization.storeDetails = {};
                 }
-
+                delete organization.storeDetails.categories;
                 return organization;
             } else {
                 throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
