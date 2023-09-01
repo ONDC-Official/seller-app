@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-28T10:19:09.749Z",
+        "timestamp": "2023-09-01T07:30:40.953Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://0cdc-122-161-69-2.ngrok-free.app"
     },
@@ -52,11 +52,137 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-28T10:19:09.749Z"
+                        "timestamp": "2023-09-01T07:30:40.953Z"
                     },
                     "categories": [
                         {
-                            "id": "jLX4sn",
+                            "id": "aIDFFQ",
+                            "parent_category_id": "",
+                            "descriptor": {
+                                "name": "Snacks",
+                                "images": []
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_menu"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "display",
+                                    "list": [
+                                        {
+                                            "code": "rank",
+                                            "value": "3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "w56IKK",
+                            "parent_category_id": "",
+                            "descriptor": {
+                                "name": "Royal Dinner",
+                                "images": []
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_menu"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "timing",
+                                    "list": [
+                                        {
+                                            "code": "day_from",
+                                            "value": "Mon"
+                                        },
+                                        {
+                                            "code": "day_to",
+                                            "value": "Wed"
+                                        },
+                                        {
+                                            "code": "time_from",
+                                            "value": "10:00"
+                                        },
+                                        {
+                                            "code": "time_to",
+                                            "value": "11:00"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "display",
+                                    "list": [
+                                        {
+                                            "code": "rank",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "ce6XUF",
+                            "parent_category_id": "",
+                            "descriptor": {
+                                "name": "Royal Dinners",
+                                "images": []
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "custom_menu"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "timing",
+                                    "list": [
+                                        {
+                                            "code": "day_from",
+                                            "value": "Mon"
+                                        },
+                                        {
+                                            "code": "day_to",
+                                            "value": "Wed"
+                                        },
+                                        {
+                                            "code": "time_from",
+                                            "value": "10:00"
+                                        },
+                                        {
+                                            "code": "time_to",
+                                            "value": "11:00"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "display",
+                                    "list": [
+                                        {
+                                            "code": "rank",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "vGqKhJ",
                             "descriptor": {
                                 "name": "Crust(Select any 1)"
                             },
@@ -94,7 +220,7 @@
                             ]
                         },
                         {
-                            "id": "eEyTdH",
+                            "id": "qh8ukX",
                             "descriptor": {
                                 "name": "Size(Select any 1)"
                             },
@@ -132,7 +258,7 @@
                             ]
                         },
                         {
-                            "id": "eCyEvB",
+                            "id": "AjUTn6",
                             "descriptor": {
                                 "name": "Size(Select any 1)"
                             },
@@ -188,10 +314,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -224,10 +352,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -260,10 +390,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -296,10 +428,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -332,10 +466,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -368,10 +504,12 @@
                                     "code": "config",
                                     "list": [
                                         {
-                                            "code": "min"
+                                            "code": "min",
+                                            "value": "undefined"
                                         },
                                         {
-                                            "code": "max"
+                                            "code": "max",
+                                            "value": "undefined"
                                         },
                                         {
                                             "code": "input",
@@ -460,6 +598,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
+                            "category_ids": [
+                                "w56IKK:1"
+                            ],
                             "category_id": "Pizza",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "",
@@ -485,15 +626,15 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "jLX4sn"
+                                            "value": "vGqKhJ"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "eEyTdH"
+                                            "value": "qh8ukX"
                                         },
                                         {
                                             "code": "id",
-                                            "value": "eCyEvB"
+                                            "value": "AjUTn6"
                                         }
                                     ]
                                 },
@@ -509,7 +650,7 @@
                             ]
                         },
                         {
-                            "id": "m4X3ww",
+                            "id": "wCR0m8",
                             "descriptor": {
                                 "name": "Hand tossed"
                             },
@@ -529,8 +670,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 0,
-                                "maximum_value": "123"
+                                "value": "0",
+                                "maximum_value": "0"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -549,11 +690,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th1"
+                                            "value": "vGqKhJ"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -562,7 +703,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th2"
+                                            "value": "qh8ukX"
                                         }
                                     ]
                                 },
@@ -578,7 +719,7 @@
                             ]
                         },
                         {
-                            "id": "2l2gY7thL",
+                            "id": "Lhljcg",
                             "descriptor": {
                                 "name": "Thin crust"
                             },
@@ -599,7 +740,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -618,11 +759,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th1"
+                                            "value": "vGqKhJ"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -631,7 +772,7 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th3"
+                                            "value": "AjUTn6"
                                         }
                                     ]
                                 },
@@ -647,7 +788,7 @@
                             ]
                         },
                         {
-                            "id": "uNQB9O",
+                            "id": "Ktv1MY",
                             "descriptor": {
                                 "name": "Regular"
                             },
@@ -667,8 +808,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 50,
-                                "maximum_value": "123"
+                                "value": "50",
+                                "maximum_value": "50"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -687,20 +828,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th2"
+                                            "value": "qh8ukX"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -716,7 +848,7 @@
                             ]
                         },
                         {
-                            "id": "3w5Zcm",
+                            "id": "xQyVj1",
                             "descriptor": {
                                 "name": "Large"
                             },
@@ -737,7 +869,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -756,20 +888,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th2"
+                                            "value": "qh8ukX"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -785,7 +908,7 @@
                             ]
                         },
                         {
-                            "id": "gioQmJ",
+                            "id": "UglD31",
                             "descriptor": {
                                 "name": "Small"
                             },
@@ -805,8 +928,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 30,
-                                "maximum_value": "123"
+                                "value": "30",
+                                "maximum_value": "30"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -825,20 +948,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th3"
+                                            "value": "AjUTn6"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -854,7 +968,7 @@
                             ]
                         },
                         {
-                            "id": "mwAY35",
+                            "id": "X2r2VI",
                             "descriptor": {
                                 "name": "Large"
                             },
@@ -874,8 +988,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 120,
-                                "maximum_value": "123"
+                                "value": "120",
+                                "maximum_value": "120"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -894,20 +1008,11 @@
                                     "list": [
                                         {
                                             "code": "id",
-                                            "value": "gY7th3"
+                                            "value": "AjUTn6"
                                         },
                                         {
                                             "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
+                                            "value": "YES"
                                         }
                                     ]
                                 },
@@ -958,6 +1063,7 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
+                            "category_ids": [],
                             "category_id": "Pizza",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "",
@@ -1015,7 +1121,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "77"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1027,8 +1133,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 0,
-                                "maximum_value": "123"
+                                "value": "0",
+                                "maximum_value": "0"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1039,28 +1145,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th1"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
                                         }
                                     ]
                                 },
@@ -1084,7 +1168,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1097,7 +1181,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1108,28 +1192,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th1"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
                                         }
                                     ]
                                 },
@@ -1153,7 +1215,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "44"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1166,7 +1228,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "50",
-                                "maximum_value": "123"
+                                "maximum_value": "50"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1177,28 +1239,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1221,12 +1261,12 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "CM",
-                                        "value": "80"
+                                        "unit": "NA",
+                                        "value": "undefined"
                                     }
                                 },
                                 "available": {
-                                    "count": "100"
+                                    "count": "undefined"
                                 },
                                 "maximum": {
                                     "count": "3"
@@ -1235,7 +1275,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1246,28 +1286,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1291,7 +1309,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1304,7 +1322,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "30",
-                                "maximum_value": "123"
+                                "maximum_value": "30"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1315,28 +1333,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1360,7 +1356,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "50"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1373,7 +1369,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "120",
-                                "maximum_value": "123"
+                                "maximum_value": "120"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1384,28 +1380,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th8"
                                         }
                                     ]
                                 },
@@ -1456,6 +1430,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
+                            "category_ids": [
+                                "ce6XUF:1"
+                            ],
                             "category_id": "Pizza",
                             "location_id": "6463928731fadaf31cd63a2e",
                             "fulfillment_id": "",
@@ -1513,7 +1490,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1525,8 +1502,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 0,
-                                "maximum_value": "123"
+                                "value": "0",
+                                "maximum_value": "0"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1537,28 +1514,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th1"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
                                         }
                                     ]
                                 },
@@ -1582,7 +1537,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1595,7 +1550,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1606,28 +1561,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th1"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
                                         }
                                     ]
                                 },
@@ -1651,7 +1584,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1663,8 +1596,8 @@
                             },
                             "price": {
                                 "currency": "INR",
-                                "value": 50,
-                                "maximum_value": "123"
+                                "value": "50",
+                                "maximum_value": "50"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1675,28 +1608,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1719,8 +1630,8 @@
                             "quantity": {
                                 "unitized": {
                                     "measure": {
-                                        "unit": "CM",
-                                        "value": "60"
+                                        "unit": "NA",
+                                        "value": "undefined"
                                     }
                                 },
                                 "available": {
@@ -1733,7 +1644,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "100",
-                                "maximum_value": "123"
+                                "maximum_value": "100"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1744,28 +1655,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th2"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1789,7 +1678,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1802,7 +1691,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "30",
-                                "maximum_value": "123"
+                                "maximum_value": "30"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1813,28 +1702,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },
@@ -1858,7 +1725,7 @@
                                 "unitized": {
                                     "measure": {
                                         "unit": "inch",
-                                        "value": "32"
+                                        "value": "tt"
                                     }
                                 },
                                 "available": {
@@ -1871,7 +1738,7 @@
                             "price": {
                                 "currency": "INR",
                                 "value": "120",
-                                "maximum_value": "123"
+                                "maximum_value": "120"
                             },
                             "category_id": "Pizza",
                             "related": true,
@@ -1882,28 +1749,6 @@
                                         {
                                             "code": "type",
                                             "value": "customization"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "parent",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "gY7th3"
-                                        },
-                                        {
-                                            "code": "default",
-                                            "value": "yes"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "child",
-                                    "list": [
-                                        {
-                                            "code": "id",
-                                            "value": "2Y7nK3"
                                         }
                                     ]
                                 },

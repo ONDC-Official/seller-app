@@ -8,7 +8,77 @@ export async function mapFnBData(data) {
 
     let orgCatalogs = []
     data.context.timestamp = new Date();
-    
+    //custome menu
+    let index = 1;
+    let menuData=[];
+    const customMenuData = data?.data?.customMenu;
+    if(customMenuData && customMenuData.length >0){
+        for (const menu of customMenuData) {
+            let menuTags =[];
+            menuTags.push({
+                "code":"type",
+                "list":
+                [
+                {
+                    "code":"type",
+                    "value":"custom_menu"
+                }
+                ]
+            });
+            if(menu.timings && menu.timings.length>0){
+                const timing = menu.timings[0]
+                menuTags.push(
+                    {
+                        "code":"timing",
+                        "list":[
+                            {
+                                "code":"day_from",
+                                "value":`${timing.daysRange.from}`
+                            },
+                            {
+                                "code":"day_to",
+                                "value":`${timing.daysRange.to}`
+                            },
+                            {
+                                "code":"time_from",
+                                "value":`${timing.timings[0].from}`
+                            },
+                            {
+                                "code":"time_to",
+                                "value":`${timing.timings[0].to}`
+                            }
+                        ]
+                    },
+                )
+            };
+            menuTags.push(
+                {
+                    "code":"display",
+                    "list":
+                    [
+                    {
+                        "code":"rank",
+                        "value":`${menu.seq}`
+                    }
+                    ]
+                }
+            );
+            let menuDataObj = {
+                "id":menu.id,
+                "parent_category_id":"",
+                "descriptor":
+                {
+                "name" : menu.name,
+                "short_desc":menu.shortDescription,
+                "long_desc":menu.longDescription,
+                "images":menu.images
+                },
+                "tags":menuTags
+            };
+            menuData.push(menuDataObj)
+        }
+    }
+
     for (const org of data?.data?.products) {
         let bppDetails = {}
         let bppProviders = []
@@ -55,6 +125,12 @@ export async function mapFnBData(data) {
                     });
                 }
                 categories.push(category);
+            }
+            if(menuData && menuData.length >0 && index ===1){
+                for(const menu of menuData){
+                    categories.push(menu)
+                } 
+                index += 1;
             }
             variantGroupSequence=variantGroupSequence+1;
             const customizationDetails = items.customizationDetails;
@@ -112,7 +188,7 @@ export async function mapFnBData(data) {
                     };
                     categories.push(categoryGroupObj)
                 }
-                let item = itemSchema({...items, org: org},customGroup)
+                let item = itemSchema({...items, org: org},customGroup,customMenuData)
 
                 productAvailable.push(item)
                 
@@ -255,11 +331,12 @@ export async function mapFnBData(data) {
 }
 
 
-function itemSchema(items,customGroup) {
+function itemSchema(items,customGroup,customMenuData) {
 
     let attributes = items.attributes.map((attribute) => {
         return {code: attribute.code, value: attribute.value};
     });
+    const categoryIds = getcategoryIds(items,customMenuData);
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const org = items.org;
     let item = {
@@ -296,6 +373,7 @@ function itemSchema(items,customGroup) {
             "value": `${items.MRP}`,
             "maximum_value": `${items.MRP}`
         },
+        "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
         "fulfillment_id": items.fulfilmentId ?? "NA",
@@ -430,4 +508,23 @@ function customizationSchema(customizations,item) {
         "tags":customizationTag
       };
       return data;
+}
+
+function getcategoryIds(items,customMenuData){
+    let categoryIds =[];
+    if(customMenuData && customMenuData.length >0){
+        for(const menu of customMenuData){
+            if(menu.products && menu.products.length  >0){
+                let menuProduct = menu.products.find((product)=>{
+                    return product.id === items._id
+                });
+                if(menuProduct?.seq){
+                    const categoryIdData = `${menu.id}:${menuProduct?.seq}`
+                    categoryIds.push(categoryIdData)
+                }
+            }
+        }
+    }
+    console.log({categoryIds})
+    return categoryIds;
 }

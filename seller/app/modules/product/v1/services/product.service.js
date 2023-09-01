@@ -3,6 +3,7 @@ import ProductAttribute from '../../models/productAttribute.model';
 import ProductCustomizationService from './productCustomization.service';
 import VariantGroup from '../../models/variantGroup.model';
 import CustomMenu from '../../models/customMenu.model';
+import CustomMenuProduct from '../../models/customMenuProduct.model';
 import CustomMenuTiming from '../../models/customMenuTiming.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
 import Organization from '../../../authentication/models/organization.model';
@@ -278,12 +279,35 @@ class ProductService {
                 let menus = await CustomMenu.find({category:category,organization:org._id}).lean();
                 for(const menu of menus){
                     let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menu._id,organization:org._id});
-                    customMenu.push({
+                    let images = [];
+                    let menuObj ={
                         id:menu._id,
                         name:menu.name,
-                        seq:menu.seq,
-                        timings:customMenuTiming?.timings ?? []
-                    });
+                        seq:menu.seq
+                    };
+                    for(const image of menu.images){
+                        let imageData = await s3.getSignedUrlForRead({path:image});
+                        images.push(imageData.url);
+                    }
+                    let menuQuery = {
+                        organization:org._id,
+                        customMenu : menu._id
+                    };
+                    let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
+                    let productData = [];
+                    for(const menuProduct of menuProducts){
+                        let productObj = {
+                            id:menuProduct.product._id,
+                            name:menuProduct.product.productName,
+                            seq:menuProduct.seq,
+    
+                        };
+                        productData.push(productObj);
+                    }
+                    menuObj.products = productData;
+                    menuObj.images = images;
+                    menuObj.timings = customMenuTiming?.timings ?? [];
+                    customMenu.push(menuObj);
                 }
             }
             //collect all store details by
