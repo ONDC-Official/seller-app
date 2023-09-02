@@ -357,16 +357,6 @@ class OndcService {
     async orderInit(payload = {}, req = {}) {
         try {
            // const {criteria = {}, payment = {}} = req || {};
-
-           console.log('########(  )#############')
-           console.log('#########/ \##############')
-           console.log('#######(.) (.)#################')
-           console.log('########\   /#############')
-           console.log('#########|  |#############')
-           console.log('########( ^  )#############')
-           console.log('########/ /| |############')
-           console.log('#######| | | |###########')
-           console.log('#######| | | |############')
             logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({
@@ -593,7 +583,7 @@ class OndcService {
                 ]
             })
 
-            const logistics = selectRequest.selectedLogistics;
+            const logistics = selectRequest?.selectedLogistics;
             const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
@@ -661,8 +651,8 @@ class OndcService {
             }
 
 
-            let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
-
+            // let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});// let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
+            let deliveryType = payload.message.order.items //TODO commented above for now
             const contextTimestamp = new Date()
             const confirmRequest  = {
                 "context": {
@@ -745,7 +735,55 @@ class OndcService {
             throw err;
         }
     }
+    async orderConfirmWithOutLogistic(payload = {}, req = {}) {
+        try {
+            const selectMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+            const searchRequest = await productService.confirmV2(payload);
+            this.postConfirmRequestV2(searchRequest,logisticsMessageId, selectMessageId)
+            //}, 10000); //TODO move to config
 
+            return {status:"ACK"}
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async postConfirmRequestV2(searchRequest,logisticsMessageId,selectMessageId){
+
+        try{
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/v1/on_confirm`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+
+                await httpRequest.send();
+
+            } catch (e) {
+                logger.error('error', `[Ondc Service] post http select response : `, e);
+                return e
+            }
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
 
     async postConfirmRequest(searchRequest,logisticsMessageId,selectMessageId){
 

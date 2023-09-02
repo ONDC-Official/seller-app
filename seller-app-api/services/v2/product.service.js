@@ -454,7 +454,7 @@ class ProductService {
 
         detailedQoute.push(deliveryCharges);
 
-        const productData = await getSelect({
+        const productData = await getConfirm({
             qouteItems: qouteItems,
             order: requestQuery.message.order,
             totalPrice: totalPriceObj,
@@ -641,6 +641,294 @@ class ProductService {
             detailedQoute: detailedQoute,
             context: requestQuery.context,
             message: requestQuery.message
+        });
+
+        return productData
+    }
+
+    async confirmV2(requestQuery) {
+
+        const items = requestQuery.message.order.items
+        
+        let isQtyAvailable = true;
+        let isValidOrg = true;
+        let isValidItem = true;
+        let isServiceable = true;
+        let qouteItems = []
+        let detailedQoute = []
+        let itemType= ''
+        let resultData;
+        let itemData ={};
+        let totalPrice = 0
+        for (let item of items) { 
+            let tags = item.tags;
+            let tagData = tags.find((tag)=>{return tag.code === 'type'})
+            let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+            itemType = tagTypeData.value;
+            if(itemType === 'customization'){
+                resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                    return row.id === item.id
+                })
+                if(resultData){
+                    console.log({custqty:resultData.maximum})
+                    if(resultData.maximum < item.quantity.count){
+                        isQtyAvailable = false
+                    }
+                    let qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
+                        },
+                        "title": resultData?.name,
+                        "@ondc/org/title_type": "customization",
+                        "price":
+                        {
+                        "currency":"INR",
+                        "value":`${resultData?.price}`
+                        },
+                        "item":
+                        {
+                        "parent_item_id":`${item.parent_item_id}`,
+                        "quantity":
+                        {
+                            "available":
+                            {
+                            "count": `${resultData?.available}`
+                            },
+                            "maximum":
+                            {
+                            "count": `${resultData?.available}`
+                            }
+                        },
+                        "price":
+                        {
+                            "currency":"INR",
+                            "value":`${resultData?.price}`
+                        },
+                        "tags":
+                        [
+                            {
+                            "code":"type",
+                            "list":
+                            [
+                                {
+                                "code":"type",
+                                "value":"customization"
+                                }
+                            ]
+                            }
+                        ]
+                        }
+                    }
+                    detailedQoute.push(qouteItemsDetails)
+                }else{
+                    isValidItem = false;
+                }
+            }else{
+                resultData = await this.getForOndc(item.id)
+                if(Object.keys(resultData).length === 0){
+                    if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                        isQtyAvailable = false
+                    }
+                    itemData = resultData; 
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
+                        totalPrice += price
+                    }
+        
+                    //TODO: check if quantity is available
+        
+                    let qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
+                        },
+                        "title": resultData?.commonDetails?.productName,
+                        "@ondc/org/title_type": "item",
+                        "price":
+                        {
+                        "currency":"INR",
+                        "value":`${resultData?.commonDetails?.MRP}`
+                        },
+                        "item":
+                        {
+                        "parent_item_id":`${item.parent_item_id}`,
+                        "quantity":
+                        {
+                            "available":
+                            {
+                            "count": `${resultData?.commonDetails?.quantity}`
+                            },
+                            "maximum":
+                            {
+                            "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                            }
+                        },
+                        "price":
+                        {
+                            "currency":"INR",
+                            "value":`${resultData?.commonDetails?.MRP}`
+                        },
+                        "tags":
+                        [
+                            {
+                            "code":"type",
+                            "list":
+                            [
+                                {
+                                "code":"type",
+                                "value":"item"
+                                }
+                            ]
+                            }
+                        ]
+                        }
+                    }
+                    detailedQoute.push(qouteItemsDetails)
+                }else{
+                    isValidItem = false;
+                }
+            }
+            item.fulfillment_id = "F1123" //TODO static for now
+            delete item.location_id
+            item.quantity
+            qouteItems.push(item)
+        }
+
+        let deliveryCharges = {
+            "title": "Delivery charges",
+            "@ondc/org/title_type": "delivery",
+            "price": {
+                "currency": "INR",
+                "value": "0"
+            }
+        }
+
+        let totalPriceObj = {value: totalPrice, currency: "INR"}
+
+        detailedQoute.push(deliveryCharges);
+
+        let headers = {};
+
+        let confirmData = requestQuery.message.order
+
+        let orderItems = []
+        // let confirmData = requestQuery.message.order
+        // for(let item  of confirmData.items){
+
+        //     let productItems = {
+        //         product:item.id,
+        //         status:'Created',
+        //         qty:item.quantity.count
+
+        //     }
+        //     let httpRequest = new HttpRequest(
+        //         serverUrl,
+        //         `/api/order-items`,
+        //         'POST',
+        //         {data: productItems},
+        //         headers
+        //     );
+        //     let result = await httpRequest.send();
+        //     orderItems.push(result.data.data.id);
+        // }
+
+
+        confirmData["order_items"] =orderItems
+        confirmData.order_id = confirmData.id
+        delete confirmData.id
+
+
+        // let confirm = {}
+        // let httpRequest = new HttpRequest(
+        //     serverUrl,
+        //     `/api/orders`,
+        //     'POST',
+        //     {data: confirmData},
+        //     headers
+        // );
+
+        // let result = await httpRequest.send();
+        let org= await this.getOrgForOndc(requestQuery.message.order.provider.id);
+        console.log('########################################')
+        console.log('########################################')
+        console.log({dddddd:org.providerDetail.storeDetails.storeTiming})
+        const fulfillments =
+        [
+          {
+            "id":requestQuery.message.order.fulfillments[0].id,
+            "@ondc/org/provider_name":org.providerDetail.name,
+            "state":
+            {
+              "descriptor":
+              {
+                "code":"Pending"
+              }
+            },
+            "type":"Delivery",
+            "tracking":false,
+            "start":
+            {
+              "location":
+              {
+                "id":org.providerDetail.storeDetails.location._id,
+                "descriptor":
+                {
+                  "name":org.providerDetail.storeDetails.name
+                },
+                "gps":`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+                "address":org.providerDetail.storeDetails.address
+              },
+              "time":
+              {
+                "range":
+                {
+                  "start":`${org.providerDetail.storeDetails.storeTiming.range.start}`,
+                  "end":`${org.providerDetail.storeDetails.storeTiming.range.end}`
+                }
+              },
+              "instructions":
+              {
+                "code":"2",
+                "name":"ONDC order",
+                "short_desc":"value of PCC",
+                "long_desc":"additional instructions such as register or counter no for self-pickup"
+              },
+              "contact":requestQuery.message.order.fulfillments[0].end.contact
+            },
+            "end":
+            {
+                "person":requestQuery.message.order.fulfillments[0].end.person,
+                "contact":requestQuery.message.order.fulfillments[0].end.contact,
+              "location":requestQuery.message.order.fulfillments[0].end.location,
+              "time":
+              {
+                "range":
+                {
+                  "start":"2023-06-03T11:00:00.000Z", //TODO : static data for now
+                  "end":"2023-06-03T11:30:00.000Z"//TODO : static data for now
+                }
+              },
+              "instructions"://TODO : static data for now
+              {
+                "name":"Status for drop",
+                "short_desc":"Delivery Confirmation Code"
+              },
+
+            },
+            "rateable":true
+          }
+        ];
+
+        requestQuery.message.provider = {...requestQuery.message.provider,"rateable":true}
+        const productData = await getConfirm({
+            qouteItems: qouteItems,
+            totalPrice: totalPriceObj,
+            detailedQoute: detailedQoute,
+            context: requestQuery.context,
+            message: requestQuery.message,
+            fulfillments:fulfillments,
+            tags:requestQuery.message.order.tags
         });
 
         return productData

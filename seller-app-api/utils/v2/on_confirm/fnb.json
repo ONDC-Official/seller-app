@@ -1,0 +1,728 @@
+{
+    "context": {
+        "domain": "ONDC:RET11",
+        "action": "on_confirm",
+        "core_version": "1.2.0",
+        "bap_id": "buyerNP.com",
+        "bap_uri": "https://buyerNP.com/ondc",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://0cdc-122-161-69-2.ngrok-free.app",
+        "transaction_id": "T2",
+        "message_id": "M4",
+        "city": "std:080",
+        "country": "IND",
+        "timestamp": "2023-09-02T09:38:37.534Z",
+        "ttl": "PT30S"
+    },
+    "message": {
+        "order": {
+            "id": "OI353464745",
+            "state": "Accepted",
+            "provider": {
+                "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                "locations": [
+                    {
+                        "id": "657657658"
+                    }
+                ]
+            },
+            "items": [
+                {
+                    "id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "wCR0m8",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "vGqKhJ"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "Ktv1MY",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "qh8ukX"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "10828697-e8d6-4314-8b6b-af5897ccef62",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "7pUm77",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "zhG52s"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "ZiZmiQ",
+                    "fulfillment_id": "F1123",
+                    "quantity": {
+                        "count": 1
+                    },
+                    "parent_item_id": "DI2",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "NuvjaJ"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "billing": {
+                "name": "ONDC buyer",
+                "address": {
+                    "name": "my house or door or floor #",
+                    "building": "my building name or house #",
+                    "locality": "my street name",
+                    "city": "Bengaluru",
+                    "state": "Karnataka",
+                    "country": "IND",
+                    "area_code": "560037"
+                },
+                "phone": "9886098860",
+                "email": "nobody@nomail.com",
+                "created_at": "2023-02-03T09:00:00.000Z",
+                "updated_at": "2023-02-03T09:00:00.000Z"
+            },
+            "fulfillments": [
+                {
+                    "id": "F1",
+                    "@ondc/org/provider_name": "Wemotive1org",
+                    "state": {
+                        "descriptor": {
+                            "code": "Pending"
+                        }
+                    },
+                    "type": "Delivery",
+                    "tracking": false,
+                    "start": {
+                        "location": {
+                            "id": "6463928731fadaf31cd63a2e",
+                            "descriptor": {
+                                "name": "mumbai east"
+                            },
+                            "gps": "12.909639,77.634306",
+                            "address": {
+                                "building": "pune",
+                                "city": "Pune",
+                                "state": "Maharashtra",
+                                "country": "IND",
+                                "area_code": "560095",
+                                "locality": "ok"
+                            }
+                        },
+                        "time": {
+                            "range": {
+                                "start": "08:00",
+                                "end": "20:00"
+                            }
+                        },
+                        "instructions": {
+                            "code": "2",
+                            "name": "ONDC order",
+                            "short_desc": "value of PCC",
+                            "long_desc": "additional instructions such as register or counter no for self-pickup"
+                        },
+                        "contact": {
+                            "email": "nobody@nomail.com",
+                            "phone": "9886098860"
+                        }
+                    },
+                    "end": {
+                        "person": {
+                            "name": "name_of_person"
+                        },
+                        "contact": {
+                            "email": "nobody@nomail.com",
+                            "phone": "9886098860"
+                        },
+                        "location": {
+                            "gps": "12.453544,77.928379",
+                            "address": {
+                                "name": "my house or door or floor #",
+                                "building": "my building name or house #",
+                                "locality": "my street name",
+                                "city": "Bengaluru",
+                                "state": "Karnataka",
+                                "country": "IND",
+                                "area_code": "560037"
+                            }
+                        },
+                        "time": {
+                            "range": {
+                                "start": "2023-06-03T11:00:00.000Z",
+                                "end": "2023-06-03T11:30:00.000Z"
+                            }
+                        },
+                        "instructions": {
+                            "name": "Status for drop",
+                            "short_desc": "Delivery Confirmation Code"
+                        }
+                    },
+                    "rateable": true
+                }
+            ],
+            "quote": {
+                "price": {
+                    "currency": "INR",
+                    "value": "1946.65"
+                },
+                "breakup": [
+                    {
+                        "@ondc/org/item_id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Farm House Pizza",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "269.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "269.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "wCR0m8",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Hand tossed",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "0.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "0.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "vGqKhJ"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "Ktv1MY",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Large",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "450.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "450.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "qh8ukX"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "10828697-e8d6-4314-8b6b-af5897ccef62",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Farm House Pizza",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "269.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "269.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "7pUm77",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Hand tossed",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "0.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "0.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "zhG52s"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "ZiZmiQ",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Large",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "450.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "price": {
+                                "currency": "INR",
+                                "value": "450.00"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NuvjaJ"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "13.45"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "wCR0m8",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "0.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "vGqKhJ"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "Ktv1MY",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "22.50"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "qh8ukX"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "0828697-e8d6-4314-8b6b-af5897ccef62",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "13.45"
+                        },
+                        "item": {
+                            "parent_item_id": "DI2",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "7pUm77",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "4.00"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "zhG52s"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "ZiZmiQ",
+                        "title": "Tax",
+                        "@ondc/org/title_type": "tax",
+                        "price": {
+                            "currency": "INR",
+                            "value": "4.75"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "NuvjaJ"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "ttl": "PT1H"
+            },
+            "payment": {
+                "uri": "https://ondc.transaction.com/payment",
+                "tl_method": "http/get",
+                "params": {
+                    "currency": "INR",
+                    "transaction_id": "3937",
+                    "amount": "1946.65"
+                },
+                "status": "PAID",
+                "type": "ON-ORDER",
+                "collected_by": "BAP",
+                "@ondc/org/buyer_app_finder_fee_type": "percent",
+                "@ondc/org/buyer_app_finder_fee_amount": "3",
+                "@ondc/org/settlement_basis": "delivery",
+                "@ondc/org/settlement_window": "P1D",
+                "@ondc/org/withholding_amount": "10.00",
+                "@ondc/org/settlement_details": [
+                    {
+                        "settlement_counterparty": "seller-app",
+                        "settlement_phase": "sale-amount",
+                        "settlement_type": "upi",
+                        "upi_address": "gft@oksbi",
+                        "settlement_bank_account_no": "XXXXXXXXXX",
+                        "settlement_ifsc_code": "XXXXXXXXX",
+                        "beneficiary_name": "xxxxx",
+                        "bank_name": "xxxx",
+                        "branch_name": "xxxx"
+                    }
+                ]
+            },
+            "tags": [
+                {
+                    "code": "bpp_terms",
+                    "list": [
+                        {
+                            "code": "tax_number",
+                            "value": "gst_number_of_sellerNP"
+                        }
+                    ]
+                },
+                {
+                    "code": "bap_terms",
+                    "list": [
+                        {
+                            "code": "tax_number",
+                            "value": "gst_number_of_buyerNP"
+                        }
+                    ]
+                }
+            ],
+            "created_at": "2023-06-03T09:30:00.000Z",
+            "updated_at": "2023-06-03T09:30:00.000Z"
+        }
+    }
+}

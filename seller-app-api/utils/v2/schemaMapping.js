@@ -352,13 +352,14 @@ exports.getConfirm = async (data) => {
         "message":  {
             "order": {
                 "id":data.message.order.order_id,
-                "state":"Created",
+                "state":"Accepted",
                 "provider": data.message.order.provider,
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
-                "fulfillments": data.message.order.fulfillments,
+                "fulfillments": data.fulfillments,
                 "quote":data.message.order.quote,
                 "payment": data.message.order.payment,
+                "tags":data.tags,
                 "created_at":data.message.order.created_at, //TODO: this needs to be persisted
                 "updated_at":data.message.order.created_at
             }
