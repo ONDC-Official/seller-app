@@ -342,7 +342,7 @@ function itemSchema(items) {
                 ]
             },
             {
-                "code": "attributes",
+                "code": "attribute",
                 "list": attributes
             }
         ]
