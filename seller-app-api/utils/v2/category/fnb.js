@@ -357,8 +357,8 @@ function itemSchema(items,customGroup,customMenuData) {
         "quantity": {
             "unitized": {
                 "measure": { //TODO: PENDING to implement at API level
-                    "unit": "kilogram",
-                    "value": "1"
+                    "unit": items.UOM,
+                    "value": `${items.UOMValue}`
                 }
             },
             "available": {

@@ -289,8 +289,8 @@ function itemSchema(items) {
         "quantity": {
             "unitized": {
                 "measure": { //TODO: PENDING to implement at API level
-                    "unit": "kilogram",
-                    "value": "1"
+                    "unit": items.UOM,
+                    "value": `${items.UOMValue}`
                 }
             },
             "available": {
@@ -333,7 +333,7 @@ function itemSchema(items) {
                 ]
             },
             {
-                "code": "attributes",
+                "code": "attribute",
                 "list": attributes
             }
         ]
@@ -366,8 +366,8 @@ function itemSchemaWithCustomGroup(items,customGroup) {
         "quantity": {
             "unitized": {
                 "measure": { //TODO: PENDING to implement at API level
-                    "unit": "kilogram",
-                    "value": "1"
+                    "unit": items.UOM,
+                    "value": `${items.UOMValue}`
                 }
             },
             "available": {
@@ -424,7 +424,7 @@ function itemSchemaWithCustomGroup(items,customGroup) {
                 ]
             },
             {
-                "code": "attributes",
+                "code": "attribute",
                 "list": attributes
             }
         ]
