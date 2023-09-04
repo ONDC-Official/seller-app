@@ -88,13 +88,18 @@ class ProductService {
             //     "name":"Health & Wellness",
             //     "domain":"ONDC:RET19"
             // }
-
-            requestQuery.context.domain = 'ONDC:RET11'; //FIXME: remove this once
+            requestQuery.context.domain = 'ONDC:RET12'; //FIXME: remove this once
             let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
             })
 
-            console.log("category---->",category)
+            if(!category){
+                category = {
+                    name:'F&B',
+                    domain:'ONDC:RET11'
+                };
+            }
+
             let httpRequest = new HttpRequest(
                 serverUrl,
                 `/api/v1/products/search/increamentalPull/${category.name}`, //TODO: allow $like query
