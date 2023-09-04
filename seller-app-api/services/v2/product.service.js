@@ -855,9 +855,6 @@ class ProductService {
 
         // let result = await httpRequest.send();
         let org= await this.getOrgForOndc(requestQuery.message.order.provider.id);
-        console.log('########################################')
-        console.log('########################################')
-        console.log({dddddd:org.providerDetail.storeDetails.storeTiming})
         const fulfillments =
         [
           {
@@ -926,6 +923,27 @@ class ProductService {
         ];
 
         requestQuery.message.provider = {...requestQuery.message.provider,"rateable":true}
+        let orderData = {
+            billing : requestQuery?.message?.order?.billing ?? {},
+            items : requestQuery?.message?.order?.items ?? [],
+            transactionId : requestQuery?.context?.transaction_id ?? '',
+            quote : requestQuery?.message?.order?.quote ?? {},
+            fulfillments : requestQuery?.message?.order?.fulfillments ?? [],
+            payment : requestQuery?.message?.order?.payment ?? {},
+            state : requestQuery?.message?.order?.state ?? '',
+            orderId : requestQuery?.message?.order?.id ?? '',
+            cancellation_reason_id : requestQuery?.message?.order?.cancellation_reason_id ?? '',
+            organization : requestQuery?.message?.order?.provider?.id ?? '',
+        };
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders`,
+            'POST',
+            {data: orderData},
+            headers
+        );
+        await httpRequest.send();
+
         const productData = await getConfirm({
             qouteItems: qouteItems,
             totalPrice: totalPriceObj,
