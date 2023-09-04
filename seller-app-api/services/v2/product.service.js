@@ -923,7 +923,7 @@ class ProductService {
         ];
 
         requestQuery.message.provider = {...requestQuery.message.provider,"rateable":true}
-        let orderData = {
+        const orderData = {
             billing : requestQuery?.message?.order?.billing ?? {},
             items : requestQuery?.message?.order?.items ?? [],
             transactionId : requestQuery?.context?.transaction_id ?? '',

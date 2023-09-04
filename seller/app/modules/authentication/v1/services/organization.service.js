@@ -151,23 +151,23 @@ class OrganizationService {
             if (doc) {
                 {
                     let idProof = await s3.getSignedUrlForRead({path:doc.idProof});
-                    doc.idProof =idProof;
+                    doc.idProof =idProof.url;
 
                     let addressProof = await s3.getSignedUrlForRead({path:doc.addressProof});
-                    doc.addressProof =addressProof;
+                    doc.addressProof =addressProof.url;
 
                     let cancelledCheque = await s3.getSignedUrlForRead({path:doc.bankDetails.cancelledCheque});
-                    doc.bankDetails.cancelledCheque =cancelledCheque;
+                    doc.bankDetails.cancelledCheque =cancelledCheque.url;
 
                     let PAN = await s3.getSignedUrlForRead({path:doc.PAN.proof});
-                    doc.PAN.proof =PAN;
+                    doc.PAN.proof =PAN.url;
 
                     let GSTN = await s3.getSignedUrlForRead({path:doc.GSTN.proof});
-                    doc.GSTN.proof =GSTN;
+                    doc.GSTN.proof =GSTN.url;
 
                     if(doc.storeDetails){
                         let logo = await s3.getSignedUrlForRead({path:doc.storeDetails?.logo});
-                        doc.storeDetails.logo =logo;
+                        doc.storeDetails.logo =logo.url;
                     }
                 }
 

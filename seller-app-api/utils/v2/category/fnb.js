@@ -525,6 +525,5 @@ function getcategoryIds(items,customMenuData){
             }
         }
     }
-    console.log({categoryIds})
     return categoryIds;
 }
