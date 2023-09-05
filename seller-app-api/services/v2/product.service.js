@@ -489,12 +489,12 @@ class ProductService {
             "@ondc/org/title_type": "delivery",
             "price": {
                 "currency": `${logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.currency ?? 'INR'}`, //todo hardcoded,
-                "value": `${logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value  ?? '100'}` //todo hardcoded
+                "value": `${logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value  ?? '0'}` //todo hardcoded
             }
         }//TODO: need to map all items in the catalog to find out delivery charges
 
         //added delivery charges in total price
-        totalPrice += logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value ?? '100' //todo hardcoded
+        totalPrice += logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value ?? 0 //todo hardcoded
 
         let fulfillments = [
             {
