@@ -296,7 +296,6 @@ class ProductService {
                             },
                             "item":
                             {
-                            "parent_item_id":`${item.parent_item_id}`,
                             "quantity":
                             {
                                 "available":
@@ -327,6 +326,9 @@ class ProductService {
                                 }
                             ]
                             }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                         }
                         detailedQoute.push(qouteItemsDetails)
                     }else{
@@ -361,7 +363,6 @@ class ProductService {
                             },
                             "item":
                             {
-                            "parent_item_id":`${item.parent_item_id}`,
                             "quantity":
                             {
                                 "available":
@@ -392,6 +393,9 @@ class ProductService {
                                 }
                             ]
                             }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                         }
                         detailedQoute.push(qouteItemsDetails)
                     }else{
@@ -427,7 +431,6 @@ class ProductService {
                         },
                         "item":
                         {
-                        "parent_item_id":`${item.parent_item_id}`,
                         "quantity":
                         {
                             "available":
@@ -458,6 +461,9 @@ class ProductService {
                             }
                         ]
                         }
+                    }
+                    if(item?.parent_item_id){
+                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
                     detailedQoute.push(qouteItemsDetails)
                 }else{
@@ -495,8 +501,8 @@ class ProductService {
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
-                "currency": '' + logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.currency ?? 'INR', //todo hardcoded,
-                "value": '' + logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value ?? '100' //todo hardcoded
+                "currency": `${logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.currency ?? 'INR'}`, //todo hardcoded,
+                "value": `${logisticProvider?.message?.catalog["bpp/providers"][0]?.items[0]?.price?.value  ?? '100'}` //todo hardcoded
             }
         }//TODO: need to map all items in the catalog to find out delivery charges
 
@@ -761,7 +767,6 @@ class ProductService {
                         },
                         "item":
                         {
-                        "parent_item_id":`${item.parent_item_id}`,
                         "quantity":
                         {
                             "available":
@@ -792,6 +797,10 @@ class ProductService {
                             }
                         ]
                         }
+
+                    }
+                    if(item?.parent_item_id){
+                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
                     detailedQoute.push(qouteItemsDetails)
                 }else{
@@ -825,7 +834,6 @@ class ProductService {
                         },
                         "item":
                         {
-                        "parent_item_id":`${item.parent_item_id}`,
                         "quantity":
                         {
                             "available":
@@ -856,6 +864,9 @@ class ProductService {
                             }
                         ]
                         }
+                    }
+                    if(item?.parent_item_id){
+                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
                     detailedQoute.push(qouteItemsDetails)
                 }else{
