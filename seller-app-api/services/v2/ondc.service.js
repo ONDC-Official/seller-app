@@ -356,6 +356,7 @@ class OndcService {
 
     async orderInit(payload = {}, req = {}) {
         try {
+           console.log('##################################--V2--##########################')
            // const {criteria = {}, payment = {}} = req || {};
             logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
@@ -466,6 +467,23 @@ class OndcService {
                 //logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
                 this.postInitRequest(initRequest,logisticsMessageId, initMessageId)
+
+            return {'status':'ACK'}
+        } catch (err) {
+            logger.error('error', `[Ondc Service] build init request :`, {error:err.stack,message:err.message});
+        console.log(err)   
+	 return err
+        }
+    }
+
+    async orderInitWithoutlogistic(payload = {}, req = {}) {
+        try {
+            const initMessageId = payload.context.message_id;
+            const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+
+            //logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
+            const initRequest = await productService.initV2(payload);
+            this.postInitRequest(initRequest,logisticsMessageId, initMessageId)
 
             return {'status':'ACK'}
         } catch (err) {

@@ -38,6 +38,14 @@ class OndcController {
             next(err);
         });
     }
+    orderInitWithoutlogistic(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderInitWithoutlogistic(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     orderConfirm(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         // ondcService.orderConfirm(req.body,req).then(data => {

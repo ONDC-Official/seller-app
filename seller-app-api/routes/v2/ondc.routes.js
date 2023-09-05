@@ -15,8 +15,11 @@ router.post('/client/search',
 router.post('/client/select',
     ondcController.orderSelectWithoutlogistic);
 
+// router.post('/client/Init',
+//     ondcController.orderInit);
+
 router.post('/client/Init',
-    ondcController.orderInit);
+    ondcController.orderInitWithoutlogistic);
 
 router.post('/client/confirm',
     ondcController.orderConfirm);

@@ -291,7 +291,6 @@ class OndcService {
     async orderInit(payload = {}, req = {}) {
         try {
            // const {criteria = {}, payment = {}} = req || {};
-
             logger.log('info', `[Ondc Service] init logistics payload : param :`,payload.message.order);
 
             const selectRequest = await SelectRequest.findOne({

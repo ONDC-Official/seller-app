@@ -167,7 +167,7 @@ exports.getInit = async (data) => {
         "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
-                "provider":data.message.order.provider,
+                "provider":{id:data.message.order.provider.id},
                 "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
@@ -177,7 +177,8 @@ exports.getInit = async (data) => {
                     "breakup": data.detailedQoute,
                     "ttl": "P1D"
                 },
-                "payment": data.message.order.payment
+                "payment": data.payment,
+                "tags":data.tags
             }
         }
     }
