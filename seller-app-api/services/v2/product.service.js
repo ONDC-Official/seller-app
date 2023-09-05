@@ -334,7 +334,8 @@ class ProductService {
                     }
                 }else{
                     resultData = await this.getForOndc(item.id)
-                    if(Object.keys(resultData).length === 0){
+                    if(Object.keys(resultData).length > 0){
+
                         if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
                             isQtyAvailable = false
                         }
@@ -399,11 +400,8 @@ class ProductService {
                 }
             }
             else{
-                console.log('product id--------------------------------->',item.id)
-
                 resultData = await this.getForOndc(item.id)
-                console.log('product--------------------------------->',resultData)
-                    if(Object.keys(resultData).length === 0){
+                if(Object.keys(resultData).length > 0){
                         if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
                             isQtyAvailable = false
                         }
@@ -801,7 +799,7 @@ class ProductService {
                 }
             }else{
                 resultData = await this.getForOndc(item.id)
-                if(Object.keys(resultData).length === 0){
+                if(Object.keys(resultData).length > 0){
                     if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
                         isQtyAvailable = false
                     }
