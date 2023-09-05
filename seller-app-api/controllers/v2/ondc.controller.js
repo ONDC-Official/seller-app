@@ -101,6 +101,14 @@ class OndcController {
             next(err);
         });
     }
+    notifyItemUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyItemUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     orderCancelFromSeller(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         ondcService.orderCancelFromSeller(req.body,req).then(data => {

@@ -1394,6 +1394,20 @@ class OndcService {
         }
     }
 
+    async notifyItemUpdate(payload = {}, req = {}) {
+        try {
+            //const {criteria = {}, payment = {}} = req || {};
+
+
+                this.postItemUpdate(payload);
+            //}, 5000); //TODO move to config
+
+            return {status:'ACK'}
+        } catch (err) {
+            throw err;
+        }
+    }
+
 
     async postStatusRequest(statusRequest,logisticsMessageId,selectMessageId,unsoliciated,payload){
 
@@ -1544,6 +1558,19 @@ class OndcService {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
                this.buildUpdateItemRequest(orderData,logisticsMessageId, selectMessageId)
             }, 5000); //TODO move to config
+        }catch (e){
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
+    async postItemUpdate(orderData,){
+
+        try{
+            //async post request
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+               this.buildItemUpdate(orderData)
+            }, 1000); //TODO move to config
         }catch (e){
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1764,6 +1791,23 @@ class OndcService {
         }
     }
 
+    async buildItemUpdate(statusRequest) {
+
+        try {
+
+            let statusResponse = await productService.productItemUpdate(statusRequest)
+
+            for(let context of [0,1,2]){
+                await this.postItemUpdateRequest({...statusResponse,context:context});
+            }//get all context and do looping here.
+
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
     async buildOrderStatusRequest(statusRequest,logisticsMessageId, initMessageId) {
 
         try {
@@ -1853,6 +1897,31 @@ class OndcService {
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_update`,
+                'POST',
+                statusResponse,
+                headers
+            );
+
+            console.log(httpRequest)
+
+            let result = await httpRequest.send();
+
+            return result.data
+
+        } catch (e) {
+            return e
+        }
+
+    }
+
+    //return track response to protocol layer
+    async postItemUpdateRequest(statusResponse) {
+        try {
+
+            let headers = {};
+            let httpRequest = new HttpRequest(
+                config.get("sellerConfig").BPP_URI,
+                `/protocol/v1/on_search`,
                 'POST',
                 statusResponse,
                 headers

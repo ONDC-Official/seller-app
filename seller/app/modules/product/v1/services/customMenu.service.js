@@ -152,7 +152,7 @@ class CustomMenuService {
                 }
                 menu.products = productData;
                 let customMenuTiming = await CustomMenuTiming.findOne(menuQuery);
-                menu.timings = customMenuTiming.timings ?? [];
+                menu.timings = customMenuTiming?.timings ?? [];
                 return menu;
             }else
                 throw new NoRecordFoundError(MESSAGES.MENU_NOT_EXISTS);
