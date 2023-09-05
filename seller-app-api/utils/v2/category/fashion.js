@@ -346,6 +346,63 @@ export async function mapFashionData(data) {
 
 }
 
+export async function mapFashionDataUpdate(data) {
+    let itemObjData = {}; 
+    for (const org of data?.data?.products) {
+        let productAvailable = []
+        for (let items of org.items) {
+            const customizationDetails = items.customizationDetails;
+            
+            if(customizationDetails && customizationDetails.customizationGroups.length === 0){
+                let item = itemSchema({...items, org: org},[])
+                productAvailable.push(item)
+            }else{
+                const customizationGroups = customizationDetails.customizationGroups;
+                let customGroup = [];
+                for(const customizationGroup of customizationGroups){
+                    let groupObj = {
+                        code: "id",
+                        value: customizationGroup.id
+                    };
+                    customGroup.push(groupObj);
+                }
+                let item = itemSchemaWithCustomGroup({...items, org: org},customGroup,[])
+
+                productAvailable.push(item)
+            }
+            itemObjData = {
+                "@ondc/org/statutory_reqs_packaged_commodities":{
+                "manufacturer_or_packer_name":items.manufacturerOrPackerName ?? '',
+                "manufacturer_or_packer_address":items.manufacturerOrPackerAddress ?? '',
+                "common_or_generic_name_of_commodity":items.commonOrGenericNameOfCommodity ?? '',
+                "net_quantity_or_measure_of_commodity_in_pkg":items.quantity ?? '',
+                "month_year_of_manufacture_packing_import":items.monthYearOfManufacturePackingImport ?? ''
+                }
+            };
+        }
+    }
+    productAvailable = productAvailable.map((row)=>{
+        return {...row,...itemObjData}
+    });
+    const mappedData = {
+        "context": data.context,
+        "message":
+        {
+          "catalog":
+          {
+            "bpp/providers":
+            [
+              {
+                "id":org._id,
+                "items":productAvailable
+              }
+            ]
+          }
+        }
+      };
+      
+    return mappedData
+}
 
 function itemSchema(items,customMenuData) {
 

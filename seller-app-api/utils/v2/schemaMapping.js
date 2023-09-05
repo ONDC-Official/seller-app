@@ -2,15 +2,15 @@ const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
 import {mapGroceryData,mapGroceryDataUpdate} from './category/grocery';
-import {mapFashionData} from './category/fashion'
-import {mapFnBData} from './category/fnb';
-import {mapElectronicsData} from './category/electronics';
-import {mapHealthnWellnessData} from './category/health&wellness';
-import {mapHomenDecorData} from './category/home&decor';
-import {mapAppliancesData} from './category/appliances';
-import {mapBPCData} from './category/bpc';
-import {mapAgricultureData} from './category/agriculture';
-import {mapToysnGamesData} from './category/toys&games';
+import {mapFashionData,mapFashionDataUpdate} from './category/fashion'
+import {mapFnBData,mapFnBDataUpdate} from './category/fnb';
+import {mapElectronicsData,mapElectronicsDataUpdate} from './category/electronics';
+import {mapHealthnWellnessData,mapHealthnWellnessDataUpdate} from './category/health&wellness';
+import {mapHomenDecorData,mapHomenDecorDataUpdate} from './category/home&decor';
+import {mapAppliancesData,mapAppliancesDataUpdate} from './category/appliances';
+import {mapBPCData,mapBPCDataUpdate} from './category/bpc';
+import {mapAgricultureData,mapAgricultureDataUpdate} from './category/agriculture';
+import {mapToysnGamesData,mapToysnGamesDataUpdate} from './category/toys&games';
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 

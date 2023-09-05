@@ -5,7 +5,7 @@ const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
 export async function mapFnBData(data) {
-
+console.log({data:data?.data})
     let orgCatalogs = []
     data.context.timestamp = new Date();
     //custome menu
@@ -80,6 +80,7 @@ export async function mapFnBData(data) {
     }
 
     for (const org of data?.data?.products) {
+        console.log({orgData:org})
         let bppDetails = {}
         let bppProviders = []
         let tags = []
@@ -330,15 +331,102 @@ export async function mapFnBData(data) {
 
 }
 
+export async function mapFnBDataUpdate(data) {
+    let itemObjData = {}
+    for (const org of data?.data?.products) {
+        console.log({})
+        let productAvailable = []
+        for (let items of org.items) {
+            let customGroup = [];
+            const customizationDetails = items.customizationDetails;
+            if(customizationDetails){
+                const customizationGroups = customizationDetails.customizationGroups;
+                for(const customizationGroup of customizationGroups){
+                    let groupObj = {
+                        code: "id",
+                        value: customizationGroup._id
+                    };
+                    customGroup.push(groupObj);
+                }
+            }
+            let item = itemSchema({...items, org: org},customGroup,[])
+            productAvailable.push(item)
+            itemObjData = {
+                "@ondc/org/statutory_reqs_packaged_commodities":{
+                "manufacturer_or_packer_name":items.manufacturerOrPackerName ?? '',
+                "manufacturer_or_packer_address":items.manufacturerOrPackerAddress ?? '',
+                "common_or_generic_name_of_commodity":items.commonOrGenericNameOfCommodity ?? '',
+                "net_quantity_or_measure_of_commodity_in_pkg":items.quantity ?? '',
+                "month_year_of_manufacture_packing_import":items.monthYearOfManufacturePackingImport ?? ''
+            },
+            "@ondc/org/statutory_reqs_prepackaged_food":{
+                "nutritional_info":items.nutritionalInfo ?? '',
+                "additives_info":items.additiveInfo ?? '',
+                "brandOwnerFSSAILicenseNo":items.brandOwnerFSSAILicenseNo ?? '',
+                "other_FSSAI_license_no":items.brandOwnerFSSAILicenseNo ?? '',
+                "importer_FSSAI_license_no":items.importerFSSAILicenseNo ?? ''
+            }
+            };
+        }
+        productAvailable = productAvailable.map((row)=>{
+            return {...row,...itemObjData}
+        });
+        const mappedData = {
+            "context": data.context,
+            "message":
+            {
+              "catalog":
+              {
+                "bpp/providers":
+                [
+                  {
+                    "id":org._id,
+                    "items":productAvailable
+                  }
+                ]
+              }
+            }
+          };
+          
+        return mappedData
+    }
+}
+
 
 function itemSchema(items,customGroup,customMenuData) {
-
-    let attributes = items.attributes.map((attribute) => {
-        return {code: attribute.code, value: attribute.value};
-    });
+    console.log({items})
     const categoryIds = getcategoryIds(items,customMenuData);
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const org = items.org;
+    let tagData =[];
+    tagData = [
+        {
+            "code":"type",
+            "list":[
+                {
+                    "code":"type",
+                    "value":"item"
+                }
+            ]
+        },
+        {
+        "code":"veg_nonveg",
+        "list":
+        [
+            {
+            "code": (items.vegNonVeg === 'VEG' ?'veg' :(items.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
+            "value":"yes"
+            }
+        ]
+        }
+    ]
+    if(customGroup && customGroup.length >0){
+        tagData.push( {
+            "code":"custom_group",
+            "list":customGroup
+            
+        })
+    }
     let item = {
         "id": items._id,
         "time": {
@@ -384,32 +472,7 @@ function itemSchema(items,customGroup,customMenuData) {
         "@ondc/org/seller_pickup_return": true, //TODO: hard coded, Implementation pending
         "@ondc/org/return_window": items.returnWindow,
         "@ondc/org/contact_details_consumer_care": `${org.name},${org.storeDetails.supportDetails.email},${org.storeDetails.supportDetails.mobile}`,
-        "tags": [
-            {
-                "code":"type",
-                "list":[
-                    {
-                        "code":"type",
-                        "value":"item"
-                    }
-                ]
-            },
-            {
-                "code":"custom_group",
-                "list":customGroup
-                
-            },
-            {
-            "code":"veg_nonveg",
-            "list":
-            [
-                {
-                "code": (items.vegNonVeg === 'VEG' ?'veg' :(items.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
-                "value":"yes"
-                }
-            ]
-            }
-        ]
+        "tags": tagData
     }
     return item;
 

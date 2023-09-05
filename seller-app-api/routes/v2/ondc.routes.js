@@ -42,7 +42,7 @@ router.put('/client/status/updateOrder',
 router.put('/client/status/updateOrderItems',
     ondcController.orderStatusUpdateItems);
 
-router.put('/client/status/itemUpdate',
+router.post('/client/status/itemUpdate',
     ondcController.notifyItemUpdate);
 
 router.post('/client/update',

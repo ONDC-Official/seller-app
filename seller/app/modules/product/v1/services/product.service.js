@@ -418,6 +418,44 @@ class ProductService {
             throw err;
         }
     }
+
+    async ondcGetForUpdate(productId) {
+        try {
+            let product = await Product.findOne({_id:productId}).lean();
+            if(!product){
+                return {};
+            }
+            let images = [];
+            if(product.images && product.images.length > 0){
+                for(const image of product.images){
+                    let data = await s3.getSignedUrlForRead({path:image});
+                    images.push(data);
+                }
+                product.images = images;
+            }
+            const attributes = await ProductAttribute.find({product:productId}); 
+            let attributeData = [];
+            for(const attribute of attributes){
+                let value = attribute.value; 
+                if(attribute.code === 'size_chart'){
+                    let sizeChart = await s3.getSignedUrlForRead({path:attribute.value});
+                    value = sizeChart?.url ?? '';
+                }
+                const attributeObj = {
+                    'code' : attribute.code,
+                    'value':value
+                };
+                attributeData.push(attributeObj);
+            }
+            product.attributes = attributeData;
+            product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+            return product;
+
+        } catch (err) {
+            console.log('[OrganizationService] [ondcGet] Error in getting organization by id -',err);
+            throw err;
+        }
+    }
     async getWithVariants(productId,currentUser) {
         try {
             let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();

@@ -1414,6 +1414,23 @@ class ProductService {
         return result.data
     }
 
+    async ondcGetForUpdate(id) {
+
+        let headers = {};
+        // headers['Authorization'] = `Bearer ${strapiAccessToken}`;
+
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/products/${id}/ondcGetForUpdate`,
+            'get',
+            {},
+            headers
+        );
+
+        let result = await httpRequest.send();
+
+        return result.data
+    }
     async getOrgForOndc(id) {
 
         let headers = {};
