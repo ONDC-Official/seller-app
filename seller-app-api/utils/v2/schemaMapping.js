@@ -1,7 +1,7 @@
 const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
-import {mapGroceryData} from './category/grocery';
+import {mapGroceryData,mapGroceryDataUpdate} from './category/grocery';
 import {mapFashionData} from './category/fashion'
 import {mapFnBData} from './category/fnb';
 import {mapElectronicsData} from './category/electronics';
@@ -62,6 +62,61 @@ exports.getProducts = async (data) => {
         }
         case 'Toys & Games': {
             mappedCatalog = await mapToysnGamesData(data);
+            break;
+        }
+    }
+    return mappedCatalog;
+
+}
+
+exports.getProductUpdate = async (data) => {
+
+    //check category and forward request to specific category mapper
+
+    let mappedCatalog = []
+    let category = domainNameSpace.find((cat)=>{
+        return cat.domain === data.context.domain
+    })
+
+    switch (category.name){
+        case 'Grocery': {
+            mappedCatalog = await mapGroceryDataUpdate(data);
+            break;
+        }
+        case 'Fashion': {
+            mappedCatalog = await mapFashionDataUpdate(data);
+            break;
+        }
+        case 'F&B': {
+            mappedCatalog = await mapFnBDataUpdate(data);
+            break;
+        }
+        case 'Electronics': {
+            mappedCatalog = await mapElectronicsDataUpdate(data);
+            break;
+        }
+        case 'Health & Wellness': {
+            mappedCatalog = await mapHealthnWellnessDataUpdate(data);
+            break;
+        }
+        case 'Home & Decor': {
+            mappedCatalog = await mapHomenDecorDataUpdate(data);
+            break;
+        }
+        case 'Appliances': {
+            mappedCatalog = await mapAppliancesDataUpdate(data);
+            break;
+        }
+        case 'BPC': {
+            mappedCatalog = await mapBPCDataUpdate(data);
+            break;
+        }
+        case 'Agriculture': {
+            mappedCatalog = await mapAgricultureDataUpdate(data);
+            break;
+        }
+        case 'Toys & Games': {
+            mappedCatalog = await mapToysnGamesDataUpdate(data);
             break;
         }
     }

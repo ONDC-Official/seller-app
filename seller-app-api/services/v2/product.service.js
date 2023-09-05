@@ -1,5 +1,5 @@
 import HttpRequest from '../../utils/HttpRequest';
-import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
+import {getProducts,getUpdate,getProductUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
 import {domainNameSpace} from "../../utils/constants";
 import {ConfirmRequest, InitRequest, SelectRequest , SearchRequest} from "../../models";
 import logger from "../../lib/logger";
@@ -1733,6 +1733,28 @@ class ProductService {
         });
 
         return productData
+    }
+
+    async productItemUpdate(data) {
+            try{
+
+                let headers = {};
+                //get product by id
+                let httpRequest = new HttpRequest(
+                    serverUrl,
+                    `/api/v1/products/${data.id}/ondcGet`, //TODO: allow $like query
+                    'get',
+                    headers
+                );
+                let result = await httpRequest.send();
+                //build on_search payload for item only
+                const productData= {} = await getProductUpdate({data: result.data}); //should return org specific array of responses
+
+                //return payload for item json
+
+            }catch (e) {
+                throw e;
+            }
     }
 
     async productOrderStatus(requestQuery,statusRequest) {

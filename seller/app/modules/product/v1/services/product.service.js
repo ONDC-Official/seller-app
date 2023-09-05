@@ -10,6 +10,8 @@ import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
 import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
+import HttpRequest from "../../../../lib/utils/HttpRequest";
+import {mergedEnvironmentConfig} from "../../../../config/env.config";
 
 const productCustomizationService = new ProductCustomizationService();
  
@@ -467,6 +469,9 @@ class ProductService {
             if(data.customizationDetails){
                 await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
             }
+
+            this.notifyItemUpdate(productId);
+
             return {data:productObj};
 
         } catch (err) {
@@ -475,6 +480,26 @@ class ProductService {
         }
     }
 
+    async notifyItemUpdate(itemId) {
+        try {
+
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/v2/client/status/itemUpdate',
+                'POST',
+                {itemId:itemId},
+                {}
+            );
+            await httpRequest.send();
+
+            return;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in notify item update -}',err);
+            throw err;
+        }
+    }
 
     async publish(productId,data,currentUser) {
         try {
