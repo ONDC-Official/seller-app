@@ -1,7 +1,7 @@
 import HttpRequest from '../../utils/HttpRequest';
 import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
 import {domainNameSpace} from "../../utils/constants";
-import {ConfirmRequest, InitRequest, SelectRequest} from "../../models";
+import {ConfirmRequest, InitRequest, SelectRequest , SearchRequest} from "../../models";
 import logger from "../../lib/logger";
 
 var config = require('../../lib/config');
@@ -30,6 +30,29 @@ class ProductService {
     async search(requestQuery) {
 
         try{
+            // const catalogIncTags = requestQuery?.message.intent;
+            // let catalogInc;
+            // console.log({catalogIncTags})
+
+            // if(catalogIncTags && catalogIncTags.length  > 0){
+            //     catalogInc = catalogIncTags.map((catalogIncTag)=>{
+            //         if(catalogIncTag.code === 'catalog_inc'){
+            //             return catalogIncTag;
+            //         }
+            //     })
+            // } 
+            // console.log({catalogInc})
+            // if(catalogInc){
+            //     let searchRequest = new SearchRequest()
+            //     searchRequest.transactionId = requestQuery.context.transaction_id;
+            //     searchRequest.messageId = requestQuery.context.message_id;
+            //     searchRequest.domain = requestQuery.context.domain;
+            //     searchRequest.bapId = requestQuery.context.bap_id;
+            //     searchRequest.onSearchResponse = requestQuery;
+            //     await searchRequest.save();
+            //     console.log({searchRequest})
+            // }
+
             logger.log('info', `[Product Service] search product : param :`,requestQuery);
 
             //get search criteria
