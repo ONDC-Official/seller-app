@@ -109,6 +109,24 @@ class OndcController {
             next(err);
         });
     }
+
+    notifyStoreUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyStoreUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    notifyOrgUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyOrgUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     orderCancelFromSeller(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         ondcService.orderCancelFromSeller(req.body,req).then(data => {

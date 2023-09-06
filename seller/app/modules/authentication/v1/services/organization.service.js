@@ -9,6 +9,8 @@ import {
     BadRequestParameterError,
 } from '../../../../lib/errors';
 import s3 from '../../../../lib/utils/s3Utils';
+import HttpRequest from '../../../../lib/utils/HttpRequest';
+import {mergedEnvironmentConfig} from '../../../../config/env.config';
 
 //import axios from 'axios';
 //import ServiceApi from '../../../../lib/utils/serviceApi';
@@ -187,6 +189,7 @@ class OrganizationService {
             if (organization) {
                 organization.storeDetails =data;
                 organization.save();
+                this.notifyStoreUpdate(data,organizationId);
             } else {
                 throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
             }
@@ -212,6 +215,7 @@ class OrganizationService {
                 }
 
                 let updateOrg = await Organization.findOneAndUpdate({_id:organizationId},data.providerDetails);
+                this.notifyOrgUpdate(data.providerDetails,organizationId);
 
             } else {
                 throw new NoRecordFoundError(MESSAGES.ORGANIZATION_NOT_EXISTS);
@@ -244,6 +248,53 @@ class OrganizationService {
             console.log(`[OrganizationService] [get] Error in getting organization by id - ${organizationId}`,err);
             throw err;
         }
+    }
+    async notifyOrgUpdate(provider,orgId){
+        let requestData = {
+            organization :orgId,
+            category : provider?.storeDetails?.category
+        };
+        if(provider?.disable){
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/v2/client/status/orgUpdate',
+                'POST',
+                requestData,
+                {}
+            );
+            await httpRequest.send();
+        }
+        return {success : true};
+    }
+    async notifyStoreUpdate(store,orgId){
+        let requestData = {
+            organization :orgId,
+            locationId : store?.location?._id,
+            category : store.category
+        };
+        if(store.storeTiming?.status === 'disabled'){
+            requestData.updateType = 'disable';
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/v2/client/status/storeUpdate',
+                'POST',
+                requestData,
+                {}
+            );
+            await httpRequest.send();
+        }else if(store.storeTiming?.status === 'closed'){
+            requestData.updateType = 'closed';
+            requestData.storeTiming = store.storeTiming;
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/v2/client/status/storeUpdate',
+                'POST',
+                requestData,
+                {}
+            );
+            await httpRequest.send();
+        }
+        return {success : true};
     }
 }
 export default OrganizationService;
