@@ -987,6 +987,8 @@ class ProductService {
 
         console.log("Confirm Request Payload ---=============>",JSON.stringify(requestQuery));
         const items = requestQuery.message.order.items
+        console.log("Confirm Request items ---=============>",JSON.stringify(items));
+
         
         let isQtyAvailable = true;
         let isValidOrg = true;
@@ -1186,6 +1188,9 @@ class ProductService {
                     if(item?.parent_item_id){
                         qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
+                    item.fulfillment_id = "F1123" //TODO static for now
+                    delete item.location_id
+                    qouteItems.push(item)
                     detailedQoute.push(qouteItemsDetails)
                 }else{
                     isValidItem = false;
@@ -1211,42 +1216,9 @@ class ProductService {
         let confirmData = requestQuery.message.order
 
         let orderItems = []
-        // let confirmData = requestQuery.message.order
-        // for(let item  of confirmData.items){
-
-        //     let productItems = {
-        //         product:item.id,
-        //         status:'Created',
-        //         qty:item.quantity.count
-
-        //     }
-        //     let httpRequest = new HttpRequest(
-        //         serverUrl,
-        //         `/api/order-items`,
-        //         'POST',
-        //         {data: productItems},
-        //         headers
-        //     );
-        //     let result = await httpRequest.send();
-        //     orderItems.push(result.data.data.id);
-        // }
-
-
         confirmData["order_items"] =orderItems
         confirmData.order_id = confirmData.id
         delete confirmData.id
-
-
-        // let confirm = {}
-        // let httpRequest = new HttpRequest(
-        //     serverUrl,
-        //     `/api/orders`,
-        //     'POST',
-        //     {data: confirmData},
-        //     headers
-        // );
-
-        // let result = await httpRequest.send();
         let org= await this.getOrgForOndc(requestQuery.message.order.provider.id);
         const fulfillments =
         [
