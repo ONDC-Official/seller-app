@@ -53,7 +53,7 @@ class ProductService {
             //     console.log({searchRequest})
             // }
 
-            logger.log('info', `[Product Service] search product : param :`,requestQuery);
+            
 
             //get search criteria
             const searchProduct = requestQuery.message.intent.item?.descriptor?.name??""
@@ -70,47 +70,7 @@ class ProductService {
             5. provider specific multiple on_search
             * */
 
-            //map domain namespace to category
-            // {
-            //     "name":"Grocery",
-            //     "domain":"ONDC:RET10"
-            // },
-            // {
-            //     "name":"F&B",
-            //     "domain":"ONDC:RET11"
-            // },
-            // {
-            //     "name":"Fashion",
-            //     "domain":"ONDC:RET12"
-            // },
-            // {
-            //     "name":"BPC",
-            //     "domain":"ONDC:RET13"
-            // },
-            // {
-            //     "name":"Electronics",
-            //     "domain":"ONDC:RET14"
-            // },
-            // {
-            //     "name":"Appliances",
-            //     "domain":"ONDC:RET15"
-            // },
-            // {
-            //     "name":"Home & Decor",
-            //     "domain":"ONDC:RET16
-            // },
-            // {
-            //     "name":"Toys & Games",
-            //     "domain":"ONDC:RET17"
-            // },
-            // {
-            //     "name":"Agriculture",
-            //     "domain":"ONDC:RET18"
-            // },
-            // {
-            //     "name":"Health & Wellness",
-            //     "domain":"ONDC:RET19"
-            // }
+            console.log("Search Request Payload ---=============>",JSON.stringify(requestQuery));
             // requestQuery.context.domain = 'ONDC:RET12'; //FIXME: remove this once
             let category = domainNameSpace.find((cat)=>{
                 return cat.domain === requestQuery.context.domain
@@ -138,7 +98,8 @@ class ProductService {
 
            // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-           console.log({productData:JSON.stringify(productData)})
+           console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+
             return productData
         }catch (e) {
             console.log(e)
@@ -269,7 +230,12 @@ class ProductService {
 //30004	Seller App *  Item not found /	When Seller App is unable to find the item id sent by the Buyer App
 
     async selectV2(requestQuery) {
+
+        console.log("Select Request Payload ---=============>",JSON.stringify(requestQuery));
+
+
         logger.log('info', `[Product Service] product select :`, requestQuery);
+
         //get search criteria
         const items = requestQuery.message.order.items
         const logisticData = requestQuery?.logistics_on_search ?? []
@@ -555,6 +521,8 @@ class ProductService {
             isValidOrg
         });
 
+        console.log("On_Select Response Payload ---=============>",JSON.stringify(productData));
+
         return productData
     }
 
@@ -627,6 +595,8 @@ class ProductService {
     }
 
     async initV2(requestQuery) {
+
+        console.log("Init Request Payload ---=============>",JSON.stringify(requestQuery));
 
         //get search criteria
         const items = requestQuery.message.order.items
@@ -894,6 +864,9 @@ class ProductService {
             tags : tagData
         });
 
+        console.log("On_Init Response Payload ---=============>",JSON.stringify(productData));
+
+
         let fulfillments = requestQuery.message.order.fulfillments
         fulfillments = fulfillments.map((fulfillment)=>{
             fulfillment.tracking = false  //TODO : static for now
@@ -1012,6 +985,7 @@ class ProductService {
 
     async confirmV2(requestQuery) {
 
+        console.log("Confirm Request Payload ---=============>",JSON.stringify(requestQuery));
         const items = requestQuery.message.order.items
         
         let isQtyAvailable = true;
@@ -1372,6 +1346,9 @@ class ProductService {
             fulfillments:fulfillments,
             tags:requestQuery.message.order.tags
         });
+
+        console.log("On_Confirm Response Payload ---=============>",JSON.stringify(productData));
+
 
         return productData
     }
@@ -1958,7 +1935,7 @@ class ProductService {
         let itemList = []
         let qouteItems = confirmRequest.message.order.items.map((item)=>{
             // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
-            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            item.fulfillment_id = logisticData?.message?.order?.fulfillments[0]?.id
             delete item.state
             return item;
         });

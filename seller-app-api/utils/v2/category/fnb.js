@@ -5,7 +5,6 @@ const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
 export async function mapFnBData(data) {
-console.log({data:data?.data})
     let orgCatalogs = []
     data.context.timestamp = new Date();
     //custome menu
@@ -80,7 +79,6 @@ console.log({data:data?.data})
     }
 
     for (const org of data?.data?.products) {
-        console.log({orgData:org})
         let bppDetails = {}
         let bppProviders = []
         let tags = []
@@ -334,7 +332,6 @@ console.log({data:data?.data})
 export async function mapFnBDataUpdate(data) {
     let itemObjData = {}
     for (const org of data?.data?.products) {
-        console.log({})
         let productAvailable = []
         for (let items of org.items) {
             let customGroup = [];
@@ -394,7 +391,6 @@ export async function mapFnBDataUpdate(data) {
 
 
 function itemSchema(items,customGroup,customMenuData) {
-    console.log({items})
     const categoryIds = getcategoryIds(items,customMenuData);
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const org = items.org;

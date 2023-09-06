@@ -175,7 +175,6 @@ export async function mapGroceryData(data) {
             }else{
                 const customizationGroups = customizationDetails.customizationGroups;
                 const customizations = customizationDetails.customizations;
-                console.log('start----------------------------------------------->')
                 let customGroup = [];
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
@@ -430,7 +429,6 @@ export async function mapGroceryDataUpdate(data) {
 
 function itemSchema(items,customMenuData) {
 
-    console.log("variant group---->",items)
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const categoryIds = getcategoryIds(items,customMenuData);
     const org = items.org;

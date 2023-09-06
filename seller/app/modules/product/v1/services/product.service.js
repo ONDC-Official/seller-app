@@ -10,8 +10,8 @@ import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
 import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
-import HttpRequest from "../../../../lib/utils/HttpRequest";
-import {mergedEnvironmentConfig} from "../../../../config/env.config";
+import HttpRequest from '../../../../lib/utils/HttpRequest';
+import {mergedEnvironmentConfig} from '../../../../config/env.config';
 
 const productCustomizationService = new ProductCustomizationService();
  

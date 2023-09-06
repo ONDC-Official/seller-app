@@ -142,7 +142,6 @@ export async function mapBPCData(data) {
             }else{
                 const customizationGroups = customizationDetails.customizationGroups;
                 const customizations = customizationDetails.customizations;
-                console.log('start----------------------------------------------->')
                 let customGroup = [];
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
@@ -396,7 +395,6 @@ export async function mapBPCDataUpdate(data){
 
 function itemSchema(items,customMenuData) {
 
-    console.log("variant group---->", items)
     let attributes = items.attributes.map((attribute) => {
         return {code: attribute.code, value: attribute.value};
     });

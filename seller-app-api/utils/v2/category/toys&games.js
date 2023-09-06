@@ -142,8 +142,7 @@ export async function mapToysnGamesData(data) {
             }else{
                 const customizationGroups = customizationDetails.customizationGroups;
                 const customizations = customizationDetails.customizations;
-                console.log('start----------------------------------------------->')
-                let customGroup = [];
+                    let customGroup = [];
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
@@ -398,7 +397,6 @@ export async function mapToysnGamesDataUpdate(data){
 
 function itemSchema(items,customMenuData) {
 
-    console.log("variant group---->", items)
     let attributes = items.attributes.map((attribute) => {
         return {code: attribute.code, value: attribute.value};
     });
