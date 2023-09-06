@@ -1250,8 +1250,8 @@ class ProductService {
               {
                 "range":
                 {
-                  "start":`${org.providerDetail?.storeDetails?.storeTiming?.range?.start ?? new Date()}`,
-                  "end":`${org.providerDetail?.storeDetails?.storeTiming?.range?.end ?? new Date()}`
+                  "start": new Date(),
+                  "end": new Date()
                 }
               },
               "instructions":
