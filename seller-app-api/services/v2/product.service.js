@@ -250,94 +250,136 @@ class ProductService {
         let resultData;
         let itemData ={};
         let org = await this.getOrgForOndc(requestQuery.message.order.provider.id);
-        console.log({org})
 
         if(!org){            
             isValidOrg = false;
-            console.log({isValidOrg})
         }
         for (let item of items) { 
             let tags = item.tags;
             if(tags && tags.length >0){
                 let tagData = tags.find((tag)=>{return tag.code === 'type'})
-                let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
-                itemType = tagTypeData.value;
-                if(itemType === 'customization'){
-                    resultData = itemData?.customizationDetails?.customizations.find((row) => {
-                        return row.id === item.id
-                    })
-                    if(resultData){
-                        console.log({custqty:resultData.maximum})
-                        if(resultData.maximum < item.quantity.count){
-                            isQtyAvailable = false
-                        }
-                        let qouteItemsDetails = {
-                            "@ondc/org/item_id": item.id,
-                            "@ondc/org/item_quantity": {
-                                "count": item.quantity.count
-                            },
-                            "title": resultData?.name,
-                            "@ondc/org/title_type": "customization",
-                            "price":
-                            {
-                            "currency":"INR",
-                            "value":`${resultData?.price}`
-                            },
-                            "item":
-                            {
-                            "quantity":
-                            {
-                                "available":
-                                {
-                                "count": `${resultData?.available}`
+                if(tagData?.list && tagData?.list.length >0){
+                    let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                    itemType = tagTypeData.value;
+                    if(itemType === 'customization'){
+                        resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                            return row._id === item.id
+                        })
+                        if(resultData){
+                            if(resultData.maximum < item.quantity.count){
+                                isQtyAvailable = false
+                            }
+                            let qouteItemsDetails = {
+                                "@ondc/org/item_id": item.id,
+                                "@ondc/org/item_quantity": {
+                                    "count": item.quantity.count
                                 },
-                                "maximum":
+                                "title": resultData?.name,
+                                "@ondc/org/title_type": "customization",
+                                "price":
                                 {
-                                "count": `${resultData?.available}`
-                                }
-                            },
-                            "price":
-                            {
                                 "currency":"INR",
                                 "value":`${resultData?.price}`
-                            },
-                            "tags":
-                            [
+                                },
+                                "item":
                                 {
-                                "code":"type",
-                                "list":
-                                [
+                                "quantity":
+                                {
+                                    "available":
                                     {
-                                    "code":"type",
-                                    "value":"customization"
+                                    "count": `${resultData?.available}`
+                                    },
+                                    "maximum":
+                                    {
+                                    "count": `${resultData?.available}`
                                     }
-                                ]
+                                },
+                                "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.price}`
+                                },
+                                "tags":item.tag
                                 }
-                            ]
                             }
+                            if(item?.parent_item_id){
+                                qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                            }
+                            detailedQoute.push(qouteItemsDetails)
+                        }else{
+                            isValidItem = false;
                         }
-                        if(item?.parent_item_id){
-                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
-                        }
-                        detailedQoute.push(qouteItemsDetails)
                     }else{
-                        isValidItem = false;
+                        resultData = await this.getForOndc(item.id)
+                        if(Object.keys(resultData).length > 0){
+                            if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                                isQtyAvailable = false
+                            }
+                            itemData = resultData; 
+                            if (resultData?.commonDetails) {
+                                let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                totalPrice += price
+                            }
+                
+                            //TODO: check if quantity is available
+                
+                            let qouteItemsDetails = {
+                                "@ondc/org/item_id": item.id,
+                                "@ondc/org/item_quantity": {
+                                    "count": item.quantity.count
+                                },
+                                "title": resultData?.commonDetails?.productName,
+                                "@ondc/org/title_type": "item",
+                                "price":
+                                {
+                                "currency":"INR",
+                                "value":`${resultData?.commonDetails?.MRP}`
+                                },
+                                "item":
+                                {
+                                "quantity":
+                                {
+                                    "available":
+                                    {
+                                    "count": `${resultData?.commonDetails?.quantity}`
+                                    },
+                                    "maximum":
+                                    {
+                                    "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                    }
+                                },
+                                "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.commonDetails?.MRP}`
+                                },
+                                "tags":item.tag
+                                }
+                            }
+                            if(item?.parent_item_id){
+                                qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                            }
+                            detailedQoute.push(qouteItemsDetails)
+                        }else{
+                            console.log({item:item.id})
+                            isValidItem = false;
+                        }
                     }
-                }else{
+                }
+                else{
                     resultData = await this.getForOndc(item.id)
                     if(Object.keys(resultData).length > 0){
-
-                        if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
-                            isQtyAvailable = false
-                        }
-                        itemData = resultData; 
-                        if (resultData?.commonDetails) {
-                            let price = resultData?.commonDetails?.MRP * item.quantity.count
-                            totalPrice += price
-                        }
-            
-                        //TODO: check if quantity is available
-            
+                            if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                                isQtyAvailable = false
+                            }
+                            itemData = resultData; 
+                            if (resultData?.commonDetails) {
+                                let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                totalPrice += price
+                            }
+                
+                            //TODO: check if quantity is available
+                
                         let qouteItemsDetails = {
                             "@ondc/org/item_id": item.id,
                             "@ondc/org/item_quantity": {
@@ -351,36 +393,23 @@ class ProductService {
                             "value":`${resultData?.commonDetails?.MRP}`
                             },
                             "item":
-                            {
-                            "quantity":
-                            {
-                                "available":
                                 {
-                                "count": `${resultData?.commonDetails?.quantity}`
-                                },
-                                "maximum":
+                                "quantity":
                                 {
-                                "count": `${resultData?.commonDetails?.maxAllowedQty}`
-                                }
-                            },
-                            "price":
-                            {
-                                "currency":"INR",
-                                "value":`${resultData?.commonDetails?.MRP}`
-                            },
-                            "tags":
-                            [
-                                {
-                                "code":"type",
-                                "list":
-                                [
+                                    "available":
                                     {
-                                    "code":"type",
-                                    "value":"item"
+                                    "count": `${resultData?.commonDetails?.quantity}`
+                                    },
+                                    "maximum":
+                                    {
+                                    "count": `${resultData?.commonDetails?.maxAllowedQty}`
                                     }
-                                ]
+                                },
+                                "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.commonDetails?.MRP}`
                                 }
-                            ]
                             }
                         }
                         if(item?.parent_item_id){
@@ -388,11 +417,11 @@ class ProductService {
                         }
                         detailedQoute.push(qouteItemsDetails)
                     }else{
+                        console.log({item:item.id})
                         isValidItem = false;
                     }
                 }
-            }
-            else{
+            }else{
                 resultData = await this.getForOndc(item.id)
                 if(Object.keys(resultData).length > 0){
                         if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
@@ -444,6 +473,7 @@ class ProductService {
                     detailedQoute.push(qouteItemsDetails)
                 }else{
                     isValidItem = false;
+                    console.log({item:item.id})
                 }
             }
             item.fulfillment_id = "F1123" //TODO static for now
@@ -524,6 +554,7 @@ class ProductService {
         console.log("On_Select Response Payload ---=============>",JSON.stringify(productData));
 
         return productData
+        
     }
 
     async init(requestQuery) {
