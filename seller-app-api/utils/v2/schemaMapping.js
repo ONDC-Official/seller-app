@@ -143,8 +143,9 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"Item quantity unavailable",
-                        code:"40002"
+                        type:"DOMAIN-ERROR",
+                        code:"40002",
+                        message:"Item quantity unavailable"
                     }}
 
         }
@@ -152,8 +153,9 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"Location Serviceability error",
-                        code:"30009"
+                        type:"DOMAIN-ERROR",
+                        code:"30009",
+                        message:"Location Serviceability error"
                     }}
 
         }
@@ -161,8 +163,9 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"Provider not found",
-                        code:"30001"
+                        type:"DOMAIN-ERROR",
+                        code:"30001",
+                        message:"Provider not found"
                     }}
 
         }
@@ -170,8 +173,9 @@ exports.getSelect = async (data) => {
             error = {
                 error:
                     {
-                        type:"Item not found",
-                        code:"30004"
+                        type:"DOMAIN-ERROR",
+                        code:"30004",
+                        message:"Item not found"
                     }}
 
         }

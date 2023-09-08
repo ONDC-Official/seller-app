@@ -299,7 +299,7 @@ class ProductService {
                                     "currency":"INR",
                                     "value":`${resultData?.price}`
                                 },
-                                "tags":item.tag
+                                "tags":item.tags
                                 }
                             }
                             if(item?.parent_item_id){
@@ -353,7 +353,7 @@ class ProductService {
                                     "currency":"INR",
                                     "value":`${resultData?.commonDetails?.MRP}`
                                 },
-                                "tags":item.tag
+                                "tags":item.tags
                                 }
                             }
                             if(item?.parent_item_id){
@@ -647,7 +647,7 @@ class ProductService {
                 itemType = tagTypeData.value;
                 if(itemType === 'customization'){
                     resultData = itemData?.customizationDetails?.customizations.find((row) => {
-                        return row.id === item.id
+                        return row._id === item.id
                     })
                     if(resultData){
                         console.log({custqty:resultData.maximum})
@@ -684,19 +684,7 @@ class ProductService {
                                 "currency":"INR",
                                 "value":`${resultData?.price}`
                             },
-                            "tags":
-                            [
-                                {
-                                "code":"type",
-                                "list":
-                                [
-                                    {
-                                    "code":"type",
-                                    "value":"customization"
-                                    }
-                                ]
-                                }
-                            ]
+                            "tags":item.tags
                             }
                         }
                         if(item?.parent_item_id){
@@ -751,19 +739,7 @@ class ProductService {
                                 "currency":"INR",
                                 "value":`${resultData?.commonDetails?.MRP}`
                             },
-                            "tags":
-                            [
-                                {
-                                "code":"type",
-                                "list":
-                                [
-                                    {
-                                    "code":"type",
-                                    "value":"item"
-                                    }
-                                ]
-                                }
-                            ]
+                            "tags":item.tags
                             }
                         }
                         if(item?.parent_item_id){
@@ -834,6 +810,7 @@ class ProductService {
             item.quantity
             qouteItems.push(item)
         }
+
 
         let deliveryCharges = {
             "title": "Delivery charges",
@@ -1039,10 +1016,9 @@ class ProductService {
                 itemType = tagTypeData.value;
                 if(itemType === 'customization'){
                     resultData = itemData?.customizationDetails?.customizations.find((row) => {
-                        return row.id === item.id
+                        return row._id === item.id
                     })
                     if(resultData){
-                        console.log({custqty:resultData.maximum})
                         if(resultData.maximum < item.quantity.count){
                             isQtyAvailable = false
                         }
@@ -1076,19 +1052,7 @@ class ProductService {
                                 "currency":"INR",
                                 "value":`${resultData?.price}`
                             },
-                            "tags":
-                            [
-                                {
-                                "code":"type",
-                                "list":
-                                [
-                                    {
-                                    "code":"type",
-                                    "value":"customization"
-                                    }
-                                ]
-                                }
-                            ]
+                            "tags":item.tags
                             }
 
                         }
@@ -1143,19 +1107,7 @@ class ProductService {
                                 "currency":"INR",
                                 "value":`${resultData?.commonDetails?.MRP}`
                             },
-                            "tags":
-                            [
-                                {
-                                "code":"type",
-                                "list":
-                                [
-                                    {
-                                    "code":"type",
-                                    "value":"item"
-                                    }
-                                ]
-                                }
-                            ]
+                            "tags":item.tags
                             }
                         }
                         if(item?.parent_item_id){
