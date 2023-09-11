@@ -89,33 +89,30 @@ export async function mapFashionData(data) {
         delete org.storeDetails.address.country
         let categories = [];       
         let tagCatList = [];
-        let itemTags = []
+        let categoryLists = []
         let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
-                let variantGroupData = categories.find((data)=>{
-                    return items.variantGroup._id === data.id
-                });
-                console.log({variantGroupData})
-                if(!variantGroupData){
-                    itemTags.push({
-                        "code": "type",
-                        "list": [
-                            {
-                                "code": "type",
-                                "value": "variant_group"
-                            }
-                        ]
-                    })
+                if(categoryLists.indexOf(items.variantGroup._id)===-1){
+                    categoryLists.push(items.variantGroup._id)
                     let category = {
                         "id": items.variantGroup._id,
                         "descriptor": {
                             "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
                         },
-                        "tags": itemTags
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "variant_group"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                     if(items.variantGroup.name && items.variantGroup.name.length > 0){
-
                         for (let i=0; i < items.variantGroup.name.length; i++) {
                             category.tags.push({
                                 "code": "attr",
@@ -134,12 +131,6 @@ export async function mapFashionData(data) {
                     }
                     categories.push(category);
                 }
-            }
-            let tagCatExist = tagCatList.find((data)=>{
-                return items.productSubcategory1 === data.category
-            });
-            if(!tagCatExist){
-                tagCatList.push({category:items.productSubcategory1});
             }
             if(menuData && menuData.length >0 && index ===1){
                 for(const menu of menuData){
