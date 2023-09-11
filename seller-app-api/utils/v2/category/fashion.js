@@ -95,25 +95,58 @@ export async function mapFashionData(data) {
             if (items.variantGroup) {
                 if(categoryLists.indexOf(items.variantGroup._id)===-1){
                     categoryLists.push(items.variantGroup._id)
-                    let category = {
-                        "id": items.variantGroup._id,
-                        "descriptor": {
-                            "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
-                        },
-                        "tags": [
-                            {
-                                "code": "type",
-                                "list": [
-                                    {
-                                        "code": "type",
-                                        "value": "variant_group"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                    if(items.variantGroup.name && items.variantGroup.name.length > 0){
-                        for (let i=0; i < items.variantGroup.name.length; i++) {
+                    if (items.variantGroup.variationOn === 'UOM') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        category.tags.push({
+                            "code": "attr",
+                            "list": [
+                                {
+                                    "code": "name",
+                                    "value": 'item.quantity.unitized.measure'
+                                },
+                                {
+                                    "code": "seq",
+                                    "value": '1'
+                                }
+                            ]
+                        });
+                        categories.push(category);
+                        variantGroupSequence += 1;
+                    } else if (items.variantGroup.variationOn === 'ATTRIBUTE') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        for (let i = 0; i < items.variantGroup.name.length; i++) {
                             category.tags.push({
                                 "code": "attr",
                                 "list": [
@@ -123,13 +156,14 @@ export async function mapFashionData(data) {
                                     },
                                     {
                                         "code": "seq",
-                                        "value": `${i+1}`
+                                        "value": `${i + 1}`
                                     }
                                 ]
                             });
                         }
+                        categories.push(category);
+                        variantGroupSequence += 1;
                     }
-                    categories.push(category);
                 }
             }
             if(menuData && menuData.length >0 && index ===1){
