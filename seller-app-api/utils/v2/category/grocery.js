@@ -438,7 +438,7 @@ function itemSchema(items,customMenuData) {
                 "count": `${items.quantity}`
             },
             "maximum": {
-                "count": `${items.maxAllowedQty}`
+                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
             }
         },
         "price": {
@@ -559,7 +559,7 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                 "count": `${items.quantity}`
             },
             "maximum": {
-                "count": `${items.maxAllowedQty}`
+                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
             }
         },
         "price": {

@@ -36,7 +36,7 @@ exports.getProducts = async (data) => {
                         "count": `${items.quantity}`
                     },
                     "maximum": {
-                        "count": `${items.maxAllowedQty}`
+                        "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
                     }
                 },
                 "category_id": items.productSubcategory1??"NA",

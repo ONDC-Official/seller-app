@@ -470,7 +470,7 @@ function itemSchema(items,customGroup,customMenuData) {
                 "count": `${items.quantity}`
             },
             "maximum": {
-                "count": `${items.maxAllowedQty}`
+                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
             }
         },
         "price": {
