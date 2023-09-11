@@ -608,7 +608,7 @@ function customizationSchema(customizations,item) {
                 },
                 {
                     "code":"default",
-                    "value":customizations.default
+                    "value":(customizations.default === 'Yes' ?'yes' : 'no')
                 }
             ]
             }
