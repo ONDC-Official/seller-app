@@ -252,8 +252,9 @@ class ProductService {
             console.log('params------->',params);
             const orgs = await Organization.find({},).lean();
             let products = [];
-            let customMenu = [];
             for(const org of orgs){
+                let productData = [];
+                let customMenu = [];
                 query.organization = org._id;
                 let storeImage = await s3.getSignedUrlForRead({path:org.storeDetails.logo});
                 org.storeDetails.logo = storeImage.url;
@@ -266,7 +267,7 @@ class ProductService {
 
                 const data = await Product.find(query).populate('variantGroup').sort({createdAt:1}).skip(params.offset).limit(params.limit).lean();
                 if(data.length>0){
-                    for(const product of data){
+                    for(let product of data){
                         let productDetails = product;
                         let images = [];
                         for(const image of productDetails.images){
@@ -290,47 +291,49 @@ class ProductService {
                         }
                         product.attributes = attributeData;
                         product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+                        productData.push(product);
                     }
-                    org.items = data;
-                    products.push(org);
-
-                }
-                let menus = await CustomMenu.find({category:category,organization:org._id}).lean();
-                for(const menu of menus){
-                    let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menu._id,organization:org._id});
-                    let images = [];
-                    let menuObj ={
-                        id:menu._id,
-                        name:menu.name,
-                        seq:menu.seq
-                    };
-                    for(const image of menu.images){
-                        let imageData = await s3.getSignedUrlForRead({path:image});
-                        images.push(imageData.url);
-                    }
-                    let menuQuery = {
-                        organization:org._id,
-                        customMenu : menu._id
-                    };
-                    let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
-                    let productData = [];
-                    for(const menuProduct of menuProducts){
-                        let productObj = {
-                            id:menuProduct.product._id,
-                            name:menuProduct.product.productName,
-                            seq:menuProduct.seq,
-    
+                    // getting Menu for org -> 
+                    let menus = await CustomMenu.find({category:category,organization:org._id}).lean();
+                    for(const menu of menus){
+                        let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menu._id,organization:org._id});
+                        let images = [];
+                        let menuObj ={
+                            id:menu._id,
+                            name:menu.name,
+                            seq:menu.seq
                         };
-                        productData.push(productObj);
+                        for(const image of menu.images){
+                            let imageData = await s3.getSignedUrlForRead({path:image});
+                            images.push(imageData.url);
+                        }
+                        let menuQuery = {
+                            organization:org._id,
+                            customMenu : menu._id
+                        };
+                        let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
+                        let productData = [];
+                        for(const menuProduct of menuProducts){
+                            let productObj = {
+                                id:menuProduct.product._id,
+                                name:menuProduct.product.productName,
+                                seq:menuProduct.seq,
+        
+                            };
+                            productData.push(productObj);
+                        }
+                        menuObj.products = productData;
+                        menuObj.images = images;
+                        menuObj.timings = customMenuTiming?.timings ?? [];
+                        customMenu.push(menuObj);
                     }
-                    menuObj.products = productData;
-                    menuObj.images = images;
-                    menuObj.timings = customMenuTiming?.timings ?? [];
-                    customMenu.push(menuObj);
+                    org.items = productData;
+                    org.menu = customMenu;
+                    products.push(org);
                 }
             }
             //collect all store details by
-            return {products,customMenu};
+            return {products};
         } catch (err) {
             console.log('[OrderService] [getAll] Error in getting all from organization ',err);
             throw err;

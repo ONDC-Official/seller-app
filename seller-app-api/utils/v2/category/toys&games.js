@@ -8,78 +8,76 @@ export async function mapToysnGamesData(data) {
 
     let orgCatalogs = []
     data.context.timestamp = new Date();
-
-    let index = 1;
-    let menuData=[];
-    const customMenuData = data?.data?.customMenu;
-    if(customMenuData && customMenuData.length >0){
-        for (const menu of customMenuData) {
-            let menuTags =[];
-            menuTags.push({
-                "code":"type",
-                "list":
-                [
-                {
+    for (const org of data?.data?.products) {
+        let index = 1;
+        let menuData=[];
+        const customMenuData = org?.menu;
+        if(customMenuData && customMenuData.length >0){
+            for (const menu of customMenuData) {
+                let menuTags =[];
+                menuTags.push({
                     "code":"type",
-                    "value":"custom_menu"
-                }
-                ]
-            });
-            if(menu.timings && menu.timings.length>0){
-                const timing = menu.timings[0]
-                menuTags.push(
-                    {
-                        "code":"timing",
-                        "list":[
-                            {
-                                "code":"day_from",
-                                "value":`${timing.daysRange.from}`
-                            },
-                            {
-                                "code":"day_to",
-                                "value":`${timing.daysRange.to}`
-                            },
-                            {
-                                "code":"time_from",
-                                "value":`${timing.timings[0].from}`
-                            },
-                            {
-                                "code":"time_to",
-                                "value":`${timing.timings[0].to}`
-                            }
-                        ]
-                    },
-                )
-            };
-            menuTags.push(
-                {
-                    "code":"display",
                     "list":
                     [
                     {
-                        "code":"rank",
-                        "value":`${menu.seq}`
+                        "code":"type",
+                        "value":"custom_menu"
                     }
                     ]
-                }
-            );
-            let menuDataObj = {
-                "id":menu.id,
-                "parent_category_id":"",
-                "descriptor":
-                {
-                "name" : menu.name,
-                "short_desc":menu.shortDescription,
-                "long_desc":menu.longDescription,
-                "images":menu.images
-                },
-                "tags":menuTags
-            };
-            menuData.push(menuDataObj)
+                });
+                if(menu.timings && menu.timings.length>0){
+                    const timing = menu.timings[0]
+                    menuTags.push(
+                        {
+                            "code":"timing",
+                            "list":[
+                                {
+                                    "code":"day_from",
+                                    "value":`${timing.daysRange.from}`
+                                },
+                                {
+                                    "code":"day_to",
+                                    "value":`${timing.daysRange.to}`
+                                },
+                                {
+                                    "code":"time_from",
+                                    "value":`${timing.timings[0].from}`
+                                },
+                                {
+                                    "code":"time_to",
+                                    "value":`${timing.timings[0].to}`
+                                }
+                            ]
+                        },
+                    )
+                };
+                menuTags.push(
+                    {
+                        "code":"display",
+                        "list":
+                        [
+                        {
+                            "code":"rank",
+                            "value":`${menu.seq}`
+                        }
+                        ]
+                    }
+                );
+                let menuDataObj = {
+                    "id":menu.id,
+                    "parent_category_id":"",
+                    "descriptor":
+                    {
+                    "name" : menu.name,
+                    "short_desc":menu.shortDescription,
+                    "long_desc":menu.longDescription,
+                    "images":menu.images
+                    },
+                    "tags":menuTags
+                };
+                menuData.push(menuDataObj)
+            }
         }
-    }
-
-    for (const org of data?.data?.products) {
         let bppDetails = {}
         let bppProviders = []
         let tags = []
@@ -90,43 +88,56 @@ export async function mapToysnGamesData(data) {
         delete org.storeDetails.address.country
         let categories = [];
         let itemTags = [];
+        let tagCatList = []
         let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
-                itemTags.push({
-                    "code": "type",
-                    "list": [
-                        {
-                            "code": "type",
-                            "value": "variant_group"
+                let variantGroupData = categories.find((data)=>{
+                    return items.variantGroup._id === data.id
+                });
+                if(!variantGroupData){
+                    itemTags.push({
+                        "code": "type",
+                        "list": [
+                            {
+                                "code": "type",
+                                "value": "variant_group"
+                            }
+                        ]
+                    })
+                    let category = {
+                        "id": items.variantGroup._id,
+                        "descriptor": {
+                            "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
+                        },
+                        "tags": itemTags
+                    }
+                    if(items.variantGroup.name && items.variantGroup.name.length > 0){
+
+                        for (let i=0; i < items.variantGroup.name.length; i++) {
+                            category.tags.push({
+                                "code": "attr",
+                                "list": [
+                                    {
+                                        "code": "name",
+                                        "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                    },
+                                    {
+                                        "code": "seq",
+                                        "value": `${i+1}`
+                                    }
+                                ]
+                            });
                         }
-                    ]
-                })
-                let category = {
-                    "id": items.variantGroup._id,
-                    "descriptor": {
-                        "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
-                    },
-                    "tags": itemTags
-                }
-                if(items.variantGroup.name && items.variantGroup.name.length > 0){
-                    for (let i=0; i < items.variantGroup.name.length; i++) {
-                        category.tags.push({
-                            "code": "attr",
-                            "list": [
-                                {
-                                    "code": "name",
-                                    "value": `item.tags.attribute.${items.variantGroup.name[i]}`
-                                },
-                                {
-                                    "code": "seq",
-                                    "value": `${i+1}`
-                                }
-                            ]
-                        });
                     }
                     categories.push(category);
                 }
+            }
+            let tagCatExist = tagCatList.find((data)=>{
+                return items.productSubcategory1 === data.category
+            });
+            if(!tagCatExist){
+                tagCatList.push({category:items.productSubcategory1});
             }
             if(menuData && menuData.length >0 && index ===1){
                 for(const menu of menuData){
@@ -146,7 +157,7 @@ export async function mapToysnGamesData(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                     let categoryGroupObj = {
@@ -274,32 +285,34 @@ export async function mapToysnGamesData(data) {
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
-        tags.push(
-            {
-                "code": "serviceability",
-                "list": [
-                    {
-                        "code": "location",
-                        "value": org.storeDetails?.location._id ?? "0"
-                    },
-                    {
-                        "code": "category",
-                        "value": 'Toys & Games'
-                    },
-                    {
-                        "code": "type",
-                        "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                    },
-                    {
-                        "code": "unit",
-                        "value": "country"
-                    },
-                    {
-                        "code": "value",
-                        "value": "IND"
-                    }
-                ]
+        for(const tagCat of tagCatList){
+            tags.push(
+                {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails?.location._id ?? "0"
+                        },
+                        {
+                            "code": "category",
+                            "value": tagCat.category
+                        },
+                        {
+                            "code": "type",
+                            "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        },
+                        {
+                            "code": "value",
+                            "value": "IND"
+                        }
+                    ]
             })
+        }
 
         let context = data.context
         context.bpp_id = BPP_ID

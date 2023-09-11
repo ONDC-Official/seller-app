@@ -8,10 +8,9 @@ export async function mapHealthnWellnessData(data) {
 
     let orgCatalogs = []
     data.context.timestamp = new Date();
-
     let index = 1;
     let menuData=[];
-    const customMenuData = data?.data?.customMenu;
+    const customMenuData = org?.menu;
     if(customMenuData && customMenuData.length >0){
         for (const menu of customMenuData) {
             let menuTags =[];
@@ -78,7 +77,6 @@ export async function mapHealthnWellnessData(data) {
             menuData.push(menuDataObj)
         }
     }
-
     for (const org of data?.data?.products) {
         let bppDetails = {}
         let bppProviders = []
@@ -89,44 +87,58 @@ export async function mapHealthnWellnessData(data) {
         delete org.storeDetails.address.building
         delete org.storeDetails.address.country
         let categories = [];
+        let tagCatList = [];
         let itemTags = [];
         let variantGroupSequence = 1
         for (let items of org.items) {
             if (items.variantGroup) {
-                itemTags.push({
-                    "code": "type",
-                    "list": [
-                        {
-                            "code": "type",
-                            "value": "variant_group"
-                        }
-                    ]
-                })
-                let category = {
-                    "id": items.variantGroup._id,
-                    "descriptor": {
-                        "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
-                    },
-                    "tags": itemTags
-                }
-                if(items.variantGroup.name && items.variantGroup.name.length > 0){
-                    for (let i=0; i < items.variantGroup.name.length; i++) {
-                        category.tags.push({
-                            "code": "attr",
-                            "list": [
-                                {
-                                    "code": "name",
-                                    "value": `item.tags.attribute.${items.variantGroup.name[i]}`
-                                },
-                                {
-                                    "code": "seq",
-                                    "value": `${i+1}`
-                                }
-                            ]
-                        });
+                let variantGroupData = categories.find((data)=>{
+                    return items.variantGroup._id === data.id
+                });
+                console.log(variantGroupData)
+                if(!variantGroupData){
+                    itemTags.push({
+                        "code": "type",
+                        "list": [
+                            {
+                                "code": "type",
+                                "value": "variant_group"
+                            }
+                        ]
+                    })
+                    let category = {
+                        "id": items.variantGroup._id,
+                        "descriptor": {
+                            "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
+                        },
+                        "tags": itemTags
                     }
+                    if(items.variantGroup.name && items.variantGroup.name.length > 0){
+
+                        for (let i=0; i < items.variantGroup.name.length; i++) {
+                            category.tags.push({
+                                "code": "attr",
+                                "list": [
+                                    {
+                                        "code": "name",
+                                        "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                    },
+                                    {
+                                        "code": "seq",
+                                        "value": `${i+1}`
+                                    }
+                                ]
+                            });
+                        }
+                    }
+                    categories.push(category);
                 }
-                categories.push(category);
+            }
+            let tagCatExist = tagCatList.find((data)=>{
+                return items.productSubcategory1 === data.category
+            });
+            if(!tagCatExist){
+                tagCatList.push({category:items.productSubcategory1});
             }
             if(menuData && menuData.length >0 && index ===1){
                 for(const menu of menuData){
@@ -147,7 +159,7 @@ export async function mapHealthnWellnessData(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                     let categoryGroupObj = {
@@ -274,33 +286,34 @@ export async function mapHealthnWellnessData(data) {
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
-        tags.push(
-            {
-                "code": "serviceability",
-                "list": [
-                    {
-                        "code": "location",
-                        "value": org.storeDetails?.location._id ?? "0"
-                    },
-                    {
-                        "code": "category",
-                        "value": 'Health & Wellness'
-                    },
-                    {
-                        "code": "type",
-                        "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                    },
-                    {
-                        "code": "unit",
-                        "value": "country"
-                    },
-                    {
-                        "code": "value",
-                        "value": "IND"
-                    }
-                ]
+        for(const tagCat of tagCatList){
+            tags.push(
+                {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails?.location._id ?? "0"
+                        },
+                        {
+                            "code": "category",
+                            "value": tagCat.category
+                        },
+                        {
+                            "code": "type",
+                            "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        },
+                        {
+                            "code": "value",
+                            "value": "IND"
+                        }
+                    ]
             })
-
+        }
         let context = data.context
         context.bpp_id = BPP_ID
         context.bpp_uri = BPP_URI
