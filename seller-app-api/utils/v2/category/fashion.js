@@ -216,8 +216,8 @@ export async function mapFashionData(data) {
         bppDetails = {
             "name": org.name,
             "symbol": org.storeDetails.logo,
-            "short_desc": "", //TODO: mark this for development
-            "long_desc": "",
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
             ]
@@ -227,8 +227,8 @@ export async function mapFashionData(data) {
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
-                "short_desc": "",
-                "long_desc": "",
+                "short_desc": org.name,
+                "long_desc": org.name,
                 "images": [
                     org.storeDetails.logo
                 ]
@@ -250,10 +250,6 @@ export async function mapFashionData(data) {
                                 "1,2,3,4,5,6,7",
                             "schedule": {
                                 "holidays": org.storeDetails?.storeTiming?.schedule?.holidays ?? [],
-                                "frequency": org.storeDetails?.storeTiming?.schedule?.frequency ?? "",
-                                "times": org.storeDetails?.storeTiming?.schedule?.times?.map((str) => {
-                                    return str.replace(':', '')
-                                }) ?? []
                             },
                             "range": {
                                 "start": org.storeDetails?.storeTiming?.range?.start?.replace(':', '') ?? "0000",
@@ -304,7 +300,11 @@ export async function mapFashionData(data) {
                     },
                     {
                         "code": "unit",
-                        "value": "km"
+                        "value": "country"
+                    },
+                    {
+                        "code": "value",
+                        "value": "IND"
                     }
                 ]
             })
@@ -406,7 +406,7 @@ export async function mapFashionDataUpdate(data) {
 function itemSchema(items,customMenuData) {
 
     let attributes = items.attributes.map((attribute) => {
-        return {code: attribute.code, value: attribute.value};
+        return {code: attribute?.code?.toLowerCase(), value: attribute.value};
     });
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const categoryIds = getcategoryIds(items,customMenuData);
@@ -448,7 +448,7 @@ function itemSchema(items,customMenuData) {
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": items.fulfilmentId ?? "NA",
+        "fulfillment_id": items.fulfilmentId ?? "1",
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,
@@ -602,7 +602,7 @@ function customizationSchema(customizations,item) {
                 },
                 {
                     "code":"default",
-                    "value":customizations.default
+                    "value":(customizations.default === 'Yes' ?'yes' : 'no')
                 }
             ]
             }

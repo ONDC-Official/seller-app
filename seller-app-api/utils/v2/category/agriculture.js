@@ -146,7 +146,7 @@ export async function mapAgricultureData(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                     let categoryGroupObj = {
@@ -206,8 +206,8 @@ export async function mapAgricultureData(data) {
         bppDetails = {
             "name": org.name,
             "symbol": org.storeDetails.logo,
-            "short_desc": "", //TODO: mark this for development
-            "long_desc": "",
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
             ]
@@ -217,8 +217,8 @@ export async function mapAgricultureData(data) {
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
-                "short_desc": "",
-                "long_desc": "",
+                "short_desc": org.name,//TODO: mark this for development
+                "long_desc": org.name,
                 "images": [
                     org.storeDetails.logo
                 ]
@@ -294,7 +294,11 @@ export async function mapAgricultureData(data) {
                     },
                     {
                         "code": "unit",
-                        "value": "km"
+                        "value": "country"
+                    },
+                    {
+                        "code": "value",
+                        "value": "IND"
                     }
                 ]
             })
@@ -351,7 +355,7 @@ export async function mapAgricultureDataUpdate(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                 }
@@ -595,7 +599,7 @@ function customizationSchema(customizations,item) {
                 },
                 {
                     "code":"default",
-                    "value":customizations.default
+                    "value":(customizations.default === 'Yes' ?'yes' : 'no')
                 }
             ]
             }
@@ -627,7 +631,7 @@ function customizationSchema(customizations,item) {
       }
     );
     let data =  {
-        "id":customizations.id,
+        "id":customizations._id,
         "descriptor":
         {
           "name":customizations.name
@@ -655,7 +659,7 @@ function customizationSchema(customizations,item) {
         {
           "currency":"INR",
           "value":`${customizations.price}`,
-          "maximum_value":"0.0"
+          "maximum_value":`${customizations.price}`
         },
         "category_id":item.productSubcategory1 ?? "NA",
         "related":true,

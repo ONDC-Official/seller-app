@@ -239,8 +239,8 @@ export async function mapGroceryData(data) {
         bppDetails = {
             "name": org.name,
             "symbol": org.storeDetails.logo,
-            "short_desc": "", //TODO: mark this for development
-            "long_desc": "",
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
             ]
@@ -250,8 +250,8 @@ export async function mapGroceryData(data) {
                 "descriptor": {
                     "name": org.name,
                     "symbol": org.storeDetails.logo,
-                    "short_desc": "",
-                    "long_desc": "",
+                    "short_desc": org.name,//TODO: mark this for development
+                    "long_desc": org.name,
                     "images": [
                         org.storeDetails.logo
                     ]
@@ -272,10 +272,6 @@ export async function mapGroceryData(data) {
                                     "1,2,3,4,5,6,7",
                                 "schedule": {
                                     "holidays": org.storeDetails?.storeTiming?.schedule?.holidays ?? [],
-                                    "frequency": org.storeDetails?.storeTiming?.schedule?.frequency ?? "",
-                                    "times": org.storeDetails?.storeTiming?.schedule?.times?.map((str) => {
-                                        return str.replace(':', '')
-                                    }) ?? []
                                 },
                                 "range": {
                                     "start": org.storeDetails?.storeTiming?.range?.start?.replace(':', '') ?? "0000",
@@ -327,7 +323,11 @@ export async function mapGroceryData(data) {
                     },
                     {
                         "code": "unit",
-                        "value": "km"
+                        "value": "country"
+                    },
+                    {
+                        "code": "value",
+                        "value": "IND"
                     }
                 ]
             })
@@ -469,7 +469,7 @@ function itemSchema(items,customMenuData) {
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": items.fulfilmentId ?? "NA",
+        "fulfillment_id": items.fulfilmentId ?? "1",
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,
@@ -508,7 +508,7 @@ function itemSchema(items,customMenuData) {
                 "list": [
                     {
                         "code": items.isVegetarian ? 'veg' : 'nonveg',
-                        "value": items.isVegetarian ? 'yes' : 'no'
+                        "value": items.isVegetarian ? 'yes' : 'yes'
                     }
                 ]
             }
@@ -665,7 +665,7 @@ function customizationSchema(customizations,item) {
                 },
                 {
                     "code":"default",
-                    "value":customizations.default
+                    "value":(customizations.default === 'Yes' ?'yes' : 'no')
                 }
             ]
             }
@@ -697,7 +697,7 @@ function customizationSchema(customizations,item) {
       }
     );
     let data =  {
-        "id":customizations.id,
+        "id":customizations._id,
         "descriptor":
         {
           "name":customizations.name

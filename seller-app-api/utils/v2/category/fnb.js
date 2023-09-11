@@ -104,7 +104,7 @@ export async function mapFnBData(data) {
                 let category = {
                     "id": items.variantGroup._id,
                     "descriptor": {
-                        "name": 'Variant HARSH Group '+ variantGroupSequence//Fixme: name should be human readable
+                        "name": 'Variant Group '+ variantGroupSequence//Fixme: name should be human readable
                     },
                     "tags": itemTags
                 }
@@ -200,8 +200,8 @@ export async function mapFnBData(data) {
         bppDetails = {
             "name": org.name,
             "symbol": org.storeDetails.logo,
-            "short_desc": "", //TODO: mark this for development
-            "long_desc": "",
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
             ]
@@ -211,8 +211,8 @@ export async function mapFnBData(data) {
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
-                "short_desc": "",
-                "long_desc": "",
+                "short_desc": org.name,//TODO: mark this for development
+                "long_desc": org.name,
                 "images": [
                     org.storeDetails.logo
                 ]
@@ -288,7 +288,11 @@ export async function mapFnBData(data) {
                     },
                     {
                         "code": "unit",
-                        "value": "km"
+                        "value": "country"
+                    },
+                    {
+                        "code": "value",
+                        "value": "IND"
                     }
                 ]
             })
@@ -500,7 +504,7 @@ function customizationSchema(customizations,item) {
                 },
                 {
                     "code":"default",
-                    "value":customizations.default
+                    "value":(customizations.default === 'Yes' ?'yes' : 'no')
                 }
             ]
             }

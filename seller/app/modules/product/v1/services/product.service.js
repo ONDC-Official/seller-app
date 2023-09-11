@@ -255,6 +255,8 @@ class ProductService {
             let customMenu = [];
             for(const org of orgs){
                 query.organization = org._id;
+                let storeImage = await s3.getSignedUrlForRead({path:org.storeDetails.logo});
+                org.storeDetails.logo = storeImage.url;
                 query.published = true;
                 if(category){
                     query.productCategory ={ $regex: '.*' + category + '.*' };

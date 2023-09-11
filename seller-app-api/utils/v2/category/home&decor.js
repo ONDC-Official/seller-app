@@ -207,8 +207,8 @@ export async function mapHomenDecorData(data) {
         bppDetails = {
             "name": org.name,
             "symbol": org.storeDetails.logo,
-            "short_desc": "", //TODO: mark this for development
-            "long_desc": "",
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
             ]
@@ -218,8 +218,8 @@ export async function mapHomenDecorData(data) {
             "descriptor": {
                 "name": org.name,
                 "symbol": org.storeDetails.logo,
-                "short_desc": "",
-                "long_desc": "",
+                "short_desc": org.name,
+                "long_desc": org.name,
                 "images": [
                     org.storeDetails.logo
                 ]
@@ -241,10 +241,7 @@ export async function mapHomenDecorData(data) {
                                 "1,2,3,4,5,6,7",
                             "schedule": {
                                 "holidays": org.storeDetails?.storeTiming?.schedule?.holidays ?? [],
-                                "frequency": org.storeDetails?.storeTiming?.schedule?.frequency ?? "",
-                                "times": org.storeDetails?.storeTiming?.schedule?.times?.map((str) => {
-                                    return str.replace(':', '')
-                                }) ?? []
+
                             },
                             "range": {
                                 "start": org.storeDetails?.storeTiming?.range?.start?.replace(':', '') ?? "0000",
@@ -295,7 +292,11 @@ export async function mapHomenDecorData(data) {
                     },
                     {
                         "code": "unit",
-                        "value": "km"
+                        "value": "country"
+                    },
+                    {
+                        "code": "value",
+                        "value": "IND"
                     }
                 ]
             })
@@ -440,7 +441,7 @@ function itemSchema(items,customMenuData) {
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": items.fulfilmentId ?? "NA",
+        "fulfillment_id": items.fulfilmentId ?? "1",
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,
