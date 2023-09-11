@@ -369,7 +369,7 @@ export async function mapElectronicsDataUpdate(data){
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                 }

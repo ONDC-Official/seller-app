@@ -358,7 +358,7 @@ export async function mapFashionDataUpdate(data) {
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
-                        value: customizationGroup.id
+                        value: customizationGroup._id
                     };
                     customGroup.push(groupObj);
                 }
@@ -631,7 +631,7 @@ function customizationSchema(customizations,item) {
       }
     );
     let data =  {
-        "id":customizations.id,
+        "id":customizations._id,
         "descriptor":
         {
           "name":customizations.name
