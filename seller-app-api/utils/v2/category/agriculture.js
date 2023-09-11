@@ -128,7 +128,7 @@ export async function mapAgricultureData(data) {
                         });
                         categories.push(category);
                         variantGroupSequence += 1;
-                    } else if (items.variantGroup.variationOn === 'ATTRIBUTE') {
+                    } else if (items.variantGroup.variationOn === 'ATTRIBUTES') {
                         let category = {
                             "id": items.variantGroup._id,
                             "descriptor": {
