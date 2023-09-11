@@ -661,18 +661,6 @@ function customizationSchema(customizations,item) {
             ]
         });
     }
-    customizationTag.push(
-      {
-        "code":"veg_nonveg",
-        "list":
-        [
-          {
-            "code": (customizations.vegNonVeg === 'VEG' ?'veg' :(customizations.vegNonVeg === 'NONVEG' ? 'non_veg' : 'egg')) ?? 'NA',
-            "value":"yes"
-          }
-        ]
-      }
-    );
     let data =  {
     "id":customizations._id,
     "descriptor":
