@@ -169,7 +169,7 @@ export const domainNameSpace=
             "domain":"ONDC:RET12"
         },
         {
-            "name":"BPC",
+            "name":"Beauty & Personal Care",
             "domain":"ONDC:RET13"
         },
         {

@@ -567,7 +567,7 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
-        "fulfillment_id": items.fulfilmentId ?? "NA",
+        "fulfillment_id": items.fulfilmentId ?? "1",
         "@ondc/org/returnable": items.isReturnable ?? false,
         "@ondc/org/cancellable": items.isCancellable ?? false,
         "@ondc/org/available_on_cod": items.availableOnCod,

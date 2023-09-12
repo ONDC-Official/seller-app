@@ -476,7 +476,7 @@ class ProductService {
                     console.log({item:item.id})
                 }
             }
-            item.fulfillment_id = "F1123" //TODO static for now
+            item.fulfillment_id = "Fulfillment1" //TODO static for now
             delete item.location_id
             delete item.quantity
             qouteItems.push(item)
@@ -504,6 +504,7 @@ class ProductService {
 
         //select logistic based on criteria-> for now first one will be picked up
         let deliveryCharges = {
+            "@ondc/org/item_id":"Fulfillment1",
             "title": "Delivery charges",
             "@ondc/org/title_type": "delivery",
             "price": {
@@ -518,11 +519,10 @@ class ProductService {
         let fulfillments = [
             {
                 "id": "Fulfillment1", //TODO: check what needs to go here, ideally it should be item id
-                "@ondc/org/provider_name": logisticProvider?.message?.catalog["bpp/descriptor"] ?? 'WEM',
+                "@ondc/org/provider_name": logisticProvider?.message?.catalog["bpp/descriptor"] ?? org.providerDetail.name,
                 "tracking": false,
-                "@ondc/org/category": logisticProvider?.message?.catalog["bpp/providers"][0]?.category_id ?? 'Standard',
+                "@ondc/org/category": logisticProvider?.message?.catalog["bpp/providers"][0]?.category_id ?? 'Standard Delivery',
                 "@ondc/org/TAT": "PT45M",
-                "provider_id": logisticProvider?.context?.bpp_id ?? 'wd6t46r',
                 "state":
                     {
                         "descriptor":
@@ -535,7 +535,7 @@ class ProductService {
         //update fulfillment
         requestQuery.message.order.fulfillments = fulfillments
 
-        let totalPriceObj = {value: totalPrice, currency: "INR"}
+        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
 
         detailedQoute.push(deliveryCharges);
 
@@ -805,7 +805,7 @@ class ProductService {
                     isValidItem = false;
                 }
             }
-            item.fulfillment_id = "F1123" //TODO static for now
+            item.fulfillment_id = "Fulfillment1" //TODO static for now
             delete item.location_id
             item.quantity
             qouteItems.push(item)
@@ -1118,7 +1118,7 @@ class ProductService {
                         isValidItem = false;
                     }
                 }
-                item.fulfillment_id = "F1123" //TODO static for now
+                item.fulfillment_id = "Fulfillment1" //TODO static for now
                 delete item.location_id
                 item.quantity
                 qouteItems.push(item)
@@ -1171,7 +1171,7 @@ class ProductService {
                     if(item?.parent_item_id){
                         qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
-                    item.fulfillment_id = "F1123" //TODO static for now
+                    item.fulfillment_id = "Fulfillment1" //TODO static for now
                     delete item.location_id
                     qouteItems.push(item)
                     detailedQoute.push(qouteItemsDetails)
