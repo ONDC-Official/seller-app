@@ -82,6 +82,7 @@ export async function mapAgricultureData(data) {
         let bppDetails = {}
         let bppProviders = []
         let tags = []
+        let tagCatList =[];
         let productAvailable = []
         org.storeDetails.address.street = org.storeDetails.address.locality
         delete org.storeDetails.address.locality

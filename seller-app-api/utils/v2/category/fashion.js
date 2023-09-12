@@ -166,6 +166,12 @@ export async function mapFashionData(data) {
                     }
                 }
             }
+            let tagCatExist = tagCatList.find((data)=>{
+                return items.productSubcategory1 === data.category
+            });
+            if(!tagCatExist){
+                tagCatList.push({category:items.productSubcategory1});
+            }
             if(menuData && menuData.length >0 && index ===1){
                 for(const menu of menuData){
                     categories.push(menu)
