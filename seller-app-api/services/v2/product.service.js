@@ -275,7 +275,7 @@ class ProductService {
                                     "count": item.quantity.count
                                 },
                                 "title": resultData?.name,
-                                "@ondc/org/title_type": "customization",
+                                "@ondc/org/title_type": "item",
                                 "price":
                                 {
                                 "currency":"INR",
