@@ -1228,7 +1228,7 @@ class ProductService {
                 "id":org.providerDetail.storeDetails.location._id,
                 "descriptor":
                 {
-                  "name":org.providerDetail.storeDetails.name
+                  "name":org.providerDetail.name
                 },
                 "gps":`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
                 "address":org.providerDetail.storeDetails.address
