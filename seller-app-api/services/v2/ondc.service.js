@@ -2150,6 +2150,7 @@ class OndcService {
             let category = domainNameSpace.find((cat) => {
                 return cat.name === data.category
             })
+            let time ={}
             if(data.updateType === 'closed'){
                 time = {
                     "label":"close",
@@ -2173,8 +2174,7 @@ class OndcService {
                     "action":"on_search",
                     "country": "IND", 
                     "city": "std:080", 
-                    "action": "on_search",
-                    "core_version": "1.2.0", 
+                    "core_version": "1.2.0",
                     "bap_id": "ref-app-buyer-dev-internal.ondc.org", 
                     "bap_uri": "https://ref-app-buyer-dev-internal.ondc.org/protocol/v1", 
                     "bpp_uri": "https://ref-app-seller-dev-internal.ondc.org", 
@@ -2219,8 +2219,7 @@ class OndcService {
               "action":"on_search",
               "country": "IND", 
               "city": "std:080", 
-              "action": "on_search",
-              "core_version": "1.2.0", 
+              "core_version": "1.2.0",
               "bap_id": "ref-app-buyer-dev-internal.ondc.org", 
               "bap_uri": "https://ref-app-buyer-dev-internal.ondc.org/protocol/v1", 
               "bpp_uri": "https://ref-app-seller-dev-internal.ondc.org", 

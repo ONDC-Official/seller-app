@@ -196,7 +196,7 @@ class ProductService {
                 "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
-                "@ondc/org/TAT": "PT45M",
+                "@ondc/org/TAT": "PT48H",
                 "provider_id": logisticProvider.context.bpp_id,
                 "state":
                     {
@@ -522,7 +522,7 @@ class ProductService {
                 "@ondc/org/provider_name": logisticProvider?.message?.catalog["bpp/descriptor"] ?? org.providerDetail.name,
                 "tracking": false,
                 "@ondc/org/category": logisticProvider?.message?.catalog["bpp/providers"][0]?.category_id ?? 'Standard Delivery',
-                "@ondc/org/TAT": "PT45M",
+                "@ondc/org/TAT": "PT48H",
                 "state":
                     {
                         "descriptor":
@@ -1203,6 +1203,10 @@ class ProductService {
         confirmData.order_id = confirmData.id
         delete confirmData.id
         let org= await this.getOrgForOndc(requestQuery.message.order.provider.id);
+        let today = new Date();
+        let tomorrow = new Date();
+        tomorrow.setDate(today.getDate()+1);
+
         const fulfillments =
         [
           {
@@ -1255,8 +1259,8 @@ class ProductService {
               {
                 "range":
                 {
-                  "start":"2023-06-03T11:00:00.000Z", //TODO : static data for now
-                  "end":"2023-06-03T11:30:00.000Z"//TODO : static data for now
+                  "start":today, //TODO : static data for now
+                  "end":tomorrow//TODO : static data for now
                 }
               },
               "instructions"://TODO : static data for now

@@ -421,7 +421,7 @@ exports.getConfirm = async (data) => {
                 "payment": data.message.order.payment,
                 "tags":data.tags,
                 "created_at":data.message.order.created_at, //TODO: this needs to be persisted
-                "updated_at":data.message.order.created_at
+                "updated_at":new Date()
             }
         }
     }
