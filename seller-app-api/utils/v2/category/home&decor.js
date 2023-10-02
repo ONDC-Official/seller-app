@@ -509,6 +509,14 @@ function itemSchema(items,customMenuData) {
                         "value": items.countryOfOrigin ?? 'NA'
                     }
                 ]
+            },{
+                "code":"type",
+                "list":[
+                    {
+                        "code":"type",
+                        "value":"item"
+                    }
+                ]
             },
             {
                 "code": "attribute",

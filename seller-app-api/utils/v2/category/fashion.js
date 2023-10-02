@@ -511,6 +511,15 @@ function itemSchema(items,customMenuData) {
                 ]
             },
             {
+                "code":"type",
+                "list":[
+                    {
+                        "code":"type",
+                        "value":"item"
+                    }
+                ]
+            },
+            {
                 "code": "attribute",
                 "list": attributes
             }
