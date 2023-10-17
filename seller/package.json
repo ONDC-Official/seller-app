@@ -55,6 +55,7 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "regenerator-runtime": "^0.13.9",
+    "short-unique-id": "^4.4.4",
     "uuidv4": "^6.2.13",
     "winston": "^3.2.1",
     "xlsx": "^0.18.5"

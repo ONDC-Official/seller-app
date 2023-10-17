@@ -61,6 +61,7 @@ module.exports = {
     setStoreDetails:()=>{
         return Joi.object({
             categories: Joi.array(),
+            category: Joi.string(),
             logo: Joi.string(),
             location: {lat:Joi.number(),long:Joi.number()},
             locationAvailabilityPANIndia:Joi.boolean(),

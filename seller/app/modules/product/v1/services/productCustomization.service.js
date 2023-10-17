@@ -1,4 +1,4 @@
-import { NoRecordFoundError } from '../../../../lib/errors';
+import { BadRequestParameterError, NoRecordFoundError } from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
 import Product from '../../models/product.model';
 import ProductCustomization from '../../models/productCustomization.model';
@@ -8,7 +8,20 @@ class ProductCustomizationService {
     async create(productId,customizationDetails,currentUser) {
         try {
             // let query = {};
-
+            // let customizationGroups =  customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             const customizationExist = await ProductCustomizationGroup.find({product:productId,organization:currentUser.organization});
             if (customizationExist) {
                 await ProductCustomizationGroup.deleteMany({product:productId,organization:currentUser.organization});
@@ -29,9 +42,13 @@ class ProductCustomizationService {
                     await productCustomizationGroup.save();
                 }
                 for(const customization of customizations){
+                    let childGroup = await ProductCustomizationGroup.findOne({product:productId,organization:currentUser.organization,id:customization.child});
+                    let parentGroup = await ProductCustomizationGroup.findOne({product:productId,organization:currentUser.organization,id:customization.parent});
                     let customizationObj = {
                         ...customization,
                         product:productId,
+                        childId:childGroup?._id ?? '',
+                        parentId:parentGroup?._id ?? '',
                         organization : currentUser.organization,
                         updatedBy : currentUser.id,
                         createdBy : currentUser.id,

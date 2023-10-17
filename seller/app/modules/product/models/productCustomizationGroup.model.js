@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
-import { uuid } from 'uuidv4';
+// import { uuid } from 'uuidv4';
+import ShortUniqueId from 'short-unique-id';
+const uid = new ShortUniqueId({ length: 6 });
+
 const productCustomizationGroupSchema = new mongoose.Schema({
     _id: {
         type: String,
         required: true,
-        default: () => uuid(),
+        default: () => uid(),
     },
     id: {
         type: String,
@@ -13,6 +16,8 @@ const productCustomizationGroupSchema = new mongoose.Schema({
     organization: {type:String,ref:'Organozation'},
     product: {type:String, ref:'Product'},
     name: {type:String},
+    defaultCustomizationId : {type:String},
+    isMandatory : {type:Boolean}, 
     inputType: {type:String},
     minQuantity: {type:Number},
     maxQuantity: {type:Number},

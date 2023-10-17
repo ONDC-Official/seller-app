@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-31T06:08:07.736Z",
+        "timestamp": "2023-08-09T07:52:14.264Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,11 +52,11 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-31T06:08:07.736Z"
+                        "timestamp": "2023-08-09T07:52:14.264Z"
                     },
                     "categories": [
                         {
-                            "id": "363827e6-52b2-470a-a005-d21e058ce85f",
+                            "id": "nRifDx",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -69,11 +69,37 @@
                                             "value": "variant_group"
                                         }
                                     ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
                                 }
                             ]
                         },
                         {
-                            "id": "363827e6-52b2-470a-a005-d21e058ce85f",
+                            "id": "nRifDx",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -86,11 +112,37 @@
                                             "value": "variant_group"
                                         }
                                     ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
                                 }
                             ]
                         },
                         {
-                            "id": "3cd450c4-c533-40b3-8558-f0b3a6467e29",
+                            "id": "XVGkJR",
                             "descriptor": {
                                 "name": "Variant Group 3"
                             },
@@ -133,7 +185,7 @@
                             ]
                         },
                         {
-                            "id": "3cd450c4-c533-40b3-8558-f0b3a6467e29",
+                            "id": "XVGkJR",
                             "descriptor": {
                                 "name": "Variant Group 4"
                             },
@@ -215,14 +267,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "5773682b-7c6a-429d-ba56-0ecf4007720f",
+                            "id": "4a345d64-e2a8-426a-8190-d8bc35938aa1",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:18:02.624Z"
+                                "timestamp": "2023-08-07T14:00:49.273Z"
                             },
-                            "parent_item_id": "363827e6-52b2-470a-a005-d21e058ce85f",
+                            "parent_item_id": "nRifDx",
                             "descriptor": {
-                                "name": "TV",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -250,9 +302,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "Entertainment",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -260,6 +312,12 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
@@ -275,37 +333,37 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "LED"
+                                            "value": "Fibre"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "MI"
+                                            "value": "Sony"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "trendzz"
+                                            "value": "Summer Trends"
                                         },
                                         {
                                             "code": "size",
-                                            "value": "40"
+                                            "value": "small"
                                         },
                                         {
                                             "code": "color",
-                                            "value": "red"
+                                            "value": "white"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "db1bf4f5-0478-4a72-b77f-7de79f11c293",
+                            "id": "c47b212e-51da-428e-ba2e-e10dd41dbd52",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:18:02.654Z"
+                                "timestamp": "2023-08-07T14:00:49.313Z"
                             },
-                            "parent_item_id": "363827e6-52b2-470a-a005-d21e058ce85f",
+                            "parent_item_id": "nRifDx",
                             "descriptor": {
-                                "name": "TV",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -333,9 +391,9 @@
                                 "value": "123",
                                 "maximum_value": "123"
                             },
-                            "category_id": "Entertainment",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -343,6 +401,12 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
@@ -358,37 +422,37 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "LED"
+                                            "value": "Fibre"
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "MI"
+                                            "value": "Sony"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "trendzz"
+                                            "value": "Summer Trends"
                                         },
                                         {
                                             "code": "size",
-                                            "value": "60"
+                                            "value": "Medium"
                                         },
                                         {
                                             "code": "color",
-                                            "value": "blue"
+                                            "value": "Black"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "2f2a744b-edd8-46a6-a0b9-2a15f79b3c9a",
+                            "id": "45b4fd94-e063-47a6-9ec3-41c0c86f6b19",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:49:16.174Z"
+                                "timestamp": "2023-08-08T12:10:22.957Z"
                             },
-                            "parent_item_id": "3cd450c4-c533-40b3-8558-f0b3a6467e29",
+                            "parent_item_id": "XVGkJR",
                             "descriptor": {
-                                "name": "Smart TV",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -416,9 +480,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "Entertainment",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -426,6 +490,12 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
@@ -441,7 +511,7 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "LED"
+                                            "value": "Fibre"
                                         },
                                         {
                                             "code": "Brand",
@@ -453,25 +523,25 @@
                                         },
                                         {
                                             "code": "size",
-                                            "value": "40 inch"
+                                            "value": "small"
                                         },
                                         {
                                             "code": "color",
-                                            "value": "red"
+                                            "value": "white"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "71da866f-576d-42fb-9038-8002d27ee15c",
+                            "id": "4e5ed9ac-69c1-436c-bf76-07b1b68c3478",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:49:16.205Z"
+                                "timestamp": "2023-08-08T12:10:23.008Z"
                             },
-                            "parent_item_id": "3cd450c4-c533-40b3-8558-f0b3a6467e29",
+                            "parent_item_id": "XVGkJR",
                             "descriptor": {
-                                "name": "Smart TV",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -499,9 +569,9 @@
                                 "value": "123",
                                 "maximum_value": "123"
                             },
-                            "category_id": "Entertainment",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -509,6 +579,12 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
@@ -524,7 +600,7 @@
                                     "list": [
                                         {
                                             "code": "Material",
-                                            "value": "LED"
+                                            "value": "Fibre"
                                         },
                                         {
                                             "code": "Brand",
@@ -536,11 +612,11 @@
                                         },
                                         {
                                             "code": "size",
-                                            "value": "60 inch"
+                                            "value": "Medium"
                                         },
                                         {
                                             "code": "color",
-                                            "value": "blue"
+                                            "value": "Black"
                                         }
                                     ]
                                 }
@@ -570,10 +646,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

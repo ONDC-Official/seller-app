@@ -14,7 +14,6 @@ const productValidationSchema = Joi.object({
     productCode: Joi.string().required(),
     productName: Joi.string().required(),
     MRP: Joi.number().required(),
-    retailPrice: Joi.number().required(),
     purchasePrice: Joi.number().required(),
     HSNCode: Joi.string().required(),
     GST_Percentage: Joi.number().required(),
@@ -125,6 +124,30 @@ class ProductController {
         try {
             const params = req.params;
             const product = await productService.get(params.productId,req.user);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async ondcGet(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.ondcGet(params.productId);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
+    async ondcGetForUpdate(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await productService.ondcGetForUpdate(params.productId);
             return res.send(product);
 
         } catch (error) {
@@ -275,7 +298,7 @@ class ProductController {
 
                 const validKeys = [
                     'productCode', 'productName',
-                    'MRP', 'retailPrice',
+                    'MRP',
                     'purchasePrice', 'HSNCode',
                     'GST_Percentage', 'productCategory',
                     'quantity', 'barcode',

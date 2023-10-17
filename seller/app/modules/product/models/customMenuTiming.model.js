@@ -2,15 +2,15 @@ import mongoose from 'mongoose';
 // import { uuid } from 'uuidv4';
 import ShortUniqueId from 'short-unique-id';
 const uid = new ShortUniqueId({ length: 6 });
-const variantGroupSchema = new mongoose.Schema({
+const customMenuTimingSchema = new mongoose.Schema({
     _id: {
         type: String,
         required: true,
         default: () => uid(),
     },
     organization: {type:String},
-    name: { type: Array },
-    variationOn : {type :String},
+    customMenu: { type: String },
+    timings : {type :Array},
     createdAt: {
         type: Number,
         default: Date.now()
@@ -25,6 +25,6 @@ const variantGroupSchema = new mongoose.Schema({
 });
 
 
-variantGroupSchema.index({ name: 1 }, { unique: false });
-const VariantGroup = mongoose.model('VariantGroup', variantGroupSchema);
-module.exports = VariantGroup;
+customMenuTimingSchema.index({ name: 1 }, { unique: false });
+const CustomMenuTiming = mongoose.model('CustomMenuTiming', customMenuTimingSchema);
+module.exports = CustomMenuTiming;

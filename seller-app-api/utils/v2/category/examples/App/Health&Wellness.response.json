@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-31T06:11:36.553Z",
+        "timestamp": "2023-08-09T07:57:45.923Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,11 +52,11 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-31T06:11:36.553Z"
+                        "timestamp": "2023-08-09T07:57:45.923Z"
                     },
                     "categories": [
                         {
-                            "id": "ea4d4895-dc20-45ba-b53d-83d8598205ec",
+                            "id": "zi3BUP",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -73,7 +73,7 @@
                             ]
                         },
                         {
-                            "id": "ea4d4895-dc20-45ba-b53d-83d8598205ec",
+                            "id": "zi3BUP",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -90,7 +90,7 @@
                             ]
                         },
                         {
-                            "id": "ccd02645-b151-4907-a942-bcbdfe015969",
+                            "id": "0h2WMP",
                             "descriptor": {
                                 "name": "Variant Group 3"
                             },
@@ -133,7 +133,7 @@
                             ]
                         },
                         {
-                            "id": "ccd02645-b151-4907-a942-bcbdfe015969",
+                            "id": "0h2WMP",
                             "descriptor": {
                                 "name": "Variant Group 4"
                             },
@@ -220,7 +220,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:15:16.821Z"
                             },
-                            "parent_item_id": "ea4d4895-dc20-45ba-b53d-83d8598205ec",
+                            "parent_item_id": "zi3BUP",
                             "descriptor": {
                                 "name": "Air Purifier",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -252,7 +252,7 @@
                             },
                             "category_id": "Covid Health",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -260,13 +260,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -303,7 +309,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:15:16.850Z"
                             },
-                            "parent_item_id": "ea4d4895-dc20-45ba-b53d-83d8598205ec",
+                            "parent_item_id": "zi3BUP",
                             "descriptor": {
                                 "name": "Air Purifier",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -335,7 +341,7 @@
                             },
                             "category_id": "Covid Health",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -343,13 +349,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -386,7 +398,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:55:14.208Z"
                             },
-                            "parent_item_id": "ccd02645-b151-4907-a942-bcbdfe015969",
+                            "parent_item_id": "0h2WMP",
                             "descriptor": {
                                 "name": "Air Purifier",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -418,7 +430,7 @@
                             },
                             "category_id": "Covid Care",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -426,13 +438,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -469,7 +487,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:55:14.239Z"
                             },
-                            "parent_item_id": "ccd02645-b151-4907-a942-bcbdfe015969",
+                            "parent_item_id": "0h2WMP",
                             "descriptor": {
                                 "name": "Air Purifier",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -501,7 +519,7 @@
                             },
                             "category_id": "Covid Care",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -509,13 +527,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -570,10 +594,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

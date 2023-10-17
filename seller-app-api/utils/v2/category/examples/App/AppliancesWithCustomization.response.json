@@ -1,6 +1,6 @@
 {
     "context": {
-        "domain": "ONDC:RET14",
+        "domain": "ONDC:RET15",
         "country": "IND",
         "city": "std:080",
         "action": "on_search",
@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-08-09T07:51:37.898Z",
+        "timestamp": "2023-08-07T14:01:27.608Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,47 +52,13 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-08-09T07:51:37.898Z"
+                        "timestamp": "2023-08-07T14:01:27.608Z"
                     },
                     "categories": [
                         {
-                            "id": "i92WKP",
+                            "id": "nRifDx",
                             "descriptor": {
                                 "name": "Variant Group 1"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "i92WKP",
-                            "descriptor": {
-                                "name": "Variant Group 2"
-                            },
-                            "tags": [
-                                {
-                                    "code": "type",
-                                    "list": [
-                                        {
-                                            "code": "type",
-                                            "value": "variant_group"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "ih2WKO",
-                            "descriptor": {
-                                "name": "Variant Group 3"
                             },
                             "tags": [
                                 {
@@ -133,9 +99,9 @@
                             ]
                         },
                         {
-                            "id": "ih2WKO",
+                            "id": "nRifDx",
                             "descriptor": {
-                                "name": "Variant Group 4"
+                                "name": "Variant Group 2"
                             },
                             "tags": [
                                 {
@@ -215,14 +181,14 @@
                     "ttl": "PT24H",
                     "items": [
                         {
-                            "id": "ffe79e10-1da7-47fa-99e2-e562e7493979",
+                            "id": "4a345d64-e2a8-426a-8190-d8bc35938aa1",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:13:40.928Z"
+                                "timestamp": "2023-08-07T14:00:49.273Z"
                             },
-                            "parent_item_id": "i92WKP",
+                            "parent_item_id": "nRifDx",
                             "descriptor": {
-                                "name": "Mouse",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -250,9 +216,9 @@
                                 "value": "12345",
                                 "maximum_value": "12345"
                             },
-                            "category_id": "Computer Asseceroies",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -268,11 +234,29 @@
                             },
                             "tags": [
                                 {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY1"
+                                        }
+                                    ]
+                                },
+                                {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IN"
+                                            "value": "IND"
                                         }
                                     ]
                                 },
@@ -285,11 +269,11 @@
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "HP"
+                                            "value": "Sony"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Optical"
+                                            "value": "Summer Trends"
                                         },
                                         {
                                             "code": "size",
@@ -297,21 +281,140 @@
                                         },
                                         {
                                             "code": "color",
-                                            "value": "red"
+                                            "value": "white"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "id": "e5fbbfe0-abad-4ba2-9b4f-ca4caa34b0b7",
+                            "id": "pj9BKP",
+                            "descriptor": {
+                                "name": "Dragon Print"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": "50"
+                                },
+                                "maximum": {
+                                    "count": "50"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "100"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "ij9BKI",
+                            "descriptor": {
+                                "name": "Stone Print"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": "50"
+                                },
+                                "maximum": {
+                                    "count": "50"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "50",
+                                "maximum_value": "100"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "c47b212e-51da-428e-ba2e-e10dd41dbd52",
                             "time": {
                                 "label": "enable",
-                                "timestamp": "2023-07-31T05:13:40.960Z"
+                                "timestamp": "2023-08-07T14:00:49.313Z"
                             },
-                            "parent_item_id": "i92WKP",
+                            "parent_item_id": "nRifDx",
                             "descriptor": {
-                                "name": "Mouse",
+                                "name": "Android TV",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
                                 "short_desc": "description",
                                 "long_desc": "long",
@@ -339,9 +442,9 @@
                                 "value": "123",
                                 "maximum_value": "123"
                             },
-                            "category_id": "Computer Asseceroies",
+                            "category_id": "Home Entertainment",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "fulfillment_id": "NA",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -357,11 +460,29 @@
                             },
                             "tags": [
                                 {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "custom_group",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY1"
+                                        }
+                                    ]
+                                },
+                                {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IN"
+                                            "value": "IND"
                                         }
                                     ]
                                 },
@@ -374,189 +495,11 @@
                                         },
                                         {
                                             "code": "Brand",
-                                            "value": "HP"
+                                            "value": "Sony"
                                         },
                                         {
                                             "code": "FashionType",
-                                            "value": "Optical"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "medium"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "blue"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "9639ee80-df80-466b-9dd0-41aad5b54316",
-                            "time": {
-                                "label": "enable",
-                                "timestamp": "2023-07-31T05:47:45.569Z"
-                            },
-                            "parent_item_id": "fef111e9-0318-4287-b287-2e3a115d74bb",
-                            "descriptor": {
-                                "name": "Mouse",
-                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                "short_desc": "description",
-                                "long_desc": "long",
-                                "images": [
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
-                                ]
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "kilogram",
-                                        "value": "1"
-                                    }
-                                },
-                                "available": {
-                                    "count": "100"
-                                },
-                                "maximum": {
-                                    "count": "1"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": "12345",
-                                "maximum_value": "12345"
-                            },
-                            "category_id": "Computer Asseceroies",
-                            "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
-                            "@ondc/org/returnable": true,
-                            "@ondc/org/cancellable": true,
-                            "@ondc/org/available_on_cod": true,
-                            "@ondc/org/time_to_ship": "PT1H",
-                            "@ondc/org/seller_pickup_return": true,
-                            "@ondc/org/return_window": "PT30M",
-                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
-                            "@ondc/org/statutory_reqs_packaged_commodities": {
-                                "manufacturer_or_packer_name": "AWS",
-                                "manufacturer_or_packer_address": "Pune",
-                                "common_or_generic_name_of_commodity": "Mango",
-                                "month_year_of_manufacture_packing_import": "01/2003"
-                            },
-                            "tags": [
-                                {
-                                    "code": "origin",
-                                    "list": [
-                                        {
-                                            "code": "country",
-                                            "value": "IN"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "plastic"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "HP"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "optical"
-                                        },
-                                        {
-                                            "code": "size",
-                                            "value": "small"
-                                        },
-                                        {
-                                            "code": "color",
-                                            "value": "red"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": "6254268c-2722-4ad4-9eb9-2c3c2bc0bf7f",
-                            "time": {
-                                "label": "enable",
-                                "timestamp": "2023-07-31T05:47:45.602Z"
-                            },
-                            "parent_item_id": "fef111e9-0318-4287-b287-2e3a115d74bb",
-                            "descriptor": {
-                                "name": "Mouse",
-                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                "short_desc": "description",
-                                "long_desc": "long",
-                                "images": [
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
-                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
-                                ]
-                            },
-                            "quantity": {
-                                "unitized": {
-                                    "measure": {
-                                        "unit": "kilogram",
-                                        "value": "1"
-                                    }
-                                },
-                                "available": {
-                                    "count": "10"
-                                },
-                                "maximum": {
-                                    "count": "1"
-                                }
-                            },
-                            "price": {
-                                "currency": "INR",
-                                "value": "123",
-                                "maximum_value": "123"
-                            },
-                            "category_id": "Computer Asseceroies",
-                            "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
-                            "@ondc/org/returnable": true,
-                            "@ondc/org/cancellable": true,
-                            "@ondc/org/available_on_cod": true,
-                            "@ondc/org/time_to_ship": "PT1H",
-                            "@ondc/org/seller_pickup_return": true,
-                            "@ondc/org/return_window": "PT30M",
-                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
-                            "@ondc/org/statutory_reqs_packaged_commodities": {
-                                "manufacturer_or_packer_name": "AWS",
-                                "manufacturer_or_packer_address": "Pune",
-                                "common_or_generic_name_of_commodity": "Mango",
-                                "month_year_of_manufacture_packing_import": "01/2003"
-                            },
-                            "tags": [
-                                {
-                                    "code": "origin",
-                                    "list": [
-                                        {
-                                            "code": "country",
-                                            "value": "IN"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "code": "attributes",
-                                    "list": [
-                                        {
-                                            "code": "Material",
-                                            "value": "plastic"
-                                        },
-                                        {
-                                            "code": "Brand",
-                                            "value": "HP"
-                                        },
-                                        {
-                                            "code": "FashionType",
-                                            "value": "optical"
+                                            "value": "Summer Trends"
                                         },
                                         {
                                             "code": "size",
@@ -564,7 +507,126 @@
                                         },
                                         {
                                             "code": "color",
-                                            "value": "blue"
+                                            "value": "Black"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "hj6BXP",
+                            "descriptor": {
+                                "name": "Dragon Print"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": "50"
+                                },
+                                "maximum": {
+                                    "count": "50"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": 100,
+                                "maximum_value": "100"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY1"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY3"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "va1BYP",
+                            "descriptor": {
+                                "name": "Stone Print"
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "inch",
+                                        "value": "tt"
+                                    }
+                                },
+                                "available": {
+                                    "count": "50"
+                                },
+                                "maximum": {
+                                    "count": "50"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "50",
+                                "maximum_value": "100"
+                            },
+                            "category_id": "F&B",
+                            "related": true,
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "parent",
+                                    "list": [
+                                        {
+                                            "code": "id",
+                                            "value": "E5tuY2"
+                                        },
+                                        {
+                                            "code": "default",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "child",
+                                    "list": [
+                                        {
+                                            "code": "id"
                                         }
                                     ]
                                 }
@@ -589,11 +651,15 @@
                                 },
                                 {
                                     "code": "category",
-                                    "value": "Electronics"
+                                    "value": "Appliances"
                                 },
                                 {
                                     "code": "type",
                                     "value": "12"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

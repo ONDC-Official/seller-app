@@ -1,6 +1,7 @@
 
 import Order from '../../models/order.model';
 import Product from '../../../product/models/product.model';
+import ProductCustomization from '../../../product/models/productCustomization.model';
 import ReturnItem from '../../models/returnItem.model';
 import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
@@ -22,17 +23,52 @@ class OrderService {
             //update item qty in product inventory
 
             for(let item of data.data.items){
-                if(item.quantity.count){
-                    //reduce item quantity
-                    let product = await Product.findOne({_id:item.id});
-                    product.quantity = product.quantity-item.quantity.count;
-                    if(product.quantity<0){
-                        throw new ConflictError();
+                let tags = item.tags;
+                if(tags && tags.length > 0){
+                    let tagData = tags.find((tag)=>{return tag.code === 'type'});
+                    let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                    let itemType = tagTypeData.value;
+                    if(itemType === 'customization'){
+                        if(item.quantity.count){
+                            //reduce item quantity
+                            let product = await ProductCustomization.findOne({_id:item.id});
+                            product.available = product.available-item.quantity.count;
+                            if(product.quantity<0){
+                                throw new ConflictError();
+                            }
+                            await product.save();
+                        }
+                    }else{
+                        if(item.quantity.count){
+                            //reduce item quantity
+                            let product = await Product.findOne({_id:item.id});
+                            
+                            console.log({qty:product?.quantity,id:item.id})
+                            console.log({qtyCount:item.quantity.count})
+                            product.quantity = product.quantity-item.quantity.count;
+                            if(product.quantity<0){
+                                throw new ConflictError();
+                            }
+                            await product.save();
+                        }
                     }
-                    await product.save();
+                }else{
+                    if(item.quantity.count){
+                        //reduce item quantity
+                        let product = await Product.findOne({_id:item.id});
+                        
+                        console.log({qty:product?.quantity,id:item.id})
+                        console.log({qtyCount:item.quantity.count})
+                        product.quantity = product.quantity-item.quantity.count;
+                        if(product.quantity<0){
+                            throw new ConflictError();
+                        }
+                        await product.save();
+                    }
                 }
+
             }
-            data.data.organization=data.data.provider.id;
+            // data.data.organization=data.data.provider.id;
             let order = new Order(data.data);
             let savedOrder= await order.save();
 

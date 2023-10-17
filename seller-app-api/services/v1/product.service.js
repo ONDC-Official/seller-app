@@ -148,7 +148,7 @@ class ProductService {
                 "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
-                "@ondc/org/TAT": "PT45M",
+                "@ondc/org/TAT": "PT48H",
                 "provider_id": logisticProvider.context.bpp_id,
                 "state":
                     {

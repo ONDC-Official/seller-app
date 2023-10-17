@@ -9,7 +9,7 @@
         "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
         "transaction_id": "{{transaction_id}}",
         "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
-        "timestamp": "2023-07-31T05:59:00.237Z",
+        "timestamp": "2023-08-09T07:50:30.079Z",
         "bpp_id": "sellerapp-staging.datasyndicate.in",
         "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
     },
@@ -52,11 +52,11 @@
                     },
                     "time": {
                         "label": "enable",
-                        "timestamp": "2023-07-31T05:59:00.237Z"
+                        "timestamp": "2023-08-09T07:50:30.079Z"
                     },
                     "categories": [
                         {
-                            "id": "b1f76dca-3b39-4f45-96d8-12e29b7f92b9",
+                            "id": "ih9WKP",
                             "descriptor": {
                                 "name": "Variant Group 1"
                             },
@@ -86,7 +86,7 @@
                             ]
                         },
                         {
-                            "id": "b1f76dca-3b39-4f45-96d8-12e29b7f92b9",
+                            "id": "ih9WKP",
                             "descriptor": {
                                 "name": "Variant Group 2"
                             },
@@ -160,7 +160,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:57:06.789Z"
                             },
-                            "parent_item_id": "b1f76dca-3b39-4f45-96d8-12e29b7f92b9",
+                            "parent_item_id": "ih9WKP",
                             "descriptor": {
                                 "name": "Kesh King Ayurvedic Hair Oil",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -192,7 +192,7 @@
                             },
                             "category_id": "Hair Care",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -200,13 +200,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -239,7 +245,7 @@
                                 "label": "enable",
                                 "timestamp": "2023-07-31T05:57:06.810Z"
                             },
-                            "parent_item_id": "b1f76dca-3b39-4f45-96d8-12e29b7f92b9",
+                            "parent_item_id": "ih9WKP",
                             "descriptor": {
                                 "name": "Kesh King Ayurvedic Hair Oil",
                                 "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
@@ -271,7 +277,7 @@
                             },
                             "category_id": "Hair Care",
                             "location_id": "6463928731fadaf31cd63a2e",
-                            "fulfillment_id": "F1",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
                             "@ondc/org/returnable": true,
                             "@ondc/org/cancellable": true,
                             "@ondc/org/available_on_cod": true,
@@ -279,13 +285,19 @@
                             "@ondc/org/seller_pickup_return": true,
                             "@ondc/org/return_window": "PT30M",
                             "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
                             "tags": [
                                 {
                                     "code": "origin",
                                     "list": [
                                         {
                                             "code": "country",
-                                            "value": "IND"
+                                            "value": "IN"
                                         }
                                     ]
                                 },
@@ -336,10 +348,6 @@
                                 {
                                     "code": "type",
                                     "value": "12"
-                                },
-                                {
-                                    "code": "type",
-                                    "value": "10"
                                 },
                                 {
                                     "code": "unit",

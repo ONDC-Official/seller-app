@@ -1,0 +1,303 @@
+{
+    "context": {
+        "domain": "nic2004:60232",
+        "country": "IND",
+        "city": "std:080",
+        "action": "init",
+        "core_version": "1.1.0",
+        "bap_id": "sellerapp-staging.datasyndicate.in",
+        "bap_uri": "https://9aa9-2401-4900-1c5c-13eb-75b8-ff9-8555-cc4d.ngrok-free.app",
+        "bpp_id": "DF1233",
+        "bpp_uri": "TH5643",
+        "transaction_id": "TH5664",
+        "message_id": "1cd7bed0-f17c-4e46-8dec-b5e31684cff9",
+        "timestamp": "2023-08-24T17:27:39.258Z",
+        "ttl": "PT30S"
+    },
+    "message": {
+        "order": {
+            "id": "O1",
+            "state": "Created",
+            "provider": {
+                "id": "123",
+                "locations": [
+                    {
+                        "id": "L1"
+                    }
+                ]
+            },
+            "items": [
+                [
+                    {
+                        "id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                        "parent_item_id": "DI1",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "item"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C1",
+                        "parent_item_id": "DI1",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C3",
+                        "parent_item_id": "DI1",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "10828697-e8d6-4314-8b6b-af5897ccef62",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "item"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C1",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C3",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "41d69a28-4e5b-43a0-845a-f4f5f6ea5dfc",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "item"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C1",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 4
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "C3",
+                        "parent_item_id": "DI122",
+                        "location_id": "L1",
+                        "quantity": {
+                            "count": 1
+                        },
+                        "tags": [
+                            {
+                                "code": "type",
+                                "list": [
+                                    {
+                                        "code": "type",
+                                        "value": "customization"
+                                    }
+                                ]
+                            },
+                            {
+                                "code": "parent",
+                                "list": [
+                                    {
+                                        "code": "id",
+                                        "value": "CG2"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            ],
+            "fulfillments": [
+                {
+                    "id": "F1",
+                    "type": "Delivery",
+                    "end": {
+                        "contact": {
+                            "phone": "9886098860"
+                        },
+                        "location": {
+                            "gps": "12.453544,77.928379",
+                            "address": {
+                                "area_code": "560037",
+                                "building": "my building name or house #",
+                                "city": "Bengaluru",
+                                "country": "IND",
+                                "locality": "my street name",
+                                "name": "my house or door or floor #",
+                                "state": "Karnataka"
+                            }
+                        }
+                    }
+                }
+            ],
+            "billing": {
+                "name": "ONDC buyer",
+                "address": {
+                    "name": "my house or door or floor #",
+                    "building": "my building name or house #",
+                    "locality": "my street name",
+                    "city": "Bengaluru",
+                    "state": "Karnataka",
+                    "country": "IND",
+                    "area_code": "560037"
+                },
+                "tax_number": "XXXXXXXXXXXXXXX",
+                "phone": "090909090909",
+                "email": "support@wemotiveforge.com",
+                "created_at": "2023-08-24T17:27:39.258Z",
+                "updated_at": "2023-08-24T17:27:39.258Z"
+            },
+            "payment": {
+                "@ondc/org/settlement_details": []
+            }
+        }
+    }
+}

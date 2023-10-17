@@ -2,11 +2,16 @@ import Product from '../../models/product.model';
 import ProductAttribute from '../../models/productAttribute.model';
 import ProductCustomizationService from './productCustomization.service';
 import VariantGroup from '../../models/variantGroup.model';
+import CustomMenu from '../../models/customMenu.model';
+import CustomMenuProduct from '../../models/customMenuProduct.model';
+import CustomMenuTiming from '../../models/customMenuTiming.model';
 import { Categories, SubCategories, Attributes } from '../../../../lib/utils/categoryVariant';
 import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
-import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
+import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
+import HttpRequest from '../../../../lib/utils/HttpRequest';
+import {mergedEnvironmentConfig} from '../../../../config/env.config';
 
 const productCustomizationService = new ProductCustomizationService();
  
@@ -14,7 +19,21 @@ class ProductService {
     async create(data,currentUser) {
         try {
             // let query = {};
-
+            // let customizations =  data.customizationDetails.customizations;
+            // let customizationGroups =  data.customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             const productExist = await Product.findOne({productName:data.productName,organization:currentUser.organization});
             if (productExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
@@ -42,15 +61,39 @@ class ProductService {
         try {
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
+            const customizationDetails = data.customizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
-            let variantGroup = new VariantGroup();
-            variantGroup.organization = currentUser.organization;
-            variantGroup.name = data.variantType;
-            variantGroup.variationOn = data.variationOn;
-            await variantGroup.save();
+            // let customizationGroups =  customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
+            let variantGroup = {};
+            let variantType = [];
+            let i = 0;
             for(const variant of variantSpecificDetails){
                 const varientAttributes = variant.varientAttributes;
                 delete variant.varientAttributes;
+                if(i===0){
+                    for (const attribute in varientAttributes) {
+                        variantType.push(attribute);
+                    }
+                    variantGroup = new VariantGroup();
+                    variantGroup.organization = currentUser.organization;
+                    variantGroup.name = variantType;
+                    variantGroup.variationOn = data.variationOn;
+                    await variantGroup.save();
+                }
+                i++;
                 let productObj = {};
                 productObj = {...commonDetails,...variant };
                 productObj.variantGroup = variantGroup._id;
@@ -60,6 +103,9 @@ class ProductService {
                 let attributeObj = {
                     ...commonAttributesValues,...varientAttributes
                 };
+                if(customizationDetails){
+                    await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
+                }
                 await this.createAttribute({product:product._id,attributes:attributeObj},currentUser);
             }
 
@@ -82,7 +128,6 @@ class ProductService {
                     productObj.quantity = productVariant.quantity;
                     productObj.organization = currentUser.organization;
                     productObj.MRP = productVariant.MRP;
-                    productObj.retailPrice = productVariant.retailPrice;
                     productObj.purchasePrice = productVariant.purchasePrice;
                     productObj.HSNCode = productVariant.HSNCode;
                     productObj.images = productVariant.images;
@@ -133,12 +178,19 @@ class ProductService {
 
     async list(params) {
         try {
-            let query={};
+            let query={
+                organization:params.organization
+            };
             if(params.name){
-                query.name = { $regex: params.name, $options: 'i' };
+                query.productName = { $regex: params.name, $options: 'i' };
             }
-            if(params.organization){
-                query.organization =params.organization;
+            if(params.category){
+                query.productCategory = params.category;
+            }
+            if(params.stock && params.stock === 'inStock'){
+                query.quantity = {$gt:0};
+            }else if(params.stock && params.stock === 'outOfStock'){
+                query.quantity = {$lte:0};
             }
             const data = await Product.find(query).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit);
             const count = await Product.count(query);
@@ -201,7 +253,11 @@ class ProductService {
             const orgs = await Organization.find({},).lean();
             let products = [];
             for(const org of orgs){
+                let productData = [];
+                let customMenu = [];
                 query.organization = org._id;
+                let storeImage = await s3.getSignedUrlForRead({path:org.storeDetails.logo});
+                org.storeDetails.logo = storeImage.url;
                 query.published = true;
                 if(category){
                     query.productCategory ={ $regex: '.*' + category + '.*' };
@@ -211,7 +267,7 @@ class ProductService {
 
                 const data = await Product.find(query).populate('variantGroup').sort({createdAt:1}).skip(params.offset).limit(params.limit).lean();
                 if(data.length>0){
-                    for(const product of data){
+                    for(let product of data){
                         let productDetails = product;
                         let images = [];
                         for(const image of productDetails.images){
@@ -219,18 +275,65 @@ class ProductService {
                             images.push(imageData.url);
                         }
                         product.images = images;
+                        let attributeData =[];
                         const attributes = await ProductAttribute.find({product:product._id});
-                        product.attributes = attributes;
-                        if(category ==='F&B'){
-                            product.customizationDetails = await productCustomizationService.getforApi(product._id);
+                        for(const attribute of attributes){
+                            let value = attribute.value; 
+                            if(attribute.code === 'size_chart'){
+                                let sizeChart = await s3.getSignedUrlForRead({path:attribute.value});
+                                value = sizeChart?.url ?? '';
+                            }
+                            const attributeObj = {
+                                'code' : attribute.code,
+                                'value':value
+                            };
+                            attributeData.push(attributeObj);
                         }
+                        product.attributes = attributeData;
+                        product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+                        productData.push(product);
                     }
-                    org.items = data;
+                    // getting Menu for org -> 
+                    let menus = await CustomMenu.find({category:category,organization:org._id}).lean();
+                    for(const menu of menus){
+                        let customMenuTiming = await CustomMenuTiming.findOne({customMenu:menu._id,organization:org._id});
+                        let images = [];
+                        let menuObj ={
+                            id:menu._id,
+                            name:menu.name,
+                            seq:menu.seq
+                        };
+                        for(const image of menu.images){
+                            let imageData = await s3.getSignedUrlForRead({path:image});
+                            images.push(imageData.url);
+                        }
+                        let menuQuery = {
+                            organization:org._id,
+                            customMenu : menu._id
+                        };
+                        let menuProducts = await CustomMenuProduct.find(menuQuery).sort({seq:'ASC'}).populate([{path:'product',select:['_id','productName']}]);
+                        let productData = [];
+                        for(const menuProduct of menuProducts){
+                            let productObj = {
+                                id:menuProduct.product._id,
+                                name:menuProduct.product.productName,
+                                seq:menuProduct.seq,
+        
+                            };
+                            productData.push(productObj);
+                        }
+                        menuObj.products = productData;
+                        menuObj.images = images;
+                        menuObj.timings = customMenuTiming?.timings ?? [];
+                        customMenu.push(menuObj);
+                    }
+                    org.items = productData;
+                    org.menu = customMenu;
                     products.push(org);
                 }
             }
             //collect all store details by
-            return products;
+            return {products};
         } catch (err) {
             console.log('[OrderService] [getAll] Error in getting all from organization ',err);
             throw err;
@@ -239,7 +342,7 @@ class ProductService {
 
     async get(productId,currentUser) {
         try {
-            let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();
+            let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
             if(!product){
                 throw new NoRecordFoundError(MESSAGES.PRODUCT_NOT_EXISTS);
             }
@@ -254,13 +357,22 @@ class ProductService {
             const attributes = await ProductAttribute.find({product:productId,organization:currentUser.organization}); 
             let attributeObj = {};
             for(const attribute of attributes){
-                attributeObj[attribute.code] = attribute.value;
+                let value = attribute.value;
+                if(attribute.code === 'size_chart'){
+                    value = await s3.getSignedUrlForRead({path:attribute.value});
+                }
+                attributeObj[attribute.code] = value;
             }
             let productData = {
                 commonDetails:product,
                 commonAttributesValues:attributeObj,
-                customizationDetails: await productCustomizationService.get(productId,currentUser)
+                customizationDetails: await productCustomizationService.get(productId,currentUser),
             };
+            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
+            if(variantGroup){
+                productData.variationOn = variantGroup.variationOn ?? 'NA';
+                productData.variantType = variantGroup.name ?? [];
+            } 
 
             return productData;
 
@@ -270,6 +382,85 @@ class ProductService {
         }
     }
 
+    async ondcGet(productId) {
+        try {
+            let product = await Product.findOne({_id:productId}).lean();
+            if(!product){
+                return {};
+            }
+            let images = [];
+            if(product.images && product.images.length > 0){
+                for(const image of product.images){
+                    let data = await s3.getSignedUrlForRead({path:image});
+                    images.push(data);
+                }
+                product.images = images;
+            }
+            const attributes = await ProductAttribute.find({product:productId}); 
+            let attributeObj = {};
+            for(const attribute of attributes){
+                let value = attribute.value;
+                if(attribute.code === 'size_chart'){
+                    value = await s3.getSignedUrlForRead({path:attribute.value});
+                }
+                attributeObj[attribute.code] = value;
+            }
+            let productData = {
+                commonDetails:product,
+                commonAttributesValues:attributeObj,
+                customizationDetails: await productCustomizationService.get(productId,{organization:product.organization}),
+            };
+            const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
+            if(variantGroup){
+                productData.variationOn = variantGroup.variationOn ?? 'NA';
+                productData.variantType = variantGroup.name ?? [];
+            } 
+
+            return productData;
+
+        } catch (err) {
+            console.log('[OrganizationService] [ondcGet] Error in getting organization by id -',err);
+            throw err;
+        }
+    }
+
+    async ondcGetForUpdate(productId) {
+        try {
+            let product = await Product.findOne({_id:productId}).lean();
+            if(!product){
+                return {};
+            }
+            let images = [];
+            if(product.images && product.images.length > 0){
+                for(const image of product.images){
+                    let data = await s3.getSignedUrlForRead({path:image});
+                    images.push(data);
+                }
+                product.images = images;
+            }
+            const attributes = await ProductAttribute.find({product:productId}); 
+            let attributeData = [];
+            for(const attribute of attributes){
+                let value = attribute.value; 
+                if(attribute.code === 'size_chart'){
+                    let sizeChart = await s3.getSignedUrlForRead({path:attribute.value});
+                    value = sizeChart?.url ?? '';
+                }
+                const attributeObj = {
+                    'code' : attribute.code,
+                    'value':value
+                };
+                attributeData.push(attributeObj);
+            }
+            product.attributes = attributeData;
+            product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+            return product;
+
+        } catch (err) {
+            console.log('[OrganizationService] [ondcGet] Error in getting organization by id -',err);
+            throw err;
+        }
+    }
     async getWithVariants(productId,currentUser) {
         try {
             let product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
@@ -296,6 +487,20 @@ class ProductService {
 
     async update(productId,data,currentUser) {
         try {
+            // let customizationGroups =  data.customizationDetails.customizationGroups;
+            // if(customizationGroups && customizationGroups.length  > 0){
+            //     for(const customizationGroup of customizationGroups){
+            //         if(customizationGroup.isMandatory){
+            //             if(customizationGroup.minQuantity !== 1){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
+            //             }
+            //         }else{
+            //             if(customizationGroup.minQuantity !== 0){
+            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
+            //             }
+            //         }
+            //     }
+            // }
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
             const product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
@@ -307,6 +512,9 @@ class ProductService {
             if(data.customizationDetails){
                 await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
             }
+
+            this.notifyItemUpdate(productId);
+
             return {data:productObj};
 
         } catch (err) {
@@ -315,6 +523,26 @@ class ProductService {
         }
     }
 
+    async notifyItemUpdate(itemId) {
+        try {
+
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                mergedEnvironmentConfig.intraServiceApiEndpoints.client,
+                '/api/v2/client/status/itemUpdate',
+                'POST',
+                {itemId:itemId},
+                {}
+            );
+            await httpRequest.send();
+
+            return;
+
+        } catch (err) {
+            console.log('[OrganizationService] [get] Error in notify item update -}',err);
+            throw err;
+        }
+    }
 
     async publish(productId,data,currentUser) {
         try {

@@ -22,6 +22,14 @@ class OndcController {
             next(err);
         });
     }
+    orderSelectWithoutlogistic(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderSelectWithoutlogistic(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     orderInit(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         ondcService.orderInit(req.body,req).then(data => {
@@ -30,9 +38,22 @@ class OndcController {
             next(err);
         });
     }
+    orderInitWithoutlogistic(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.orderInitWithoutlogistic(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
     orderConfirm(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderConfirm(req.body,req).then(data => {
+        // ondcService.orderConfirm(req.body,req).then(data => {
+        //     res.json(data);
+        // }).catch((err) => {
+        //     next(err);
+        // });
+        ondcService.orderConfirmWithOutLogistic(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -75,6 +96,32 @@ class OndcController {
     orderStatusUpdateItems(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
         ondcService.orderStatusUpdateItems(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+    notifyItemUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyItemUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    notifyStoreUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyStoreUpdate(req.body,req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
+    notifyOrgUpdate(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+        ondcService.notifyOrgUpdate(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

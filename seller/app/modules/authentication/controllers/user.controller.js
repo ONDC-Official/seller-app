@@ -85,11 +85,10 @@ class UserController {
    */
     async getUsers(req, res, next) {
         try {
-            const params = req.params;
             const query = req.query;
             query.offset = parseInt(query.offset??0);
             query.limit = parseInt(query.limit??100);
-            const user = await userService.list(params.organizationId,query);
+            const user = await userService.list(req.user,query);
             return res.send(user);
         
         } catch (error) {

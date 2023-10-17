@@ -1,16 +1,16 @@
 const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
-import {mapGroceryData} from './category/grocery';
-import {mapFashionData} from './category/fashion'
-import {mapFnBData} from './category/fnb';
-import {mapElectronicsData} from './category/electronics';
-import {mapHealthnWellnessData} from './category/health&wellness';
-import {mapHomenDecorData} from './category/home&decor';
-import {mapAppliancesData} from './category/appliances';
-import {mapBPCData} from './category/bpc';
-import {mapAgricultureData} from './category/agriculture';
-import {mapToysnGamesData} from './category/toys&games';
+import {mapGroceryData,mapGroceryDataUpdate} from './category/grocery';
+import {mapFashionData,mapFashionDataUpdate} from './category/fashion'
+import {mapFnBData,mapFnBDataUpdate} from './category/fnb';
+import {mapElectronicsData,mapElectronicsDataUpdate} from './category/electronics';
+import {mapHealthnWellnessData,mapHealthnWellnessDataUpdate} from './category/health&wellness';
+import {mapHomenDecorData,mapHomenDecorDataUpdate} from './category/home&decor';
+import {mapAppliancesData,mapAppliancesDataUpdate} from './category/appliances';
+import {mapBPCData,mapBPCDataUpdate} from './category/bpc';
+import {mapAgricultureData,mapAgricultureDataUpdate} from './category/agriculture';
+import {mapToysnGamesData,mapToysnGamesDataUpdate} from './category/toys&games';
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
@@ -69,6 +69,61 @@ exports.getProducts = async (data) => {
 
 }
 
+exports.getProductUpdate = async (data) => {
+
+    //check category and forward request to specific category mapper
+
+    let mappedCatalog = []
+    let category = domainNameSpace.find((cat)=>{
+        return cat.domain === data.context.domain
+    })
+
+    switch (category.name){
+        case 'Grocery': {
+            mappedCatalog = await mapGroceryDataUpdate(data);
+            break;
+        }
+        case 'Fashion': {
+            mappedCatalog = await mapFashionDataUpdate(data);
+            break;
+        }
+        case 'F&B': {
+            mappedCatalog = await mapFnBDataUpdate(data);
+            break;
+        }
+        case 'Electronics': {
+            mappedCatalog = await mapElectronicsDataUpdate(data);
+            break;
+        }
+        case 'Health & Wellness': {
+            mappedCatalog = await mapHealthnWellnessDataUpdate(data);
+            break;
+        }
+        case 'Home & Decor': {
+            mappedCatalog = await mapHomenDecorDataUpdate(data);
+            break;
+        }
+        case 'Appliances': {
+            mappedCatalog = await mapAppliancesDataUpdate(data);
+            break;
+        }
+        case 'BPC': {
+            mappedCatalog = await mapBPCDataUpdate(data);
+            break;
+        }
+        case 'Agriculture': {
+            mappedCatalog = await mapAgricultureDataUpdate(data);
+            break;
+        }
+        case 'Toys & Games': {
+            mappedCatalog = await mapToysnGamesDataUpdate(data);
+            break;
+        }
+    }
+    return mappedCatalog;
+
+}
+
 
 
 exports.getSelect = async (data) => {
@@ -89,7 +144,8 @@ exports.getSelect = async (data) => {
                 error:
                     {
                         type:"DOMAIN-ERROR",
-                        code:"40002"
+                        code:"40002",
+                        message:"Item quantity unavailable"
                     }}
 
         }
@@ -98,7 +154,28 @@ exports.getSelect = async (data) => {
                 error:
                     {
                         type:"DOMAIN-ERROR",
-                        code:"30009"
+                        code:"30009",
+                        message:"Location Serviceability error"
+                    }}
+
+        }
+        if(!data.isValidOrg){
+            error = {
+                error:
+                    {
+                        type:"DOMAIN-ERROR",
+                        code:"30001",
+                        message:"Provider not found"
+                    }}
+
+        }
+        if(!data.isValidItem){
+            error = {
+                error:
+                    {
+                        type:"DOMAIN-ERROR",
+                        code:"30004",
+                        message:"Item not found"
                     }}
 
         }
@@ -149,7 +226,7 @@ exports.getInit = async (data) => {
         "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
-                "provider":data.message.order.provider,
+                "provider":{id:data.message.order.provider.id},
                 "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
@@ -159,7 +236,8 @@ exports.getInit = async (data) => {
                     "breakup": data.detailedQoute,
                     "ttl": "P1D"
                 },
-                "payment": data.message.order.payment
+                "payment": data.payment,
+                "tags":data.tags
             }
         }
     }
@@ -334,15 +412,16 @@ exports.getConfirm = async (data) => {
         "message":  {
             "order": {
                 "id":data.message.order.order_id,
-                "state":"Created",
+                "state":"Accepted",
                 "provider": data.message.order.provider,
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
-                "fulfillments": data.message.order.fulfillments,
+                "fulfillments": data.fulfillments,
                 "quote":data.message.order.quote,
                 "payment": data.message.order.payment,
+                "tags":data.tags,
                 "created_at":data.message.order.created_at, //TODO: this needs to be persisted
-                "updated_at":data.message.order.created_at
+                "updated_at":new Date()
             }
         }
     }

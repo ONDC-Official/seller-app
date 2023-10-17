@@ -9,11 +9,17 @@ router.post('/client/search',
     ondcController.productSearch);
 
 //new changes
+// router.post('/client/select',
+//     ondcController.orderSelect);
+
 router.post('/client/select',
-    ondcController.orderSelect);
+    ondcController.orderSelectWithoutlogistic);
+
+// router.post('/client/Init',
+//     ondcController.orderInit);
 
 router.post('/client/Init',
-    ondcController.orderInit);
+    ondcController.orderInitWithoutlogistic);
 
 router.post('/client/confirm',
     ondcController.orderConfirm);
@@ -35,6 +41,16 @@ router.put('/client/status/updateOrder',
 
 router.put('/client/status/updateOrderItems',
     ondcController.orderStatusUpdateItems);
+
+router.post('/client/status/itemUpdate',
+    ondcController.notifyItemUpdate);
+
+router.post('/client/status/storeUpdate',
+    ondcController.notifyStoreUpdate);
+
+router.post('/client/status/orgUpdate',
+    ondcController.notifyOrgUpdate);
+
 
 router.post('/client/update',
     ondcController.orderUpdate);
