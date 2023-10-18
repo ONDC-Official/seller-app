@@ -288,7 +288,7 @@ export async function mapAppliancesData(data) {
                     "time":
                         {
                             "label":"enable",
-                            "timestamp":org.createdAt??org.created_at,
+                            "timestamp":data.context.timestamp,
                             "days": org.storeDetails?.storeTiming?.days?.join(",") ??
                                 "1,2,3,4,5,6,7",
                             "schedule": {
