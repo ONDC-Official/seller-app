@@ -43,7 +43,8 @@ class OndcService {
             let totalProductValue = 0
             for (let items of payload.message.order.items) {
                 const product = await productService.getForOndc(items.id)
-                totalProductValue += product.MRP
+                console.log("product---->",product);
+                totalProductValue += product.commonDetails.MRP
             }
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
@@ -57,56 +58,163 @@ class OndcService {
                 }
             }
 
+            // const searchRequest = {
+            //     "context": {
+            //         "domain": "nic2004:60232",
+            //         "country": "IND",
+            //         "city": payload.context.city,
+            //         "action": "search",
+            //         "core_version": "1.2.0",
+            //         "bap_id": config.get("sellerConfig").BPP_ID,
+            //         "bap_uri": config.get("sellerConfig").BAP_URI,
+            //         "transaction_id": uuidv4(),
+            //         "message_id": logisticsMessageId,
+            //         "timestamp": new Date(),
+            //         "ttl": "PT30S"
+            //     },
+            //     "message": {
+            //         "intent": {
+            //             "category": {
+            //                 "id": "Immediate Delivery"
+            //             },
+            //             "provider": {
+            //                 "time": {
+            //                     "days": "1,2,3,4,5,6,7",
+            //                     "schedule": {
+            //                         "holidays": []
+            //                     },
+            //                     "duration": "PT30M",
+            //                     "range": {
+            //                         "start": "1100",
+            //                         "end": "2200"
+            //                     }
+            //                 }
+            //             },
+            //             "fulfillment": { //TODO: uncomment in actual testing
+            //                 "type": "Delivery",
+            //                 "start": {
+            //                     "location": storeLocationEnd
+            //                 },
+            //                 "end": payload.message.order.fulfillments[0].end
+            //             },
+            //             "payment": {
+            //                 "type": "ON-FULFILLMENT",
+            //                 "@ondc/org/collection_amount": `${totalProductValue}`
+            //             },
+            //             "@ondc/org/payload_details": { //TODO: This is hard coded
+            //                 "weight": {
+            //                     "unit": "kilogram",
+            //                     "value": 5
+            //                 },
+            //                 "dimensions": {
+            //                     "length": {
+            //                         "unit": "centimeter",
+            //                         "value": 15
+            //                     },
+            //                     "breadth": {
+            //                         "unit": "centimeter",
+            //                         "value": 10
+            //                     },
+            //                     "height": {
+            //                         "unit": "centimeter",
+            //                         "value": 10
+            //                     }
+            //                 },
+            //                 "category": "Grocery",
+            //                 "value": {
+            //                     "currency": "INR",
+            //                     "value": `${totalProductValue}`
+            //                 },
+            //                 "dangerous_goods": false
+            //             }
+            //         }
+            //     }
+            // }
+
             const searchRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "country": "IND",
-                    "city": "std:080",
-                    "action": "search",
-                    "core_version": "1.1.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "transaction_id": uuidv4(),
-                    "message_id": logisticsMessageId,
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "country": "IND",
+                        "city": payload.context.city,
+                        "action": "search",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "transaction_id": uuidv4(),
+                        "message_id": logisticsMessageId,
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
                 "message": {
                     "intent": {
                         "category": {
-                            "id": "Standard Delivery" //TODO: based on provider it should change
+                            "id": "Immediate Delivery"
                         },
                         "provider": {
-                            "time": { //TODO: HARD Coded
+                            "time": {
                                 "days": "1,2,3,4,5,6,7",
+                                "schedule": {
+                                    "holidays": []
+                                },
+                                "duration": "PT30M",
                                 "range": {
-                                    "end": "2359",
-                                    "start": "0000"
+                                    "start": "1100",
+                                    "end": "2200"
                                 }
                             }
                         },
                         "fulfillment": {
-                            "type": "Prepaid", //TODO: ONLY prepaid orders should be there
+                            "type": "Delivery",
                             "start": {
-                                "location": storeLocationEnd
+                                "location": {
+                                    "gps": "30.7467833, 76.642853",
+                                    "address": {
+                                        "area_code": "140301"
+                                    }
+                                }
                             },
-                            "end": payload.message.order.fulfillments[0].end
+                            "end": {
+                                "location": {
+                                    "gps": "30.744600, 76.652496",
+                                    "address": {
+                                        "area_code": "140301"
+                                    }
+                                }
+                            }
                         },
-                        "@ondc/org/payload_details": { //TODO: HARD coded
+                        "payment": {
+                            "type": "ON-FULFILLMENT",
+                            "@ondc/org/collection_amount": "300.00"
+                        },
+                        "@ondc/org/payload_details": {
                             "weight": {
-                                "unit": "Kilogram",
-                                "value": 10
+                                "unit": "kilogram",
+                                "value": 5
                             },
-                            "category": "Grocery", //TODO: @abhinandan Take it from Product schema
+                            "dimensions": {
+                                "length": {
+                                    "unit": "centimeter",
+                                    "value": 15
+                                },
+                                "breadth": {
+                                    "unit": "centimeter",
+                                    "value": 10
+                                },
+                                "height": {
+                                    "unit": "centimeter",
+                                    "value": 10
+                                }
+                            },
+                            "category": "Grocery",
                             "value": {
                                 "currency": "INR",
-                                "value": `${totalProductValue}`
-                            }
+                                "value": "300.00"
+                            },
+                            "dangerous_goods": false
                         }
                     }
                 }
             }
-
             //process select request and send it to protocol layer
             this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId)
 
@@ -206,7 +314,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 15000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -377,6 +485,8 @@ class OndcService {
 
             const logistics = selectRequest?.selectedLogistics ?? ''; //TODO empty for now
 
+            console.log("selectRequest---->",selectRequest);
+            console.log("selectRequest---->",logistics.message.catalog);
             let storeLocationEnd = {}
             if (org.providerDetail.storeDetails) {
                 storeLocationEnd = {
@@ -408,63 +518,238 @@ class OndcService {
             const contextTimeStamp = new Date()
 
 
-            // let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
-            let deliveryType = payload.message.order.items
+             let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});// TODO commented for now for logistic
+            //let deliveryType = payload.message.order.items
 
-            const initRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "country": "IND",
-                    "city": "std:080", //TODO: take city from retail context
-                    "action": "init",
-                    "core_version": "1.1.0",
-                    "bap_id": BPP_ID,
-                    "bap_uri": BPP_URI,
-                    "bpp_id": logistics?.context?.bpp_id ?? 'DF1233', //STORED OBJECT TODO static for now
-                    "bpp_uri": logistics?.context?.bpp_uri ?? 'TH5643', //STORED OBJECT TODO static for now
-                    "transaction_id": logistics?.context?.transaction_id ?? 'TH5664', //TODO static for now
-                    "message_id": logisticsMessageId,
-                    "timestamp": contextTimeStamp,
-                    "ttl": "PT30S"
+            // const initRequest = {
+            //     "context": {
+            //         "domain": "nic2004:60232",
+            //         "country": "IND",
+            //         "city": payload.context.city, //TODO: take city from retail context
+            //         "action": "init",
+            //         "core_version": "1.2.0",
+            //         "bap_id": BPP_ID,
+            //         "bap_uri": config.get("sellerConfig").BAP_URI,
+            //         "bpp_id": logistics?.context?.bpp_id , //STORED OBJECT TODO static for now
+            //         "bpp_uri": logistics?.context?.bpp_uri , //STORED OBJECT TODO static for now
+            //         "transaction_id": logistics?.context?.transaction_id , //TODO static for now
+            //         "message_id": logisticsMessageId,
+            //         "timestamp": contextTimeStamp,
+            //         "ttl": "PT30S"
+            //     },
+            //     "message": {
+            //             "order": {
+            //                 "provider": {
+            //                     "id": logistics.message.catalog["bpp/providers"][0].id
+            //                 },
+            //                 "items": [deliveryType],
+            //                 "fulfillments": [{
+            //                     "id": logistics.message.catalog["bpp/fulfillments"][0].id,
+            //                     "type": logistics.message.catalog["bpp/fulfillments"][0].type,
+            //                     "start": storeLocationEnd,
+            //                     "end": order.fulfillments[0].end
+            //                 }],
+            //                 "billing": { //TODO: discuss whos details should go here buyer or seller
+            //                     "name": order.billing.name,
+            //                     "address": {
+            //                         "name": order.billing.address.name,
+            //                         "building": order.billing.address.building,
+            //                         "locality": order.billing.address.locality,
+            //                         "city": order.billing.address.city,
+            //                         "state": order.billing.address.state,
+            //                         "country": order.billing.address.country,
+            //                         "area_code": order.billing.address.area_code
+            //                     },
+            //                     "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+            //                     "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+            //                     "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+            //                     "created_at": contextTimeStamp,
+            //                     "updated_at": contextTimeStamp
+            //                 },
+            //                 "payment": {
+            //                     "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+            //                 }}
+            //
+            //     }
+            // }
+           /** {
+                "order": {
+                "provider": {
+                    "id": "6240d89c-1755-4de1-b425-64910f4585b0"
                 },
-                "message": {
-                    "order": {
-                        "id": "O1",
-                        "state": "Created",
-                        "provider": {
-                            "id": logistics?.message?.catalog["bpp/providers"][0]?.id ?? "123", //TODO static for now
-                            "locations":
-                                [
-                                    {
-                                        "id": "L1"
-                                    }
-                                ]
-                        },
-                        "items": [deliveryType],
-                        "fulfillments": payload.message.order.fulfillments,
-                        "billing": { //TODO: discuss whos details should go here buyer or seller
-                            "name": order.billing.name,
-                            "address": {
-                                "name": order.billing.address.name,
-                                "building": order.billing.address.building,
-                                "locality": order.billing.address.locality,
-                                "city": order.billing.address.city,
-                                "state": order.billing.address.state,
-                                "country": order.billing.address.country,
-                                "area_code": order.billing.address.area_code
-                            },
-                            "tax_number": order?.billing?.tax_number ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
-                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
-                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
-                            "created_at": contextTimeStamp,
-                            "updated_at": contextTimeStamp
-                        },
-                        "payment": {
-                            "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                "items": [
+                    {
+                        "id": "express",
+                        "fulfillment_id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
+                        "category_id": "Immediate Delivery",
+                        "descriptor": {
+                            "code": "P2P"
                         }
                     }
+                ],
+                    "fulfillments": [
+                    {
+                        "id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
+                        "type": "Delivery",
+                        "start": {
+                            "location": {
+                                "gps": "30.7467833, 76.642853",
+                                "address": {
+                                    "name": "Kumar chauhan",
+                                    "building": "f-164",
+                                    "locality": "chandigarh",
+                                    "city": "kharar",
+                                    "state": "punjab",
+                                    "country": "India",
+                                    "area_code": "140301"
+                                }
+                            },
+                            "contact": {
+                                "phone": "9886098860",
+                                "email": "abcd.efgh@gmail.com"
+                            }
+                        },
+                        "end": {
+                            "location": {
+                                "gps": "30.744600, 76.652496",
+                                "address": {
+                                    "name": "Rohan Kumar",
+                                    "building": "f-163",
+                                    "locality": "chandigarh",
+                                    "city": "kharar",
+                                    "state": "punjab",
+                                    "country": "India",
+                                    "area_code": "140301"
+                                }
+                            },
+                            "contact": {
+                                "phone": "9886098860",
+                                "email": "abcd.efgh@gmail.com"
+                            }
+                        }
+                    }
+                ],
+                    "billing": {
+                    "name": "ONDC Logistics Buyer NP",
+                        "address": {
+                        "name": "Rohan Kumar",
+                            "building": "f-163",
+                            "locality": "chandigarh",
+                            "city": "kharar",
+                            "state": "punjab",
+                            "country": "India",
+                            "area_code": "140301"
+                    },
+                    "tax_number": "04AABCU9603R1ZV",
+                        "phone": "9886098860",
+                        "email": "abcd.efgh@gmail.com",
+                        "created_at": "2023-09-13T14:10:29.841Z",
+                        "updated_at": "2023-09-13T14:10:29.841Z"
+                },
+                "payment": {
+                    "type": "ON-FULFILLMENT",
+                        "@ondc/org/collection_amount": "300.00"
                 }
             }
+            }*/
+
+           const initRequest = {
+                   "context": {
+                       "domain": "nic2004:60232",
+                       "country": "IND",
+                       "city": payload.context.city, //TODO: take city from retail context
+                       "action": "init",
+                       "core_version": "1.2.0",
+                       "bap_id": BPP_ID,
+                       "bap_uri": config.get("sellerConfig").BAP_URI,
+                       "bpp_id": logistics?.context?.bpp_id , //STORED OBJECT TODO static for now
+                       "bpp_uri": logistics?.context?.bpp_uri , //STORED OBJECT TODO static for now
+                       "transaction_id": logistics?.context?.transaction_id , //TODO static for now
+                       "message_id": logisticsMessageId,
+                       "timestamp": contextTimeStamp,
+                       "ttl": "PT30S"
+                   },
+               "message": {
+                   "order": {
+                       "provider": {
+                           "id": "6415e7fd-6620-4151-bfe6-d48388085956"
+                       },
+                       "items": [
+                           {
+                               "id": "Standard",
+                               "fulfillment_id": "31921a00-fb34-4813-b5b8-612d3eb7444c",
+                               "category_id": "Immediate Delivery",
+                               "descriptor": {
+                                   "code": "P2P"
+                               }
+                           }
+                       ],
+                       "fulfillments": [
+                           {
+                               "id": "31921a00-fb34-4813-b5b8-612d3eb7444c",
+                               "type": "Delivery",
+                               "start": {
+                                   "location": {
+                                       "gps": "30.7467833, 76.642853",
+                                       "address": {
+                                           "name": "Kumar chauhan",
+                                           "building": "f-164",
+                                           "locality": "chandigarh",
+                                           "city": "kharar",
+                                           "state": "punjab",
+                                           "country": "India",
+                                           "area_code": "140301"
+                                       }
+                                   },
+                                   "contact": {
+                                       "phone": "9886098860",
+                                       "email": "abcd.efgh@gmail.com"
+                                   }
+                               },
+                               "end": {
+                                   "location": {
+                                       "gps": "30.744600, 76.652496",
+                                       "address": {
+                                           "name": "Rohan Kumar",
+                                           "building": "f-163",
+                                           "locality": "chandigarh",
+                                           "city": "kharar",
+                                           "state": "punjab",
+                                           "country": "India",
+                                           "area_code": "140301"
+                                       }
+                                   },
+                                   "contact": {
+                                       "phone": "9886098860",
+                                       "email": "abcd.efgh@gmail.com"
+                                   }
+                               }
+                           }
+                       ],
+                       "billing": {
+                           "name": "ONDC Logistics Buyer NP",
+                           "address": {
+                               "name": "Rohan Kumar",
+                               "building": "f-163",
+                               "locality": "chandigarh",
+                               "city": "kharar",
+                               "state": "punjab",
+                               "country": "India",
+                               "area_code": "140301"
+                           },
+                           "tax_number": "04AABCU9603R1ZV",
+                           "phone": "9886098860",
+                           "email": "abcd.efgh@gmail.com",
+                           "created_at": contextTimeStamp,
+                           "updated_at": contextTimeStamp
+                       },
+                       "payment": {
+                           "type": "ON-FULFILLMENT",
+                           "@ondc/org/collection_amount": "300.00"
+                       }
+                   }
+               }
+           }
             //logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
             this.postInitRequest(initRequest, logisticsMessageId, initMessageId)
@@ -504,7 +789,7 @@ class OndcService {
                 let headers = {};
                 let httpRequest = new HttpRequest(
                     config.get("sellerConfig").BPP_URI,
-                    `/protocol/v1/on_init`,
+                    `/protocol/logistics/v1/init`,
                     'POST',
                     searchRequest,
                     headers
