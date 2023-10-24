@@ -393,7 +393,7 @@ class OrderService {
                     }
                 }
             }
-            let order = await Order.findOneAndUpdate({orderId:orderId},data.data);
+            let order = await Order.findOneAndUpdate({_id:orderId},data.data);
 
             return order;
 

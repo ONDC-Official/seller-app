@@ -1516,7 +1516,7 @@ class ProductService {
         //update order level state
         httpRequest = new HttpRequest(
             serverUrl,
-            `/api/v2/orders/${result.data._id}/ondcUpdate`,
+            `/api/v1/orders/${result.data._id}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
