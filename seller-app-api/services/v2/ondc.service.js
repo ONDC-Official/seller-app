@@ -795,11 +795,11 @@ class OndcService {
 
             //2. wait async to fetch logistics responses
 
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            // //async post request
+            // setTimeout(() => {
+            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+            //     this.buildConfirmRequest(logisticsMessageId, selectMessageId)
+            // }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -856,13 +856,13 @@ class OndcService {
             await this.postConfirmResponse(selectResponse);
 
 
-            //4. trigger on_status call to BAP
-            const confirmRequest = logisticsResponse.retail_confirm[0]//select first select request
-            const context = { ...selectResponse.context, action: 'on_status', timestamp: new Date(), message_id: uuidv4() }
-            const orderId = confirmRequest.message.order.order_id
-
-            console.log("context--->", context)
-            await this.triggerOnStatus(context, orderId);
+            // //4. trigger on_status call to BAP
+            // const confirmRequest = logisticsResponse.retail_confirm[0]//select first select request
+            // const context = { ...selectResponse.context, action: 'on_status', timestamp: new Date(), message_id: uuidv4() }
+            // const orderId = confirmRequest.message.order.order_id
+            //
+            // console.log("context--->", context)
+            // await this.triggerOnStatus(context, orderId);
 
         } catch (e) {
             console.log(e)
@@ -1086,6 +1086,28 @@ class OndcService {
             //setTimeout(() => {
             this.postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
             //}, 5000); //TODO move to config
+
+            return { status: 'ACK' }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async orderStatusWithoutLogistics(payload = {}, req = {}, unsoliciated = false) {
+        try {
+            //const {criteria = {}, payment = {}} = req || {};
+
+
+            //const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            //setTimeout(() => {
+            let statusResponse = await productService.productStatusWithoutLogistics(payload)
+
+            //3. post to protocol layer
+            this.postStatusResponse(statusResponse);
+
 
             return { status: 'ACK' }
         } catch (err) {
