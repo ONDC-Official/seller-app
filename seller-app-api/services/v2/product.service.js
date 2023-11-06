@@ -2103,72 +2103,128 @@ class ProductService {
         //delete confirmData.id
         tomorrow.setDate(today.getDate()+1);
 
-        const fulfillments =
-            [
-                {
-                    "id":confirmRequest.message.order.fulfillments[0].id,
-                    "@ondc/org/provider_name":org.providerDetail.name,
-                    "state":
-                        {
-                            "descriptor":
-                                {
-                                    "code":"Pending"
-                                }
-                        },
-                    "type":"Delivery",
-                    "tracking":false,
-                    "start":
-                        {
-                            "location":
-                                {
-                                    "id":org.providerDetail.storeDetails.location._id,
-                                    "descriptor":
-                                        {
-                                            "name":org.providerDetail.name
-                                        },
-                                    "gps":`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
-                                    "address":org.providerDetail.storeDetails.address
-                                },
-                            "time":
-                                {
-                                    "range":
-                                        {
-                                            "start": new Date(),
-                                            "end": new Date()
-                                        }
-                                },
-                            "instructions":
-                                {
-                                    "code":"2",
-                                    "name":"ONDC order",
-                                    "short_desc":"value of PCC",
-                                    "long_desc":"additional instructions such as register or counter no for self-pickup"
-                                },
-                            "contact":confirmRequest.message.order.fulfillments[0].end.contact
-                        },
-                    "end":
-                        {
-                            "person":confirmRequest.message.order.fulfillments[0].end.person,
-                            "contact":confirmRequest.message.order.fulfillments[0].end.contact,
-                            "location":confirmRequest.message.order.fulfillments[0].end.location,
-                            "time":
-                                {
-                                    "range":
-                                        {
-                                            "start":today, //TODO : static data for now
-                                            "end":tomorrow//TODO : static data for now
-                                        }
-                                },
-                            "instructions"://TODO : static data for now
-                                {
-                                    "name":"Status for drop",
-                                    "short_desc":"Delivery Confirmation Code"
-                                },
+        // const fulfillments =
+        //     [
+        //         {
+        //             "id":confirmRequest.message.order.fulfillments[0].id,
+        //             "@ondc/org/provider_name":org.providerDetail.name,
+        //             "state":
+        //                 {
+        //                     "descriptor":
+        //                         {
+        //                             "code":"Pending"
+        //                         }
+        //                 },
+        //             "type":"Delivery",
+        //             "tracking":false,
+        //             "start":
+        //                 {
+        //                     "location":
+        //                         {
+        //                             "id":org.providerDetail.storeDetails.location._id,
+        //                             "descriptor":
+        //                                 {
+        //                                     "name":org.providerDetail.name
+        //                                 },
+        //                             "gps":`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+        //                             "address":org.providerDetail.storeDetails.address
+        //                         },
+        //                     "time":
+        //                         {
+        //                             "range":
+        //                                 {
+        //                                     "start": new Date(),
+        //                                     "end": new Date()
+        //                                 }
+        //                         },
+        //                     "instructions":
+        //                         {
+        //                             "code":"2",
+        //                             "name":"ONDC order",
+        //                             "short_desc":"value of PCC",
+        //                             "long_desc":"additional instructions such as register or counter no for self-pickup"
+        //                         },
+        //                     "contact":confirmRequest.message.order.fulfillments[0].end.contact
+        //                 },
+        //             "end":
+        //                 {
+        //                     "person":confirmRequest.message.order.fulfillments[0].end.person,
+        //                     "contact":confirmRequest.message.order.fulfillments[0].end.contact,
+        //                     "location":confirmRequest.message.order.fulfillments[0].end.location,
+        //                     "time":
+        //                         {
+        //                             "range":
+        //                                 {
+        //                                     "start":today, //TODO : static data for now
+        //                                     "end":tomorrow//TODO : static data for now
+        //                                 }
+        //                         },
+        //                     "instructions"://TODO : static data for now
+        //                         {
+        //                             "name":"Status for drop",
+        //                             "short_desc":"Delivery Confirmation Code"
+        //                         },
+        //
+        //                 },
+        //             "rateable":true
+        //         }
+        //     ];
 
-                        },
-                    "rateable":true
+        let storeLocationEnd ={}
+        if(org.providerDetail.storeDetails){
+            storeLocationEnd =  {
+                "location": {
+                    "id": org.providerDetail.storeDetails.location._id,
+                    "descriptor": {
+                        "name": org.providerDetail.name
+                    },
+                    "gps": `${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
+
+                },
+                "contact": {
+                    phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                    email: org.providerDetail.storeDetails.supportDetails.email
                 }
-            ];
+            }}
+
+        confirmRequest.message.order.fulfillments[0].start = storeLocationEnd
+        confirmRequest.message.order.fulfillments[0].tracking = false;
+        confirmRequest.message.order.fulfillments[0].state= {
+            "descriptor": {
+                "code": "Pending"
+            }
+        }
+        // let today = new Date()
+        // let tomorrow = new Date()
+        // let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
+        confirmRequest.message.order.fulfillments[0].start.time=
+            {
+                "range":
+                    {
+                        "start":today, //TODO: need to take this from seller time
+                        "end":endDate
+                    }
+            }
+        confirmRequest.message.order.fulfillments[0].end.time=
+            {
+                "range":
+                    {
+                        "start":today,
+                        "end":endDate
+                    }
+            }
+
+
+            let selectRequest  = await SelectRequest.findOne({where:{transactionId:confirmRequest.context.transaction_id},
+                order: [
+            ['createdAt', 'DESC']
+        ]});
+            let logisticProvider = selectRequest.selectedLogistics;
+
+        //select request for this
+        confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]=logisticProvider.message.catalog["bpp/descriptor"].name //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
+
 
         confirmRequest.message.provider = {...confirmRequest.message.provider,"rateable":true}
 
@@ -2212,7 +2268,7 @@ class ProductService {
             context: confirmRequest.context,
             message: confirmRequest.message,
             logisticData: logisticData,
-            fulfillments:fulfillments,
+            fulfillments:confirmRequest?.message?.order?.fulfillments,
             tags:confirmRequest.message.order.tags
         });
 
@@ -2221,7 +2277,7 @@ class ProductService {
         savedLogistics.transactionId = confirmRequest.context.transaction_id
         savedLogistics.packaging = "0"//TODO: select packaging option
         savedLogistics.providerId = confirmRequest.message.order.provider.id//TODO: select from items provider id
-        savedLogistics.retailOrderId = confirmData.order_id
+        savedLogistics.retailOrderId = confirmRequest?.message?.order.id
         savedLogistics.orderId = logisticData.message.order.id
         savedLogistics.selectedLogistics = logisticData
         savedLogistics.confirmRequest = requestQuery.retail_confirm[0]
