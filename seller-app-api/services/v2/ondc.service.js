@@ -62,7 +62,6 @@ class OndcService {
             }
 
             const searchRequest = {
-                "context": {
                     "context": {
                         "domain": "nic2004:60232",
                         "country": "IND",
@@ -133,7 +132,6 @@ class OndcService {
                             }
                         }
                     }
-                }
             }
 
             // const searchRequest = {
@@ -480,8 +478,7 @@ class OndcService {
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id,
-                    providerId: payload.message.order.provider.id
+                    transactionId: payload.context.transaction_id
                 },
                 order: [
                     ['createdAt', 'DESC']
@@ -519,7 +516,7 @@ class OndcService {
                 }
             }
 
-            //logger.log('info', `[Ondc Service] old selected logistics :`,logistics);
+            logger.log('info', `[Ondc Service] old selected logistics :`,logistics);
 
             const order = payload.message.order;
             const initMessageId = payload.context.message_id;
@@ -532,139 +529,139 @@ class OndcService {
             });// TODO commented for now for logistic
             //let deliveryType = payload.message.order.items
 
-            // const initRequest = {
-            //     "context": {
-            //         "domain": "nic2004:60232",
-            //         "country": "IND",
-            //         "city": payload.context.city, //TODO: take city from retail context
-            //         "action": "init",
-            //         "core_version": "1.2.0",
-            //         "bap_id": BPP_ID,
-            //         "bap_uri": config.get("sellerConfig").BAP_URI,
-            //         "bpp_id": logistics?.context?.bpp_id , //STORED OBJECT TODO static for now
-            //         "bpp_uri": logistics?.context?.bpp_uri , //STORED OBJECT TODO static for now
-            //         "transaction_id": logistics?.context?.transaction_id , //TODO static for now
-            //         "message_id": logisticsMessageId,
-            //         "timestamp": contextTimeStamp,
-            //         "ttl": "PT30S"
-            //     },
-            //     "message": {
-            //             "order": {
-            //                 "provider": {
-            //                     "id": logistics.message.catalog["bpp/providers"][0].id
-            //                 },
-            //                 "items": [deliveryType],
-            //                 "fulfillments": [{
-            //                     "id": logistics.message.catalog["bpp/fulfillments"][0].id,
-            //                     "type": logistics.message.catalog["bpp/fulfillments"][0].type,
-            //                     "start": storeLocationEnd,
-            //                     "end": order.fulfillments[0].end
-            //                 }],
-            //                 "billing": { //TODO: discuss whos details should go here buyer or seller
-            //                     "name": order.billing.name,
-            //                     "address": {
-            //                         "name": order.billing.address.name,
-            //                         "building": order.billing.address.building,
-            //                         "locality": order.billing.address.locality,
-            //                         "city": order.billing.address.city,
-            //                         "state": order.billing.address.state,
-            //                         "country": order.billing.address.country,
-            //                         "area_code": order.billing.address.area_code
-            //                     },
-            //                     "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
-            //                     "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
-            //                     "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
-            //                     "created_at": contextTimeStamp,
-            //                     "updated_at": contextTimeStamp
-            //                 },
-            //                 "payment": {
-            //                     "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
-            //                 }}
-            //
-            //     }
-            // }
-            /** {
-                "order": {
-                "provider": {
-                    "id": "6240d89c-1755-4de1-b425-64910f4585b0"
+            const initRequest = {
+                "context": {
+                    "domain": "nic2004:60232",
+                    "country": "IND",
+                    "city": payload.context.city, //TODO: take city from retail context
+                    "action": "init",
+                    "core_version": "1.2.0",
+                    "bap_id": BPP_ID,
+                    "bap_uri": config.get("sellerConfig").BAP_URI,
+                    "bpp_id": logistics?.context?.bpp_id, //STORED OBJECT TODO static for now
+                    "bpp_uri": logistics?.context?.bpp_uri, //STORED OBJECT TODO static for now
+                    "transaction_id": logistics?.context?.transaction_id, //TODO static for now
+                    "message_id": logisticsMessageId,
+                    "timestamp": contextTimeStamp,
+                    "ttl": "PT30S"
                 },
-                "items": [
-                    {
-                        "id": "express",
-                        "fulfillment_id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
-                        "category_id": "Immediate Delivery",
-                        "descriptor": {
-                            "code": "P2P"
-                        }
-                    }
-                ],
-                    "fulfillments": [
-                    {
-                        "id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
-                        "type": "Delivery",
-                        "start": {
-                            "location": {
-                                "gps": "30.7467833, 76.642853",
-                                "address": {
-                                    "name": "Kumar chauhan",
-                                    "building": "f-164",
-                                    "locality": "chandigarh",
-                                    "city": "kharar",
-                                    "state": "punjab",
-                                    "country": "India",
-                                    "area_code": "140301"
-                                }
+                "message": {
+                        "order": {
+                            "provider": {
+                                "id": logistics.message.catalog["bpp/providers"][0].id
                             },
-                            "contact": {
-                                "phone": "9886098860",
-                                "email": "abcd.efgh@gmail.com"
-                            }
-                        },
-                        "end": {
-                            "location": {
-                                "gps": "30.744600, 76.652496",
+                            "items": [deliveryType],
+                            "fulfillments": [{
+                                "id": logistics.message.catalog["bpp/providers"][0]['fulfillments'][0].id,
+                                "type": logistics.message.catalog["bpp/providers"][0]['fulfillments'][0].type,
+                                "start": storeLocationEnd,
+                                "end": order.fulfillments[0].end
+                            }],
+                            "billing": { //TODO: discuss whos details should go here buyer or seller
+                                "name": order.billing.name,
                                 "address": {
-                                    "name": "Rohan Kumar",
-                                    "building": "f-163",
-                                    "locality": "chandigarh",
-                                    "city": "kharar",
-                                    "state": "punjab",
-                                    "country": "India",
-                                    "area_code": "140301"
-                                }
+                                    "name": order.billing.address.name,
+                                    "building": order.billing.address.building,
+                                    "locality": order.billing.address.locality,
+                                    "city": order.billing.address.city,
+                                    "state": order.billing.address.state,
+                                    "country": order.billing.address.country,
+                                    "area_code": order.billing.address.area_code
+                                },
+                                "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+                                "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                                "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                                "created_at": contextTimeStamp,
+                                "updated_at": contextTimeStamp
                             },
-                            "contact": {
-                                "phone": "9886098860",
-                                "email": "abcd.efgh@gmail.com"
-                            }
-                        }
-                    }
-                ],
-                    "billing": {
-                    "name": "ONDC Logistics Buyer NP",
-                        "address": {
-                        "name": "Rohan Kumar",
-                            "building": "f-163",
-                            "locality": "chandigarh",
-                            "city": "kharar",
-                            "state": "punjab",
-                            "country": "India",
-                            "area_code": "140301"
-                    },
-                    "tax_number": "04AABCU9603R1ZV",
-                        "phone": "9886098860",
-                        "email": "abcd.efgh@gmail.com",
-                        "created_at": "2023-09-13T14:10:29.841Z",
-                        "updated_at": "2023-09-13T14:10:29.841Z"
-                },
-                "payment": {
-                    "type": "ON-FULFILLMENT",
-                        "@ondc/org/collection_amount": "300.00"
+                            "payment": {
+                                "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                            }}
+
                 }
             }
-            }*/
+            //  {
+            //     "order": {
+            //     "provider": {
+            //         "id": "6240d89c-1755-4de1-b425-64910f4585b0"
+            //     },
+            //     "items": [
+            //         {
+            //             "id": "express",
+            //             "fulfillment_id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
+            //             "category_id": "Immediate Delivery",
+            //             "descriptor": {
+            //                 "code": "P2P"
+            //             }
+            //         }
+            //     ],
+            //         "fulfillments": [
+            //         {
+            //             "id": "4dc2982b-2594-47e2-9a68-2b860efa236a",
+            //             "type": "Delivery",
+            //             "start": {
+            //                 "location": {
+            //                     "gps": "30.7467833, 76.642853",
+            //                     "address": {
+            //                         "name": "Kumar chauhan",
+            //                         "building": "f-164",
+            //                         "locality": "chandigarh",
+            //                         "city": "kharar",
+            //                         "state": "punjab",
+            //                         "country": "India",
+            //                         "area_code": "140301"
+            //                     }
+            //                 },
+            //                 "contact": {
+            //                     "phone": "9886098860",
+            //                     "email": "abcd.efgh@gmail.com"
+            //                 }
+            //             },
+            //             "end": {
+            //                 "location": {
+            //                     "gps": "30.744600, 76.652496",
+            //                     "address": {
+            //                         "name": "Rohan Kumar",
+            //                         "building": "f-163",
+            //                         "locality": "chandigarh",
+            //                         "city": "kharar",
+            //                         "state": "punjab",
+            //                         "country": "India",
+            //                         "area_code": "140301"
+            //                     }
+            //                 },
+            //                 "contact": {
+            //                     "phone": "9886098860",
+            //                     "email": "abcd.efgh@gmail.com"
+            //                 }
+            //             }
+            //         }
+            //     ],
+            //         "billing": {
+            //         "name": "ONDC Logistics Buyer NP",
+            //             "address": {
+            //             "name": "Rohan Kumar",
+            //                 "building": "f-163",
+            //                 "locality": "chandigarh",
+            //                 "city": "kharar",
+            //                 "state": "punjab",
+            //                 "country": "India",
+            //                 "area_code": "140301"
+            //         },
+            //         "tax_number": "04AABCU9603R1ZV",
+            //             "phone": "9886098860",
+            //             "email": "abcd.efgh@gmail.com",
+            //             "created_at": "2023-09-13T14:10:29.841Z",
+            //             "updated_at": "2023-09-13T14:10:29.841Z"
+            //     },
+            //     "payment": {
+            //         "type": "ON-FULFILLMENT",
+            //             "@ondc/org/collection_amount": "300.00"
+            //     }
+            // }
+            // }
 
-            const initRequest = {
+            const initRequestDummy = {
                 "context": {
                     "domain": "nic2004:60232",
                     "country": "IND",
@@ -880,8 +877,7 @@ class OndcService {
 
             const selectRequest = await SelectRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id,
-                    providerId: payload.message.order.provider.id
+                    transactionId: payload.context.transaction_id
                 },
                 order: [
                     ['createdAt', 'DESC'],
@@ -890,8 +886,7 @@ class OndcService {
 
             const initRequest = await InitRequest.findOne({
                 where: {
-                    transactionId: payload.context.transaction_id,
-                    providerId: payload.message.order.provider.id
+                    transactionId: payload.context.transaction_id
                 },
                 order: [
                     ['createdAt', 'DESC'],
@@ -986,7 +981,7 @@ class OndcService {
                 },
                 "message": {
                     "order": {
-                        "id": "364f1462-bf11-4531-84f1-b30f751e09b6",
+                        "id": payload.message.order.id,
                         "state": "Created",
                         "provider": initRequest.selectedLogistics.message.order.provider,
                         "items": [
