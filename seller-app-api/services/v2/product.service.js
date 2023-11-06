@@ -1566,7 +1566,7 @@ class ProductService {
 
         let updateOrder = result.data
 
-        updateOrder.state ='Created'
+        //updateOrder.state ='Created'
 
         const productData = await getStatus({
             context: statusRequest.context,
