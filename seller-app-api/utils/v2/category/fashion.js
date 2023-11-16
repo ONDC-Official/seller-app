@@ -42,11 +42,11 @@ export async function mapFashionData(data) {
                                 },
                                 {
                                     "code":"time_from",
-                                    "value":`${timing.timings[0].from}`
+                                    "value":`${timing.timings[0].from.replace(":","")}`
                                 },
                                 {
                                     "code":"time_to",
-                                    "value":`${timing.timings[0].to}`
+                                    "value":`${timing.timings[0].to.replace(":","")}`
                                 }
                             ]
                         },
@@ -225,7 +225,7 @@ export async function mapFashionData(data) {
                               },
                               {
                                 "code":"input",
-                                "value":`${customizationGroup.inputType}`
+                                "value":`${(customizationGroup.inputType==='input')?'text':'select'}`
                               },
                               {
                                 "code":"seq",
@@ -277,9 +277,17 @@ export async function mapFashionData(data) {
                 {
                     "id": org.storeDetails?.location._id ?? "0", //org.storeDetails.location._id
                     "gps": `${org.storeDetails?.location?.lat ?? "0"},${org.storeDetails?.location?.long ?? "0"}`,
-                    "address": org.storeDetails.address,
+                    "address": {
+                        "city": org.storeDetails?.address?.city??"NA",
+                        "state": org.storeDetails?.address?.state??"NA",
+                        "area_code": org.storeDetails?.address?.area_code??"NA",
+                        "street": org.storeDetails?.address?.street??"NA",
+                        "locality":org.storeDetails?.address?.locality??"NA"
+                    },
                     "time":
                         {
+                            "label":"enable",
+                            "timestamp":data.context.timestamp,
                             "days": org.storeDetails?.storeTiming?.days?.join(",") ??
                                 "1,2,3,4,5,6,7",
                             "schedule": {

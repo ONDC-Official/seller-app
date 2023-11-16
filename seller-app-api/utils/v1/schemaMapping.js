@@ -136,7 +136,13 @@ exports.getProducts = async (data) => {
                 {
                     "id": org.storeDetails?.location._id??"0", //org.storeDetails.location._id
                     "gps": `${org.storeDetails?.location?.lat??"0"},${org.storeDetails?.location?.long??"0"}`,
-                    "address":org.storeDetails.address,
+                    "address":{
+                        "city": org.storeDetails?.address?.city??"NA",
+                        "state": org.storeDetails?.address?.state??"NA",
+                        "area_code": org.storeDetails?.address?.area_code??"NA",
+                        "street": org.storeDetails?.address?.street??"NA",
+                        "locality":org.storeDetails?.address?.locality??"NA"
+                    },
                     "time":
                         {
                             "days":org.storeDetails?.storeTiming?.days?.join(",")??
