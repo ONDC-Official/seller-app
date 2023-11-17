@@ -534,7 +534,7 @@ class ProductService {
                 {itemId:itemId},
                 {}
             );
-            await httpRequest.send();
+           // await httpRequest.send();
 
             return;
 

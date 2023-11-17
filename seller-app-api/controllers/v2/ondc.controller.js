@@ -143,7 +143,7 @@ class OndcController {
     }
     orderUpdate(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderUpdate(req.body,req).then(data => {
+        ondcService.orderUpdateV2(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
