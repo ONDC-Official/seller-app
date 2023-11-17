@@ -297,7 +297,7 @@ class OndcService {
             try {
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/search`,
                     'POST',
                     searchRequest,
@@ -796,7 +796,7 @@ class OndcService {
             try {
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/init`,
                     'POST',
                     searchRequest,
@@ -1269,7 +1269,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/confirm`,
                     'POST',
                     searchRequest,
@@ -1425,7 +1425,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/track`,
                     'POST',
                     searchRequest,
@@ -1881,7 +1881,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/status`,
                     'POST',
                     statusRequest,
@@ -2051,7 +2051,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/update`,
                     'POST',
                     searchRequest,
@@ -2140,7 +2140,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/cancel`,
                     'POST',
                     searchRequest,
@@ -2177,7 +2177,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/cancel`,
                     'POST',
                     cancelRequest,
@@ -2538,7 +2538,7 @@ class OndcService {
 
                 let headers = {};
                 let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
+                    config.get("sellerConfig").BAP_URI,
                     `/protocol/logistics/v1/support`,
                     'POST',
                     searchRequest,
