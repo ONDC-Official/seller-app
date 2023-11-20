@@ -81,7 +81,7 @@ class ProductService {
                     "name":"Grocery",
                     "domain":"ONDC:RET10"
                 };
-                requestQuery.context.domain = 'ONDC:RET10'; 
+               return false;
             }
             let httpRequest = new HttpRequest(
                 serverUrl,
