@@ -1692,7 +1692,7 @@ class ProductService {
                                 "code":"Return_Initiated"
                             }
                         },
-                        "tags":fl.tags[0]
+                        "tags":[fl.tags[0]]
                     }
 
                     fulfillments.push(fl2);
