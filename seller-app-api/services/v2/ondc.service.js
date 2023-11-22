@@ -1105,7 +1105,7 @@ class OndcService {
                                         "list": [
                                             {
                                                 "code": "ready_to_ship",
-                                                "value": "no"
+                                                "value": "yes"
                                             }
                                         ]
                                     },
