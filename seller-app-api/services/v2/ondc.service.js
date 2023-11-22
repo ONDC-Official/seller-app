@@ -1294,11 +1294,11 @@ class OndcService {
 
             //2. wait async to fetch logistics responses
 
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            // //async post request
+            // setTimeout(() => {
+            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+            //     this.buildConfirmRequest(logisticsMessageId, selectMessageId)
+            // }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1354,7 +1354,6 @@ class OndcService {
             //3. post to protocol layer
             await this.postConfirmResponse(selectResponse);
 
-            //
             // //4. trigger on_status call to BAP
             // const confirmRequest = logisticsResponse.retail_confirm[0]//select first select request
             // const context = { ...selectResponse.context, action: 'on_status', timestamp: new Date(), message_id: uuidv4() }
@@ -1593,6 +1592,29 @@ class OndcService {
         }
     }
 
+
+    async orderStatusWithoutLogistics(payload = {}, req = {}, unsoliciated = false) {
+        try {
+            //const {criteria = {}, payment = {}} = req || {};
+
+
+            //const order = payload.message.order;
+            const selectMessageId = payload.context.message_id;
+
+            // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
+            //setTimeout(() => {
+            let statusResponse = await productService.productStatusWithoutLogistics(payload)
+
+            //3. post to protocol layer
+            this.postStatusResponse(statusResponse);
+
+
+            return { status: 'ACK' }
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async orderStatusUpdate(payload = {}, req = {}) {
         try {
             // const {criteria = {}, payment = {}} = req || {};
@@ -1815,6 +1837,66 @@ class OndcService {
         }
     }
 
+    async orderUpdateV2(payload = {}, req = {}) {
+        try {
+            //const {criteria = {}, payment = {}} = req || {};
+
+            const updateMessageId = uuidv4();
+
+            const searchRequest = await productService.updateV2(payload);
+            //process select request and send it to protocol layer
+            this.postUpdateRequestV2(searchRequest, null, updateMessageId)
+
+            return { status: 'ACK' }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async postUpdateRequestV2(searchRequest, logisticsMessageId, selectMessageId) {
+
+        try {
+            //1. post http to protocol/logistics/v1/search
+
+            try {
+                let headers = {};
+                let httpRequest = new HttpRequest(
+                    config.get("sellerConfig").BPP_URI,
+                    `/protocol/v1/on_update`,
+                    'POST',
+                    searchRequest,
+                    headers
+                );
+                console.error("Here  -- 3")
+
+
+                await httpRequest.send();
+
+                console.error("Here  -- 4")
+
+
+            } catch (e) {
+                logger.error('error', `[Ondc Service] post http select response : `, e);
+                return e
+            }
+            console.error("Here  -- 5")
+
+            //2. wait async to fetch logistics responses
+
+            //async post request
+            // setTimeout(() => {
+            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`,searchRequest);
+            //     this.buildSelectRequest(logisticsMessageId, selectMessageId)
+            // }, 10000); //TODO move to config
+            // console.error("Here  -- 6")
+
+        } catch (e) {
+            logger.error('error', `[Ondc Service] post http select response : `, e);
+            return e
+        }
+    }
+
+
     async orderStatusUpdateItems(payload = {}, req = {}) {
         try {
             //const {criteria = {}, payment = {}} = req || {};
@@ -1824,77 +1906,81 @@ class OndcService {
                     retailOrderId: payload.data.orderId
                 }
             })
-
-            console.log("")
-
-            const logistics = confirmRequest.selectedLogistics;
+            //
+            // console.log("")
+            //
+            // const logistics = confirmRequest.selectedLogistics;
 
             const order = payload.data;
             const selectMessageId = uuidv4();//payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
-            const trackRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "update",
-                    "core_version": "1.1.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080", //TODO: take it from request
-                    "country": "IND",
-                    "timestamp": new Date()
-                },
-                "message": {
-                    "order": {
-                        "id": order.orderId,
-                        "state": "Accepted",
-                        "items": logistics.items,
-                        "@ondc/org/linked_order": {
-                            "items": [{ //TODO: get valid item from list and update the fields
-                                "descriptor": {
-                                    "name": "KIT KAT"
-                                },
-                                "quantity": {
-                                    "count": 2,
-                                    "measure": {
-                                        "value": 200,
-                                        "unit": "Gram"
-                                    }
-                                },
-                                "price": {
-                                    "currency": "INR",
-                                    "value": "200.00"
-                                },
-                                "category_id": "Grocery"
-                            }]
-                        },
-                        "fulfillments": [{
-                            "id": logistics.message.order.fulfillments[0].id,
-                            "type": logistics.message.order.fulfillments[0].type,
-                            "tracking": logistics.message.order.fulfillments[0].tracking,
-                            "tags": {
-                                "@ondc/org/order_ready_to_ship": "yes" //TBD: passing this value for update triggers logistics workflow
-                            }
-                        }],
-                        "updated_at": new Date()
-                    },
-                    "update_target": "fulfillment"
-                }
+            // const trackRequest = {
+            //     "context": {
+            //         "domain": "nic2004:60232",
+            //         "action": "update",
+            //         "core_version": "1.1.0",
+            //         "bap_id": config.get("sellerConfig").BPP_ID,
+            //         "bap_uri": config.get("sellerConfig").BPP_URI,
+            //         "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+            //         "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+            //         "transaction_id": confirmRequest.logisticsTransactionId,
+            //         "message_id": logisticsMessageId,
+            //         "city": "std:080", //TODO: take it from request
+            //         "country": "IND",
+            //         "timestamp": new Date()
+            //     },
+            //     "message": {
+            //         "order": {
+            //             "id": order.orderId,
+            //             "state": "Accepted",
+            //             "items": logistics.items,
+            //             "@ondc/org/linked_order": {
+            //                 "items": [{ //TODO: get valid item from list and update the fields
+            //                     "descriptor": {
+            //                         "name": "KIT KAT"
+            //                     },
+            //                     "quantity": {
+            //                         "count": 2,
+            //                         "measure": {
+            //                             "value": 200,
+            //                             "unit": "Gram"
+            //                         }
+            //                     },
+            //                     "price": {
+            //                         "currency": "INR",
+            //                         "value": "200.00"
+            //                     },
+            //                     "category_id": "Grocery"
+            //                 }]
+            //             },
+            //             "fulfillments": [{
+            //                 "id": logistics.message.order.fulfillments[0].id,
+            //                 "type": logistics.message.order.fulfillments[0].type,
+            //                 "tracking": logistics.message.order.fulfillments[0].tracking,
+            //                 "tags": {
+            //                     "@ondc/org/order_ready_to_ship": "yes" //TBD: passing this value for update triggers logistics workflow
+            //                 }
+            //             }],
+            //             "updated_at": new Date()
+            //         },
+            //         "update_target": "fulfillment"
+            //     }
+            //
+            // }
 
-            }
 
-
-            payload = {
-                message: {order: order},
-                context: {...confirmRequest.confirmRequest.context, message_id: uuidv4()}
-            };
+// <<<<<<< v1.2.0-LSP
+//             payload = {
+//                 message: {order: order},
+//                 context: {...confirmRequest.confirmRequest.context, message_id: uuidv4()}
+//             };
+// =======
+            payload = { message: { order: order }, context: { ...confirmRequest?.confirmRequest?.context, message_id: uuidv4() } };
+          
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-            this.postUpdateItemRequest(payload, trackRequest, logisticsMessageId, selectMessageId);
+            this.postUpdateItemRequest(payload, {}, logisticsMessageId, selectMessageId);
             //}, 5000); //TODO move to config
 
             return {status: 'ACK'}

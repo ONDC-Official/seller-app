@@ -1200,7 +1200,7 @@ class ProductService {
         let orderItems = []
         confirmData["order_items"] =orderItems
         confirmData.order_id = confirmData.id
-        delete confirmData.id
+        //delete confirmData.id
         let org= await this.getOrgForOndc(requestQuery.message.order.provider.id);
         let today = new Date();
         let tomorrow = new Date();
@@ -1548,6 +1548,36 @@ class ProductService {
         return productData
     }
 
+    async productStatusWithoutLogistics(payload) {
+
+         let statusRequest = payload;
+
+
+        console.log("statusRequest---->",statusRequest.context)
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        let updateOrder = result.data
+
+        //updateOrder.state ='Created'
+
+        const productData = await getStatus({
+            context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
+
     async productUpdate(requestQuery) {
 
         const statusRequest = requestQuery.retail_update[0]//select first select request
@@ -1625,6 +1655,73 @@ class ProductService {
 
         return productData
     }
+    async updateV2(requestQuery) {
+
+        const statusRequest = requestQuery//select first select request
+        // const logisticData = requestQuery.logistics_on_update[0]
+
+        console.log({requestQuery})
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order.id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        let updateOrder = result.data
+
+        console.log({updateOrder})
+
+        let fulfillments = [];
+        if(statusRequest.message.update_target=='item'){
+            for (let fl of statusRequest.message.order.fulfillments){
+                if(fl.type==='Return'){ //Return request
+                    let tags = fl.tags[0].list; //considering only 1 fl per item
+
+                    let fl2 ={
+                        "id":fl.tags[0].list.find(x => x.code==='id').value,
+                        "type":"Return",
+                        "state":
+                        {
+                        "descriptor":
+                            {
+                                "code":"Return_Initiated"
+                            }
+                        },
+                        "tags":fl.tags[0]
+                    }
+
+                    fulfillments.push(fl2);
+                }
+            }
+        }
+        updateOrder.fulfillments =[...updateOrder.fulfillments,...fulfillments];
+
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
+            'PUT',
+            {data:updateOrder},
+            {}
+        );
+
+       let updateResult = await httpRequest.send();
+
+        // updateOrder.items = items;
+        updateOrder.id = updateOrder.orderId;
+
+        const productData = await getUpdate({
+            context: statusRequest.context,
+            updateOrder:updateOrder
+        });
+
+        return productData
+    }
     async productUpdateItem(data,requestQuery) {
 
         const statusRequest = requestQuery.retail_update[0]//select first select request
@@ -1633,20 +1730,20 @@ class ProductService {
         console.log("data-------->",data.items);
         console.log("data-------->",data);
         let updatedItems = []
-        for (let item of data.message.order.items){
+        // for (let item of data.message.order.items){
+        //
+        //     //let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
+        //     //
+        //     //
+        //     // if(item.state==='Cancelled'){
+        //     //     item.state = "Cancelled";
+        //     //     item.reason_code = updateItem.tags.reason_code;
+        //     // }
+        //
+        //     updatedItems.push(item);
+        // }
 
-            //let updateItem = statusRequest.message.order.items.find((itemObj) => {return itemObj.id === item.id});
-            //
-            //
-            // if(item.state==='Cancelled'){
-            //     item.state = "Cancelled";
-            //     item.reason_code = updateItem.tags.reason_code;
-            // }
-
-            updatedItems.push(item);
-        }
-
-        data.items =updatedItems;
+        // data.items =updatedItems;
 
         //update order level state
         // httpRequest = new HttpRequest(
@@ -1658,29 +1755,29 @@ class ProductService {
         // );
 
         // let updateResult = await httpRequest.send();
-
-        //update item level fulfillment status
-        let items = data.message.order.items.map((item)=>{
-
-            console.log("item--->",item)
-            if(item.state=='Cancelled'){
-                item.tags={status:'Cancelled'};
-            }
-            if(item.state=='Liquidated'){
-                item.tags={status:'Liquidated'};
-            }
-            if(item.state=='Rejected'){
-                item.tags={status:'Rejected'};
-            }
-           // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
-            item.fulfillment_id = data.message.order.fulfillments[0].id
-            delete item.state
-            delete item.reason_code
-            return item;
-        });
-
-        data.message.order.items = items;
-        data.message.order.id = data.message.order.orderId;
+        //
+        // //update item level fulfillment status
+        // let items = data.message.order.items.map((item)=>{
+        //
+        //     console.log("item--->",item)
+        //     if(item.state=='Cancelled'){
+        //         item.tags={status:'Cancelled'};
+        //     }
+        //     if(item.state=='Liquidated'){
+        //         item.tags={status:'Liquidated'};
+        //     }
+        //     if(item.state=='Rejected'){
+        //         item.tags={status:'Rejected'};
+        //     }
+        //    // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+        //     item.fulfillment_id = data.message.order.fulfillments[0].id
+        //     delete item.state
+        //     delete item.reason_code
+        //     return item;
+        // });
+        //
+        // data.message.order.items = items;
+        // data.message.order.id = data.message.order.orderId;
 
         const productData = await getUpdate({
             context: data.context,
@@ -1899,6 +1996,7 @@ class ProductService {
         let headers = {};
 
         let confirmData = confirmRequest.message.order
+        const orderId = confirmData.id;
 
         let itemList = []
         let qouteItems = []
@@ -2232,6 +2330,7 @@ class ProductService {
         confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
 
 
+
         confirmRequest.message.provider = {...confirmRequest.message.provider,"rateable":true}
 
         const orderData = {
@@ -2251,6 +2350,17 @@ class ProductService {
 
         console.log("orderData->",orderData);
         console.log("confirmRequest?.message?.order->",confirmRequest?.message?.order);
+        let detailedQoute = confirmRequest.message.order.quote
+        //confirmData["order_items"] = orderItems
+        console.log("confirmData----->",confirmData)
+        confirmData.items = qouteItems;
+        confirmData.order_id = orderId
+        confirmData.orderId = orderId
+        confirmData.transaction_id = confirmRequest.context.transaction_id
+
+        // if(logisticData?.message?.order?.fulfillments[0].state?.descriptor?.code ==='Pending'){
+        confirmData.state ='Created'
+
 
         let confirm = {}
         let httpRequest = new HttpRequest(
@@ -2278,6 +2388,7 @@ class ProductService {
             tags:confirmRequest.message.order.tags
         });
 
+
         let savedLogistics = new ConfirmRequest()
 
         savedLogistics.transactionId = confirmRequest.context.transaction_id
@@ -2291,7 +2402,6 @@ class ProductService {
         savedLogistics.logisticsTransactionId = logisticData.context.transaction_id
 
         await savedLogistics.save();
-
         return productData
     }
 
