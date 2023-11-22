@@ -2350,7 +2350,7 @@ class ProductService {
 
         console.log("orderData->",orderData);
         console.log("confirmRequest?.message?.order->",confirmRequest?.message?.order);
-        let detailedQoute = confirmRequest.message.order.quote
+        //let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
         console.log("confirmData----->",confirmData)
         confirmData.items = qouteItems;
