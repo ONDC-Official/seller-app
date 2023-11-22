@@ -981,29 +981,29 @@ class OndcService {
             end.person = {name: end.location.address.name}
 
             //const isInvalidItem =false
-            let itemDetails = []
-            for (const items of payload.message.order.items) {
-                let item = await productService.getForOndc(items.id)
-
-                let details = {
-                    "descriptor": {
-                        "name": item.productName
-                    },
-                    "price": {
-                        "currency": "INR",
-                        "value": "" + item.MRP
-                    },
-                    "category_id": item.productCategory,
-                    "quantity": {
-                        "count": items.quantity.count,
-                        "measure": { //TODO: hard coded
-                            "unit": "Kilogram",
-                            "value": 1
-                        }
-                    }
-                }
-                itemDetails.push(details)
-            }
+            // let itemDetails = []
+            // for (const items of payload.message.order.items) {
+            //     let item = await productService.getForOndc(items.id)
+            //
+            //     let details = {
+            //         "descriptor": {
+            //             "name": item.productName
+            //         },
+            //         "price": {
+            //             "currency": "INR",
+            //             "value": "" + item.MRP
+            //         },
+            //         "category_id": item.productCategory,
+            //         "quantity": {
+            //             "count": items.quantity.count,
+            //             "measure": { //TODO: hard coded
+            //                 "unit": "Kilogram",
+            //                 "value": 1
+            //             }
+            //         }
+            //     }
+            //     itemDetails.push(details)
+            // }
 
 
             // let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});// let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
@@ -1105,7 +1105,7 @@ class OndcService {
                                         "list": [
                                             {
                                                 "code": "ready_to_ship",
-                                                "value": "yes"
+                                                "value": "no"
                                             }
                                         ]
                                     },
