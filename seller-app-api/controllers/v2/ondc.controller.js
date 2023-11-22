@@ -53,7 +53,7 @@ class OndcController {
         // }).catch((err) => {
         //     next(err);
         // });
-        ondcService.orderConfirmWithOutLogistic(req.body,req).then(data => {
+        ondcService.orderConfirm(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
