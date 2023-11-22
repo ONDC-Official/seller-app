@@ -44,10 +44,55 @@ class OndcService {
 
             let storeLocationEnd = {}
             let totalProductValue = 0
-            for (let items of payload.message.order.items) {
-                const product = await productService.getForOndc(items.id)
-                console.log("product---->", product);
-                totalProductValue += product.commonDetails.MRP
+            // for (let items of payload.message.order.items) {
+            //     const product = await productService.getForOndc(items.id)
+            //     console.log("product---->", product);
+            //     totalProductValue += product.commonDetails.MRP
+            // }
+
+            let itemType= ''
+            let resultData;
+            let totalPrice = 0
+            let itemData ={};
+            for (let item of payload.message.order.items) {
+                let tags = item.tags;
+                if(tags && tags.length > 0){
+                    let tagData = tags.find((tag)=>{return tag.code === 'type'})
+                    let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                    itemType = tagTypeData.value;
+                    if(itemType === 'customization'){
+                        resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                            return row._id === item.id
+                        })
+                        if(resultData){
+
+                            if (resultData) {
+                                let price = resultData?.price * item.quantity.count
+                                totalPrice += price
+                            }
+                        }
+                    }else{
+                        resultData = await productService.getForOndc(item.id)
+                        if(Object.keys(resultData).length > 0){
+
+                            if (resultData?.commonDetails) {
+                                let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                totalPrice += price
+                            }
+
+                        }
+                    }
+
+                }else{
+                    resultData = await productService.getForOndc(item.id)
+                    if(Object.keys(resultData).length > 0){
+
+                        if (resultData?.commonDetails) {
+                            let price = resultData?.commonDetails?.MRP * item.quantity.count
+                            totalPrice += price
+                        }
+                    }
+                }
             }
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
@@ -126,7 +171,7 @@ class OndcService {
                                 "category": "Grocery", //TODO: take it from context
                                 "value": {
                                     "currency": "INR",
-                                    "value": `${totalProductValue}`
+                                    "value": `${totalPrice}`
                                 },
                                 "dangerous_goods": false
                             }
@@ -318,7 +363,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 15000); //TODO move to config
+            }, 8000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e

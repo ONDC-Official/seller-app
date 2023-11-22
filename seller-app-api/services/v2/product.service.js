@@ -1917,6 +1917,12 @@ class ProductService {
                         return row._id === item.id
                     })
                     if(resultData){
+
+                        if (resultData) {
+                            let price = resultData?.price * item.quantity.count
+                            totalPrice += price
+                        }
+
                         if(resultData.maximum < item.quantity.count){
                             isQtyAvailable = false
                         }
@@ -2356,6 +2362,12 @@ class ProductService {
                         if(resultData.maximum < item.quantity.count){
                             isQtyAvailable = false
                         }
+
+                        if (resultData) {
+                            let price = resultData?.price * item.quantity.count
+                            totalPrice += price
+                        }
+
                         let qouteItemsDetails = {
                             "@ondc/org/item_id": item.id,
                             "@ondc/org/item_quantity": {
@@ -2657,9 +2669,18 @@ class ProductService {
                         let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
                         itemType = tagTypeData.value;
                         if(itemType === 'customization'){
+                            console.log("customisation found --->",item.id)
+                            console.log("customisation found --itemData->",itemData)
+
                             resultData = itemData?.customizationDetails?.customizations.find((row) => {
                                 return row._id === item.id
                             })
+                            console.log("customisation found --itemData-resultData>",resultData)
+                            if (resultData) {
+                                let price = resultData?.price * item.quantity.count
+                                totalPrice += price
+                            }
+
                             if(resultData){
                                 if(resultData.maximum < item.quantity.count){
                                     isQtyAvailable = false
