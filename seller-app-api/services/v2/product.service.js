@@ -1682,6 +1682,12 @@ class ProductService {
                 if(fl.type==='Return'){ //Return request
                     let tags = fl.tags[0].list; //considering only 1 fl per item
 
+                    fl.tags[0].list.push(
+                        {
+                            "code":"initiated_by",
+                            "value":statusRequest.context.bap_id
+                        }
+                    )
                     let fl2 ={
                         "id":fl.tags[0].list.find(x => x.code==='id').value,
                         "type":"Return",
