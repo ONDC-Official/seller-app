@@ -359,7 +359,7 @@ exports.getUpdateItem = async (data) => {
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
                 "payment": data.updateOrder.payment,
-                 "id" :  data.updateOrder.id,
+                 "id" :  data.updateOrder.orderId,
                 "created_at":context.timestamp, //TODO: should not change
                 "updated_at":context.timestamp,
             }
