@@ -1,5 +1,5 @@
 import HttpRequest from '../../utils/HttpRequest';
-import {getProducts,getUpdate,getProductUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
+import {getProducts,getUpdateItem,getUpdate,getProductUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
 import {domainNameSpace} from "../../utils/constants";
 import {ConfirmRequest, InitRequest, SelectRequest , SearchRequest} from "../../models";
 import logger from "../../lib/logger";
@@ -1802,7 +1802,7 @@ class ProductService {
         // data.message.order.items = items;
         // data.message.order.id = data.message.order.orderId;
 
-        const productData = await getUpdate({
+        const productData = await getUpdateItem({
             context: data.context,
             updateOrder:data.message.order
         });

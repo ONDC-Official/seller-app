@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from "uuid";
+
 const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
@@ -308,6 +310,44 @@ exports.getUpdate = async (data) => {
     context.bpp_id =BPP_ID
     context.bpp_uri =BPP_URI
     context.action ='on_update'
+    const schema = {
+        "context": {...context,timestamp:new Date()},
+        "message":  {
+            "order": {
+                "provider":{"id":data.updateOrder.organization},
+                "state":data.updateOrder.state,
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment,
+                 "id" :  data.updateOrder.id,
+                "created_at":context.timestamp, //TODO: should not change
+                "updated_at":context.timestamp,
+            }
+        }
+    }
+
+
+
+    return schema
+
+}
+exports.getUpdateItem = async (data) => {
+
+    let productAvailable = []
+    //set product items to schema
+
+    // console.log("data.message.order.provider",data.message.order)
+    // console.log("data.message.order.provider_location",data.message.order.provider_location)
+    // console.log("data.message.order.billing",data.message.order.billing)
+    // console.log("data.message.order.fulfillments",data.message.order.fulfillments)
+    // console.log("data.message.order.payment",data.message.order.payment)
+    let context = data.context
+    context.bpp_id =BPP_ID
+    context.bpp_uri =BPP_URI
+    context.action ='on_update'
+    context.message_id = uuidv4()
     const schema = {
         "context": {...context,timestamp:new Date()},
         "message":  {
