@@ -1049,56 +1049,8 @@ class OndcService {
                             {
                                 "id": order.fulfillments[0].id,
                                 "type": "Delivery",
-                                "start": {
-                                    "time": {
-                                        "duration": "PT15M"
-                                    },
-                                    "person": {
-                                        "name": "Kumar chauhan"
-                                    },
-                                    "location": {
-                                        "gps": "30.7467833,76.642853",
-                                        "address": {
-                                            "name": "Kumar chauhan",
-                                            "building": "f-164",
-                                            "locality": "chandigarh",
-                                            "city": "kharar",
-                                            "state": "punjab",
-                                            "country": "India",
-                                            "area_code": "140301"
-                                        }
-                                    },
-                                    "contact": {
-                                        "phone": "9886098860",
-                                        "email": "abcd.efgh@gmail.com"
-                                    },
-                                    "instructions": {
-                                        "code": "2",
-                                        "short_desc": "070147",
-                                        "long_desc": "Order pickup code."
-                                    }
-                                },
-                                "end": {
-                                    "person": {
-                                        "name": "Rohan Kumar"
-                                    },
-                                    "location": {
-                                        "gps": "30.744600, 76.652496",
-                                        "address": {
-                                            "name": "Rohan Kumar",
-                                            "building": "f-163",
-                                            "locality": "chandigarh",
-                                            "city": "kharar",
-                                            "state": "punjab",
-                                            "country": "India",
-                                            "area_code": "140301"
-                                        }
-                                    },
-                                    "contact": {
-                                        "phone": "9886098860",
-                                        "email": "abcd.efgh@gmail.com"
-                                    }
-                                },
+                                "start": storeLocationEnd,
+                                "end": end,
                                 "tags": [
                                     {
                                         "code": "state",
@@ -1121,23 +1073,12 @@ class OndcService {
                                 ]
                             }
                         ],
-                        "billing": {
-                            "name": "ONDC Logistics Buyer NP",
-                            "address": {
-                                "name": "Rohan Kumar",
-                                "building": "f-163",
-                                "locality": "chandigarh",
-                                "city": "kharar",
-                                "state": "punjab",
-                                "country": "India",
-                                "area_code": "140301"
-                            },
-                            "tax_number": "04AABCU9603R1ZV",
-                            "phone": "9886098860",
-                            "email": "abcd.efgh@gmail.com",
-                            "created_at": "2023-09-13T14:10:29.841Z",
-                            "updated_at": "2023-09-13T14:10:29.841Z"
-                        },
+                        "billing": {...payload.message.order.billing,
+                            "tax_number": org.providerDetail.GSTN.GSTN??"27ACTPC1936E2ZN", //FIXME: take GSTN no
+                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                            "created_at": contextTimestamp,
+                            "updated_at": contextTimestamp},
                         "payment": {
                             "type": "ON-FULFILLMENT",
                             "@ondc/org/collection_amount": "300.00",
@@ -1163,7 +1104,7 @@ class OndcService {
                                     }
                                 }
                             ],
-                            "provider": {
+                            "provider": { //TODO: need clarification
                                 "descriptor": {
                                     "name": "Aadishwar Store"
                                 },
@@ -1635,7 +1576,7 @@ class OndcService {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "update",
-                    "core_version": "1.1.0",
+                    "core_version": "1.2.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
                     "bap_uri": config.get("sellerConfig").BPP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
@@ -1674,9 +1615,26 @@ class OndcService {
                             "id": logistics.message.order.fulfillments[0].id,
                             "type": logistics.message.order.fulfillments[0].type,
                             "tracking": logistics.message.order.fulfillments[0].tracking,
-                            "tags": {
-                                "@ondc/org/order_ready_to_ship": "yes"
-                            }
+                            "tags": [
+                                {
+                                    "code": "state",
+                                    "list": [
+                                        {
+                                            "code": "ready_to_ship",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "rto_action",
+                                    "list": [
+                                        {
+                                            "code": "return_to_origin",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
                         }],
                         "updated_at": new Date()
                     },

@@ -282,7 +282,7 @@ exports.getStatus = async (data) => {
                 "quote":  data.updateOrder.quote,
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.order_id,
-                 "created_at":context.timestamp,
+                 "created_at":context.timestamp, //TODO: should not change
                  "updated_at":context.timestamp,
             }
         }
@@ -319,7 +319,9 @@ exports.getUpdate = async (data) => {
                 "fulfillments": data.updateOrder.fulfillments,
                 "quote":  data.updateOrder.quote,
                 "payment": data.updateOrder.payment,
-                 "id" :  data.updateOrder.id
+                 "id" :  data.updateOrder.id,
+                "created_at":context.timestamp, //TODO: should not change
+                "updated_at":context.timestamp,
             }
         }
     }
@@ -421,7 +423,7 @@ exports.getConfirm = async (data) => {
                 "payment": data.message.order.payment,
                 "tags":data.tags,
                 "created_at":data.message.order.created_at, //TODO: this needs to be persisted
-                "updated_at":new Date()
+                "updated_at":new Date() //TODO: send updated DB timestamp
             }
         }
     }

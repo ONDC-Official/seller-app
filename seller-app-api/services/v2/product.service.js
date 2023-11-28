@@ -828,7 +828,7 @@ class ProductService {
             "collected_by":"BPP",
             "uri":"https://snp.com/pg",
             "status":"NOT-PAID",
-            "@ondc/org/buyer_app_finder_fee_type":"percent",
+            "@ondc/org/buyer_app_finder_fee_type":"Percent",
             "@ondc/org/buyer_app_finder_fee_amount":"3",
             "@ondc/org/settlement_basis":"delivery",
             "@ondc/org/settlement_window":"P1D",
@@ -1509,14 +1509,32 @@ class ProductService {
 
         //updateOrder.state =logisticData.message.order.state
 
-        updateOrder.fulfillments[0].state =logisticData.message.order.fulfillments[0].state
+        //TODO: find fulfillment where type is delivery
+
+        let deliveryFullfillmentIndex= updateOrder.fulfillments.findIndex(x => x.type === 'Delivery');
+        let deliveryFullfillment= updateOrder.fulfillments.find(x => x.type === 'Delivery');
+        deliveryFullfillment.state =logisticData.message.order.fulfillments[0].state
+
+        if(deliveryFullfillment.state.descriptor.code === 'Order-picked-up'){
+            //set start.timestamp ie. picked up timing
+            deliveryFullfillment.start.time.timestamp = logisticData.message.order?.fulfillments[0].start?.time?.timestamp??""
+        }
+        if(deliveryFullfillment.state.descriptor.code === 'Order-delivered'){
+            //set end.timestamp ie. delivered timing
+            //deliveryFullfillment.start.time = deliveryFullfillment.start.time
+            deliveryFullfillment.end.time.timestamp = logisticData.message.order?.fulfillments[0].end?.time?.timestamp??""
+        }
+
+        deliveryFullfillment.agent = logisticData.message.order?.fulfillments[0].agent
+        deliveryFullfillment.vehicle = logisticData.message.order?.fulfillments[0].vehicle
+        updateOrder.fulfillments[deliveryFullfillmentIndex] = deliveryFullfillment;
 
         console.log("logisticData.message.order.fulfillments[0].state--->",logisticData.message.order.fulfillments[0].state)
         console.log("llogisticData.message.order.state--->",logisticData.message.order.state)
         //update order level state
         httpRequest = new HttpRequest(
             serverUrl,
-            `/api/v1/orders/${result.data._id}/ondcUpdate`,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcUpdate`,
             'PUT',
             {data:updateOrder},
             {}
@@ -1535,7 +1553,6 @@ class ProductService {
             return item;
         });
 
-        console.log("items----->",items);
         console.log("items----->",items);
         updateOrder.items = items;
         updateOrder.order_id = updateOrder.orderId;
@@ -2195,7 +2212,7 @@ class ProductService {
 
         let today = new Date()
         let tomorrow = new Date()
-        let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
+        let endDate = new Date(tomorrow.setDate(today.getDate() + 1)) //TODO: FIXME : select from on_select of logistics
         //let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
         confirmData.items = qouteItems;
@@ -2333,7 +2350,7 @@ class ProductService {
 
         //select request for this
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]=logisticProvider.message.catalog["bpp/descriptor"].name //TODO: hard coded
-        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
 
 
 
@@ -2435,7 +2452,7 @@ class ProductService {
         let org= await this.getOrgForOndc(initData.message.order.provider.id);
 
         let paymentDetails ={
-                "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
+                "@ondc/org/buyer_app_finder_fee_type": "Percent", //TODO: for transaction id keep record to track this details
                 "@ondc/org/buyer_app_finder_fee_amount": "3.0",
                 "@ondc/org/settlement_details": [
                     {
@@ -2664,7 +2681,7 @@ class ProductService {
             "collected_by":"BPP",
             "uri":"https://snp.com/pg",
             "status":"NOT-PAID",
-            "@ondc/org/buyer_app_finder_fee_type":"percent",
+            "@ondc/org/buyer_app_finder_fee_type":"Percent",
             "@ondc/org/buyer_app_finder_fee_amount":"3",
             "@ondc/org/settlement_basis":"delivery",
             "@ondc/org/settlement_window":"P1D",

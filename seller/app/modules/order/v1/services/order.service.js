@@ -194,7 +194,7 @@ class OrderService {
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
                 mergedEnvironmentConfig.intraServiceApiEndpoints.client,
-                '/api/client/status/updateOrder',
+                '/api/v2/client/status/updateOrder',
                 'PUT',
                 {data: order},
                 {}
@@ -282,11 +282,24 @@ class OrderService {
                     'descriptor':
                         {
                             'code': 'Return_Rejected',
-                            'Short_desc': '001', //HARD coded for now
+                            'Short_desc': '001', //TODO: HARD coded for now
                         }
                 };
                 updatedFulfillment['@ondc/org/provider_name'] = 'LSP courier 1';
                 let foundIndex = order.fulfillments.findIndex(x => x.id == data.id);
+
+                let item = returnRequest.request.tags[0].list.find(x => x.code === 'item_id').value;
+
+                let itemObject = {
+                    'id': item,
+                    'fulfillment_id': data.id,
+                    'quantity':
+                        {
+                            'count': 0
+                        }
+                };
+                order.items.push(itemObject);
+
                 order.fulfillments[foundIndex] = updatedFulfillment;
 
                 console.log({updatedFulfillment});
@@ -315,8 +328,18 @@ class OrderService {
 
                 console.log({updatedFulfillment});
                 //1. append item list with this item id and fulfillment id
-                let item = returnRequest.request.tags.list.find(x => x.code === 'item_id').value;
-                let quantity = returnRequest.request.tags.list.find(x => x.code === 'item_quantity').value;
+                let item = returnRequest.request.tags[0].list.find(x => x.code === 'item_id').value;
+                let quantity = returnRequest.request.tags[0].list.find(x => x.code === 'item_quantity').value;
+
+                let itemIndex = order.items.findIndex(x => x.id ===item);
+                let itemToBeUpdated= order.items.find(x => x.id ===item);
+                itemToBeUpdated.quantity.count = itemToBeUpdated.quantity.count - parseInt(quantity);
+                order.items[itemIndex] = itemToBeUpdated; //Qoute needs to be updated here.
+
+                //get product price
+                let productItem= await Product.findOne({_id:item});
+
+                console.log({productItem});
 
                 let qouteTrail = {
                     'code': 'quote_trail',
@@ -332,18 +355,18 @@ class OrderService {
                             },
                             {
                                 'code': 'currency',
-                                'value': quantity
+                                'value': 'INR'
                             },
                             {
                                 'code': 'value',
-                                'value': '-170.00' //TODO: fix this hard coded value
+                                'value': '-'+( productItem.MRP*quantity)
                             }
                         ]
                 };
 
                 returnRequest.quote_trail = qouteTrail;
                 updatedFulfillment.tags =[];
-                updatedFulfillment.tags.push(returnRequest.request.tags);
+                updatedFulfillment.tags.push(returnRequest.request.tags[0]);
                 updatedFulfillment.tags.push(qouteTrail);
 
                 order.fulfillments[foundIndex] = updatedFulfillment;
