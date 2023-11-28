@@ -2515,17 +2515,6 @@ class ProductService {
                                 },
                             "item":
                                 {
-                                    "quantity":
-                                        {
-                                            "available":
-                                                {
-                                                    "count": `${resultData?.available}`
-                                                },
-                                            "maximum":
-                                                {
-                                                    "count": `${resultData?.available}`
-                                                }
-                                        },
                                     "price":
                                         {
                                             "currency":"INR",
@@ -2570,17 +2559,6 @@ class ProductService {
                                 },
                             "item":
                                 {
-                                    "quantity":
-                                        {
-                                            "available":
-                                                {
-                                                    "count": `${resultData?.commonDetails?.quantity}`
-                                                },
-                                            "maximum":
-                                                {
-                                                    "count": `${resultData?.commonDetails?.maxAllowedQty}`
-                                                }
-                                        },
                                     "price":
                                         {
                                             "currency":"INR",
@@ -2626,17 +2604,7 @@ class ProductService {
                             },
                         "item":
                             {
-                                "quantity":
-                                    {
-                                        "available":
-                                            {
-                                                "count": `${resultData?.commonDetails?.quantity}`
-                                            },
-                                        "maximum":
-                                            {
-                                                "count": `${resultData?.commonDetails?.maxAllowedQty}`
-                                            }
-                                    },
+
                                 "price":
                                     {
                                         "currency":"INR",
