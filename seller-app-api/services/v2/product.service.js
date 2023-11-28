@@ -1240,13 +1240,6 @@ class ProductService {
                   "end": new Date()
                 }
               },
-              "instructions":
-              {
-                "code":"2",
-                "name":"ONDC order",
-                "short_desc":"value of PCC",
-                "long_desc":"additional instructions such as register or counter no for self-pickup"
-              },
               "contact":requestQuery.message.order.fulfillments[0].end.contact
             },
             "end":
@@ -1261,11 +1254,6 @@ class ProductService {
                   "start":today, //TODO : static data for now
                   "end":tomorrow//TODO : static data for now
                 }
-              },
-              "instructions"://TODO : static data for now
-              {
-                "name":"Status for drop",
-                "short_desc":"Delivery Confirmation Code"
               },
 
             },
