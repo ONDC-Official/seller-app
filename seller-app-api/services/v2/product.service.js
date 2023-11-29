@@ -1542,8 +1542,11 @@ class ProductService {
         });
 
         console.log("items----->",items);
+        console.log({updateOrder});
         updateOrder.items = items;
         updateOrder.order_id = updateOrder.orderId;
+        // updateOrder.created_at = updateOrder.createdAt;
+        // updateOrder.updated_at = updateOrder.updatedAt;
 
         const productData = await getStatus({
             context: statusRequest.context,
@@ -2045,7 +2048,7 @@ class ProductService {
                             "price":
                                 {
                                     "currency":"INR",
-                                    "value":`${resultData?.price}`
+                                    "value":`${resultData?.price * item.quantity.count}`
                                 },
                             "item":
                                 {
@@ -2100,7 +2103,7 @@ class ProductService {
                             "price":
                                 {
                                     "currency":"INR",
-                                    "value":`${resultData?.commonDetails?.MRP}`
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                                 },
                             "item":
                                 {
@@ -2159,7 +2162,7 @@ class ProductService {
                         "price":
                             {
                                 "currency":"INR",
-                                "value":`${resultData?.commonDetails?.MRP}`
+                                "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                             },
                         "item":
                             {
@@ -2356,6 +2359,7 @@ class ProductService {
             order_id : confirmRequest?.message?.order.id ?? '',
             cancellation_reason_id : confirmRequest?.message?.order?.cancellation_reason_id ?? '',
             organization : confirmRequest?.message?.order?.provider?.id ?? '',
+            createdAt:confirmRequest?.message?.order.created_at
         };
 
 
@@ -2499,7 +2503,7 @@ class ProductService {
                             "price":
                                 {
                                     "currency":"INR",
-                                    "value":`${resultData?.price}`
+                                    "value":`${resultData?.price * item.quantity.count}`
                                 },
                             "item":
                                 {
@@ -2543,7 +2547,7 @@ class ProductService {
                             "price":
                                 {
                                     "currency":"INR",
-                                    "value":`${resultData?.commonDetails?.MRP}`
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                                 },
                             "item":
                                 {
@@ -2588,7 +2592,7 @@ class ProductService {
                         "price":
                             {
                                 "currency":"INR",
-                                "value":`${resultData?.commonDetails?.MRP}`
+                                "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                             },
                         "item":
                             {
@@ -2632,31 +2636,49 @@ class ProductService {
                     ]
             }
         ];
-        const paymentData =    { //TODO static for now
-            "type":"ON-ORDER",
-            "collected_by":"BPP",
-            "uri":"https://snp.com/pg",
-            "status":"NOT-PAID",
-            "@ondc/org/buyer_app_finder_fee_type":"Percent",
-            "@ondc/org/buyer_app_finder_fee_amount":"3",
-            "@ondc/org/settlement_basis":"delivery",
-            "@ondc/org/settlement_window":"P1D",
-            "@ondc/org/withholding_amount":"10.00",
-            "@ondc/org/settlement_details":
-                [
-                    {
-                        "settlement_counterparty":"seller-app",
-                        "settlement_phase":"sale-amount",
-                        "settlement_type":"upi",
-                        "beneficiary_name":"xxxxx",
-                        "upi_address":"gft@oksbi",
-                        "settlement_bank_account_no":"XXXXXXXXXX",
-                        "settlement_ifsc_code":"XXXXXXXXX",
-                        "bank_name":"xxxx",
-                        "branch_name":"xxxx"
-                    }
-                ]
-        };
+        // const paymentData =    { //TODO static for now
+        //     "type":"ON-ORDER",
+        //     "collected_by":"BPP",
+        //     "uri":"https://snp.com/pg",
+        //     "status":"NOT-PAID",
+        //     "@ondc/org/buyer_app_finder_fee_type":"Percent",
+        //     "@ondc/org/buyer_app_finder_fee_amount":"3",
+        //     "@ondc/org/settlement_basis":"delivery",
+        //     "@ondc/org/settlement_window":"P1D",
+        //     "@ondc/org/withholding_amount":"10.00",
+        //     "@ondc/org/settlement_details":
+        //         [
+        //             {
+        //                 "settlement_counterparty":"seller-app",
+        //                 "settlement_phase":"sale-amount",
+        //                 "settlement_type":"upi",
+        //                 "beneficiary_name":"xxxxx",
+        //                 "upi_address":"gft@oksbi",
+        //                 "settlement_bank_account_no":"XXXXXXXXXX",
+        //                 "settlement_ifsc_code":"XXXXXXXXX",
+        //                 "bank_name":"xxxx",
+        //                 "branch_name":"xxxx"
+        //             }
+        //         ]
+        // };
+
+        let paymentData ={
+            "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
+            "@ondc/org/buyer_app_finder_fee_amount": "3.0",
+            "@ondc/org/settlement_details": [
+                {
+                    "settlement_counterparty": "seller-app",
+                    "settlement_phase": "sale-amount",
+                    "settlement_type": "neft",
+                    "settlement_bank_account_no": org.providerDetail.bankDetails.accNumber,
+                    "settlement_ifsc_code": org.providerDetail.bankDetails.IFSC,
+                    "beneficiary_name": org.providerDetail.bankDetails.accHolderName,
+                    "bank_name": org.providerDetail.bankDetails.bankName,
+                    "branch_name": org.providerDetail.bankDetails.branchName??"Pune"
+                }
+            ]
+
+        }
 
         initData.message.order.payment = paymentDetails;
         const productData = await getInit({
@@ -2784,7 +2806,7 @@ class ProductService {
                                     "price":
                                         {
                                             "currency":"INR",
-                                            "value":`${resultData?.price}`
+                                            "value":`${resultData?.price * item.quantity.count}`
                                         },
                                     "item":
                                         {
@@ -2838,7 +2860,7 @@ class ProductService {
                                     "price":
                                         {
                                             "currency":"INR",
-                                            "value":`${resultData?.commonDetails?.MRP}`
+                                            "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                                         },
                                     "item":
                                         {
@@ -2895,7 +2917,7 @@ class ProductService {
                                 "price":
                                     {
                                         "currency":"INR",
-                                        "value":`${resultData?.commonDetails?.MRP}`
+                                        "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                                     },
                                 "item":
                                     {
@@ -2950,7 +2972,7 @@ class ProductService {
                             "price":
                                 {
                                     "currency":"INR",
-                                    "value":`${resultData?.commonDetails?.MRP}`
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                                 },
                             "item":
                                 {

@@ -73,6 +73,9 @@ class OrderService {
                 }
 
             }
+            data.data.createdOn=data.data.createdAt;
+
+            console.log("data---->",data)
             // data.data.organization=data.data.provider.id;
             let order = new Order(data.data);
             let savedOrder = await order.save();
