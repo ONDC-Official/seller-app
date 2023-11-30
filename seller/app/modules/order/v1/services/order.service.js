@@ -9,6 +9,7 @@ import {ConflictError} from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
 import {RETURN_REASONS} from '../../../../lib/utils/constants';
 import BadRequestParameterError from '../../../../lib/errors/bad-request-parameter.error';
+import {uuid} from "uuidv4";
 
 class OrderService {
     async create(data) {
@@ -75,7 +76,7 @@ class OrderService {
             }
             data.data.createdOn=data.data.createdAt;
 
-            console.log("data---->",data)
+            console.log('data---->',data);
             // data.data.organization=data.data.provider.id;
             let order = new Order(data.data);
             let savedOrder = await order.save();
@@ -214,32 +215,123 @@ class OrderService {
 
     async cancelItems(orderId, data) {
         try {
-            let order = await Order.findOne({_id: orderId});//.lean();
+            let order = await Order.findOne({orderId: orderId});//.lean();
 
             //update order item level status
 
-            if (order.items.length === 1) {
-                throw new BadRequestParameterError(MESSAGES.SINGLE_ITEM_CANNOT_CANCEL);
-            }
-            let items = [];
-            for (let updateItem of order.items) {
-                let item = data.find((i) => {
-                    return i.id === updateItem.id;
-                });
-                if (item) {
-                    updateItem.state = 'Cancelled';
-                    updateItem.reason_code = item.cancellation_reason_id;
-                    items.push(updateItem);
-                } else {
-                    items.push(updateItem);
-                }
+            let cancelRequest = new  Fulfillment();
 
-            }
+            cancelRequest.id = uuid();
 
-            order.items = items;
+            cancelRequest.request = {
+                'type':'Cancel',
+                'state':
+                {
+                    'descriptor':
+                    {
+                        'code':'Cancelled'
+                    }
+                },
+                'tags':
+                [
+                    {
+                        'code':'cancel_request',
+                        'list':
+                            [
+                                {
+                                    'code':'reason_id',
+                                    'value':data.cancellation_reason_id
+                                },
+                                {
+                                    'code':'initiated_by',
+                                    'value':'ref-app-seller-staging-v2.ondc.org'  //TODO: take it from env
+                                }
+                            ]
+                    }
+                ]
+            };
 
-            await Order.findOneAndUpdate({_id: orderId}, {items: items});
+            // cancelRequest.request['@ondc/org/provider_name'] = 'LSP courier 1';
 
+
+            await cancelRequest.save();
+
+            // updatedFulfillment['@ondc/org/provider_name'] = 'LSP courier 1'; //TODO: hard coded
+
+            // console.log({updatedFulfillment});
+            //1. append item list with this item id and fulfillment id
+
+            console.log({items:order.items});
+            let itemIndex = order.items.findIndex(x => x.id ===data.id);
+            let itemToBeUpdated= order.items.find(x => x.id ===data.id);
+            console.log({itemToBeUpdated});
+            itemToBeUpdated.quantity.count = itemToBeUpdated.quantity.count - parseInt(data.quantity);
+            order.items[itemIndex] = itemToBeUpdated; //Qoute needs to be updated here.
+
+            let cancelledItem =         {
+                'id':data.id,
+                'fulfillment_id':cancelRequest.id,
+                'quantity':
+                    {
+                        'count':data.quantity
+                    }
+            };
+            order.items.push(cancelledItem);
+
+            //get product price
+            let productItem= await Product.findOne({_id:data.id});
+
+            console.log({productItem});
+
+            let qouteTrail = {
+                'code': 'quote_trail',
+                'list':
+                        [
+                            {
+                                'code': 'type',
+                                'value': 'item'
+                            },
+                            {
+                                'code': 'id',
+                                'value': data.id
+                            },
+                            {
+                                'code': 'currency',
+                                'value': 'INR'
+                            },
+                            {
+                                'code': 'value',
+                                'value': '-'+( productItem.MRP*data.quantity) //TODO: actual value of order item
+                            }
+                        ]
+            };
+
+            cancelRequest.quote_trail = qouteTrail;
+            let updatedFulfillment = {};
+            updatedFulfillment.state = {
+                'descriptor':
+                    {
+                        'code': 'Cancelled'
+                    }
+            };
+            updatedFulfillment.type= 'Cancel';
+            updatedFulfillment.id= cancelRequest.id;
+            updatedFulfillment.tags =[];
+            updatedFulfillment.tags.push(cancelRequest.request.tags[0]);
+            updatedFulfillment.tags.push(qouteTrail);
+
+            order.fulfillments.push(updatedFulfillment);
+
+
+            //2. append qoute trail
+
+            order.quote = await this.updateQoute(order.quote,data.quantity,data.id);
+                
+            
+            // await order.save();
+            await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
+
+            console.log({order})
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
                 mergedEnvironmentConfig.intraServiceApiEndpoints.client,
@@ -349,7 +441,7 @@ class OrderService {
                     'list':
                         [
                             {
-                                'code': 'title_type',
+                                'code': 'type',
                                 'value': 'item'
                             },
                             {
@@ -362,7 +454,7 @@ class OrderService {
                             },
                             {
                                 'code': 'value',
-                                'value': '-'+( productItem.MRP*quantity)
+                                'value': '-'+( productItem.MRP*quantity) //TODO: actual value of order item
                             }
                         ]
                 };
@@ -386,11 +478,13 @@ class OrderService {
 
                 //2. append qoute trail
 
+                order.quote = await this.updateQoute(order.quote,quantity,item);
+
             }
 
             await returnRequest.save();
-            await order.save();
-            //await Order.findOneAndUpdate({orderId:orderId},{items:items});
+            // await order.save();
+            await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
 
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
@@ -410,6 +504,24 @@ class OrderService {
         }
     }
 
+    async updateQoute(data,quantity,item){
+        try{
+
+            let itemIndex = data.breakup.findIndex(x => x['@ondc/org/item_id'] ===item);
+            let itemToBeUpdated= data.breakup.find(x => x['@ondc/org/item_id'] ===item);
+
+            console.log({itemToBeUpdated});
+            let priceToReduce = parseFloat(itemToBeUpdated.item.price.value)*quantity;
+            itemToBeUpdated['@ondc/org/item_quantity'].count=itemToBeUpdated['@ondc/org/item_quantity'].count-quantity;
+            itemToBeUpdated['price'].value=''+(parseFloat(itemToBeUpdated['price'].value)-priceToReduce);
+            data.breakup[itemIndex] = itemToBeUpdated;
+
+            data.price.value = ''+(parseFloat(data.price.value) -priceToReduce);
+            return data;
+        }catch (e) {
+            throw e;
+        }
+    }
     async cancel(orderId, data) {
         try {
             let order = await Order.findOne({_id: orderId}).lean();
