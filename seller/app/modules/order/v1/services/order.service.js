@@ -565,7 +565,7 @@ class OrderService {
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
                 mergedEnvironmentConfig.intraServiceApiEndpoints.client,
-                '/api/client/status/cancel',
+                '/api/v2/client/status/cancel',
                 'POST',
                 {data: order},
                 {}
