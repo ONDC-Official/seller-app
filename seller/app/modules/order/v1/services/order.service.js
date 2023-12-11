@@ -401,6 +401,13 @@ class OrderService {
                             'Short_desc': '001', //HARD coded for now
                         }
                 };
+                returnRequest.request.state = {
+                    'descriptor':
+                        {
+                            'code': 'Return_Rejected',
+                            'Short_desc': '001', //HARD coded for now
+                        }
+                };
 
                 let updatedFulfillment = order.fulfillments.find(x => x.id == data.id);
 
@@ -435,6 +442,12 @@ class OrderService {
             if (data.state === 'Liquidated') {
                 returnRequest.request['@ondc/org/provider_name'] = 'LSP courier 1';
                 returnRequest.state = {
+                    'descriptor':
+                        {
+                            'code': 'Liquidated'
+                        }
+                };
+                returnRequest.request.state = {
                     'descriptor':
                         {
                             'code': 'Liquidated'
@@ -513,7 +526,7 @@ class OrderService {
 
             }
 
-            await returnRequest.save();
+            await returnRequest.findOneAndUpdate({_id:returnRequest._id},{request:returnRequest.request});
             // await order.save();
             await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
 
