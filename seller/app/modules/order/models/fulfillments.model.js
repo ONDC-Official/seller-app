@@ -10,7 +10,8 @@ const fulfillmentSchema = new mongoose.Schema({
     request: {type: Object},
     quote_trail: {type: Object},
     id: {type: String},
-    organization: { type: String, ref: 'Organization' }
+    organization: { type: String, ref: 'Organization' },
+    order: { type: String, ref: 'Order' }
 }, {
     strict: true,
     timestamps: true

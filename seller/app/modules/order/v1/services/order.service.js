@@ -113,6 +113,11 @@ class OrderService {
                     return tag.code === 'images';
                 });
 
+
+                let qty = order.request.tags[0].list.find((tag) => {
+                    return tag.code === 'tem_quantity';
+                });
+
                 let item = await Product.findOne({_id: itemId.value}).lean();
 
                 let code = RETURN_REASONS.find((codes) => {
@@ -123,6 +128,7 @@ class OrderService {
                 order.reason = code?.value;
                 order.item = item;
                 order.image = images.value.split(',');
+                order.qty = qty?.value;
             }
             const count = await Fulfillment.count(query);
             let orders = {
@@ -270,6 +276,7 @@ class OrderService {
 
 
             cancelRequest.organization = order.organization;
+            cancelRequest.order = order._id;
             await cancelRequest.save();
 
             // updatedFulfillment['@ondc/org/provider_name'] = 'LSP courier 1'; //TODO: hard coded
@@ -613,6 +620,7 @@ class OrderService {
                     newFl.orderId = orderId;
                     newFl.request = fl;
                     newFl.organization = oldOrder.organization;
+                    newFl.order = oldOrder._id;
                     await newFl.save();
                 }
 
