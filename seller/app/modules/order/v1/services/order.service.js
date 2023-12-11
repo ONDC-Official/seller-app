@@ -526,8 +526,8 @@ class OrderService {
 
             }
 
-            // await returnRequest.findOneAndUpdate({_id:returnRequest._id},{request:returnRequest.request});
-            await returnRequest.save();
+            await Fulfillment.findOneAndUpdate({_id:returnRequest._id},{request:returnRequest.request,quote_trail:returnRequest.quote_trail});
+            //await returnRequest.save();
             // await order.save();
             await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
 
