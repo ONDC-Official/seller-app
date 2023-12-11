@@ -135,6 +135,7 @@ class OrderService {
                 order.qty = qty?.value;
                 order.state = order?.request?.state?.descriptor?.code;
                 order.orderId = orderDetails?.orderId??'';
+                order._id = order.id;
             }
             const count = await Fulfillment.count(query);
             let orders = {
