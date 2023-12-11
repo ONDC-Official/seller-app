@@ -91,9 +91,9 @@ class OrderService {
     async listReturnRequests(params) {
         try {
             let query = {"request.type":"Return"};
-            // if (params.organization) {
-            //     query.organization = params.organization;
-            // }
+            if (params.organization) {
+                query.organization = params.organization;
+            }
             const data = await Fulfillment.find(query).populate([{
                 path: 'organization',
                 select: ['name', '_id', 'storeDetails']
