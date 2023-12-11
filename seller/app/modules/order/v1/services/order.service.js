@@ -115,7 +115,7 @@ class OrderService {
 
 
                 let qty = order.request.tags[0].list.find((tag) => {
-                    return tag.code === 'tem_quantity';
+                    return tag.code === 'item_quantity';
                 });
 
                 let item = await Product.findOne({_id: itemId.value}).lean();
@@ -124,11 +124,17 @@ class OrderService {
                     return codes.key === reason_id.value;
                 });
 
+                let orderDetails = await Order.findOne({_id:order.order});
+
+
+
                 console.log('reason--->', code);
                 order.reason = code?.value;
                 order.item = item;
                 order.image = images.value.split(',');
                 order.qty = qty?.value;
+                order.state = order?.request?.state?.descriptor?.code;
+                order.orderId = orderDetails?.orderId??'';
             }
             const count = await Fulfillment.count(query);
             let orders = {
