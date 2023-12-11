@@ -2730,7 +2730,7 @@ class ProductService {
 
 
             const org = await this.getOrgForOndc(selectData.message.order.provider.id);
-            let logisticsToSelect = config.get("sellerConfig").LOGISTICS_BAP_ID
+            let logisticsToSelect = "www.shipease.in"//config.get("sellerConfig").LOGISTICS_BAP_ID
 
             // if(org.providerDetail.storeDetails.logisticsBppId){
             //     logisticsToSelect = org.providerDetail.storeDetails.logisticsBppId
@@ -3004,12 +3004,17 @@ class ProductService {
                     }
                 }
                 if(isServiceable){
-                    item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
+                    //pickup prepaid order only
+                    item.fulfillment_id = logisticProvider.message.catalog["bpp/fulfillments"].find((element)=>{return element.type==='Prepaid'}).id //TODO: revisit for item level status
 
-                    deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
+                    //item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
+
+
+                    deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return (element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE) && (element.fulfillment_id === item.fulfillment_id) });
 
                 }else{
-                    item.fulfillment_id = '1'
+                    item.fulfillment_id = '1';
+                    isServiceable=false;
                 }
                 delete item.location_id
                 delete item.quantity

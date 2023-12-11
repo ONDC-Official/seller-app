@@ -9,7 +9,8 @@ const fulfillmentSchema = new mongoose.Schema({
     },
     request: {type: Object},
     quote_trail: {type: Object},
-    id: {type: String}
+    id: {type: String},
+    organization: { type: String, ref: 'Organization' }
 }, {
     strict: true,
     timestamps: true

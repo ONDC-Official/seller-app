@@ -90,26 +90,41 @@ class OrderService {
 
     async listReturnRequests(params) {
         try {
-            let query = {};
-            if (params.organization) {
-                query.organization = params.organization;
-            }
-            const data = await ReturnItem.find(query).populate([{
+            let query = {"request.type":"Return"};
+            // if (params.organization) {
+            //     query.organization = params.organization;
+            // }
+            const data = await Fulfillment.find(query).populate([{
                 path: 'organization',
                 select: ['name', '_id', 'storeDetails']
             }]).sort({createdAt: -1}).skip(params.offset * params.limit).limit(params.limit).lean();
             for (const order of data) {
-                let item = await Product.findOne({_id: order.itemId}).lean();
+
+                console.log("order",order)
+                let itemId = order.request.tags[0].list.find((tag) => {
+                    return tag.code === 'item_id';
+                });
+
+                let reason_id = order.request.tags[0].list.find((tag) => {
+                    return tag.code === 'reason_id';
+                });
+
+                let images = order.request.tags[0].list.find((tag) => {
+                    return tag.code === 'images';
+                });
+
+                let item = await Product.findOne({_id: itemId.value}).lean();
 
                 let code = RETURN_REASONS.find((codes) => {
-                    return codes.key === order.reason;
+                    return codes.key === reason_id.value;
                 });
 
                 console.log('reason--->', code);
-                order.reason = code.value;
+                order.reason = code?.value;
                 order.item = item;
+                order.image = images.value.split(',');
             }
-            const count = await ReturnItem.count(query);
+            const count = await Fulfillment.count(query);
             let orders = {
                 count,
                 data
@@ -254,6 +269,7 @@ class OrderService {
             // cancelRequest.request['@ondc/org/provider_name'] = 'LSP courier 1';
 
 
+            cancelRequest.organization = order.organization;
             await cancelRequest.save();
 
             // updatedFulfillment['@ondc/org/provider_name'] = 'LSP courier 1'; //TODO: hard coded
@@ -319,6 +335,7 @@ class OrderService {
             updatedFulfillment.tags =[];
             updatedFulfillment.tags.push(cancelRequest.request.tags[0]);
             updatedFulfillment.tags.push(qouteTrail);
+            //updatedFulfillment.organization =order.organization;
 
             order.fulfillments.push(updatedFulfillment);
 
@@ -595,6 +612,7 @@ class OrderService {
                     newFl.id = fl.id;
                     newFl.orderId = orderId;
                     newFl.request = fl;
+                    newFl.organization = oldOrder.organization;
                     await newFl.save();
                 }
 
