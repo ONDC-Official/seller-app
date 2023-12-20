@@ -106,6 +106,10 @@ class OndcService {
                 }
             }
 
+            let category = domainNameSpace.find((cat)=>{
+                return cat.domain === payload.context.domain
+            })
+
             const searchRequest = {
                     "context": {
                         "domain": "nic2004:60232",
@@ -123,7 +127,7 @@ class OndcService {
                     "message": {
                         "intent": {
                             "category": {
-                                "id": "Immediate Delivery"
+                                "id": org.providerDetail.storeDetails.logisticsDeliveryType??'Immediate Delivery'
                             },
                             "provider": {
                                 "time": { //TODO: fix this from store timing
@@ -168,7 +172,7 @@ class OndcService {
                                         "value": 10
                                     }
                                 },
-                                "category": "Grocery", //TODO: take it from context
+                                "category": category.name, //TODO: take it from context
                                 "value": {
                                     "currency": "INR",
                                     "value": `${totalPrice}`
