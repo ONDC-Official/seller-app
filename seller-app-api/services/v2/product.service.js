@@ -2732,9 +2732,9 @@ class ProductService {
             const org = await this.getOrgForOndc(selectData.message.order.provider.id);
             let logisticsToSelect = config.get("sellerConfig").LOGISTICS_BAP_ID
 
-            // if(org.providerDetail.storeDetails.logisticsBppId){
-            //     logisticsToSelect = org.providerDetail.storeDetails.logisticsBppId
-            // }
+            if(org.providerDetail.storeDetails.logisticsBppId){
+                 logisticsToSelect = org.providerDetail.storeDetails.logisticsBppId
+             }
 
             console.log({logisticsToSelect});
             console.log(org.providerDetail.storeDetails);
@@ -3004,9 +3004,12 @@ class ProductService {
                     }
                 }
                 if(isServiceable){
-                    item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
 
-                    deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});
+                    let fulfillment  =  logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === 'Delivery'});
+                    deliveryType  =  logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id});
+                    // deliveryType = logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === org.providerDetail.storeDetails.logisticsDeliveryType});
+
+                    item.fulfillment_id = fulfillment.id //TODO: revisit for item level status
 
                 }else{
                     item.fulfillment_id = '1'
@@ -3031,7 +3034,7 @@ class ProductService {
                 }//TODO: need to map all items in the catalog to find out delivery charges
 
                 //added delivery charges in total price
-                totalPrice += parseInt(logisticProvider.message.catalog["bpp/providers"][0].items[0].price.value)
+                totalPrice += parseInt(deliveryType.price.value)
 
                 let categories = logisticProvider.message.catalog["bpp/providers"][0].categories
                 let duration = ''
