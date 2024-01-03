@@ -154,7 +154,7 @@ class OndcService {
                             "end": payload.message.order.fulfillments[0].end
                         },
                         "payment": {
-                            "type": "ON-FULFILLMENT",
+                            "type": "POST-FULFILLMENT",
                             "@ondc/org/collection_amount": `${totalProductValue}`
                         },
                         "@ondc/org/payload_details": { //TODO: This is hard coded
@@ -1135,7 +1135,7 @@ class OndcService {
                             "updated_at": contextTimestamp
                         },
                         "payment": {
-                            "type": "ON-FULFILLMENT",
+                            "type": "POST-FULFILLMENT",
                             "@ondc/org/collection_amount": "0",
                             "collected_by": "BPP"
                         },
