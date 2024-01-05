@@ -53,7 +53,7 @@ class OndcController {
         // }).catch((err) => {
         //     next(err);
         // });
-        ondcService.orderConfirmWithOutLogistic(req.body,req).then(data => {
+        ondcService.orderConfirm(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
@@ -77,17 +77,17 @@ class OndcController {
     }
     orderStatus(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        // ondcService.orderStatus(req.body,req).then(data => {
-        //     res.json(data);
-        // }).catch((err) => {
-        //     next(err);
-        // });
-
-        ondcService.orderStatusWithoutLogistics(req.body,req).then(data => {
+        ondcService.orderStatus(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);
         });
+
+        // ondcService.orderStatusWithoutLogistics(req.body,req).then(data => {
+        //     res.json(data);
+        // }).catch((err) => {
+        //     next(err);
+        // });
     }
 
     orderStatusUpdate(req, res, next) {
@@ -143,7 +143,7 @@ class OndcController {
     }
     orderUpdate(req, res, next) {
         // const currentUserAccessToken = res.get('currentUserAccessToken');
-        ondcService.orderUpdate(req.body,req).then(data => {
+        ondcService.orderUpdateV2(req.body,req).then(data => {
             res.json(data);
         }).catch((err) => {
             next(err);

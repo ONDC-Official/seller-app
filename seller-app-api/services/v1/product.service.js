@@ -969,7 +969,7 @@ class ProductService {
                     }
             }
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded
-        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
 
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
@@ -1046,7 +1046,7 @@ class ProductService {
         let org= await this.getOrgForOndc(initData.message.order.provider.id);
 
         let paymentDetails ={
-                "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
+                "@ondc/org/buyer_app_finder_fee_type": "Percent", //TODO: for transaction id keep record to track this details
                 "@ondc/org/buyer_app_finder_fee_amount": "3.0",
                 "@ondc/org/settlement_details": [
                     {

@@ -33,8 +33,8 @@ if (env !== 'development') {
     nconf.set('sellerConfig:BPP_URI', process.env.BPP_URI);
     nconf.set('seller:serverUrl', process.env.SELLER_SERVER_URL);
     nconf.set('sellerConfig:BPP_ID', process.env.BPP_ID);
-    nconf.set('sellerConfig:BAP_URI', process.env.BAP_ID);
-    nconf.set('sellerConfig:BAP_ID', process.env.BAP_URI);
+    nconf.set('sellerConfig:BAP_ID', process.env.BAP_ID);
+    nconf.set('sellerConfig:BAP_URI', process.env.BAP_URI);
     nconf.set('sellerConfig:LOGISTICS_DELIVERY_TYPE', process.env.LOGISTICS_DELIVERY_TYPE);
     nconf.set('sellerConfig:LOGISTICS_BAP_ID', process.env.LOGISTICS_BAP_ID);
 

@@ -9,17 +9,19 @@ router.post('/client/search',
     ondcController.productSearch);
 
 //new changes
-// router.post('/client/select',
-//     ondcController.orderSelect);
-
 router.post('/client/select',
-    ondcController.orderSelectWithoutlogistic);
+    ondcController.orderSelect);
 
-// router.post('/client/Init',
-//     ondcController.orderInit);
+//TODO: uncomment if you dont want LSP integration
+// router.post('/client/select',
+//      ondcController.orderSelectWithoutlogistic);
 
 router.post('/client/Init',
-    ondcController.orderInitWithoutlogistic);
+    ondcController.orderInit);
+
+//TODO: uncomment if you dont want LSP integration
+// router.post('/client/Init',
+//     ondcController.orderInitWithoutlogistic);
 
 router.post('/client/confirm',
     ondcController.orderConfirm);

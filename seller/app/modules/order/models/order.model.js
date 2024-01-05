@@ -33,6 +33,9 @@ const orderSchema = new mongoose.Schema({
     cancellation_reason_id:{
         type:String
     },
+    createdOn:{
+        type:String
+    },
     organization: { type: String, ref: 'Organization' },
     createdBy:{type:String},
 },{  
