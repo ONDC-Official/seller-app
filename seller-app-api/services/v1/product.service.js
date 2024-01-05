@@ -1,9 +1,9 @@
-import HttpRequest from '../utils/HttpRequest';
-import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../utils/schemaMapping";
-import {ConfirmRequest, InitRequest, SelectRequest} from "../models";
-import logger from "../lib/logger";
+import HttpRequest from '../../utils/HttpRequest';
+import {getProducts,getUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v1/schemaMapping";
+import {ConfirmRequest, InitRequest, SelectRequest} from "../../models";
+import logger from "../../lib/logger";
 
-var config = require('../lib/config');
+var config = require('../../lib/config');
 const serverUrl = config.get("seller").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
@@ -148,7 +148,7 @@ class ProductService {
                 "@ondc/org/provider_name": logisticProvider.message.catalog["bpp/descriptor"],
                 "tracking": false,
                 "@ondc/org/category": logisticProvider.message.catalog["bpp/providers"][0].category_id,
-                "@ondc/org/TAT": "PT45M",
+                "@ondc/org/TAT": "PT48H",
                 "provider_id": logisticProvider.context.bpp_id,
                 "state":
                     {
@@ -969,7 +969,7 @@ class ProductService {
                     }
             }
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]='LoadShare Delivery' //TODO: hard coded
-        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='percentage' //TODO: hard coded
+        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
 
         let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
@@ -1046,7 +1046,7 @@ class ProductService {
         let org= await this.getOrgForOndc(initData.message.order.provider.id);
 
         let paymentDetails ={
-                "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
+                "@ondc/org/buyer_app_finder_fee_type": "Percent", //TODO: for transaction id keep record to track this details
                 "@ondc/org/buyer_app_finder_fee_amount": "3.0",
                 "@ondc/org/settlement_details": [
                     {

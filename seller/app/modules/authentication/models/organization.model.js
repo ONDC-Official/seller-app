@@ -22,6 +22,7 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         bankName:{type:String},
         branchName:{type:String}
     },
+    fulfillments : {type : Array},
     PAN:{PAN:{type:String},proof:{type:String}},
     GSTN:{GSTN:{type:String},proof:{type:String}},
     FSSAI:{type:String},
@@ -30,13 +31,16 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         default:Date.now()
     },
     storeDetails:{
+        name: {type:String},
         categories: {type:Object},
+        category: {type:String},
         logo: {type:String},
         location: new mongoose.Schema({lat:{type:Number},long:{type:Number}},{ _id: true }),
         locationAvailabilityPANIndia:{type:Boolean},
         city:{type:Object},
         defaultCancellable:{type:Boolean},
         defaultReturnable:{type:Boolean},
+        fulfillments : {type : Array},
         address: {
             building: {type:String},
             city: {type:String},
@@ -51,7 +55,8 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         },
         storeTiming:{type:Object},
         radius:{type:Object},
-        logisticsBppId:{type:String}
+        logisticsBppId:{type:String},
+        logisticsDeliveryType:{type:String}
     },
     createdBy:{type:String}
 },{  

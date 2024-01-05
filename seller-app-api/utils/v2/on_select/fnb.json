@@ -1,0 +1,370 @@
+{
+    "context": {
+        "domain": "ONDC:RET11",
+        "action": "on_select",
+        "core_version": "1.2.0",
+        "bap_id": "buyerNP.com",
+        "bap_uri": "https://buyerNP.com/ondc",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://9aa9-2401-4900-1c5c-13eb-75b8-ff9-8555-cc4d.ngrok-free.app",
+        "transaction_id": "T2",
+        "message_id": "M2",
+        "city": "std:080",
+        "country": "IND",
+        "timestamp": "2023-08-22T12:13:31.287Z",
+        "ttl": "PT30S"
+    },
+    "message": {
+        "order": {
+            "provider": {
+                "id": "P1",
+                "locations": [
+                    {
+                        "id": "L1"
+                    }
+                ]
+            },
+            "fulfillments": [
+                {
+                    "id": "Fulfillment1",
+                    "@ondc/org/provider_name": "WEM",
+                    "tracking": false,
+                    "@ondc/org/category": "Standard",
+                    "@ondc/org/TAT": "PT45M",
+                    "provider_id": "wd6t46r",
+                    "state": {
+                        "descriptor": {
+                            "code": "Serviceable"
+                        }
+                    }
+                }
+            ],
+            "quote": {
+                "price": {
+                    "value": "100100",
+                    "currency": "INR"
+                },
+                "breakup": [
+                    {
+                        "@ondc/org/item_id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Farm House Pizza",
+                        "@ondc/org/title_type": "item",
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "item"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "C1",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "title": "Hand tossed",
+                        "@ondc/org/title_type": "customization",
+                        "price": {
+                            "currency": "INR",
+                            "value": "0"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "0"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "C7",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "@ondc/org/title_type": "customization",
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "C14",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "@ondc/org/title_type": "customization",
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "@ondc/org/item_id": "C16",
+                        "@ondc/org/item_quantity": {
+                            "count": 1
+                        },
+                        "@ondc/org/title_type": "customization",
+                        "price": {
+                            "currency": "INR",
+                            "value": "100"
+                        },
+                        "item": {
+                            "parent_item_id": "DI1",
+                            "quantity": {
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "100"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "100"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "customization"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "title": "Delivery charges",
+                        "@ondc/org/title_type": "delivery",
+                        "price": {
+                            "currency": "100",
+                            "value": "100"
+                        }
+                    }
+                ],
+                "ttl": "P1D"
+            },
+            "items": [
+                {
+                    "id": "660658e2-8b7b-4327-b3ed-44698087012b",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "item"
+                                }
+                            ]
+                        }
+                    ],
+                    "price": {
+                        "value": 100,
+                        "currency": "INR"
+                    },
+                    "fulfillment_id": "F1123"
+                },
+                {
+                    "id": "C1",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "CG1"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
+                },
+                {
+                    "id": "C7",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "CG2"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
+                },
+                {
+                    "id": "C14",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "CG3"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
+                },
+                {
+                    "id": "C16",
+                    "parent_item_id": "DI1",
+                    "tags": [
+                        {
+                            "code": "type",
+                            "list": [
+                                {
+                                    "code": "type",
+                                    "value": "customization"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "parent",
+                            "list": [
+                                {
+                                    "code": "id",
+                                    "value": "CG3"
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillment_id": "F1123"
+                }
+            ]
+        }
+    }
+}

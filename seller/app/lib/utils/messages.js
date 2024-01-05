@@ -25,6 +25,11 @@ const MESSAGES = {
     USER_NOT_ALLOWED: 'You do not have access to this section, please contact your administrator',
     SINGLE_ITEM_CANNOT_CANCEL:'You cannot cancel single item, cancel complete order',
     LOGIN_ERROR_USER_ACCOUNT_BANNED: 'This user has exceeded the number of failed log-in attempts and has been temporarily locked out of ONDC seller app. Please contact admin',
+    PRODUCT_NOT_EXISTS:'We weren\'t able to find any product with this detail',
+    MENU_EXISTS:'A menu with the given name already exists',
+    MENU_NOT_EXISTS:'We weren\'t able to find Menu with this detail',
+    MIN_IS_MANDATORY :'Mininum Qty value must be 1 when Customization Group is mendatory',
+    MIN_ISNOT_MANDATORY :'Mininum Qty value must be 0 when Customization Group is not mendatory',
 
 };
 

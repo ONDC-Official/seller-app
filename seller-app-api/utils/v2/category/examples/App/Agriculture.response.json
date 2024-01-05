@@ -1,0 +1,609 @@
+{
+    "context": {
+        "domain": "ONDC:RET18",
+        "country": "IND",
+        "city": "std:080",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "buyer-app.ondc.org",
+        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "transaction_id": "{{transaction_id}}",
+        "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
+        "timestamp": "2023-08-09T07:56:32.890Z",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
+    },
+    "message": {
+        "catalog": {
+            "bpp/fulfillments": [
+                {
+                    "id": "1",
+                    "type": "Delivery"
+                },
+                {
+                    "id": "2",
+                    "type": "Self-Pickup"
+                },
+                {
+                    "id": "3",
+                    "type": "Delivery and Self-Pickup"
+                }
+            ],
+            "bpp/descriptor": {
+                "name": "Wemotive1org",
+                "symbol": "/bucket/img.pdf",
+                "short_desc": "",
+                "long_desc": "",
+                "images": [
+                    "/bucket/img.pdf"
+                ]
+            },
+            "bpp/providers": [
+                {
+                    "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                    "descriptor": {
+                        "name": "Wemotive1org",
+                        "symbol": "/bucket/img.pdf",
+                        "short_desc": "",
+                        "long_desc": "",
+                        "images": [
+                            "/bucket/img.pdf"
+                        ]
+                    },
+                    "time": {
+                        "label": "enable",
+                        "timestamp": "2023-08-09T07:56:32.890Z"
+                    },
+                    "categories": [
+                        {
+                            "id": "pj9BKP",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "pj9BKP",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "jv2WKJ",
+                            "descriptor": {
+                                "name": "Variant Group 3"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "jv2WKJ",
+                            "descriptor": {
+                                "name": "Variant Group 4"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.size"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.tags.attribute.color"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "locations": [
+                        {
+                            "id": "6463928731fadaf31cd63a2e",
+                            "gps": "12.909639,77.634306",
+                            "address": {
+                                "city": "Pune",
+                                "state": "Maharashtra",
+                                "area_code": "560095",
+                                "street": "ok"
+                            },
+                            "time": {
+                                "days": "1",
+                                "schedule": {
+                                    "holidays": [
+                                        "2023-05-18",
+                                        "2023-05-19"
+                                    ],
+                                    "frequency": "",
+                                    "times": [
+                                        "0800"
+                                    ]
+                                },
+                                "range": {
+                                    "start": "0800",
+                                    "end": "2000"
+                                }
+                            },
+                            "circle": {
+                                "gps": "12.909639,77.634306",
+                                "radius": {
+                                    "unit": "km",
+                                    "value": "123"
+                                }
+                            }
+                        }
+                    ],
+                    "ttl": "PT24H",
+                    "items": [
+                        {
+                            "id": "cbed6cef-705f-4255-9212-5270b67a9fa3",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:20:11.133Z"
+                            },
+                            "parent_item_id": "pj9BKP",
+                            "descriptor": {
+                                "name": "Sodium Pestiside",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Land Care",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Powder"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Coral"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "22883eb4-f503-4f56-ac15-4eb8c62b3622",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:20:11.161Z"
+                            },
+                            "parent_item_id": "pj9BKP",
+                            "descriptor": {
+                                "name": "Sodium Pestiside",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Land Care",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Powder"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "Coral"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "trendzz"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Large"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "254ec5c4-eadb-4ec8-b7a2-51aec0177918",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:53:10.353Z"
+                            },
+                            "parent_item_id": "jv2WKJ",
+                            "descriptor": {
+                                "name": "Sodium Pestiside",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Crop Care",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Powder"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "kionk"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "small"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "b4d3eaad-d990-4c4a-b01e-dda8d30461e7",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:53:10.377Z"
+                            },
+                            "parent_item_id": "jv2WKJ",
+                            "descriptor": {
+                                "name": "Sodium Pestiside",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Crop Care",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attributes",
+                                    "list": [
+                                        {
+                                            "code": "Material",
+                                            "value": "Powder"
+                                        },
+                                        {
+                                            "code": "Brand",
+                                            "value": "kionk"
+                                        },
+                                        {
+                                            "code": "FashionType",
+                                            "value": "Summer Trends"
+                                        },
+                                        {
+                                            "code": "size",
+                                            "value": "Medium"
+                                        },
+                                        {
+                                            "code": "color",
+                                            "value": "white"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillments": [
+                        {
+                            "contact": {
+                                "phone": "090909090909",
+                                "email": "support@wemotiveforge.com"
+                            }
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "code": "serviceability",
+                            "list": [
+                                {
+                                    "code": "location",
+                                    "value": "6463928731fadaf31cd63a2e"
+                                },
+                                {
+                                    "code": "category",
+                                    "value": "Agriculture"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "12"
+                                },
+                                {
+                                    "code": "unit",
+                                    "value": "km"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

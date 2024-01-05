@@ -1,0 +1,99 @@
+{
+    "context": {
+        "domain": "nic2004:60232",
+        "country": "IND",
+        "city": "std:080",
+        "action": "init",
+        "core_version": "1.1.0",
+        "bap_id": "sellerapp-staging.datasyndicate.in",
+        "bap_uri": "https://9aa9-2401-4900-1c5c-13eb-75b8-ff9-8555-cc4d.ngrok-free.app",
+        "bpp_id": "DF1233",
+        "bpp_uri": "TH5643",
+        "transaction_id": "TH5664",
+        "message_id": "b72ce4d9-67d2-4321-bf9a-1ab5a1d08fcc",
+        "timestamp": "2023-08-24T17:24:02.486Z",
+        "ttl": "PT30S"
+    },
+    "message": {
+        "order": {
+            "id": "O1",
+            "state": "Created",
+            "provider": {
+                "id": "123",
+                "locations": [
+                    {
+                        "id": "L1"
+                    }
+                ]
+            },
+            "items": [
+                [
+                    {
+                        "id": "e43afe00-9b2a-402c-86f7-20fc477aeb26",
+                        "fulfillment_id": "FFid",
+                        "quantity": {
+                            "count": 1
+                        }
+                    },
+                    {
+                        "id": "e5fbbfe0-abad-4ba2-9b4f-ca4caa34b0b7",
+                        "fulfillment_id": "FFid",
+                        "quantity": {
+                            "count": 1
+                        }
+                    },
+                    {
+                        "id": "ffe79e10-1da7-47fa-99e2-e562e7493979",
+                        "fulfillment_id": "FFid",
+                        "quantity": {
+                            "count": 1
+                        }
+                    }
+                ]
+            ],
+            "fulfillments": [
+                {
+                    "id": "F1",
+                    "type": "Delivery",
+                    "end": {
+                        "contact": {
+                            "phone": "9886098860"
+                        },
+                        "location": {
+                            "gps": "12.453544,77.928379",
+                            "address": {
+                                "area_code": "560037",
+                                "building": "my building name or house #",
+                                "city": "Bengaluru",
+                                "country": "IND",
+                                "locality": "my street name",
+                                "name": "my house or door or floor #",
+                                "state": "Karnataka"
+                            }
+                        }
+                    }
+                }
+            ],
+            "billing": {
+                "name": "ONDC buyer",
+                "address": {
+                    "name": "my house or door or floor #",
+                    "building": "my building name or house #",
+                    "locality": "my street name",
+                    "city": "Bengaluru",
+                    "state": "Karnataka",
+                    "country": "IND",
+                    "area_code": "560037"
+                },
+                "tax_number": "XXXXXXXXXXXXXXX",
+                "phone": "090909090909",
+                "email": "support@wemotiveforge.com",
+                "created_at": "2023-08-24T17:24:02.486Z",
+                "updated_at": "2023-08-24T17:24:02.486Z"
+            },
+            "payment": {
+                "@ondc/org/settlement_details": []
+            }
+        }
+    }
+}

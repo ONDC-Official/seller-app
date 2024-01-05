@@ -1,6 +1,6 @@
 import {Router} from 'express';
-import OndcController from '../controllers/ondc.controller';
-import { authentication } from '../middlewares/index.js';
+import OndcController from '../../controllers/v2/ondc.controller';
+import { authentication } from '../../middlewares';
 
 const router = new Router();
 const ondcController = new OndcController();
@@ -12,8 +12,16 @@ router.post('/client/search',
 router.post('/client/select',
     ondcController.orderSelect);
 
+//TODO: uncomment if you dont want LSP integration
+// router.post('/client/select',
+//      ondcController.orderSelectWithoutlogistic);
+
 router.post('/client/Init',
     ondcController.orderInit);
+
+//TODO: uncomment if you dont want LSP integration
+// router.post('/client/Init',
+//     ondcController.orderInitWithoutlogistic);
 
 router.post('/client/confirm',
     ondcController.orderConfirm);
@@ -35,6 +43,16 @@ router.put('/client/status/updateOrder',
 
 router.put('/client/status/updateOrderItems',
     ondcController.orderStatusUpdateItems);
+
+router.post('/client/status/itemUpdate',
+    ondcController.notifyItemUpdate);
+
+router.post('/client/status/storeUpdate',
+    ondcController.notifyStoreUpdate);
+
+router.post('/client/status/orgUpdate',
+    ondcController.notifyOrgUpdate);
+
 
 router.post('/client/update',
     ondcController.orderUpdate);

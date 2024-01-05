@@ -1,0 +1,353 @@
+{
+    "context": {
+        "domain": "ONDC:RET10",
+        "country": "IND",
+        "city": "std:080",
+        "action": "on_search",
+        "core_version": "1.1.0",
+        "bap_id": "buyer-app.ondc.org",
+        "bap_uri": "https://webhook.site/b8c0ef18-f162-417b-95bf-3d62352f271b",
+        "transaction_id": "{{transaction_id}}",
+        "message_id": "49e1d86d-1505-4d14-b801-aee9bb5895d11",
+        "timestamp": "2023-08-09T07:24:21.118Z",
+        "bpp_id": "sellerapp-staging.datasyndicate.in",
+        "bpp_uri": "https://2fe9-2401-4900-1c5d-7233-9df4-a8d4-91b6-a729.ngrok-free.app"
+    },
+    "message": {
+        "catalog": {
+            "bpp/fulfillments": [
+                {
+                    "id": "1",
+                    "type": "Delivery"
+                },
+                {
+                    "id": "2",
+                    "type": "Self-Pickup"
+                },
+                {
+                    "id": "3",
+                    "type": "Delivery and Self-Pickup"
+                }
+            ],
+            "bpp/descriptor": {
+                "name": "Wemotive1org",
+                "symbol": "/bucket/img.pdf",
+                "short_desc": "",
+                "long_desc": "",
+                "images": [
+                    "/bucket/img.pdf"
+                ]
+            },
+            "bpp/providers": [
+                {
+                    "id": "36e0b908-ed96-4f0a-a0f5-7812465fe1ea",
+                    "descriptor": {
+                        "name": "Wemotive1org",
+                        "symbol": "/bucket/img.pdf",
+                        "short_desc": "",
+                        "long_desc": "",
+                        "images": [
+                            "/bucket/img.pdf"
+                        ]
+                    },
+                    "time": {
+                        "label": "enable",
+                        "timestamp": "2023-08-09T07:24:21.118Z"
+                    },
+                    "locations": [
+                        {
+                            "id": "6463928731fadaf31cd63a2e",
+                            "gps": "12.909639,77.634306",
+                            "address": {
+                                "city": "Pune",
+                                "state": "Maharashtra",
+                                "area_code": "560095",
+                                "street": "ok"
+                            },
+                            "time": {
+                                "days": "1",
+                                "schedule": {
+                                    "holidays": [
+                                        "2023-05-18",
+                                        "2023-05-19"
+                                    ],
+                                    "frequency": "",
+                                    "times": [
+                                        "0800"
+                                    ]
+                                },
+                                "range": {
+                                    "start": "0800",
+                                    "end": "2000"
+                                }
+                            },
+                            "circle": {
+                                "gps": "12.909639,77.634306",
+                                "radius": {
+                                    "unit": "km",
+                                    "value": "123"
+                                }
+                            }
+                        }
+                    ],
+                    "ttl": "PT24H",
+                    "categories": [
+                        {
+                            "id": "6h4UMP",
+                            "descriptor": {
+                                "name": "Variant Group 1"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.quantity.unitized.measure"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "6h4UMP",
+                            "descriptor": {
+                                "name": "Variant Group 2"
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "attr",
+                                    "list": [
+                                        {
+                                            "code": "name",
+                                            "value": "item.quantity.unitized.measure"
+                                        },
+                                        {
+                                            "code": "seq",
+                                            "value": "1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "items": [
+                        {
+                            "id": "ff1fc06a-d074-4dca-b8b3-15f879f571f0",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:01:12.437Z"
+                            },
+                            "parent_item_id": "6h4UMP",
+                            "descriptor": {
+                                "name": "Wheat Bread",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "100"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "12345",
+                                "maximum_value": "12345"
+                            },
+                            "category_id": "Masala & Seasoning",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "@ondc/org/statutory_reqs_prepackaged_food": {
+                                "nutritional_info": "Info",
+                                "additives_info": "info",
+                                "brand_owner_FSSAI_license_no": "123",
+                                "other_FSSAI_license_no": "123",
+                                "importer_FSSAI_license_no": "123"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "2bb15335-6ff6-4908-a537-ebbcada12b33",
+                            "time": {
+                                "label": "enable",
+                                "timestamp": "2023-07-31T05:01:12.462Z"
+                            },
+                            "parent_item_id": "6h4UMP",
+                            "descriptor": {
+                                "name": "TV",
+                                "symbol": "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                "short_desc": "description",
+                                "long_desc": "long",
+                                "images": [
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image.jpg",
+                                    "https://reference-buyer-app-assets.s3-ap-south-1.amazonaws.com/public-assets//name/image1.jpg"
+                                ]
+                            },
+                            "quantity": {
+                                "unitized": {
+                                    "measure": {
+                                        "unit": "kilogram",
+                                        "value": "1"
+                                    }
+                                },
+                                "available": {
+                                    "count": "10"
+                                },
+                                "maximum": {
+                                    "count": "1"
+                                }
+                            },
+                            "price": {
+                                "currency": "INR",
+                                "value": "123",
+                                "maximum_value": "123"
+                            },
+                            "category_id": "Masala & Seasoning",
+                            "location_id": "6463928731fadaf31cd63a2e",
+                            "fulfillment_id": "88a8d-3fb9-40c8-83a9-994958929db7",
+                            "@ondc/org/returnable": true,
+                            "@ondc/org/cancellable": true,
+                            "@ondc/org/available_on_cod": true,
+                            "@ondc/org/time_to_ship": "PT1H",
+                            "@ondc/org/seller_pickup_return": true,
+                            "@ondc/org/return_window": "PT30M",
+                            "@ondc/org/contact_details_consumer_care": "Wemotive1org,support@wemotiveforge.com,090909090909",
+                            "@ondc/org/statutory_reqs_packaged_commodities": {
+                                "manufacturer_or_packer_name": "AWS",
+                                "manufacturer_or_packer_address": "Pune",
+                                "common_or_generic_name_of_commodity": "Mango",
+                                "month_year_of_manufacture_packing_import": "01/2003"
+                            },
+                            "@ondc/org/statutory_reqs_prepackaged_food": {
+                                "nutritional_info": "Info",
+                                "additives_info": "info",
+                                "brand_owner_FSSAI_license_no": "123",
+                                "other_FSSAI_license_no": "123",
+                                "importer_FSSAI_license_no": "123"
+                            },
+                            "tags": [
+                                {
+                                    "code": "origin",
+                                    "list": [
+                                        {
+                                            "code": "country",
+                                            "value": "IN"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "veg_nonveg",
+                                    "list": [
+                                        {
+                                            "code": "veg",
+                                            "value": "yes"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fulfillments": [
+                        {
+                            "contact": {
+                                "phone": "090909090909",
+                                "email": "support@wemotiveforge.com"
+                            }
+                        }
+                    ],
+                    "tags": [
+                        {
+                            "code": "serviceability",
+                            "list": [
+                                {
+                                    "code": "location",
+                                    "value": "6463928731fadaf31cd63a2e"
+                                },
+                                {
+                                    "code": "category",
+                                    "value": "Grocery"
+                                },
+                                {
+                                    "code": "type",
+                                    "value": "12"
+                                },
+                                {
+                                    "code": "unit",
+                                    "value": "km"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
