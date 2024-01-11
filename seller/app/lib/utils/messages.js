@@ -30,7 +30,10 @@ const MESSAGES = {
     MENU_NOT_EXISTS:'We weren\'t able to find Menu with this detail',
     MIN_IS_MANDATORY :'Mininum Qty value must be 1 when Customization Group is mendatory',
     MIN_ISNOT_MANDATORY :'Mininum Qty value must be 0 when Customization Group is not mendatory',
-
+    GROUP_NOT_FOUND: 'We couldn\'t find the group with given details',
+    CUSTOMIZATION_GROUP_ALREADY_EXISTS: 'A group with this name already exists',
+    CUSTOMIZATION_ALREADY_EXISTS: 'A customization with this name already exists',
+    CUSTOMIZATION_RECORD_NOT_FOUND: 'Customization Record not found'
 };
 
 export default MESSAGES;

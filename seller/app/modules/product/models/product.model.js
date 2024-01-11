@@ -6,6 +6,13 @@ const productSchema = new mongoose.Schema({
         required:true,
         default: () => uuid(),
     },
+    type: {
+        type: String,
+        enum: ['item', 'customization'],
+        default: 'item'
+    },
+    available: {type:Number},
+    maximum: {type:Number},
     productCode: {type:String},
     productName: {type:String,required:true},
     variantGroup : {type:String,ref:'VariantGroup'},
@@ -53,7 +60,8 @@ const productSchema = new mongoose.Schema({
     commonOrGenericNameOfCommodity:{type:String},
     monthYearOfManufacturePackingImport:{type:String},
     importerFSSAILicenseNo:{type:String},
-    brandOwnerFSSAILicenseNo:{type:String}
+    brandOwnerFSSAILicenseNo:{type:String},
+    customizationGroupId: { type: String, ref: 'CustomizationGroup'}
 
 },{  
     strict: true,

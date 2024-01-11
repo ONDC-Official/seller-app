@@ -596,6 +596,140 @@ class ProductService {
             throw err;
         }   
     }
+    async createCustomization(customizationDetails, currentUser) {
+        try {
+            if (customizationDetails) {
+                const existingCustomization = await Product.findOne({ 
+                    productName: customizationDetails.productName, 
+                    organization: currentUser.organization 
+                });
+    
+                if (!existingCustomization) {
+                    let newCustomizationObj = {
+                        ...customizationDetails,
+                        organization: currentUser.organization,
+                        type:'customization',
+                        updatedBy: currentUser.id,
+                        createdBy: currentUser.id,
+                    };
+                    let newCustomization = new Product(newCustomizationObj);
+                    await newCustomization.save();
+                    return newCustomization;
+                } else {
+                    throw new DuplicateRecordFoundError(MESSAGES.CUSTOMIZATION_ALREADY_EXISTS);
+                }
+            }
+        } catch (err) {
+            console.log(`[CustomizationService] [create] Error - ${currentUser.organization}`, err);
+            throw err;
+        }
+    }    
 
+    //TODO:Tirth - add filter on name and proper contion to find customization ,handle pagination(Done)
+
+    async getCustomization(params) {
+        try {
+            let query = {
+                type : 'customization'
+            };
+            if (params.name) {
+                query.productName = { $regex: params.name, $options: 'i' };
+            }
+            if (params.organization) {
+                query.organization = params.organization;
+            }
+    
+            const data = await Product.find(query)
+                .sort({ createdAt: 1 })
+                .skip(params.offset)
+                .limit(params.limit);
+    
+            const count = await Product.count(query);
+    
+            let customizations = {
+                count,
+                data
+            };
+            return customizations;
+        } catch (err) {
+            console.log('[CustomizationService] [getCustomization] Error:', err);
+            throw err;
+        }
+    }
+    
+    async updateCustomization(customizationDetails, currentUser, customizationId) {
+        try {
+            //TODO:Tirth check if given name has already been use in other group and throw error(Done)
+            if (customizationDetails) {
+                const existingCustomization = await Product.findOne({
+                    _id: customizationId,
+                    organization: currentUser.organization
+                });
+
+                if (!existingCustomization) {
+                    throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
+                }
+        
+                const isNameUsedInOtherGroup = await Product.findOne({
+                    productName: customizationDetails.productName,
+                    _id: { $ne: customizationId } 
+                });
+        
+                if (isNameUsedInOtherGroup) {
+                    throw new DuplicateRecordFoundError(MESSAGES.CUSTOMIZATION_ALREADY_EXISTS);
+                }
+    
+                if (existingCustomization) {
+                    // Update existing customization
+                    await Product.findOneAndUpdate(
+                        customizationId,
+                        {
+                            ...customizationDetails,
+                            updatedBy: currentUser.id,
+                        }
+                    );
+                    return { success: true };
+                } else {
+                    throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
+                }
+            }
+        } catch (err) {
+            console.log(`[CustomizationService] [update] Error - ${currentUser.organization}`, err);
+            throw err;
+        }
+    }
+    
+    async deleteCustomization(customizationId) {
+        try {
+            const deletedCustomization = await Product.findByIdAndDelete(customizationId);
+            if (deletedCustomization) {
+                return { success: true, deletedCustomization };
+            } else {
+                throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
+            }
+        } catch (err) {
+            console.log('[CustomizationService] [delete] Error:', err);
+            throw err;
+        }
+    }
+
+    async getCustomizationById(customizationId, currentUser) {
+        try {
+            const customization = await Product.findOne({ 
+                _id: customizationId,
+                organization: currentUser.organization,
+                type: 'customization'
+            });
+    
+            if (!customization) {
+                throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
+            }
+    
+            return customization;
+        } catch (err) {
+            console.log(`[CustomizationService] [getCustomizationById] Error - ${currentUser.organization}`, err);
+            throw err;
+        }
+    }   
 }
 export default ProductService;

@@ -268,5 +268,29 @@ module.exports = {
             offset:Joi.number(),
             limit:Joi.number()
         });
-    }
+    },
+
+    createCust: () => {
+        return Joi.object({
+            productName: Joi.string(),
+            vegNonVeg: Joi.string(),
+            UOM: Joi.string(),//units of measure
+            UOMValue : Joi.string().allow(''),
+            MRP: Joi.number(),
+            available: Joi.number(),
+            maximum: Joi.number(),
+        });
+    },
+
+    updateCust: () => {
+        return Joi.object({
+            productName: Joi.string(),
+            vegNonVeg: Joi.string(),
+            UOM: Joi.string(),//units of measure
+            UOMValue : Joi.string().allow(''),
+            MRP: Joi.number(),
+            available: Joi.number(),
+            maximum: Joi.number(),
+        });
+    },
 };
