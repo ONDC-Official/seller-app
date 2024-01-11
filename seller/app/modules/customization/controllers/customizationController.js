@@ -17,7 +17,7 @@ class CustomizationController {
         try {
             const currentUser = req.user;
             const customizationGroups = await customizationService.getCustomizationGroups(req.query,currentUser);
-            return res.json({ customizationGroups });
+            return res.json(customizationGroups);
         } catch (error) {
             next(error);
         }
