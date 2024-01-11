@@ -34,7 +34,9 @@ class CustomizationService {
                     
                     //TODO:Tirth why creating obj for paren class, use "this" for that(Done)
 
-                    await this.mappingCustomizations(newCustomizationGroup._id, customizationDetails.customizations);
+                    for(const customizations of customizationDetails.customizations ){
+                        await this.mappingCustomizations(newCustomizationGroup._id, customizations);
+                    }
                     return newCustomizationGroup;
                 } else {
                     throw new DuplicateRecordFoundError(MESSAGES.CUSTOMIZATION_GROUP_ALREADY_EXISTS);
@@ -96,7 +98,9 @@ class CustomizationService {
                         { new: true }
                     );
                     await CustomizationGroupMapping.deleteMany({ parent: existingGroup._id });
-                    await this.mappingCustomizations(id, customizationDetails);
+                    for(const customizations of customizationDetails.customizations){
+                        await this.mappingCustomizations(id, customizations);
+                    }
                     return { success: true };
                 } else {
                     throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_GROUP_NOT_EXISTS);
@@ -125,10 +129,11 @@ class CustomizationService {
 
             if (nextGroupId && nextGroupId.length > 0) {
                 for (const group of nextGroupId) {
+                    const groupId = group.groupId;
                     const customizationMapping = new CustomizationGroupMapping({
-                        customizationId,
+                        customization: customizationId,
                         parent: newCustomizationGroupId,
-                        child: group.groupId,
+                        child: groupId,
                         default: isDefault,
                     });
 
@@ -136,7 +141,7 @@ class CustomizationService {
                 }
             } else {
                 const customizationMapping = new CustomizationGroupMapping({
-                    customizationId,
+                    customization: customizationId,
                     parent: newCustomizationGroupId,
                     child: '',
                     default: isDefault,
