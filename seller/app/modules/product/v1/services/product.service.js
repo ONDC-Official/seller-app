@@ -665,33 +665,21 @@ class ProductService {
                     _id: customizationId,
                     organization: currentUser.organization
                 });
-
+    
                 if (!existingCustomization) {
                     throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
                 }
-        
-                const isNameUsedInOtherGroup = await Product.findOne({
-                    productName: customizationDetails.productName,
-                    _id: { $ne: customizationId } 
-                });
-        
-                if (isNameUsedInOtherGroup) {
-                    throw new DuplicateRecordFoundError(MESSAGES.CUSTOMIZATION_ALREADY_EXISTS);
-                }
     
-                if (existingCustomization) {
-                    // Update existing customization
-                    await Product.findOneAndUpdate(
-                        customizationId,
-                        {
-                            ...customizationDetails,
-                            updatedBy: currentUser.id,
-                        }
-                    );
-                    return { success: true };
-                } else {
-                    throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_RECORD_NOT_FOUND);
-                }
+                // Update existing customization
+                await Product.findOneAndUpdate(
+                    { _id: customizationId, organization: currentUser.organization },
+                    {
+                        ...customizationDetails,
+                        updatedBy: currentUser.id,
+                    }
+                );
+    
+                return { success: true };
             }
         } catch (err) {
             console.log(`[CustomizationService] [update] Error - ${currentUser.organization}`, err);
