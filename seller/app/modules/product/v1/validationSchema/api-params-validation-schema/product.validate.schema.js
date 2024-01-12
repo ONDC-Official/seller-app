@@ -49,6 +49,7 @@ module.exports = {
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
+                customizationGroupId: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             customizationDetails: Joi.object({
@@ -171,6 +172,7 @@ module.exports = {
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
+                customizationGroupId: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             customizationDetails: Joi.object({

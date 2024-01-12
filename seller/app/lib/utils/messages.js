@@ -33,7 +33,8 @@ const MESSAGES = {
     GROUP_NOT_FOUND: 'We couldn\'t find the group with given details',
     CUSTOMIZATION_GROUP_ALREADY_EXISTS: 'A group with this name already exists',
     CUSTOMIZATION_ALREADY_EXISTS: 'A customization with this name already exists',
-    CUSTOMIZATION_RECORD_NOT_FOUND: 'Customization Record not found'
+    CUSTOMIZATION_RECORD_NOT_FOUND: 'Customization Record not found',
+    CUSTOMIZATION_GROUP_MAPPING_NOT_EXISTS: 'Mapping does not exists'
 };
 
 export default MESSAGES;

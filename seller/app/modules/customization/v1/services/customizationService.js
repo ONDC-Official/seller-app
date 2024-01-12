@@ -2,6 +2,8 @@ import CustomizationGroup from '../../models/customizationGroupModel';
 import CustomizationGroupMapping from '../../models/customizationGroupMappingModel';
 import { DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
+import Product from '../../../product/models/product.model';
+
 
 class CustomizationService {
     /**
@@ -155,19 +157,89 @@ class CustomizationService {
             throw error;
         }
     }
+
+    groupBy(array, key) {
+        return Object.values(array.reduce((result, item) => {
+            const groupKey = item[key];
+      
+            // Create a new group if it doesn't exist
+            if (!result[groupKey]) {
+                result[groupKey] = { id: groupKey, groups: [] };
+            }
+      
+            // Add the current item to the group
+            result[groupKey].groups.push(item);
+      
+            return result;
+        }, {}));
+    }
     //TODO:Tirth add getOneGroup function also(Done)
     async getCustomizationGroupById(groupId, currentUser) {
         try {
+            let customizationData = [];
             const customizationGroup = await CustomizationGroup.findOne({
                 _id: groupId,
                 organization: currentUser.organization
             });
-            
+    
             if (!customizationGroup) {
                 throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_GROUP_NOT_EXISTS);
             }
+            // Fetch customizationGroupMapping datas using the provided groupId
+            const mappingData = await CustomizationGroupMapping.find({
+                parent: groupId,
+                organization: currentUser.organization
+            });
+
+            let mappings = this.groupBy(mappingData, 'customization');
     
-            return customizationGroup;
+            for (const mapping of mappings) {
+                let customizationObj = {};
+                // Access the customizationId property for each mapping
+                const customizationId = mapping.id;
+    
+                // Fetch customization details using the customizationId from mapping
+                const customization = await Product.findById(customizationId);
+    
+                if (!customization) {
+                    console.error(`[CustomizationService] [getCustomizationGroupById] Error - Customization not found: ${customizationId}`);
+                    continue;
+                }
+
+                let groupData = [];
+                let defaultValue;
+
+                for(const group of mapping.groups){
+                    const nextGroup = await CustomizationGroup.findOne({_id: group.child});
+                    let groupObj = {
+                        groupId: group.child,
+                        name: nextGroup.name
+                    };
+                    groupData.push(groupObj);
+                    defaultValue = group.default;
+                }
+
+                customizationObj = {
+                    customizationId: {
+                        id: customizationId,
+                        name: customization.productName
+                    },
+                    nextGroupId: groupData,
+                    default: defaultValue 
+                };
+                customizationData.push(customizationObj);
+            }
+
+            const response = {
+                name: customizationGroup.name,
+                inputType: customizationGroup.inputType,
+                minQuantity: customizationGroup.minQuantity,
+                maxQuantity: customizationGroup.maxQuantity,
+                seq: customizationGroup.seq,
+                customizations: customizationData
+            };
+    
+            return response;
         } catch (err) {
             console.log(`[CustomizationService] [getCustomizationGroupById] Error - ${currentUser.organization}`, err);
             throw err;
