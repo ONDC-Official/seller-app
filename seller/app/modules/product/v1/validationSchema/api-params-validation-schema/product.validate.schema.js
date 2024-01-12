@@ -49,6 +49,7 @@ module.exports = {
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
+                type: Joi.string(),
                 customizationGroupId: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
@@ -99,7 +100,9 @@ module.exports = {
                 commonOrGenericNameOfCommodity:Joi.string().allow(''),
                 monthYearOfManufacturePackingImport:Joi.string().allow(''),
                 importerFSSAILicenseNo:Joi.string().allow(''),
-                brandOwnerFSSAILicenseNo:Joi.string().allow('')
+                brandOwnerFSSAILicenseNo:Joi.string().allow(''),
+                customizationGroupId: Joi.string(),
+                type: Joi.string(),
             }),
             commonAttributesValues: Joi.object(),
             variantSpecificDetails: Joi.array().items(
@@ -172,7 +175,8 @@ module.exports = {
                 purchasePrice: Joi.number(),
                 barcode: Joi.number(),
                 images: Joi.array(),
-                customizationGroupId: Joi.string().allow('')
+                customizationGroupId: Joi.string().allow(''),
+                type: Joi.string(),
             }),
             commonAttributesValues: Joi.object(),
             customizationDetails: Joi.object({
@@ -222,7 +226,9 @@ module.exports = {
                 commonOrGenericNameOfCommodity:Joi.string().allow(''),
                 monthYearOfManufacturePackingImport:Joi.string().allow(''),
                 importerFSSAILicenseNo:Joi.string().allow(''),
-                brandOwnerFSSAILicenseNo:Joi.string().allow('')
+                brandOwnerFSSAILicenseNo:Joi.string().allow(''),
+                customizationGroupId: Joi.string().allow(''),
+                type: Joi.string()
             }),
             commonAttributesValues: Joi.object(),
             variantSpecificDetails: Joi.array().items(
