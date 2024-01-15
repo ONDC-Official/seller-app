@@ -1,6 +1,6 @@
 import Product from '../../models/product.model';
 import ProductAttribute from '../../models/productAttribute.model';
-import ProductCustomizationService from './productCustomization.service';
+import CustomizationService from '../../../customization/v1/services/customizationService';
 import VariantGroup from '../../models/variantGroup.model';
 import CustomMenu from '../../models/customMenu.model';
 import CustomMenuProduct from '../../models/customMenuProduct.model';
@@ -12,28 +12,11 @@ import MESSAGES from '../../../../lib/utils/messages';
 import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
-
-const productCustomizationService = new ProductCustomizationService();
+const customizationService = new CustomizationService();
  
 class ProductService {
     async create(data,currentUser) {
         try {
-            // let query = {};
-            // let customizations =  data.customizationDetails.customizations;
-            // let customizationGroups =  data.customizationDetails.customizationGroups;
-            // if(customizationGroups && customizationGroups.length  > 0){
-            //     for(const customizationGroup of customizationGroups){
-            //         if(customizationGroup.isMandatory){
-            //             if(customizationGroup.minQuantity !== 1){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-            //             }
-            //         }else{
-            //             if(customizationGroup.minQuantity !== 0){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-            //             }
-            //         }
-            //     }
-            // }
             const productExist = await Product.findOne({productName:data.productName,organization:currentUser.organization});
             if (productExist) {
                 throw new DuplicateRecordFoundError(MESSAGES.PRODUCT_ALREADY_EXISTS);
@@ -45,9 +28,6 @@ class ProductService {
             await product.save();
             if(data.commonAttributesValues){
                 await this.createAttribute({product:product._id,attributes:data.commonAttributesValues},currentUser);
-            }
-            if(data.customizationDetails){
-                await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
             }
             return {data:product};
         } catch (err) {
@@ -63,20 +43,6 @@ class ProductService {
             const commonAttributesValues = data.commonAttributesValues;
             const customizationDetails = data.customizationDetails;
             const variantSpecificDetails = data.variantSpecificDetails;
-            // let customizationGroups =  customizationDetails.customizationGroups;
-            // if(customizationGroups && customizationGroups.length  > 0){
-            //     for(const customizationGroup of customizationGroups){
-            //         if(customizationGroup.isMandatory){
-            //             if(customizationGroup.minQuantity !== 1){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-            //             }
-            //         }else{
-            //             if(customizationGroup.minQuantity !== 0){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-            //             }
-            //         }
-            //     }
-            // }
             let variantGroup = {};
             let variantType = [];
             let i = 0;
@@ -103,9 +69,6 @@ class ProductService {
                 let attributeObj = {
                     ...commonAttributesValues,...varientAttributes
                 };
-                if(customizationDetails){
-                    await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
-                }
                 await this.createAttribute({product:product._id,attributes:attributeObj},currentUser);
             }
 
@@ -290,7 +253,7 @@ class ProductService {
                             attributeData.push(attributeObj);
                         }
                         product.attributes = attributeData;
-                        product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+                        product.customizationDetails = await customizationService.mappdedData(product.customizationGroupId,{organization:product.organization}) ?? '';
                         productData.push(product);
                     }
                     // getting Menu for org -> 
@@ -366,7 +329,7 @@ class ProductService {
             let productData = {
                 commonDetails:product,
                 commonAttributesValues:attributeObj,
-                customizationDetails: await productCustomizationService.get(productId,currentUser),
+                customizationDetails: await customizationService.mappdedData(product.customizationGroupId,currentUser),
             };
             const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
             if(variantGroup){
@@ -408,7 +371,7 @@ class ProductService {
             let productData = {
                 commonDetails:product,
                 commonAttributesValues:attributeObj,
-                customizationDetails: await productCustomizationService.get(productId,{organization:product.organization}),
+                customizationDetails: await customizationService.mappdedData(product.customizationGroupId,{organization:product.organization}) ?? '',
             };
             const variantGroup = await VariantGroup.findOne({_id:product.variantGroup});
             if(variantGroup){
@@ -453,7 +416,7 @@ class ProductService {
                 attributeData.push(attributeObj);
             }
             product.attributes = attributeData;
-            product.customizationDetails = await productCustomizationService.getforApi(product._id) ?? '';
+            product.customizationDetails = await customizationService.mappdedData(product.customizationGroupId,{organization:product.organization});
             return product;
 
         } catch (err) {
@@ -487,20 +450,6 @@ class ProductService {
 
     async update(productId,data,currentUser) {
         try {
-            // let customizationGroups =  data.customizationDetails.customizationGroups;
-            // if(customizationGroups && customizationGroups.length  > 0){
-            //     for(const customizationGroup of customizationGroups){
-            //         if(customizationGroup.isMandatory){
-            //             if(customizationGroup.minQuantity !== 1){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_IS_MANDATORY);
-            //             }
-            //         }else{
-            //             if(customizationGroup.minQuantity !== 0){
-            //                 throw new BadRequestParameterError(MESSAGES.MIN_ISNOT_MANDATORY);
-            //             }
-            //         }
-            //     }
-            // }
             const commonDetails = data.commonDetails;
             const commonAttributesValues = data.commonAttributesValues;
             const product = await Product.findOne({_id:productId,organization:currentUser.organization}).lean();
@@ -509,10 +458,6 @@ class ProductService {
             if(commonAttributesValues){
                 await this.createAttribute({product:productId,attributes:commonAttributesValues},currentUser);
             } 
-            if(data.customizationDetails){
-                await productCustomizationService.create(product._id,data.customizationDetails,currentUser);
-            }
-
             this.notifyItemUpdate(productId);
 
             return {data:productObj};
