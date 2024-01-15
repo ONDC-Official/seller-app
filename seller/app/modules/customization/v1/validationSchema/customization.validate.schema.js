@@ -1,5 +1,4 @@
 import Joi from 'joi';
- //TODO:Tirth add proper validation keys this is old one 
 module.exports = {
     create: () => {
         return Joi.object({
@@ -7,6 +6,7 @@ module.exports = {
             inputType: Joi.string(),
             minQuantity: Joi.number(),
             maxQuantity: Joi.number(),
+            description:Joi.string().allow(''),
             seq: Joi.number(),
             customizations: Joi.array().items(
                 Joi.object({
@@ -25,6 +25,7 @@ module.exports = {
         return Joi.object({
             name: Joi.string(),
             inputType: Joi.string(),
+            description:Joi.string().allow(''),
             minQuantity: Joi.number(),
             maxQuantity: Joi.number(),
             seq: Joi.number(),

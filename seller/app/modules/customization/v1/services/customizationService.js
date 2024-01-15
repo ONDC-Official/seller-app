@@ -21,7 +21,8 @@ class CustomizationService {
 
                 if (!existingGroup) {
                     let customizationGroupObj = {
-                        name: customizationDetails.name,   //TODO:Tirth why dumping all obj, add only specific fields(Done)
+                        name: customizationDetails.name,
+                        description: customizationDetails.description,
                         inputType: customizationDetails.inputType,
                         minQuantity: customizationDetails.minQuantity,
                         maxQuantity: customizationDetails.maxQuantity,
@@ -222,7 +223,8 @@ class CustomizationService {
                     }
                     let groupObj = {
                         groupId: group.child,
-                        name: nextGroup.name
+                        name: nextGroup.name,
+                        description:nextGroup?.description ?? ''
                     };
                     groupData.push(groupObj);
                 }
@@ -230,7 +232,8 @@ class CustomizationService {
                 customizationObj = {
                     customizationId: {
                         id: customizationId,
-                        name: customization.productName
+                        name: customization.productName,
+                        description:customization?.description ?? ''
                     },
                     nextGroupId: groupData,
                     default: defaultValue 
@@ -241,6 +244,7 @@ class CustomizationService {
             const response = {
                 _id: customizationGroup._id,
                 name: customizationGroup.name,
+                description:customizationGroup?.description ?? '',
                 inputType: customizationGroup.inputType,
                 minQuantity: customizationGroup.minQuantity,
                 maxQuantity: customizationGroup.maxQuantity,
@@ -315,15 +319,8 @@ class CustomizationService {
         }
     
         // Start the traversal with the customizations from the input
-        parentIds = await this.traverseBackward(id, parentIds, currentUser);
-    
-        // Check if all customizations are unique
-        // const uniqueCustomizationIds = new Set(allCustomizationIds);
-        // if (uniqueCustomizationIds.size !== allCustomizationIds.length) {
-        //     throw new Error('Duplicate customizationIds found in the tree structure.');
-        // }
-    
-        return parentIds;
+        const response = await this.traverseBackward(id, parentIds, currentUser);    
+        return response;
     }
 
     async traverseBackward(groupId, parentIds=[], currentUser) {
@@ -340,15 +337,11 @@ class CustomizationService {
         let mappedData = await CustomizationGroupMapping.find({parent: groupId, /*organization: currentUser.organization*/});
 
         let mappings = this.groupBy(mappedData, 'customization');
-        console.log({mappings});
         for (const mapping of mappings ) {
-            console.log({mapping});
             if(mapping.groups && mapping.groups.length > 0){
                 for( const group of mapping.groups){
-                    console.log({group});
                     if(group.child){
                         parentIds.push(group.child);
-                        console.log({parentIds});
                         parentIds = await this.traverseBackward(group.child, parentIds, currentUser);
                     }
                 }
