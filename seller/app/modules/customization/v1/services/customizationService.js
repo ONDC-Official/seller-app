@@ -128,6 +128,8 @@ class CustomizationService {
                 throw new ConflictError(MESSAGES.CUSTOMIZATION_GROUP_CHILD);
             }
             const deletedCustomizationGroup = await CustomizationGroup.deleteOne({ _id: groupId, organization: currentUser.organization });
+            //removig associated child mapping
+            CustomizationGroup.deleteMany({ parent: groupId, organization: currentUser.organization });
             return { success: true, deletedCustomizationGroup };
         } catch (err) {
             console.log(`[CustomizationService] [deleteCustomizations] Error - ${currentUser.organization}`, err);
