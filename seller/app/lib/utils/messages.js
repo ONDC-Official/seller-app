@@ -37,7 +37,16 @@ const MESSAGES = {
     CUSTOMIZATION_GROUP_MAPPING_NOT_EXISTS: 'Mapping does not exists',
     CIRCULAR_REFERENCE_ERROR: 'Group id already exists',
     NEXT_GROUP_NOT_FOUND: 'Next Group is not present',
-    CUSTOMIZATION_GROUP_NOT_EXISTS: 'We couldn\'t find the customization group with given details',
+    DUPLICATE_ID_FOUND : 'Duplicate id is present',
+    CHILD_ID_ERROR: 'Child Id cannot be a Parent Id',
+    CIRCULAR_REFERENCE_DETECT: 'A parent detected in next groups !!',
+    UNDEFINED_CONFLICT_ERROR: 'Group Id has an undefined parent',
+    CUSTOMIZATION_GROUP_EXISTS_FOR_ONE_OR_MORE_PRODUCTS: 'Cannot delete customization group. It is used in one or more products.',
+    CUSTOMIZATION_GROUP_CHILD: 'Cannot delete customization group. It is a child in the mapping table.',
+    SEQ_CHILD_ERROR: 'Cannot update seq value to a value less than the seq value of a child group.',
+    SE_NEXTGROUP_ERROR: 'Cannot update seq value to a value greater than or equal to the seq value of the next group.'
+
+
 };
 
 export default MESSAGES;

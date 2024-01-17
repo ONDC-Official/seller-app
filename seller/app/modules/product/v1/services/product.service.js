@@ -155,6 +155,9 @@ class ProductService {
             }else if(params.stock && params.stock === 'outOfStock'){
                 query.quantity = {$lte:0};
             }
+            if (params.type && (params.type === 'item' || params.type === 'customization')) {
+                query.type = params.type;
+            }
             const data = await Product.find(query).sort({createdAt:-1}).skip(params.offset*params.limit).limit(params.limit);
             const count = await Product.count(query);
             let products={
