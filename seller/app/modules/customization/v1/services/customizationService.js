@@ -85,27 +85,55 @@ class CustomizationService {
                     organization: currentUser.organization,
                 });
                 if (existingGroup) {
-                    // Delete all mapping data associated with the existing group
-                    await CustomizationGroup.findOneAndUpdate(
-                        { _id: existingGroup._id },
-                        {
-                            ...existingGroup.toObject(),
-                            ...customizationDetails,
-                            updatedBy: currentUser.id,
-                        },
-                        { new: true }
-                    );
+                    // Check and handle sequence (seq) update
+                    if (customizationDetails.seq >= existingGroup.seq) {
+                        const nextGroupIds = customizationDetails.customizations.map((c) => c.nextGroupId.map((ng) => ng.groupId)).flat();
+                        //console.log("IDDDDSSS", nextGroupIds);
+                        const nextGroups = await CustomizationGroup.find({
+                            _id: { $in: nextGroupIds },
+                            organization: currentUser.organization,
+                            seq: { $lte: customizationDetails.seq },
+                        });
+
+                        //console.log("NEXTTTTT", nextGroupIds);
     
-                    await CustomizationGroupMapping.deleteMany({ parent: existingGroup._id });
-    
-                    for (const customizations of customizationDetails.customizations) {
-                        await this.mappingCustomizations(id, customizations);
+                        for (const nextGroup of nextGroups) {
+                            if (nextGroup) {
+                                throw new ConflictError(MESSAGES.SE_NEXTGROUP_ERROR);
+                            }
+                        }
                     }
-    
-                    return { success: true };
                 } else {
-                    throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_GROUP_NOT_EXISTS);
+                    // Check if the existing group is a parent in the group mapping table
+                    const isChild = await CustomizationGroupMapping.findOne({
+                        child: existingGroup._id,
+                    });
+
+                    // Throw a child error only if the existing group is a parent in the group mapping table
+                    if (isChild) {
+                        throw new ConflictError(MESSAGES.SEQ_CHILD_ERROR);
+                    }
                 }
+                // Delete all mapping data associated with the existing group
+                await CustomizationGroup.findOneAndUpdate(
+                    { _id: existingGroup._id },
+                    {
+                        ...existingGroup.toObject(),
+                        ...customizationDetails,
+                        updatedBy: currentUser.id,
+                    },
+                    { new: true }
+                );
+
+                await CustomizationGroupMapping.deleteMany({ parent: existingGroup._id });
+    
+                for (const customizations of customizationDetails.customizations) {
+                    await this.mappingCustomizations(id, customizations);
+                }
+    
+                return { success: true };
+            } else {
+                throw new NoRecordFoundError(MESSAGES.CUSTOMIZATION_GROUP_NOT_EXISTS);
             }
         } catch (err) {
             console.log(`[CustomizationService] [update] Error - ${currentUser.organization}`, err);

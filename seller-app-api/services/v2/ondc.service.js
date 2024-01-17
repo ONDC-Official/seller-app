@@ -50,51 +50,17 @@ class OndcService {
             //     totalProductValue += product.commonDetails.MRP
             // }
 
-            let itemType = ''
             let resultData;
             let totalPrice = 0
-            let itemData = {};
             for (let item of payload.message.order.items) {
-                let tags = item.tags;
-                if (tags && tags.length > 0) {
-                    let tagData = tags.find((tag) => {
-                        return tag.code === 'type'
-                    })
-                    let tagTypeData = tagData.list.find((tagType) => {
-                        return tagType.code === 'type'
-                    })
-                    itemType = tagTypeData.value;
-                    if (itemType === 'customization') {
-                        resultData = itemData?.customizationDetails?.customizations.find((row) => {
-                            return row._id === item.id
-                        })
-                        if (resultData) {
-
-                            if (resultData) {
-                                let price = resultData?.price * item.quantity.count
-                                totalPrice += price
-                            }
-                        }
-                    } else {
-                        resultData = await productService.getForOndc(item.id)
-                        if (Object.keys(resultData).length > 0) {
-
-                            if (resultData?.commonDetails) {
-                                let price = resultData?.commonDetails?.MRP * item.quantity.count
-                                totalPrice += price
-                            }
-
-                        }
-                    }
-
-                } else {
-                    resultData = await productService.getForOndc(item.id)
-                    if (Object.keys(resultData).length > 0) {
-
-                        if (resultData?.commonDetails) {
-                            let price = resultData?.commonDetails?.MRP * item.quantity.count
-                            totalPrice += price
-                        }
+                resultData = await productService.getForOndc(item.id)
+                if (Object.keys(resultData).length > 0) {
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
+                        totalProductValue += price
+                    }else{
+                        let price = resultData?.MRP * item.quantity.count
+                        totalProductValue += price
                     }
                 }
             }
