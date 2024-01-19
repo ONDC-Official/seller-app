@@ -11,8 +11,6 @@ const productSchema = new mongoose.Schema({
         enum: ['item', 'customization'],
         default: 'item'
     },
-    available: {type:Number},
-    maximum: {type:Number},
     productCode: {type:String},
     productName: {type:String,required:true},
     variantGroup : {type:String,ref:'VariantGroup'},

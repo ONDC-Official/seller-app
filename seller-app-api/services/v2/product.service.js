@@ -78,10 +78,10 @@ class ProductService {
 
             if(!category){
                 category = {
-                    "name":"Grocery",
-                    "domain":"ONDC:RET10"
+                    "name":"F&B",
+                    "domain":"ONDC:RET11"
                 };
-               return false;
+                requestQuery.context.domain = 'ONDC:RET11';
             }
             let httpRequest = new HttpRequest(
                 serverUrl,

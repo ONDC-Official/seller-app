@@ -286,8 +286,8 @@ module.exports = {
             UOM: Joi.string(),//units of measure
             UOMValue : Joi.string().allow(''),
             MRP: Joi.number(),
-            available: Joi.number(),
-            maximum: Joi.number(),
+            quantity: Joi.number(),
+            maxAllowedQty: Joi.number(),
         });
     },
 
@@ -299,8 +299,8 @@ module.exports = {
             UOM: Joi.string(),//units of measure
             UOMValue : Joi.string().allow(''),
             MRP: Joi.number(),
-            available: Joi.number(),
-            maximum: Joi.number(),
+            quantity: Joi.number(),
+            maxAllowedQty: Joi.number(),
         });
     },
 };
