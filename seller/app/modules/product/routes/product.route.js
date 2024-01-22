@@ -102,15 +102,42 @@ router.get('/v1/product/categories',
     productController.categoryList,
 );
 
-router.get('/v1/product/:productId/customizations',
+// router.get('/v1/product/:productId/customizations',
+//     authentication.middleware(),
+//     productController.getCustomizations,
+// );
+
+// router.post('/v1/product/:productId/customizations',
+//     authentication.middleware(),
+//     apiParamsValidator.middleware({ schema: productSchema.createCustomization() }),
+//     productController.storeCustomizations,
+// );
+
+router.post('/v1/product/customization',//TODO:Tirth - add joi validation(Done)
     authentication.middleware(),
-    productController.getCustomizations,
+    apiParamsValidator.middleware({ schema: productSchema.createCust() }),
+    productController.createCustomization
+);
+//TODO:TIRTH
+router.get('/v1/product/customizations',
+    authentication.middleware(),
+    productController.getCustomization
 );
 
-router.post('/v1/product/:productId/customizations',
+router.put('/v1/product/customization/:customizationId',//TODO:TIRTH - add id
     authentication.middleware(),
-    apiParamsValidator.middleware({ schema: productSchema.createCustomization() }),
-    productController.storeCustomizations,
+    apiParamsValidator.middleware({ schema: productSchema.updateCust() }),
+    productController.updateCustomization
+);
+
+router.delete('/v1/product/customization/:customizationId',
+    authentication.middleware(),
+    productController.deleteCustomization
+);
+
+router.get('/v1/product/customization/:customizationId',
+    authentication.middleware(),
+    productController.getCustomizationById
 );
 
 module.exports = router;
