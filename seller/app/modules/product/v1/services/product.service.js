@@ -583,16 +583,14 @@ class ProductService {
 
     //TODO:Tirth - add filter on name and proper contion to find customization ,handle pagination(Done)
 
-    async getCustomization(params) {
+    async getCustomization(params,currentUser) {
         try {
             let query = {
-                type : 'customization'
+                type : 'customization',
+                organization : currentUser.organization
             };
             if (params.name) {
                 query.productName = { $regex: params.name, $options: 'i' };
-            }
-            if (params.organization) {
-                query.organization = params.organization;
             }
     
             const data = await Product.find(query)
