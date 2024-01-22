@@ -78,10 +78,10 @@ class ProductService {
 
             if(!category){
                 category = {
-                    "name":"F&B",
-                    "domain":"ONDC:RET11"
+                    "name":"Grocery",
+                    "domain":"ONDC:RET10"
                 };
-                requestQuery.context.domain = 'ONDC:RET11';
+               return false;
             }
             let httpRequest = new HttpRequest(
                 serverUrl,
@@ -238,7 +238,7 @@ class ProductService {
         //get search criteria
         const items = requestQuery.message.order.items
         const logisticData = requestQuery?.logistics_on_search ?? []
-        let git  = true;
+        let isQtyAvailable = true;
         let isValidOrg = true;
         let isValidItem = true;
         let isServiceable = true;
@@ -266,7 +266,7 @@ class ProductService {
                         })
                         if(resultData){
                             if(resultData.maximum < item.quantity.count){
-                                git  = false
+                                isQtyAvailable = false
                             }
                             let qouteItemsDetails = {
                                 "@ondc/org/item_id": item.id,
@@ -2048,7 +2048,7 @@ class ProductService {
                             "count": item.quantity.count
                         },
                         "title": itemData?.productName,
-                        "@ondc/org/title_type": "item",
+                        "@ondc/org/title_type": itemData?.type ?? 'item',
                         "price":
                             {
                                 "currency":"INR",
@@ -2375,7 +2375,7 @@ class ProductService {
                     }
                 }else{
                     if(itemData.maxAllowedQty < item.quantity.count){
-                        git  = false
+                        isQtyAvailable  = false
                     }
                 }
                 qouteItemsDetails = {
@@ -2384,7 +2384,7 @@ class ProductService {
                         "count": item.quantity.count
                     },
                     "title": itemData?.productName,
-                    "@ondc/org/title_type": "item",
+                    "@ondc/org/title_type": itemData?.type ?? 'item',
                     "price":
                     {
                         "currency": "INR",
@@ -2529,7 +2529,7 @@ class ProductService {
             let detailedQoute = []
             let totalPrice = 0
 
-            let git =true
+            let isQtyAvailable=true
             let isServiceable=true
 
             let logisticProvider = {}
@@ -2587,7 +2587,7 @@ class ProductService {
                         customization = true;
                     }
                     if (itemData.maximum < item.quantity.count) {
-                        git  = false
+                        isQtyAvailable  = false
                     }
                     console.log({itemData})
                     let qouteItemsDetails = {
@@ -2596,7 +2596,7 @@ class ProductService {
                             "count": item.quantity.count
                         },
                         "title": itemData?.name,
-                        "@ondc/org/title_type": itemData?.type,
+                        "@ondc/org/title_type": itemData?.type ?? 'item',
                         "price":
                         {
                             "currency": "INR",
@@ -2630,10 +2630,15 @@ class ProductService {
                 } else {
                     isValidItem = false;
                 }
-                if (isServiceable) {
-                    item.fulfillment_id = logisticProvider.message.catalog["bpp/providers"][0].items[0].fulfillment_id //TODO: revisit for item level status
-                    deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element) => { return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE });
-                } else {
+                if(isServiceable){
+
+                    let fulfillment  =  logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === 'Delivery'});
+                    deliveryType  =  logisticProvider.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id});
+                    // deliveryType = logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === org.providerDetail.storeDetails.logisticsDeliveryType});
+
+                    item.fulfillment_id = fulfillment.id //TODO: revisit for item level status
+
+                }else{
                     item.fulfillment_id = '1'
                 }
                 delete item.price;
@@ -2731,7 +2736,7 @@ class ProductService {
                 totalPrice: totalPriceObj,
                 detailedQoute: detailedQoute,
                 context: selectData.context,
-                git ,
+                isQtyAvailable,
                 isServiceable,
                 isValidItem,
                 isValidOrg

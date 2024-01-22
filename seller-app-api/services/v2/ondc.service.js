@@ -112,7 +112,7 @@ class OndcService {
                             }
                         },
                         "fulfillment": {
-                            "type": "Prepaid",
+                            "type": "Delivery",
                             "start": {
                                 "location": storeLocationEnd
                             },
@@ -324,8 +324,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildSelectRequest(logisticsMessageId, selectMessageId)
-
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -335,10 +333,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            // }, 12000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildSelectRequest(logisticsMessageId, selectMessageId)
+            }, 12000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -377,7 +375,6 @@ class OndcService {
     async buildSearchRequest(searchRequest, searchMessageId) {
 
         try {
-
             // let org = await productService.getOrgForOndc(payload.message.order.provider.id);
             let searchResponse = await productService.search(searchRequest, searchMessageId)
             if (searchResponse.length > 0) {
@@ -840,7 +837,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildInitRequest(logisticsMessageId, selectMessageId)
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
                 return e
@@ -849,10 +845,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildInitRequest(logisticsMessageId, selectMessageId)
-            // }, 5000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildInitRequest(logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1269,7 +1265,6 @@ class OndcService {
                 );
 
                 await httpRequest.send();
-                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -1279,10 +1274,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1426,8 +1421,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildTrackRequest(logisticsMessageId, selectMessageId)
-
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -1437,10 +1430,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildTrackRequest(logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildTrackRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2161,8 +2154,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildOrderStatusRequest(orderData, logisticsMessageId, selectMessageId)
-
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -2172,10 +2163,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildOrderStatusRequest(orderData, logisticsMessageId, selectMessageId)
-            // }, 5000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildOrderStatusRequest(orderData, logisticsMessageId, selectMessageId)
+            }, 5000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2252,8 +2243,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildCancelRequest(logisticsMessageId, selectMessageId)
-
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -2263,10 +2252,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildCancelRequest(logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildCancelRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2291,7 +2280,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId)
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -2301,10 +2289,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, cancelRequest);
-            //     this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, cancelRequest);
+                this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2653,8 +2641,6 @@ class OndcService {
 
 
                 await httpRequest.send();
-                this.buildSupportRequest(logisticsMessageId, selectMessageId)
-
 
             } catch (e) {
                 logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -2664,10 +2650,10 @@ class OndcService {
             //2. wait async to fetch logistics responses
 
             //async post request
-            // setTimeout(() => {
-            //     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-            //     this.buildSupportRequest(logisticsMessageId, selectMessageId)
-            // }, 10000); //TODO move to config
+            setTimeout(() => {
+                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                this.buildSupportRequest(logisticsMessageId, selectMessageId)
+            }, 10000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
