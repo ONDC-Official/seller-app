@@ -53,7 +53,9 @@ class CustomizationService {
     //TODO:Tirth add filter on name(Done)
     async getCustomizationGroups(params, currentUser) {
         try {
-            let query = {};
+            let query = {
+                organization:currentUser.organization
+            };
             
             if (params.name) {
                 query.name = { $regex: params.name, $options: 'i' }; // Case-insensitive name search
