@@ -49,17 +49,51 @@ class OndcService {
             //     totalProductValue += product.commonDetails.MRP
             // }
 
+            let itemType = ''
             let resultData;
             let totalPrice = 0
+            let itemData = {};
             for (let item of payload.message.order.items) {
-                resultData = await productService.getForOndc(item.id)
-                if (Object.keys(resultData).length > 0) {
-                    if (resultData?.commonDetails) {
-                        let price = resultData?.commonDetails?.MRP * item.quantity.count
-                        totalProductValue += price
-                    }else{
-                        let price = resultData?.MRP * item.quantity.count
-                        totalProductValue += price
+                let tags = item.tags;
+                if (tags && tags.length > 0) {
+                    let tagData = tags.find((tag) => {
+                        return tag.code === 'type'
+                    })
+                    let tagTypeData = tagData.list.find((tagType) => {
+                        return tagType.code === 'type'
+                    })
+                    itemType = tagTypeData.value;
+                    if (itemType === 'customization') {
+                        resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                            return row._id === item.id
+                        })
+                        if (resultData) {
+
+                            if (resultData) {
+                                let price = resultData?.price * item.quantity.count
+                                totalPrice += price
+                            }
+                        }
+                    } else {
+                        resultData = await productService.getForOndc(item.id)
+                        if (Object.keys(resultData).length > 0) {
+
+                            if (resultData?.commonDetails) {
+                                let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                totalPrice += price
+                            }
+
+                        }
+                    }
+
+                } else {
+                    resultData = await productService.getForOndc(item.id)
+                    if (Object.keys(resultData).length > 0) {
+
+                        if (resultData?.commonDetails) {
+                            let price = resultData?.commonDetails?.MRP * item.quantity.count
+                            totalPrice += price
+                        }
                     }
                 }
             }
@@ -1052,7 +1086,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": logistics.context.city,
                     "country": "IND",
-                    "timestamp": contextTimestamp
+                    "timestamp": contextTimestamp,
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -1381,7 +1416,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -1514,7 +1550,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -1587,7 +1624,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -1690,7 +1728,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order_id": order.orderId,
@@ -1743,7 +1782,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -2203,7 +2243,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -2601,7 +2642,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {

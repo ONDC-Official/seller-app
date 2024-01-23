@@ -2019,24 +2019,134 @@ class ProductService {
 
         let updatedBreakup = []
         for (let item of items) {
+            let tags = item.tags;
+            if(tags && tags.length > 0){
+                let tagData = tags.find((tag)=>{return tag.code === 'type'})
+                let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                itemType = tagTypeData.value;
+                if(itemType === 'customization'){
+                    resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                        return row._id === item.id
+                    })
+                    if(resultData){
+
+                        if (resultData) {
+                            let price = resultData?.price * item.quantity.count
+                            totalPrice += price
+                        }
+
+                        if(resultData.maximum < item.quantity.count){
+                            isQtyAvailable = false
+                        }
+                        let qouteItemsDetails = {
+                            "@ondc/org/item_id": item.id,
+                            "@ondc/org/item_quantity": {
+                                "count": item.quantity.count
+                            },
+                            "title": resultData?.name,
+                            "@ondc/org/title_type": "item",
+                            "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.price * item.quantity.count}`
+                                },
+                            "item":
+                                {
+                                    "quantity":
+                                        {
+                                            "available":
+                                                {
+                                                    "count": `${resultData?.available}`
+                                                },
+                                            "maximum":
+                                                {
+                                                    "count": `${resultData?.available}`
+                                                }
+                                        },
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.price}`
+                                        },
+                                    "tags":item.tags
+                                }
+
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                        }
+                        detailedQoute.push(qouteItemsDetails)
+                    }else{
+                        isValidItem = false;
+                    }
+                }else{
+                    resultData = await this.getForOndc(item.id)
+                    if(Object.keys(resultData).length > 0){
+                        if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                            isQtyAvailable = false
+                        }
+                        itemData = resultData;
+                        if (resultData?.commonDetails) {
+                            let price = resultData?.commonDetails?.MRP * item.quantity.count
+                            totalPrice += price
+                        }
+
+                        //TODO: check if quantity is available
+
+                        let qouteItemsDetails = {
+                            "@ondc/org/item_id": item.id,
+                            "@ondc/org/item_quantity": {
+                                "count": item.quantity.count
+                            },
+                            "title": resultData?.commonDetails?.productName,
+                            "@ondc/org/title_type": "item",
+                            "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                                },
+                            "item":
+                                {
+                                    "quantity":
+                                        {
+                                            "available":
+                                                {
+                                                    "count": `${resultData?.commonDetails?.quantity}`
+                                                },
+                                            "maximum":
+                                                {
+                                                    "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                                }
+                                        },
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.commonDetails?.MRP}`
+                                        },
+                                    "tags":item.tags
+                                }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                        }
+                        detailedQoute.push(qouteItemsDetails)
+                    }else{
+                        isValidItem = false;
+                    }
+                }
+                item.fulfillment_id = item.fulfillment_id //TODO static for now
+                delete item.location_id
+                item.quantity
+                qouteItems.push(item)
+            }else{
                 resultData = await this.getForOndc(item.id)
                 if(Object.keys(resultData).length > 0){
-                    const itemData = resultData.commonDetails;
-                    let customization = false;
-                    if(itemData?.type === 'customization'){
-                        customization = true;
+                    if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                        isQtyAvailable = false
                     }
-                    if(customization){
-                        if(itemData.maximum < item.quantity.count){
-                            isQtyAvailable = false
-                        }
-                    }else{
-                        if(itemData.maxAllowedQty < item.quantity.count){
-                            isQtyAvailable = false
-                        }
-                    }
-                    if (itemData) {
-                        let price = itemData?.MRP * item.quantity.count
+                    itemData = resultData;
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
                         totalPrice += price
                     }
 
@@ -2047,43 +2157,44 @@ class ProductService {
                         "@ondc/org/item_quantity": {
                             "count": item.quantity.count
                         },
-                        "title": itemData?.productName,
-                        "@ondc/org/title_type": itemData?.type ?? 'item',
+                        "title": resultData?.commonDetails?.productName,
+                        "@ondc/org/title_type": "item",
                         "price":
                             {
                                 "currency":"INR",
-                                "value":`${itemData?.MRP * item.quantity.count}`
+                                "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
                             },
                         "item":
                             {
                                 "quantity":
                                     {
                                         "available":
-                                        {
-                                            "count": `${customization ? itemData?.available : itemData?.quantity}`
-                                        },
+                                            {
+                                                "count": `${resultData?.commonDetails?.quantity}`
+                                            },
                                         "maximum":
-                                        {
-                                            "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
-                                        }
+                                            {
+                                                "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                            }
                                     },
                                 "price":
                                     {
                                         "currency":"INR",
-                                        "value":`${itemData?.MRP}`
-                                    },
-                                "tags":item.tags
+                                        "value":`${resultData?.commonDetails?.MRP}`
+                                    }
                             }
                     }
                     if(item?.parent_item_id){
                         qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
+                    item.fulfillment_id = item.fulfillment_id //TODO static for now
+                    delete item.location_id
+                    qouteItems.push(item)
                     detailedQoute.push(qouteItemsDetails)
                 }else{
                     isValidItem = false;
                 }
-
-            item.fulfillment_id = item.fulfillment_id //TODO static for now
+            }
         }
 
         //confirmRequest.message.order.items = qouteItems;
@@ -2362,67 +2473,150 @@ class ProductService {
         }//TODO: need to map all items in the catalog to find out delivery charges
 
         for (let item of items) {
-            resultData = await this.getForOndc(item.id)
-            if (resultData?.commonDetails) {
-                const itemData = resultData.commonDetails;
-                let customization = false;
-                if(itemData?.type === 'customization'){
-                    customization = true;
-                }
-                if(customization){
-                    if(itemData.maximum < item.quantity.count){
-                        isQtyAvailable = false
+            let tags = item.tags;
+            if(tags && tags.length >0){
+                let tagData = tags.find((tag)=>{return tag.code === 'type'})
+                let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                itemType = tagTypeData.value;
+                if(itemType === 'customization'){
+                    resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                        return row._id === item.id
+                    })
+                    if(resultData){
+                        console.log({custqty:resultData.maximum})
+                        if(resultData.maximum < item.quantity.count){
+                            isQtyAvailable = false
+                        }
+
+                        if (resultData) {
+                            let price = resultData?.price * item.quantity.count
+                            totalPrice += price
+                        }
+
+                        let qouteItemsDetails = {
+                            "@ondc/org/item_id": item.id,
+                            "@ondc/org/item_quantity": {
+                                "count": item.quantity.count
+                            },
+                            "title": resultData?.name,
+                            "@ondc/org/title_type": "item",
+                            "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.price * item.quantity.count}`
+                                },
+                            "item":
+                                {
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.price}`
+                                        },
+                                    "tags":item.tags
+                                }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                        }
+                        detailedQoute.push(qouteItemsDetails)
+                    }else{
+                        isValidItem = false;
                     }
                 }else{
-                    if(itemData.maxAllowedQty < item.quantity.count){
-                        isQtyAvailable  = false
-                    }
-                }
-                qouteItemsDetails = {
-                    "@ondc/org/item_id": item.id,
-                    "@ondc/org/item_quantity": {
-                        "count": item.quantity.count
-                    },
-                    "title": itemData?.productName,
-                    "@ondc/org/title_type": itemData?.type ?? 'item',
-                    "price":
-                    {
-                        "currency": "INR",
-                        "value": `${itemData?.MRP}`
-                    },
-                    "item":
-                    {
-                        "quantity":
-                        {
-                            "available":
-                            {
-                                "count": `${customization ? itemData?.available : itemData?.quantity}`
+                    resultData = await this.getForOndc(item.id)
+                    if(Object.keys(resultData).length > 0){
+
+                        if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                            isQtyAvailable = false
+                        }
+                        itemData = resultData;
+                        if (resultData?.commonDetails) {
+                            let price = resultData?.commonDetails?.MRP * item.quantity.count
+                            totalPrice += price
+                        }
+
+                        //TODO: check if quantity is available
+
+                        let qouteItemsDetails = {
+                            "@ondc/org/item_id": item.id,
+                            "@ondc/org/item_quantity": {
+                                "count": item.quantity.count
                             },
-                            "maximum":
-                            {
-                                "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
-                            }
-                        },
-                        "price":
-                        {
-                            "currency": "INR",
-                            "value": `${itemData?.MRP}`
-                        },
-                        "tags": item.tags
+                            "title": resultData?.commonDetails?.productName,
+                            "@ondc/org/title_type": "item",
+                            "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                                },
+                            "item":
+                                {
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.commonDetails?.MRP}`
+                                        },
+                                    "tags":item.tags
+                                }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                        }
+                        detailedQoute.push(qouteItemsDetails)
+                    }else{
+                        isValidItem = false;
                     }
                 }
-                if (item?.parent_item_id) {
-                    qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
-                }
-                detailedQoute.push(qouteItemsDetails)
-            } else {
-                isValidItem = false;
             }
-        item.fulfillment_id = item.fulfillment_id
-        delete item.price
-        qouteItems.push(item)
-        detailedQoute.push(qouteItemsDetails)
-    }
+            else{
+                resultData = await this.getForOndc(item.id)
+                if(Object.keys(resultData).length > 0){
+                    if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                        isQtyAvailable = false
+                    }
+                    itemData = resultData;
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
+                        totalPrice += price
+                    }
+
+                    //TODO: check if quantity is available
+
+                    let qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
+                        },
+                        "title": resultData?.commonDetails?.productName,
+                        "@ondc/org/title_type": "item",
+                        "price":
+                            {
+                                "currency":"INR",
+                                "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                            },
+                        "item":
+                            {
+
+                                "price":
+                                    {
+                                        "currency":"INR",
+                                        "value":`${resultData?.commonDetails?.MRP}`
+                                    }
+                            }
+                    }
+                    if(item?.parent_item_id){
+                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                    }
+                    detailedQoute.push(qouteItemsDetails)
+                }else{
+                    isValidItem = false;
+                }
+            }
+            item.fulfillment_id =  item.fulfillment_id
+            delete item.location_id
+            item.quantity
+            qouteItems.push(item)
+        }
 
 
         totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
@@ -2579,56 +2773,235 @@ class ProductService {
                 isValidOrg = false;
             }
             for (let item of items) {
-                resultData = await this.getForOndc(item.id)
-                if (resultData?.commonDetails) {
-                    const itemData = resultData.commonDetails;
-                    let customization = false;
-                    if(itemData?.type === 'customization'){
-                        customization = true;
-                    }
-                    if (itemData.maximum < item.quantity.count) {
-                        isQtyAvailable  = false
-                    }
-                    console.log({itemData})
-                    let qouteItemsDetails = {
-                        "@ondc/org/item_id": item.id,
-                        "@ondc/org/item_quantity": {
-                            "count": item.quantity.count
-                        },
-                        "title": itemData?.name,
-                        "@ondc/org/title_type": itemData?.type ?? 'item',
-                        "price":
-                        {
-                            "currency": "INR",
-                            "value": `${itemData?.MRP}`
-                        },
-                        "item":
-                        {
-                            "quantity":
-                            {
-                                "available":
-                                {
-                                    "count": `${customization ? itemData?.available : itemData?.quantity}`
-                                },
-                                "maximum":
-                                {
-                                    "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
+                let tags = item.tags;
+                if(tags && tags.length >0){
+                    let tagData = tags.find((tag)=>{return tag.code === 'type'})
+                    if(tagData?.list && tagData?.list.length >0){
+                        let tagTypeData = tagData.list.find((tagType)=>{return tagType.code === 'type'})
+                        itemType = tagTypeData.value;
+                        if(itemType === 'customization'){
+                            console.log("customisation found --->",item.id)
+                            console.log("customisation found --itemData->",itemData)
+
+                            resultData = itemData?.customizationDetails?.customizations.find((row) => {
+                                return row._id === item.id
+                            })
+                            console.log("customisation found --itemData-resultData>",resultData)
+                            if (resultData) {
+                                let price = resultData?.price * item.quantity.count
+                                totalPrice += price
+                            }
+
+                            if(resultData){
+                                if(resultData.maximum < item.quantity.count){
+                                    isQtyAvailable = false
                                 }
-                            },
-                            "price":
-                            {
-                                "currency": "INR",
-                                "value": `${itemData?.MRP}`
-                            },
-                            "tags": item.tags
+                                let qouteItemsDetails = {
+                                    "@ondc/org/item_id": item.id,
+                                    "@ondc/org/item_quantity": {
+                                        "count": item.quantity.count
+                                    },
+                                    "title": resultData?.name,
+                                    "@ondc/org/title_type": "item",
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.price * item.quantity.count}`
+                                        },
+                                    "item":
+                                        {
+                                            "quantity":
+                                                {
+                                                    "available":
+                                                        {
+                                                            "count": `${resultData?.available}`
+                                                        },
+                                                    "maximum":
+                                                        {
+                                                            "count": `${resultData?.available}`
+                                                        }
+                                                },
+                                            "price":
+                                                {
+                                                    "currency":"INR",
+                                                    "value":`${resultData?.price}`
+                                                },
+                                            "tags":item.tags
+                                        }
+                                }
+                                if(item?.parent_item_id){
+                                    qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                                }
+                                detailedQoute.push(qouteItemsDetails)
+                            }else{
+                                isValidItem = false;
+                            }
+                        }else{
+                            resultData = await this.getForOndc(item.id)
+                            if(Object.keys(resultData).length > 0){
+                                if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                                    isQtyAvailable = false
+                                }
+                                itemData = resultData;
+                                if (resultData?.commonDetails) {
+                                    let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                    totalPrice += price
+                                }
+
+                                //TODO: check if quantity is available
+
+                                let qouteItemsDetails = {
+                                    "@ondc/org/item_id": item.id,
+                                    "@ondc/org/item_quantity": {
+                                        "count": item.quantity.count
+                                    },
+                                    "title": resultData?.commonDetails?.productName,
+                                    "@ondc/org/title_type": "item",
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                                        },
+                                    "item":
+                                        {
+                                            "quantity":
+                                                {
+                                                    "available":
+                                                        {
+                                                            "count": `${resultData?.commonDetails?.quantity}`
+                                                        },
+                                                    "maximum":
+                                                        {
+                                                            "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                                        }
+                                                },
+                                            "price":
+                                                {
+                                                    "currency":"INR",
+                                                    "value":`${resultData?.commonDetails?.MRP}`
+                                                },
+                                            "tags":item.tags
+                                        }
+                                }
+                                if(item?.parent_item_id){
+                                    qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                                }
+                                detailedQoute.push(qouteItemsDetails)
+                            }else{
+                                console.log({item:item.id})
+                                isValidItem = false;
+                            }
                         }
                     }
-                    if (item?.parent_item_id) {
-                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                    else{
+                        resultData = await this.getForOndc(item.id)
+                        if(Object.keys(resultData).length > 0){
+                            if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                                isQtyAvailable = false
+                            }
+                            itemData = resultData;
+                            if (resultData?.commonDetails) {
+                                let price = resultData?.commonDetails?.MRP * item.quantity.count
+                                totalPrice += price
+                            }
+
+                            //TODO: check if quantity is available
+
+                            let qouteItemsDetails = {
+                                "@ondc/org/item_id": item.id,
+                                "@ondc/org/item_quantity": {
+                                    "count": item.quantity.count
+                                },
+                                "title": resultData?.commonDetails?.productName,
+                                "@ondc/org/title_type": "item",
+                                "price":
+                                    {
+                                        "currency":"INR",
+                                        "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                                    },
+                                "item":
+                                    {
+                                        "quantity":
+                                            {
+                                                "available":
+                                                    {
+                                                        "count": `${resultData?.commonDetails?.quantity}`
+                                                    },
+                                                "maximum":
+                                                    {
+                                                        "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                                    }
+                                            },
+                                        "price":
+                                            {
+                                                "currency":"INR",
+                                                "value":`${resultData?.commonDetails?.MRP}`
+                                            }
+                                    }
+                            }
+                            if(item?.parent_item_id){
+                                qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                            }
+                            detailedQoute.push(qouteItemsDetails)
+                        }else{
+                            console.log({item:item.id})
+                            isValidItem = false;
+                        }
                     }
-                    detailedQoute.push(qouteItemsDetails)
-                } else {
-                    isValidItem = false;
+                }else{
+                    resultData = await this.getForOndc(item.id)
+                    if(Object.keys(resultData).length > 0){
+                        if(resultData?.commonDetails.maxAllowedQty < item.quantity.count){
+                            isQtyAvailable = false
+                        }
+                        itemData = resultData;
+                        if (resultData?.commonDetails) {
+                            let price = resultData?.commonDetails?.MRP * item.quantity.count
+                            totalPrice += price
+                        }
+
+                        //TODO: check if quantity is available
+
+                        let qouteItemsDetails = {
+                            "@ondc/org/item_id": item.id,
+                            "@ondc/org/item_quantity": {
+                                "count": item.quantity.count
+                            },
+                            "title": resultData?.commonDetails?.productName,
+                            "@ondc/org/title_type": "item",
+                            "price":
+                                {
+                                    "currency":"INR",
+                                    "value":`${resultData?.commonDetails?.MRP * item.quantity.count}`
+                                },
+                            "item":
+                                {
+                                    "quantity":
+                                        {
+                                            "available":
+                                                {
+                                                    "count": `${resultData?.commonDetails?.quantity}`
+                                                },
+                                            "maximum":
+                                                {
+                                                    "count": `${resultData?.commonDetails?.maxAllowedQty}`
+                                                }
+                                        },
+                                    "price":
+                                        {
+                                            "currency":"INR",
+                                            "value":`${resultData?.commonDetails?.MRP}`
+                                        }
+                                }
+                        }
+                        if(item?.parent_item_id){
+                            qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                        }
+                        detailedQoute.push(qouteItemsDetails)
+                    }else{
+                        isValidItem = false;
+                        console.log({item:item.id})
+                    }
                 }
                 if(isServiceable){
 
