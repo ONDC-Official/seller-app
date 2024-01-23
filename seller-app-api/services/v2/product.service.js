@@ -2060,11 +2060,11 @@ class ProductService {
                                 {
                                     "available":
                                     {
-                                        "count": `${customization ? itemData?.available : itemData?.quantity}`
+                                        "count": `${itemData?.quantity}`
                                     },
                                     "maximum":
                                     {
-                                        "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
+                                        "count": `${itemData?.maxAllowedQty}`
                                     }
                                 },
                             "price":
@@ -2396,11 +2396,11 @@ class ProductService {
                         {
                             "available":
                             {
-                                "count": `${customization ? itemData?.available : itemData?.quantity}`
+                                "count": `${itemData?.quantity}`
                             },
                             "maximum":
                             {
-                                "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
+                                "count": `${itemData?.maxAllowedQty}`
                             }
                         },
                         "price":
@@ -2607,11 +2607,11 @@ class ProductService {
                             {
                                 "available":
                                 {
-                                    "count": `${customization ? itemData?.available : itemData?.quantity}`
+                                    "count": `${itemData?.quantity}`
                                 },
                                 "maximum":
                                 {
-                                    "count": `${customization ? itemData?.maximum : itemData?.maxAllowedQty}`
+                                    "count": `${itemData?.maxAllowedQty}`
                                 }
                             },
                             "price":
