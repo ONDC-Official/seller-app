@@ -2312,27 +2312,28 @@ class ProductService {
 
     async productInit(requestQuery) {
 
-        //get search criteria
-        // const items = requestQuery.message.order.items
+        try{
+            //get search criteria
+            // const items = requestQuery.message.order.items
 
-        const initData = JSON.parse(JSON.stringify(requestQuery.retail_init[0]))//select first select request
-        const items = initData.message.order.items
-        const logisticData = requestQuery.logistics_on_init[0]
+            const initData = JSON.parse(JSON.stringify(requestQuery.retail_init[0]))//select first select request
+            const items = initData.message.order.items
+            const logisticData = requestQuery.logistics_on_init[0]
 
-        let qouteItems = []
-        let detailedQoute = []
-        let totalPrice = 0
-        let isQtyAvailable = true;
-        let isValidOrg = true;
-        let isValidItem = true;
-        let isServiceable = true;
-        let itemType= ''
-        let resultData;
-        let itemData ={};
+            let qouteItems = []
+            let detailedQoute = []
+            let totalPrice = 0
+            let isQtyAvailable = true;
+            let isValidOrg = true;
+            let isValidItem = true;
+            let isServiceable = true;
+            let itemType= ''
+            let resultData;
+            let itemData ={};
 
-        let org= await this.getOrgForOndc(initData.message.order.provider.id);
+            let org= await this.getOrgForOndc(initData.message.order.provider.id);
 
-        let paymentDetails ={
+            let paymentDetails ={
                 "@ondc/org/buyer_app_finder_fee_type": "Percent", //TODO: for transaction id keep record to track this details
                 "@ondc/org/buyer_app_finder_fee_amount": "3.0",
                 "@ondc/org/settlement_details": [
@@ -2348,168 +2349,173 @@ class ProductService {
                     }
                 ]
 
-        }
-
-        //select logistic based on criteria-> for now first one will be picked up
-        let deliveryCharges = {
-            "title": "Delivery charges",
-            "@ondc/org/title_type": "delivery",
-            "@ondc/org/item_id": items[0].fulfillment_id,
-            "price": {
-                "currency": '' + logisticData.message.order.quote.price.currency,
-                "value": '' + logisticData.message.order.quote.price.value
             }
-        }//TODO: need to map all items in the catalog to find out delivery charges
 
-        for (let item of items) {
-            resultData = await this.getForOndc(item.id)
-            if (resultData?.commonDetails) {
-                const itemData = resultData.commonDetails;
-                let customization = false;
-                if(itemData?.type === 'customization'){
-                    customization = true;
+            //select logistic based on criteria-> for now first one will be picked up
+            let deliveryCharges = {
+                "title": "Delivery charges",
+                "@ondc/org/title_type": "delivery",
+                "@ondc/org/item_id": items[0].fulfillment_id,
+                "price": {
+                    "currency": '' + logisticData.message.order.quote.price.currency,
+                    "value": '' + logisticData.message.order.quote.price.value
                 }
-                if(customization){
-                    if(itemData.maximum < item.quantity.count){
-                        isQtyAvailable = false
+            }//TODO: need to map all items in the catalog to find out delivery charges
+
+            let qouteItemsDetails;
+            for (let item of items) {
+                resultData = await this.getForOndc(item.id)
+                if (resultData?.commonDetails) {
+                    const itemData = resultData.commonDetails;
+                    let customization = false;
+                    if(itemData?.type === 'customization'){
+                        customization = true;
                     }
-                }else{
-                    if(itemData.maxAllowedQty < item.quantity.count){
-                        isQtyAvailable  = false
-                    }
-                }
-                qouteItemsDetails = {
-                    "@ondc/org/item_id": item.id,
-                    "@ondc/org/item_quantity": {
-                        "count": item.quantity.count
-                    },
-                    "title": itemData?.productName,
-                    "@ondc/org/title_type": itemData?.type ?? 'item',
-                    "price":
-                    {
-                        "currency": "INR",
-                        "value": `${itemData?.MRP}`
-                    },
-                    "item":
-                    {
-                        "quantity":
-                        {
-                            "available":
-                            {
-                                "count": `${itemData?.quantity}`
-                            },
-                            "maximum":
-                            {
-                                "count": `${itemData?.maxAllowedQty}`
-                            }
-                        },
-                        "price":
-                        {
-                            "currency": "INR",
-                            "value": `${itemData?.MRP}`
-                        },
-                        "tags": item.tags
-                    }
-                }
-                if (item?.parent_item_id) {
-                    qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
-                }
-                detailedQoute.push(qouteItemsDetails)
-            } else {
-                isValidItem = false;
-            }
-        item.fulfillment_id = item.fulfillment_id
-        delete item.price
-        qouteItems.push(item)
-        detailedQoute.push(qouteItemsDetails)
-    }
-
-        totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
-        let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
-
-        detailedQoute.push(deliveryCharges);
-
-        const tagData = [ //TODO static for now
-            {
-                "code":"bpp_terms",
-                "list":
-                    [
-                        {
-                            "code":"tax_number",
-                            "value":`${org.providerDetail.GSTN.GSTN}`
+                    if(customization){
+                        if(itemData.maximum < item.quantity.count){
+                            isQtyAvailable = false
                         }
-                    ]
-            }
-        ];
-        // const paymentData =    { //TODO static for now
-        //     "type":"ON-ORDER",
-        //     "collected_by":"BPP",
-        //     "uri":"https://snp.com/pg",
-        //     "status":"NOT-PAID",
-        //     "@ondc/org/buyer_app_finder_fee_type":"Percent",
-        //     "@ondc/org/buyer_app_finder_fee_amount":"3",
-        //     "@ondc/org/settlement_basis":"delivery",
-        //     "@ondc/org/settlement_window":"P1D",
-        //     "@ondc/org/withholding_amount":"10.00",
-        //     "@ondc/org/settlement_details":
-        //         [
-        //             {
-        //                 "settlement_counterparty":"seller-app",
-        //                 "settlement_phase":"sale-amount",
-        //                 "settlement_type":"upi",
-        //                 "beneficiary_name":"xxxxx",
-        //                 "upi_address":"gft@oksbi",
-        //                 "settlement_bank_account_no":"XXXXXXXXXX",
-        //                 "settlement_ifsc_code":"XXXXXXXXX",
-        //                 "bank_name":"xxxx",
-        //                 "branch_name":"xxxx"
-        //             }
-        //         ]
-        // };
-
-        let paymentData ={
-            "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
-            "@ondc/org/buyer_app_finder_fee_amount": "3.0",
-            "@ondc/org/settlement_details": [
-                {
-                    "settlement_counterparty": "seller-app",
-                    "settlement_phase": "sale-amount",
-                    "settlement_type": "neft",
-                    "settlement_bank_account_no": org.providerDetail.bankDetails.accNumber,
-                    "settlement_ifsc_code": org.providerDetail.bankDetails.IFSC,
-                    "beneficiary_name": org.providerDetail.bankDetails.accHolderName,
-                    "bank_name": org.providerDetail.bankDetails.bankName,
-                    "branch_name": org.providerDetail.bankDetails.branchName??"Pune"
+                    }else{
+                        if(itemData.maxAllowedQty < item.quantity.count){
+                            isQtyAvailable  = false
+                        }
+                    }
+                    qouteItemsDetails = {
+                        "@ondc/org/item_id": item.id,
+                        "@ondc/org/item_quantity": {
+                            "count": item.quantity.count
+                        },
+                        "title": itemData?.productName,
+                        "@ondc/org/title_type": itemData?.type ?? 'item',
+                        "price":
+                            {
+                                "currency": "INR",
+                                "value": `${itemData?.MRP}`
+                            },
+                        "item":
+                            {
+                                "quantity":
+                                    {
+                                        "available":
+                                            {
+                                                "count": `${itemData?.quantity}`
+                                            },
+                                        "maximum":
+                                            {
+                                                "count": `${itemData?.maxAllowedQty}`
+                                            }
+                                    },
+                                "price":
+                                    {
+                                        "currency": "INR",
+                                        "value": `${itemData?.MRP}`
+                                    },
+                                "tags": item.tags
+                            }
+                    }
+                    if (item?.parent_item_id) {
+                        qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
+                    }
+                    detailedQoute.push(qouteItemsDetails)
+                } else {
+                    isValidItem = false;
                 }
-            ]
+                item.fulfillment_id = item.fulfillment_id
+                delete item.price
+                qouteItems.push(item)
+                detailedQoute.push(qouteItemsDetails)
+            }
 
+            totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
+            let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
+
+            detailedQoute.push(deliveryCharges);
+
+            const tagData = [ //TODO static for now
+                {
+                    "code":"bpp_terms",
+                    "list":
+                        [
+                            {
+                                "code":"tax_number",
+                                "value":`${org.providerDetail.GSTN.GSTN}`
+                            }
+                        ]
+                }
+            ];
+            // const paymentData =    { //TODO static for now
+            //     "type":"ON-ORDER",
+            //     "collected_by":"BPP",
+            //     "uri":"https://snp.com/pg",
+            //     "status":"NOT-PAID",
+            //     "@ondc/org/buyer_app_finder_fee_type":"Percent",
+            //     "@ondc/org/buyer_app_finder_fee_amount":"3",
+            //     "@ondc/org/settlement_basis":"delivery",
+            //     "@ondc/org/settlement_window":"P1D",
+            //     "@ondc/org/withholding_amount":"10.00",
+            //     "@ondc/org/settlement_details":
+            //         [
+            //             {
+            //                 "settlement_counterparty":"seller-app",
+            //                 "settlement_phase":"sale-amount",
+            //                 "settlement_type":"upi",
+            //                 "beneficiary_name":"xxxxx",
+            //                 "upi_address":"gft@oksbi",
+            //                 "settlement_bank_account_no":"XXXXXXXXXX",
+            //                 "settlement_ifsc_code":"XXXXXXXXX",
+            //                 "bank_name":"xxxx",
+            //                 "branch_name":"xxxx"
+            //             }
+            //         ]
+            // };
+
+            let paymentData ={
+                "@ondc/org/buyer_app_finder_fee_type": "percent", //TODO: for transaction id keep record to track this details
+                "@ondc/org/buyer_app_finder_fee_amount": "3.0",
+                "@ondc/org/settlement_details": [
+                    {
+                        "settlement_counterparty": "seller-app",
+                        "settlement_phase": "sale-amount",
+                        "settlement_type": "neft",
+                        "settlement_bank_account_no": org.providerDetail.bankDetails.accNumber,
+                        "settlement_ifsc_code": org.providerDetail.bankDetails.IFSC,
+                        "beneficiary_name": org.providerDetail.bankDetails.accHolderName,
+                        "bank_name": org.providerDetail.bankDetails.bankName,
+                        "branch_name": org.providerDetail.bankDetails.branchName??"Pune"
+                    }
+                ]
+
+            }
+
+            initData.message.order.payment = paymentDetails;
+            const productData = await getInit({
+                qouteItems: qouteItems,
+                totalPrice: totalPriceObj,
+                detailedQoute: detailedQoute,
+                context: initData.context,
+                message: initData.message,
+                logisticData: initData.logisticData,
+                tags : tagData,
+                payment:paymentData,
+            });
+
+            let savedLogistics = new InitRequest()
+
+            savedLogistics.transactionId = initData.context.transaction_id
+            savedLogistics.packaging = "0"//TODO: select packaging option
+            savedLogistics.providerId = initData.message.order.provider.id
+            savedLogistics.selectedLogistics = logisticData
+            savedLogistics.logisticsTransactionId = logisticData.context.transaction_id
+            savedLogistics.initRequest = requestQuery.retail_init[0]
+            savedLogistics.onInitResponse = productData
+
+            await savedLogistics.save();
+
+            return productData
+        }catch (e) {
+            console.log(e)
         }
 
-        initData.message.order.payment = paymentDetails;
-        const productData = await getInit({
-            qouteItems: qouteItems,
-            totalPrice: totalPriceObj,
-            detailedQoute: detailedQoute,
-            context: initData.context,
-            message: initData.message,
-            logisticData: initData.logisticData,
-            tags : tagData,
-            payment:paymentData,
-        });
-
-        let savedLogistics = new InitRequest()
-
-        savedLogistics.transactionId = initData.context.transaction_id
-        savedLogistics.packaging = "0"//TODO: select packaging option
-        savedLogistics.providerId = initData.message.order.provider.id
-        savedLogistics.selectedLogistics = logisticData
-        savedLogistics.logisticsTransactionId = logisticData.context.transaction_id
-        savedLogistics.initRequest = requestQuery.retail_init[0]
-        savedLogistics.onInitResponse = productData
-
-        await savedLogistics.save();
-
-        return productData
     }
 
 
