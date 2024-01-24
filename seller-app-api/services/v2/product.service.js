@@ -2367,6 +2367,10 @@ class ProductService {
                 resultData = await this.getForOndc(item.id)
                 if (resultData?.commonDetails) {
                     const itemData = resultData.commonDetails;
+                    if (itemData) {
+                        let price = itemData?.MRP * item.quantity.count
+                        totalPrice += price
+                    }
                     let customization = false;
                     if(itemData?.type === 'customization'){
                         customization = true;
@@ -2587,6 +2591,10 @@ class ProductService {
                 resultData = await this.getForOndc(item.id)
                 if (resultData?.commonDetails) {
                     const itemData = resultData.commonDetails;
+                    if (itemData) {
+                        let price = itemData?.MRP * item.quantity.count
+                        totalPrice += price
+                    }
                     let customization = false;
                     if(itemData?.type === 'customization'){
                         customization = true;
