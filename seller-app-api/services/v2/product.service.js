@@ -2600,7 +2600,7 @@ class ProductService {
                         "@ondc/org/item_quantity": {
                             "count": item.quantity.count
                         },
-                        "title": itemData?.name,
+                        "title": itemData?.ProductName,
                         "@ondc/org/title_type": itemData?.type ?? 'item',
                         "price":
                         {
