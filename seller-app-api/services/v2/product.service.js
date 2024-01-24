@@ -2048,7 +2048,7 @@ class ProductService {
                         "count": item.quantity.count
                     },
                     "title": itemData?.productName,
-                    "@ondc/org/title_type": itemData?.type ?? 'item',
+                    "@ondc/org/title_type": 'item',
                     "price":
                         {
                             "currency":"INR",
@@ -2386,7 +2386,7 @@ class ProductService {
                             "count": item.quantity.count
                         },
                         "title": itemData?.productName,
-                        "@ondc/org/title_type": itemData?.type ?? 'item',
+                        "@ondc/org/title_type": 'item',
                         "price":
                             {
                                 "currency": "INR",
@@ -2601,7 +2601,7 @@ class ProductService {
                             "count": item.quantity.count
                         },
                         "title": itemData?.productName,
-                        "@ondc/org/title_type": itemData?.type ?? 'item',
+                        "@ondc/org/title_type": 'item',
                         "price":
                         {
                             "currency": "INR",
