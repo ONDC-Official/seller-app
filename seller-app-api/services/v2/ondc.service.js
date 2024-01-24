@@ -114,7 +114,7 @@ class OndcService {
                             }
                         },
                         "fulfillment": {
-                            "type": "Delivery",
+                            "type": "Prepaid",
                             "start": {
                                 "location": storeLocationEnd
                             },
