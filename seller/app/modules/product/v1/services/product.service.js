@@ -259,12 +259,13 @@ class ProductService {
                             attributeData.push(attributeObj);
                         }
                         product.attributes = attributeData;
-                        if(product.productCategory === 'F&B' || product.productCategory === 'Food and Beverages'){
+                        const customizationDetails = await customizationService.mappdedData(product.customizationGroupId,{organization:product.organization}) ?? {};
+                        product.customizationDetails = customizationDetails;
+                        if(Object.keys(customizationDetails).length > 0){
                             const accumulatedMaxMRP =  await this.getMaxMRP(product.customizationGroupId, {maxMRP:product.MRP,maxDefaultMRP:product.MRP}, {organization:product.organization});
                             product.maxMRP = accumulatedMaxMRP?.maxMRP ?? product.MRP; 
                             product.maxDefaultMRP = accumulatedMaxMRP?.maxDefaultMRP ?? product.MRP; 
                         }
-                        product.customizationDetails = await customizationService.mappdedData(product.customizationGroupId,{organization:product.organization}) ?? '';
                         productData.push(product);
                     }
                     // getting Menu for org -> 

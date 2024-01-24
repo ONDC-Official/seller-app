@@ -44,8 +44,8 @@ const MESSAGES = {
     CUSTOMIZATION_GROUP_EXISTS_FOR_ONE_OR_MORE_PRODUCTS: 'Cannot delete customization group. It is used in one or more products.',
     CUSTOMIZATION_GROUP_CHILD: 'Cannot delete customization group. It is a child in the mapping table.',
     SEQ_CHILD_ERROR: 'Cannot update seq value to a value less than the seq value of a child group.',
-    SE_NEXTGROUP_ERROR: 'Cannot update seq value to a value greater than or equal to the seq value of the next group.'
-
+    SE_NEXTGROUP_ERROR: 'Cannot update seq value to a value greater than or equal to the seq value of the next group.',
+    CUSTOMIZATION_GROUP_NOT_EXISTS: 'We couldn\'t find the customization group with given details',
 
 };
 

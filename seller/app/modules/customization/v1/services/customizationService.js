@@ -53,7 +53,9 @@ class CustomizationService {
     //TODO:Tirth add filter on name(Done)
     async getCustomizationGroups(params, currentUser) {
         try {
-            let query = {};
+            let query = {
+                organization:currentUser.organization
+            };
             
             if (params.name) {
                 query.name = { $regex: params.name, $options: 'i' }; // Case-insensitive name search
@@ -299,7 +301,7 @@ class CustomizationService {
                 customizations : mappedData.customizations
             };
         }
-        return '';
+        return {};
     }
 
     async getMappedCustomizationAndGroup(groupId,customizationGroups=[],customizations = [],currentUser){
@@ -313,7 +315,7 @@ class CustomizationService {
         if(mappingData && mappingData.length>0){
             for(const data of mappingData){
                 let customizationObj ={};
-                const customization = await Product.findOne({_id:data.id,organization:currentUser.organization,type:'customization'},{available:1,maximum:1,productName:1,UOMValue:1,UOM:1,MRP:1,vegNonVeg:1});
+                const customization = await Product.findOne({_id:data.id,organization:currentUser.organization,type:'customization'},{quantity:1,maxAllowedQty:1,productName:1,UOMValue:1,UOM:1,MRP:1,vegNonVeg:1});
                 if(customization){
                     if(data.groups && data.groups.length>0){
                         for(const group of data.groups){
@@ -323,8 +325,8 @@ class CustomizationService {
                                 MRP: customization.MRP,
                                 parent: groupId,
                                 child: group.child,
-                                available: customization.available,
-                                maximum: customization.maximum,
+                                quantity: customization.quantity,
+                                maxAllowedQty: customization.maxAllowedQty,
                                 UOMValue: customization.UOMValue,
                                 UOM: customization.UOM,
                                 vegNonVeg: customization.vegNonVeg

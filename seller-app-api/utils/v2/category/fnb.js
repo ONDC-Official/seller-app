@@ -179,7 +179,10 @@ export async function mapFnBData(data) {
             }
             variantGroupSequence=variantGroupSequence+1;
             const customizationDetails = items.customizationDetails;
-            if(customizationDetails){
+            if(Object.keys(customizationDetails).length === 0){
+                let item = itemSchema({...items, org: org},customMenuData)
+                productAvailable.push(item)
+            }else{
                 const customizationGroups = customizationDetails.customizationGroups;
                 const customizations = customizationDetails.customizations;
                 let customGroup = [];
@@ -241,9 +244,6 @@ export async function mapFnBData(data) {
                     let customizationData = customizationSchema(customization,items)
                     productAvailable.push(customizationData)
                 }
-            }else{
-                let item = itemSchema({...items, org: org},[],customMenuData)
-                productAvailable.push(item)
             }
         }
         bppDetails = {
@@ -394,9 +394,12 @@ export async function mapFnBDataUpdate(data) {
     for (const org of data?.data?.products) {
         let productAvailable = []
         for (let items of org.items) {
-            let customGroup = [];
             const customizationDetails = items.customizationDetails;
-            if(customizationDetails){
+            if(Object.keys(customizationDetails).length === 0){
+                let item = itemSchema({...items, org: org},[])
+                productAvailable.push(item)
+            }else{
+                let customGroup = [];
                 const customizationGroups = customizationDetails.customizationGroups;
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
@@ -405,9 +408,9 @@ export async function mapFnBDataUpdate(data) {
                     };
                     customGroup.push(groupObj);
                 }
+                let item = itemSchema({...items, org: org},customGroup,[])
+                productAvailable.push(item)
             }
-            let item = itemSchema({...items, org: org},customGroup,[])
-            productAvailable.push(item)
             itemObjData = {
                 "@ondc/org/statutory_reqs_packaged_commodities":{
                 "manufacturer_or_packer_name":items.manufacturerOrPackerName ?? '',
@@ -486,7 +489,7 @@ function itemSchema(items,customGroup,customMenuData) {
     let priceData ={
         currency: "INR",
         value: `${items.MRP}`,
-        maximum_value: `${items.maxMRP}`
+        maximum_value: `${items?.maxMRP ?? items.MRP}`
     };
     if(items.maxMRP && items.maxDefaultMRP){
         let itemtags = [
@@ -643,18 +646,18 @@ function customizationSchema(customizations,item) {
           },
           "available":
           {
-            "count":`${customizations.available}` ?? 'NA'
+            "count":`${customizations.quantity}` ?? 'NA'
           },
           "maximum":
           {
-            "count":`${customizations.maximum}` ?? 'NA'
+            "count":`${customizations.maxAllowedQty}` ?? 'NA'
           }
         },
         "price":
         {
           "currency":"INR",
-          "value":`${customizations.price}`,
-          "maximum_value":`${customizations.price}`
+          "value":`${customizations.MRP}`,
+          "maximum_value":`${customizations.MRP}`
         },
         "category_id":item.productSubcategory1 ?? "NA",
         "related":true,
