@@ -795,7 +795,7 @@ function customizationSchema(customizations,item) {
         "id":customizations._id,
         "descriptor":
         {
-          "name":customizations.name
+          "name":customizations.productName
         },
         "quantity":
         {
