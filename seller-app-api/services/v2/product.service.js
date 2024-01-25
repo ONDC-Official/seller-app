@@ -85,7 +85,7 @@ class ProductService {
             }
             let httpRequest = new HttpRequest(
                 serverUrl,
-                `/api/v1/products/search/increamentalPull/${category.name}`, //TODO: allow $like query
+                `/api/v1/products/search/increamentalPull/${category.name}?city=${requestQuery?.context?.city ?? ''}`, //TODO: allow $like query
                 'get',
                 headers
             );
