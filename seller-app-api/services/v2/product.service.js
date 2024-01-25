@@ -2430,7 +2430,7 @@ class ProductService {
                 detailedQoute.push(qouteItemsDetails)
             }
 
-            totalPrice = parseInt(logisticData.message.order.quote.price.value) + parseInt(totalPrice)
+            totalPrice = formatToTwoDecimalPlaces(logisticData.message.order.quote.price.value) + formatToTwoDecimalPlaces(totalPrice)
             let totalPriceObj = {value: ""+totalPrice, currency: "INR"}
 
             detailedQoute.push(deliveryCharges);
@@ -2675,7 +2675,7 @@ class ProductService {
                 }//TODO: need to map all items in the catalog to find out delivery charges
 
                 //added delivery charges in total price
-                totalPrice += parseInt(deliveryType.price.value)
+                totalPrice += formatToTwoDecimalPlaces(deliveryType.price.value)
 
                 let categories = logisticProvider.message.catalog["bpp/providers"][0].categories
                 let duration = ''
@@ -2772,6 +2772,24 @@ class ProductService {
         }
     }
 
+    formatToTwoDecimalPlaces(input) {
+        // Convert the input to a floating-point number
+        const number = parseFloat(input);
+
+        if (isNaN(number)) {
+            // Handle invalid input (not a number)
+            return 0; // or any appropriate value
+        }
+
+        // Convert the number to a string with 2 decimal places
+        const formattedNumber = number.toFixed(2);
+
+        // Convert the string back to a float if needed
+        const result = parseFloat(formattedNumber);
+
+        return result;
+    }
+      
 }
 
 module.exports = ProductService;
