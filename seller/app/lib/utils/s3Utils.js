@@ -1,70 +1,88 @@
-import AWS from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
-import { mergedEnvironmentConfig } from '../../config/env.config.js';
+// import AWS from "aws-sdk";
+import { v4 as uuidv4 } from "uuid";
+import { mergedEnvironmentConfig } from "../../config/env.config.js";
+import S3 from "aws-sdk/clients/s3.js";
+
 const version = mergedEnvironmentConfig.s3.version;
 const region = mergedEnvironmentConfig.s3.region;
 const bucket = mergedEnvironmentConfig.s3.bucket;
 
-
 //TODO:move to ext config
-const s3 = new AWS.S3({
-    useAccelerateEndpoint: true,
-    region: region
+// const s3 = new AWS.S3({
+//     useAccelerateEndpoint: true,
+//     region: region
+// });
+
+const s3 = new S3({
+    endpoint: `https://c304b0b64c5b4bf1672c39cc0c99b803.r2.cloudflarestorage.com/`,
+    accessKeyId: mergedEnvironmentConfig.s3.accessKeyId,
+    secretAccessKey: mergedEnvironmentConfig.s3.secretAccessKey,
+    signatureVersion: "v4",
 });
 
-const signedUrlExpireSeconds = 60 * 60*60;
+const signedUrlExpireSeconds = 60 * 60 * 60;
 
 let myBucket = bucket;
 
-const getSignedUrlForUpload = (s3,myBucket) => async(data) => {
-
+const getSignedUrlForUpload = (s3, myBucket) => async (data) => {
     //TODO: Use Axios to send http request
     try {
-
-        let orgId = '';
-        if(data.organizationId){
+        let orgId = "";
+        if (data.organizationId) {
             orgId = data.organizationId;
-        }else{
-            orgId = data?.currentUser?.organization??uuidv4();
+        } else {
+            orgId = data?.currentUser?.organization ?? uuidv4();
         }
 
-
-        const myKey = orgId+'/'+data.path+'/' + data?.fileName + data?.fileType?.replace(/^\.?/, '.');
+        const myKey =
+            orgId +
+            "/" +
+            data.path +
+            "/" +
+            data?.fileName +
+            data?.fileType?.replace(/^\.?/, ".");
         const params = {
             Bucket: myBucket,
             Key: myKey,
-            Expires: signedUrlExpireSeconds
+            Expires: signedUrlExpireSeconds,
         };
 
-
-        return await new Promise(
-            (resolve, reject) =>
-
-                s3.getSignedUrl('putObject', params, function (err, url) {
-                    console.log('[getSignedUrlForUpload] Error getting presigned url from AWS S3',err);
-                    if (err) {
-                        console.log('[getSignedUrlForUpload] Error getting presigned url from AWS S3');
-                        reject( {success: false, message: 'Pre-Signed URL error', urls: url});
-                    } else {
-                        console.log('Presigned URL: ', url);
-                        resolve( {
-                            success: true,
-                            message: 'AWS SDK S3 Pre-signed urls generated successfully.',
-                            path: myKey,
-                            urls: url
-                        });
-                    }
-                }));
-
+        return await new Promise((resolve, reject) =>
+            s3.getSignedUrl("putObject", params, function (err, url) {
+                console.log(
+                    "[getSignedUrlForUpload] Error getting presigned url from AWS S3",
+                    err
+                );
+                if (err) {
+                    console.log(
+                        "[getSignedUrlForUpload] Error getting presigned url from AWS S3"
+                    );
+                    reject({
+                        success: false,
+                        message: "Pre-Signed URL error",
+                        urls: url,
+                    });
+                } else {
+                    console.log("Presigned URL: ", url);
+                    resolve({
+                        success: true,
+                        message:
+                            "AWS SDK S3 Pre-signed urls generated successfully.",
+                        path: myKey,
+                        urls: url,
+                    });
+                }
+            })
+        );
     } catch (err) {
-        console.log("err",err)
+        console.log("err", err);
         return err;
     }
 };
 
-exports.getSignedUrlForUpload = getSignedUrlForUpload(s3,myBucket);
+exports.getSignedUrlForUpload = getSignedUrlForUpload(s3, myBucket);
 
-exports.getSignedUrlForRead = async(data) => {
+exports.getSignedUrlForRead = async (data) => {
     //TODO: Use Axios to send http request
     try {
         let myKey = data.path;
@@ -72,16 +90,17 @@ exports.getSignedUrlForRead = async(data) => {
         const params = {
             Bucket: myBucket,
             Key: myKey,
-            Expires: signedUrlExpireSeconds
+            Expires: signedUrlExpireSeconds,
         };
 
         //const {config :{params,region}} = s3Bucket;
-        const regionString = '-' + region;
-        myBucket = myBucket.replace('/public-assets','');
+        const regionString = "-" + region;
+        myBucket = myBucket.replace("/public-assets", "");
 
-        let url = `https://${myBucket}.s3${regionString}.amazonaws.com/public-assets/${myKey}`;
+        // let url = `https://${myBucket}.s3${regionString}.amazonaws.com/public-assets/${myKey}`;
+        let url = `https://pub-3b7b0c3f775d471bbb07f0fb12f16eca.r2.dev/${myKey}`;
 
-        return ({ url: url, path: myKey });
+        return { url: url, path: myKey };
 
         // return await new Promise(
         //     (resolve, reject) => s3.getSignedUrl('getObject', params, function (err, url) {
@@ -98,7 +117,7 @@ exports.getSignedUrlForRead = async(data) => {
     }
 };
 
-exports.getFileAsStream = async(data) => {
+exports.getFileAsStream = async (data) => {
     //TODO: Use Axios to send http request
     // promisify read stream from s3
     function getBufferFromS3Promise(file) {
@@ -119,9 +138,9 @@ exports.getFileAsStream = async(data) => {
             Key: myKey,
         };
         const stream = s3.getObject(options).createReadStream();
-        stream.on('data', data => buffers.push(data));
-        stream.on('end', () => callback(null, Buffer.concat(buffers)));
-        stream.on('error', error => callback(error));
+        stream.on("data", (data) => buffers.push(data));
+        stream.on("end", () => callback(null, Buffer.concat(buffers)));
+        stream.on("error", (error) => callback(error));
     }
     try {
         const myKey = data.path;
@@ -131,4 +150,3 @@ exports.getFileAsStream = async(data) => {
         return err;
     }
 };
-

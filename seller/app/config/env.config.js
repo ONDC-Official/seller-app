@@ -1,15 +1,16 @@
+require("dotenv").config();
 
-const nodeEnvironment = process.env.NODE_ENV || 'development';
+const nodeEnvironment = process.env.NODE_ENV || "development";
 const projectBaseDirectory = global.__basedir;
-const appEnvironment = process.env.APP_ENV ?? 'local';
+const appEnvironment = process.env.APP_ENV ?? "local";
 
-if(appEnvironment === 'local') {
-    require('dotenv').config({
+if (appEnvironment === "local") {
+    require("dotenv").config({
         path: `${__dirname}/local.env`,
     });
 }
 
-const environmentConfig = require('./environments/base');
+const environmentConfig = require("./environments/base");
 const mergedEnvironmentConfig = {
     ...environmentConfig,
     nodeEnvironment,
@@ -17,4 +18,4 @@ const mergedEnvironmentConfig = {
     projectBaseDirectory,
 };
 Object.freeze(mergedEnvironmentConfig);
-exports.mergedEnvironmentConfig =  mergedEnvironmentConfig;
+exports.mergedEnvironmentConfig = mergedEnvironmentConfig;

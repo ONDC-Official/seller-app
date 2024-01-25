@@ -1,105 +1,129 @@
-
-import ProductController from '../controllers/product.controller';
-import apiParamsValidator from '../v1/middleware/api.params.validator';
-import productSchema from '../v1/validationSchema/api-params-validation-schema/product.validate.schema';
-import express from 'express';
-import {authentication, authorisation} from '../../../lib/middlewares';
-import {SYSTEM_ROLE} from '../../../lib/utils/constants';
+import ProductController from "../controllers/product.controller";
+import apiParamsValidator from "../v1/middleware/api.params.validator";
+import productSchema from "../v1/validationSchema/api-params-validation-schema/product.validate.schema";
+import express from "express";
+import { authentication, authorisation } from "../../../lib/middlewares";
+import { SYSTEM_ROLE } from "../../../lib/utils/constants";
 const router = express.Router();
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 const productController = new ProductController();
 
-router.post('/v1/products',
+router.post(
+    "/v1/products",
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.create() }),
-    productController.create);
+    productController.create
+);
 
-router.post('/v1/productWithVariant',
+router.post(
+    "/v1/productWithVariant",
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    apiParamsValidator.middleware({ schema: productSchema.createWithVariant() }),
-    productController.createWithVariants);
+    apiParamsValidator.middleware({
+        schema: productSchema.createWithVariant(),
+    }),
+    productController.createWithVariants
+);
 
-router.put('/v1/products/:productId',
+router.put(
+    "/v1/products/:productId",
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.update() }),
-    productController.update);
+    productController.update
+);
 
-router.put('/v1/productWithVariant',
+router.put(
+    "/v1/productWithVariant",
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-    apiParamsValidator.middleware({ schema: productSchema.updateWithVariant() }),
-    productController.updateWithVariants);
+    apiParamsValidator.middleware({
+        schema: productSchema.updateWithVariant(),
+    }),
+    productController.updateWithVariants
+);
 
-router.put('/v1/products/:productId/publish',
+router.put(
+    "/v1/products/:productId/publish",
     authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    authorisation.middleware({ roles: [SYSTEM_ROLE.ORG_ADMN] }),
     apiParamsValidator.middleware({ schema: productSchema.publish() }),
-    productController.publish);
+    productController.publish
+);
 
-router.get('/v1/products',
+router.get(
+    "/v1/products",
     authentication.middleware(),
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     apiParamsValidator.middleware({ schema: productSchema.list() }),
-    productController.list,
+    productController.list
 );
 
-router.get('/v1/products/search',
-    productController.search,
+router.get("/v1/products/search", productController.search);
+
+router.get("/v1/store", productController.getStore);
+
+router.get(
+    "/v1/products/search/increamentalPull/:category",
+    productController.searchIncrementalPull
 );
 
-router.get('/v1/products/search/increamentalPull/:category',
-    productController.searchIncrementalPull,
-);
-
-router.get('/v1/products/:productId',
+router.get(
+    "/v1/products/:productId",
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.get() }),
-    productController.get,
+    productController.get
 );
 
-router.get('/v1/productWithVariant/:productId',
+router.get(
+    "/v1/productWithVariant/:productId",
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.get() }),
-    productController.getWithVariants,
+    productController.getWithVariants
 );
 
-router.get('/v1/products/:productId/ondcGet',
+router.get(
+    "/v1/products/:productId/ondcGet",
     apiParamsValidator.middleware({ schema: productSchema.get() }),
-    productController.ondcGet,
+    productController.ondcGet
 );
 
-router.get('/v1/products/:productId/ondcGetForUpdate',
+router.get(
+    "/v1/products/:productId/ondcGetForUpdate",
     apiParamsValidator.middleware({ schema: productSchema.get() }),
-    productController.ondcGetForUpdate,
+    productController.ondcGetForUpdate
 );
 
-router.post('/v1/products/upload/bulk',
+router.post(
+    "/v1/products/upload/bulk",
     authentication.middleware(),
-    upload.single('xlsx'),
-    productController.uploadCatalog,
+    upload.single("xlsx"),
+    productController.uploadCatalog
 );
 
-router.get('/v1/products/upload/bulk/template',
+router.get(
+    "/v1/products/upload/bulk/template",
     //authentication.middleware(),
-    productController.uploadTemplate,
+    productController.uploadTemplate
 );
 
-router.get('/v1/product/categorySubcategoryAttributes',
+router.get(
+    "/v1/product/categorySubcategoryAttributes",
     //authentication.middleware(),
-    productController.categorySubcategoryAttributeList,
+    productController.categorySubcategoryAttributeList
 );
-router.get('/v1/product/categorySubcategories',
+router.get(
+    "/v1/product/categorySubcategories",
     //authentication.middleware(),
-    productController.categorySubcategoryList,
+    productController.categorySubcategoryList
 );
-router.get('/v1/product/categories',
+router.get(
+    "/v1/product/categories",
     //authentication.middleware(),
-    productController.categoryList,
+    productController.categoryList
 );
 
 // router.get('/v1/product/:productId/customizations',
@@ -113,29 +137,34 @@ router.get('/v1/product/categories',
 //     productController.storeCustomizations,
 // );
 
-router.post('/v1/product/customization',//TODO:Tirth - add joi validation(Done)
+router.post(
+    "/v1/product/customization", //TODO:Tirth - add joi validation(Done)
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.createCust() }),
     productController.createCustomization
 );
 //TODO:TIRTH
-router.get('/v1/product/customizations',
+router.get(
+    "/v1/product/customizations",
     authentication.middleware(),
     productController.getCustomization
 );
 
-router.put('/v1/product/customization/:customizationId',//TODO:TIRTH - add id
+router.put(
+    "/v1/product/customization/:customizationId", //TODO:TIRTH - add id
     authentication.middleware(),
     apiParamsValidator.middleware({ schema: productSchema.updateCust() }),
     productController.updateCustomization
 );
 
-router.delete('/v1/product/customization/:customizationId',
+router.delete(
+    "/v1/product/customization/:customizationId",
     authentication.middleware(),
     productController.deleteCustomization
 );
 
-router.get('/v1/product/customization/:customizationId',
+router.get(
+    "/v1/product/customization/:customizationId",
     authentication.middleware(),
     productController.getCustomizationById
 );
