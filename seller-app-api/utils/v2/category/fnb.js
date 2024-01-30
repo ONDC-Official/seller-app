@@ -180,7 +180,7 @@ export async function mapFnBData(data) {
             variantGroupSequence=variantGroupSequence+1;
             const customizationDetails = items.customizationDetails;
             if(Object.keys(customizationDetails).length === 0){
-                let item = itemSchema({...items, org: org},customMenuData)
+                let item = itemSchema({...items, org: org},[],customMenuData)
                 productAvailable.push(item)
             }else{
                 const customizationGroups = customizationDetails.customizationGroups;
@@ -396,7 +396,7 @@ export async function mapFnBDataUpdate(data) {
         for (let items of org.items) {
             const customizationDetails = items.customizationDetails;
             if(Object.keys(customizationDetails).length === 0){
-                let item = itemSchema({...items, org: org},[])
+                let item = itemSchema({...items, org: org},[],[])
                 productAvailable.push(item)
             }else{
                 let customGroup = [];
