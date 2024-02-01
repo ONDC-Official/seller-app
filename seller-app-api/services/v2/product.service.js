@@ -2095,7 +2095,7 @@ class ProductService {
         let endDate = new Date(tomorrow.setDate(today.getDate() + 1)) //TODO: FIXME : select from on_select of logistics
         //let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
-        confirmData.items = qouteItems;
+        //confirmData.items = qouteItems;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
         // confirmData.state = confirmData.id
