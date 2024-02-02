@@ -9,7 +9,7 @@ import {ConflictError} from '../../../../lib/errors';
 import MESSAGES from '../../../../lib/utils/messages';
 import {RETURN_REASONS} from '../../../../lib/utils/constants';
 import BadRequestParameterError from '../../../../lib/errors/bad-request-parameter.error';
-import {uuid} from "uuidv4";
+import {uuid} from 'uuidv4';
 
 class OrderService {
     async create(data) {
@@ -34,30 +34,30 @@ class OrderService {
                         return tagType.code === 'type';
                     });
                     let itemType = tagTypeData.value;
-                    if (itemType === 'customization') {
-                        if (item.quantity.count) {
-                            //reduce item quantity
-                            let product = await ProductCustomization.findOne({_id: item.id});
-                            product.available = product.available - item.quantity.count;
-                            if (product.quantity < 0) {
-                                throw new ConflictError();
-                            }
-                            await product.save();
-                        }
-                    } else {
-                        if (item.quantity.count) {
-                            //reduce item quantity
-                            let product = await Product.findOne({_id: item.id});
+                    // if (itemType === 'customization') {
+                    //     if (item.quantity.count) {
+                    //         //reduce item quantity
+                    //         let product =await Product.findOne({_id: item.id});
+                    //         product.available = product.available - item.quantity.count;
+                    //         if (product.quantity < 0) {
+                    //             throw new ConflictError();
+                    //         }
+                    //         await product.save();
+                    //     }
+                    // } else {
+                    if (item.quantity.count) {
+                        //reduce item quantity
+                        let product = await Product.findOne({_id: item.id});
 
-                            console.log({qty: product?.quantity, id: item.id});
-                            console.log({qtyCount: item.quantity.count});
-                            product.quantity = product.quantity - item.quantity.count;
-                            if (product.quantity < 0) {
-                                throw new ConflictError();
-                            }
-                            await product.save();
+                        console.log({qty: product?.quantity, id: item.id});
+                        console.log({qtyCount: item.quantity.count});
+                        product.quantity = product.quantity - item.quantity.count;
+                        if (product.quantity < 0) {
+                            throw new ConflictError();
                         }
+                        await product.save();
                     }
+                    // }
                 } else {
                     if (item.quantity.count) {
                         //reduce item quantity
@@ -90,7 +90,7 @@ class OrderService {
 
     async listReturnRequests(params) {
         try {
-            let query = {"request.type":"Return"};
+            let query = {'request.type':'Return'};
             if (params.organization) {
                 query.organization = params.organization;
             }
@@ -100,7 +100,7 @@ class OrderService {
             }]).sort({createdAt: -1}).skip(params.offset * params.limit).limit(params.limit).lean();
             for (const order of data) {
 
-                console.log("order",order)
+                console.log('order',order);
                 let itemId = order.request.tags[0].list.find((tag) => {
                     return tag.code === 'item_id';
                 });
@@ -362,7 +362,7 @@ class OrderService {
             // await order.save();
             await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
 
-            console.log({order})
+            console.log({order});
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
                 mergedEnvironmentConfig.intraServiceApiEndpoints.client,
