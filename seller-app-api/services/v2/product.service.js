@@ -2591,18 +2591,43 @@ class ProductService {
                 resultData = await this.getForOndc(item.id)
                 if (resultData?.commonDetails) {
                     const itemData = resultData.commonDetails;
-                    if (itemData) {
-                        let price = itemData?.MRP * item.quantity.count
-                        totalPrice += price
-                    }
+
                     let customization = false;
                     if(itemData?.type === 'customization'){
                         customization = true;
                     }
-                    if (itemData.maximum < item.quantity.count) {
+
+                    // if(result?.data?.quantity > result?.data?.maxAllowedQty){
+                    //     result.data.quantity = result?.data?.maxAllowedQty //this is per user available qty
+                    // }
+                    // if(result?.data?.quantity < item.quantity.count){
+                    //     isQtyAvailable=false
+                    //     itemLevelQtyStatus=false
+                    //     //add qty check
+                    //     price= result?.data?.MRP * result?.data?.quantity
+                    //     totalPrice += price //as item is not in qty
+                    // }else{
+                    //     //add qty check
+                    //     price= result?.data?.MRP * item.quantity.count
+                    //     totalPrice += price
+                    // }
+
+                    if (itemData.maxAllowedQty < item.quantity.count) {
                         isQtyAvailable  = false
+                        item.quantity.count = itemData.maxAllowedQty;
+                    }
+
+                    if(itemData.quantity < item.quantity.count){
+                        isQtyAvailable  = false
+                        item.quantity.count = itemData.quantity;
+                    }
+
+                    if (itemData) {
+                        let price = itemData?.MRP * item.quantity.count
+                        totalPrice += price
                     }
                     console.log({itemData})
+                    console.log({isQtyAvailable})
                     let qouteItemsDetails = {
                         "@ondc/org/item_id": item.id,
                         "@ondc/org/item_quantity": {
@@ -2613,7 +2638,7 @@ class ProductService {
                         "price":
                         {
                             "currency": "INR",
-                            "value": `${itemData?.MRP}`
+                            "value": `${itemData?.MRP * item.quantity.count}`
                         },
                         "item":
                         {
@@ -2696,6 +2721,7 @@ class ProductService {
                         "tracking": true, //Hard coded
                         "@ondc/org/category": deliveryType.category_id,
                         "@ondc/org/TAT": duration,
+                        "type":"Delivery",
                         "state":
                             {
                                 "descriptor":
