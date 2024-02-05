@@ -20,9 +20,9 @@
     }
   },
   "database": {
-    "username": "postgres",
-    "password": "postgres",
-    "name": "postgres",
+    "username": "akshay",
+    "password": "",
+    "name": "sellerapp",
     "host": "localhost",
     "port": "5432",
     "dialect": "postgres",
