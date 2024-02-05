@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from "joi";
 
 module.exports = {
     create: () => {
@@ -6,7 +6,7 @@ module.exports = {
             user: {
                 email: Joi.string(),
                 mobile: Joi.string(),
-                name: Joi.string()
+                name: Joi.string(),
             },
             providerDetails: {
                 name: Joi.string(),
@@ -14,7 +14,7 @@ module.exports = {
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
-                fulfillments : Joi.array(),
+                fulfillments: Joi.array(),
                 idProof: Joi.string(),
                 bankDetails: {
                     accHolderName: Joi.string(),
@@ -22,24 +22,24 @@ module.exports = {
                     IFSC: Joi.string(),
                     cancelledCheque: Joi.string(),
                     bankName: Joi.string(),
-                    branchName: Joi.string()
+                    branchName: Joi.string(),
                 },
-                PAN: {PAN: Joi.string(), proof: Joi.string()},
-                GSTN: {GSTN: Joi.string(), proof: Joi.string()},
-                FSSAI: Joi.string()
-            }
+                PAN: { PAN: Joi.string(), proof: Joi.string() },
+                GSTN: { GSTN: Joi.string(), proof: Joi.string() },
+                FSSAI: Joi.string(),
+            },
         });
     },
     update: () => {
         return Joi.object({
             user: {
                 mobile: Joi.string(),
-                name: Joi.string()
+                name: Joi.string(),
             },
             providerDetails: {
                 name: Joi.string(),
                 address: Joi.string(),
-                fulfillments : Joi.array(),
+                fulfillments: Joi.array(),
                 contactEmail: Joi.string(),
                 contactMobile: Joi.string(),
                 addressProof: Joi.string(),
@@ -50,75 +50,75 @@ module.exports = {
                     IFSC: Joi.string(),
                     cancelledCheque: Joi.string(),
                     bankName: Joi.string(),
-                    branchName: Joi.string()
+                    branchName: Joi.string(),
                 },
-                PAN: {PAN: Joi.string(), proof: Joi.string()},
-                GSTN: {GSTN: Joi.string(), proof: Joi.string()},
-                FSSAI: Joi.string()
-            }
+                PAN: { PAN: Joi.string(), proof: Joi.string() },
+                GSTN: { GSTN: Joi.string(), proof: Joi.string() },
+                FSSAI: Joi.string(),
+            },
         });
     },
-    setStoreDetails:()=>{
+    setStoreDetails: () => {
         return Joi.object({
             categories: Joi.array(),
             category: Joi.string(),
             logo: Joi.string(),
-            location: {lat:Joi.number(),long:Joi.number()},
-            locationAvailabilityPANIndia:Joi.boolean(),
-            city:Joi.array(),
-            fulfillments : Joi.array(),
-            defaultCancellable:Joi.boolean(),
-            defaultReturnable:Joi.boolean(),
+            location: { lat: Joi.number(), long: Joi.number() },
+            locationAvailabilityPANIndia: Joi.boolean(),
+            city: Joi.array(),
+            fulfillments: Joi.array(),
+            defaultCancellable: Joi.boolean(),
+            defaultReturnable: Joi.boolean(),
             address: {
                 building: Joi.string(),
                 city: Joi.string(),
                 state: Joi.string(),
                 country: Joi.string(),
                 area_code: Joi.string(),
-                locality: Joi.string()
+                locality: Joi.string(),
             },
-            supportDetails:{
-                email:Joi.string(),
-                mobile:Joi.string()
+            supportDetails: {
+                email: Joi.string(),
+                mobile: Joi.string(),
             },
-            storeTiming:Joi.object(),
-            radius:Joi.object(),
-            logisticsBppId:Joi.string().allow(''),
-            logisticsDeliveryType:Joi.string().allow('')
+            storeTiming: Joi.object(),
+            radius: Joi.object(),
+            logisticsBppId: Joi.string().allow(""),
+            logisticsDeliveryType: Joi.string().allow(""),
         });
     },
-    updateStoreDetails:()=>{
+    updateStoreDetails: () => {
         return Joi.object({
             categories: Joi.array(),
             logo: Joi.string(),
-            fulfillments : Joi.array(),
-            location: {lat:Joi.number(),long:Joi.number()},
-            locationAvailabilityPANIndia:Joi.boolean(),
-            city:Joi.array(),
-            defaultCancellable:Joi.boolean(),
-            defaultReturnable:Joi.boolean(),
+            fulfillments: Joi.array(),
+            location: { lat: Joi.number(), long: Joi.number() },
+            locationAvailabilityPANIndia: Joi.boolean(),
+            city: Joi.array(),
+            defaultCancellable: Joi.boolean(),
+            defaultReturnable: Joi.boolean(),
             address: {
                 building: Joi.string(),
                 city: Joi.string(),
                 state: Joi.string(),
                 country: Joi.string(),
                 area_code: Joi.string(),
-                locality: Joi.string()
+                locality: Joi.string(),
             },
-            supportDetails:{
-                email:Joi.string(),
-                mobile:Joi.string()
+            supportDetails: {
+                email: Joi.string(),
+                mobile: Joi.string(),
             },
-            storeTiming:Joi.object(),
-            radius:Joi.object(),
-            logisticsBppId:Joi.string().allow(''),
-            logisticsDeliveryType:Joi.string().allow('')
+            storeTiming: Joi.object(),
+            radius: Joi.object(),
+            logisticsBppId: Joi.string().allow(""),
+            logisticsDeliveryType: Joi.string().allow(""),
         });
     },
-    get:()=>{
+    get: () => {
         return Joi.object({
             organizationId: Joi.string().guid({
-                version: ['uuidv4']
+                version: ["uuidv4"],
             }),
         });
     },
@@ -129,7 +129,7 @@ module.exports = {
                 email: Joi.string(),
                 mobile: Joi.string(),
                 name: Joi.string(),
-                password:Joi.string()
+                password: Joi.string(),
             },
             providerDetails: {
                 name: Joi.string(),
@@ -144,28 +144,32 @@ module.exports = {
                     IFSC: Joi.string(),
                     cancelledCheque: Joi.string(),
                     bankName: Joi.string(),
-                    branchName: Joi.string()
+                    branchName: Joi.string(),
                 },
-                PAN: {PAN: Joi.string(), proof: Joi.string()},
-                GSTN: {GSTN: Joi.string(), proof: Joi.string()},
-                FSSAI: Joi.string()
-            }
+                PAN: { PAN: Joi.string(), proof: Joi.string() },
+                GSTN: { GSTN: Joi.string(), proof: Joi.string() },
+                FSSAI: Joi.string(),
+            },
         });
     },
-    
-    getStoreDetails:()=>{
+
+    getStoreDetails: () => {
         return Joi.object({
             organizationId: Joi.string().guid({
-                version: ['uuidv4']
+                version: ["uuidv4"],
             }),
         });
     },
-    
-    list:()=>{
+
+    list: () => {
         return Joi.object({
-            name:Joi.string().empty(''),
-            offset:Joi.number(),
-            limit:Joi.number()
+            name: Joi.string().empty(""),
+            offset: Joi.number(),
+            limit: Joi.number(),
         });
-    }
+    },
+
+    getAllOrgDetailsForOndc: () => {
+        return Joi.object({});
+    },
 };
