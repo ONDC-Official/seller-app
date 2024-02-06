@@ -567,16 +567,16 @@ function itemSchema(items,customMenuData) {
         ]
     }
 
-    if(allowedStatutoryReq==='@ondc/org/statutory_reqs_prepackaged_food'){
-        item['@ondc/org/statutory_reqs_prepackaged_food'] ={
-            "nutritional_info": items.nutritionalInfo,
-            "additives_info": items.additiveInfo,
-            "brand_owner_FSSAI_license_no": items.brandOwnerFSSAILicenseNo ?? "NA",
-            "other_FSSAI_license_no": items.importerFSSAILicenseNo ?? "NA",
-            "importer_FSSAI_license_no": items.importerFSSAILicenseNo ?? "NA",
-            "imported_product_country_of_origin": "IND" //TODO: Implementation pending
-        }
-    }
+    // if(allowedStatutoryReq==='@ondc/org/statutory_reqs_prepackaged_food'){
+    //     item['@ondc/org/statutory_reqs_prepackaged_food'] ={
+    //         "nutritional_info": items.nutritionalInfo,
+    //         "additives_info": items.additiveInfo,
+    //         "brand_owner_FSSAI_license_no": items.brandOwnerFSSAILicenseNo ?? "NA",
+    //         "other_FSSAI_license_no": items.importerFSSAILicenseNo ?? "NA",
+    //         "importer_FSSAI_license_no": items.importerFSSAILicenseNo ?? "NA",
+    //         "imported_product_country_of_origin": "IND" //TODO: Implementation pending
+    //     }
+    // }
     if(allowedStatutoryReq==='ondc/org/statutory_reqs_packaged_commodities'){
         item['ondc/org/statutory_reqs_packaged_commodities'] ={
             "manufacturer_or_packer_name": items.manufacturerName,
@@ -587,12 +587,12 @@ function itemSchema(items,customMenuData) {
             "imported_product_country_of_origin": "IND" //TODO: Implementation pending
         }
     }
-    if(allowedStatutoryReq==='@ondc/org/mandatory_reqs_veggies_fruits'){
-        item['@ondc/org/mandatory_reqs_veggies_fruits'] =
-        {
-            "net_quantity": `${items.packQty}`
-        }
-    }
+    // if(allowedStatutoryReq==='@ondc/org/mandatory_reqs_veggies_fruits'){
+    //     item['@ondc/org/mandatory_reqs_veggies_fruits'] =
+    //     {
+    //         "net_quantity": `${items.packQty}`
+    //     }
+    // }
 
     return item;
 

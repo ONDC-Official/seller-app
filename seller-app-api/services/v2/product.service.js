@@ -2420,7 +2420,7 @@ class ProductService {
                     if (item?.parent_item_id) {
                         qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
-                    detailedQoute.push(qouteItemsDetails)
+                    // detailedQoute.push(qouteItemsDetails)
                 } else {
                     isValidItem = false;
                 }
