@@ -2104,73 +2104,6 @@ class ProductService {
         //delete confirmData.id
         tomorrow.setDate(today.getDate()+1);
 
-        // const fulfillments =
-        //     [
-        //         {
-        //             "id":confirmRequest.message.order.fulfillments[0].id,
-        //             "@ondc/org/provider_name":org.providerDetail.name,
-        //             "state":
-        //                 {
-        //                     "descriptor":
-        //                         {
-        //                             "code":"Pending"
-        //                         }
-        //                 },
-        //             "type":"Delivery",
-        //             "tracking":false,
-        //             "start":
-        //                 {
-        //                     "location":
-        //                         {
-        //                             "id":org.providerDetail.storeDetails.location._id,
-        //                             "descriptor":
-        //                                 {
-        //                                     "name":org.providerDetail.name
-        //                                 },
-        //                             "gps":`${org.providerDetail.storeDetails.location.lat},${org.providerDetail.storeDetails.location.long}`,
-        //                             "address":org.providerDetail.storeDetails.address
-        //                         },
-        //                     "time":
-        //                         {
-        //                             "range":
-        //                                 {
-        //                                     "start": new Date(),
-        //                                     "end": new Date()
-        //                                 }
-        //                         },
-        //                     "instructions":
-        //                         {
-        //                             "code":"2",
-        //                             "name":"ONDC order",
-        //                             "short_desc":"value of PCC",
-        //                             "long_desc":"additional instructions such as register or counter no for self-pickup"
-        //                         },
-        //                     "contact":confirmRequest.message.order.fulfillments[0].end.contact
-        //                 },
-        //             "end":
-        //                 {
-        //                     "person":confirmRequest.message.order.fulfillments[0].end.person,
-        //                     "contact":confirmRequest.message.order.fulfillments[0].end.contact,
-        //                     "location":confirmRequest.message.order.fulfillments[0].end.location,
-        //                     "time":
-        //                         {
-        //                             "range":
-        //                                 {
-        //                                     "start":today, //TODO : static data for now
-        //                                     "end":tomorrow//TODO : static data for now
-        //                                 }
-        //                         },
-        //                     "instructions"://TODO : static data for now
-        //                         {
-        //                             "name":"Status for drop",
-        //                             "short_desc":"Delivery Confirmation Code"
-        //                         },
-        //
-        //                 },
-        //             "rateable":true
-        //         }
-        //     ];
-
         let storeLocationEnd ={}
         if(org.providerDetail.storeDetails){
             storeLocationEnd =  {
@@ -2189,7 +2122,7 @@ class ProductService {
             }}
 
         confirmRequest.message.order.fulfillments[0].start = storeLocationEnd
-        confirmRequest.message.order.fulfillments[0].tracking = false;
+        confirmRequest.message.order.fulfillments[0].tracking = true;
         confirmRequest.message.order.fulfillments[0].state= {
             "descriptor": {
                 "code": "Pending"
@@ -2198,22 +2131,8 @@ class ProductService {
         // let today = new Date()
         // let tomorrow = new Date()
         // let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
-        confirmRequest.message.order.fulfillments[0].start.time=
-            {
-                "range":
-                    {
-                        "start":today, //TODO: need to take this from seller time
-                        "end":endDate
-                    }
-            }
-        confirmRequest.message.order.fulfillments[0].end.time=
-            {
-                "range":
-                    {
-                        "start":today,
-                        "end":endDate
-                    }
-            }
+        confirmRequest.message.order.fulfillments[0].start.time=logisticData.message.order.fulfillments[0].start.time
+        confirmRequest.message.order.fulfillments[0].end.time=logisticData.message.order.fulfillments[0].end.time
 
 
             let selectRequest  = await SelectRequest.findOne({where:{transactionId:confirmRequest.context.transaction_id},

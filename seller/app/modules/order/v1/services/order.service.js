@@ -303,7 +303,7 @@ class OrderService {
                 'fulfillment_id':cancelRequest.id,
                 'quantity':
                     {
-                        'count':data.quantity
+                        'count':parseInt(data.quantity)
                     }
             };
             order.items.push(cancelledItem);
