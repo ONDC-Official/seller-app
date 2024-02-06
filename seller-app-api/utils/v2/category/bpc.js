@@ -505,11 +505,13 @@ function itemSchema(items,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
         "price": priceData,
@@ -626,11 +628,13 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
         "price": priceData,
@@ -761,11 +765,11 @@ function customizationSchema(customizations,item) {
           },
           "available":
           {
-            "count":`${customizations.quantity}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? 99 : 0}`
           },
           "maximum":
           {
-            "count":`${customizations.maxAllowedQty}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? customizations?.maxAllowedQty : 0}`
           }
         },
         "price":

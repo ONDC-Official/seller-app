@@ -2054,11 +2054,11 @@ class ProductService {
                                 {
                                     "available":
                                     {
-                                        "count": `${itemData?.quantity}`
+                                        "count": `${(itemData?.quantity) ? 99 : 0}`
                                     },
                                     "maximum":
                                     {
-                                        "count": `${itemData?.maxAllowedQty}`
+                                        "count": `${(itemData?.quantity !== 0) ? itemData?.maxAllowedQty : 0}`
                                     }
                                 },
                             "price":
@@ -2416,13 +2416,13 @@ class ProductService {
                                 "quantity":
                                     {
                                         "available":
-                                            {
-                                                "count": `${itemData?.quantity}`
-                                            },
+                                        {
+                                            "count": `${(itemData?.quantity) ? 99 : 0}`
+                                        },
                                         "maximum":
-                                            {
-                                                "count": `${itemData?.maxAllowedQty}`
-                                            }
+                                        {
+                                            "count": `${(itemData?.quantity !== 0) ? itemData?.maxAllowedQty : 0}`
+                                        }
                                     },
                                 "price":
                                     {
@@ -2666,11 +2666,11 @@ class ProductService {
                             {
                                 "available":
                                 {
-                                    "count": `${itemData?.quantity}`
+                                    "count": `${(itemData?.quantity) ? 99 : 0}`
                                 },
                                 "maximum":
                                 {
-                                    "count": `${itemData?.maxAllowedQty}`
+                                    "count": `${(itemData?.quantity !== 0) ? itemData?.maxAllowedQty : 0}`
                                 }
                             },
                             "price":
