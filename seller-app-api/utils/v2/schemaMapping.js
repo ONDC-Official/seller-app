@@ -147,7 +147,7 @@ exports.getSelect = async (data) => {
                     {
                         type:"DOMAIN-ERROR",
                         code:"40002",
-                        message:"Item quantity unavailable"
+                        message:JSON.stringify(data.notInStockError)
                     }}
 
         }

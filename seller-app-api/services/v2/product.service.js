@@ -2540,6 +2540,7 @@ class ProductService {
 
             let isQtyAvailable=true
             let isServiceable=true
+            let notInStockError = [];
 
             let logisticProvider = {}
 
@@ -2617,6 +2618,10 @@ class ProductService {
                         item.quantity.count = itemData.maxAllowedQty;
                     }
 
+                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
+                        let errorObj = {item_id:`${item.id}`,error:'40002'};
+                        notInStockError.push(errorObj)
+                    }
                     if(itemData.quantity < item.quantity.count){
                         isQtyAvailable  = false
                         item.quantity.count = itemData.quantity;
@@ -2778,7 +2783,8 @@ class ProductService {
                 isQtyAvailable,
                 isServiceable,
                 isValidItem,
-                isValidOrg
+                isValidOrg,
+                notInStockError
             });
 
             savedLogistics.transactionId = selectData.context.transaction_id;
