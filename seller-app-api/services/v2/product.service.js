@@ -2224,7 +2224,7 @@ class ProductService {
 
         //select request for this
         confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"]=logisticProvider.message.catalog["bpp/descriptor"].name //TODO: hard coded
-        confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
+        // confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
 
 
 
