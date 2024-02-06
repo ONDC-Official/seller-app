@@ -310,16 +310,7 @@ export async function mapGroceryData(data) {
                 "ttl": "PT24H",
                 "categories": categories,
                 "items": productAvailable,
-                "fulfillments":
-                    [
-                        {
-                            "contact":
-                                {
-                                    "phone": org.storeDetails.supportDetails.mobile,
-                                    "email": org.storeDetails.supportDetails.email
-                                }
-                        }
-                    ],
+                "fulfillments":org.storeDetails?.fulfillments??[],
                 "tags": tags,
                 //"@ondc/org/fssai_license_no": org.FSSAI
             })
