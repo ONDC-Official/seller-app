@@ -2394,7 +2394,7 @@ class ProductService {
                         "price":
                             {
                                 "currency": "INR",
-                                "value": `${itemData?.MRP}`
+                                "value": `${itemData?.MRP * item.quantity.count}`
                             },
                         "item":
                             {
@@ -2420,14 +2420,14 @@ class ProductService {
                     if (item?.parent_item_id) {
                         qouteItemsDetails.item.parent_item_id = `${item?.parent_item_id}`;
                     }
-                    // detailedQoute.push(qouteItemsDetails)
+                    detailedQoute.push(qouteItemsDetails)
                 } else {
                     isValidItem = false;
                 }
                 item.fulfillment_id = item.fulfillment_id
                 delete item.price
                 qouteItems.push(item)
-                detailedQoute.push(qouteItemsDetails)
+                // detailedQoute.push(qouteItemsDetails)
             }
 
             totalPrice = this.formatToTwoDecimalPlaces(logisticData.message.order.quote.price.value) + this.formatToTwoDecimalPlaces(totalPrice)
