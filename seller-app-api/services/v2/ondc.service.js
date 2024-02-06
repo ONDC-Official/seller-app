@@ -1687,9 +1687,9 @@ class OndcService {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "cancel",
-                    "core_version": "1.1.0",
+                    "core_version": "1.2.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bap_uri": config.get("sellerConfig").BAP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": confirmRequest.logisticsTransactionId,

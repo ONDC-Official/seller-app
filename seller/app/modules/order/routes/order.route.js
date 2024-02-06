@@ -40,8 +40,8 @@ router.put('/v1/orders/:orderId/ondcUpdate',
 );
 
 router.post('/v1/orders/:orderId/cancel',
-    authentication.middleware(),
-    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    // authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.cancel,
 );
 

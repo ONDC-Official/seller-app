@@ -579,6 +579,159 @@ class OrderService {
             order.cancellation_reason_id = data.cancellation_reason_id;
             order.orderId = order.orderId;
 
+
+            let cancelRequest = new  Fulfillment();
+
+            cancelRequest.id = uuid();
+
+            cancelRequest.request = {
+                'type':'Cancel',
+                'state':
+                    {
+                        'descriptor':
+                            {
+                                'code':'Cancelled'
+                            }
+                    },
+                'tags':
+                    [
+                    ]
+            };
+
+            // cancelRequest.request['@ondc/org/provider_name'] = 'LSP courier 1';
+
+
+            cancelRequest.organization = order.organization;
+            cancelRequest.order = order._id;
+            await cancelRequest.save();
+
+            // let itemIndex = order.items.findIndex(x => x.id ===data.id);
+            // let itemToBeUpdated= order.items.find(x => x.id ===data.id);
+            // console.log({itemToBeUpdated});
+            // itemToBeUpdated.quantity.count = itemToBeUpdated.quantity.count - parseInt(data.quantity);
+            // order.items[itemIndex] = itemToBeUpdated; //Qoute needs to be updated here.
+            //
+            // let cancelledItem =         {
+            //     'id':data.id,
+            //     'fulfillment_id':cancelRequest.id,
+            //     'quantity':
+            //         {
+            //             'count':data.quantity
+            //         }
+            // };
+            // order.items.push(cancelledItem);
+
+            let qouteTrails = [];
+            let newItemsWithNewFulfillmentId = [];
+            for(let itemToBeUpdated of order.items) {
+                //get product price
+                let productItem = await Product.findOne({_id: itemToBeUpdated.id}).lean();
+
+                // console.log({productItem});
+
+                let qouteTrail = {
+                    'code': 'quote_trail',
+                    'list':
+                        [
+                            {
+                                'code': 'type',
+                                'value': 'item'
+                            },
+                            {
+                                'code': 'id',
+                                'value': itemToBeUpdated.id
+                            },
+                            {
+                                'code': 'currency',
+                                'value': 'INR'
+                            },
+                            {
+                                'code': 'value',
+                                'value': '-' + (productItem.MRP * itemToBeUpdated.quantity.count) //TODO: actual value of order item
+                            }
+                        ]
+                };
+                qouteTrails.push(qouteTrail);
+
+                const newItems =JSON.parse(JSON.stringify(itemToBeUpdated));
+                let oldItems = JSON.parse(JSON.stringify(itemToBeUpdated));
+                oldItems.fulfillment_id = cancelRequest.id;
+                newItemsWithNewFulfillmentId.push(oldItems);
+
+                newItems.quantity.count = 0;
+                newItemsWithNewFulfillmentId.push(newItems);
+            }
+            order.items=newItemsWithNewFulfillmentId;
+            // cancelRequest.quote_trail = qouteTrail;
+            let updatedFulfillment = {};
+            updatedFulfillment.state = {
+                'descriptor':
+                        {
+                            'code': 'Cancelled'
+                        }
+            };
+            updatedFulfillment.type= 'Cancel';
+            updatedFulfillment.id= cancelRequest.id;
+            updatedFulfillment.tags =[];
+            // updatedFulfillment.tags.push(cancelRequest.request.tags[0]);
+            updatedFulfillment.tags.push(qouteTrails);
+            //updatedFulfillment.organization =order.organization;
+
+
+           let deliveryFulfillment =  order.fulfillments.find((data)=>{return data.type==='Delivery';});
+
+            deliveryFulfillment.tags=
+            [
+                {
+                    "code":"cancel_request",
+                    "list":
+                        [
+                            {
+                                "code":"reason_id",
+                                "value":data.cancellation_reason_id
+                            },
+                            {
+                                "code":"initiated_by",
+                                "value":"ref-app-seller-staging-v2.ondc.org" //TODO: take it from ENV
+                            }
+                        ]
+                },
+                {
+                    "code":"precancel_state",
+                    "list":
+                        [
+                            {
+                                "code":"fulfillment_state",
+                                "value":deliveryFulfillment.state.descriptor.code
+                            },
+                            {
+                                "code":"updated_at",
+                                "value":order.updatedAt
+                            }
+                        ]
+                }
+            ];
+
+            order.fulfillments =[];
+            order.fulfillments.push(updatedFulfillment);
+            order.fulfillments.push(deliveryFulfillment);
+
+            //2. append qoute trail
+            //order.quote = await this.updateQoute(order.quote,data.quantity,data.id);
+            // await order.save();
+            //TODO:Uncomment this
+            await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote});
+
+            //add cancellation reason
+            order.cancellation=
+                {
+                    'cancelled_by':cancelRequest?.context?.bppId,
+                    'reason':
+                        {
+                            'id':`${data.cancellation_reason_id}`
+                        }
+                };
+
             //notify client to update order status ready to ship to logistics
             let httpRequest = new HttpRequest(
                 mergedEnvironmentConfig.intraServiceApiEndpoints.client,

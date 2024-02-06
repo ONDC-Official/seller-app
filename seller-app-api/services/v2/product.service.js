@@ -1941,7 +1941,7 @@ class ProductService {
 
         let updateOrder = result.data
 
-        updateOrder.state =logisticData.message.order.state
+        updateOrder.state =logisticData?.message?.order?.state
         updateOrder.cancellation_reason_id =cancelData.message.order.cancellation_reason_id
 
         //update order level state
@@ -1956,18 +1956,12 @@ class ProductService {
         let updateResult = await httpRequest.send();
 
         updateOrder.id = cancelData.message.order.orderId
-        //update item level fulfillment status
-        // let items = updateOrder.items.map((item)=>{
-        //     item.tags={status:updateOrder.state};
-        //     item.fulfillment_id = item.id
-        //     return item;
-        // });
 
         //updateOrder.items = items;
         //updateOrder.id = cancelData.order_id;
         const productData = await getCancel({
             context: cancelData.context,
-            updateOrder:updateOrder
+            updateOrder:cancelData.message.order
         });
 
         return productData
@@ -2095,7 +2089,7 @@ class ProductService {
         let endDate = new Date(tomorrow.setDate(today.getDate() + 1)) //TODO: FIXME : select from on_select of logistics
         //let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
-        //confirmData.items = qouteItems;
+        // confirmData.items = qouteItems;
         confirmData.order_id = confirmData.id
         confirmData.orderId = confirmData.id
         // confirmData.state = confirmData.id
@@ -2236,9 +2230,11 @@ class ProductService {
 
         confirmRequest.message.provider = {...confirmRequest.message.provider,"rateable":true}
 
+        console.log("confirmRequest?.message?.order?.items--->",confirmRequest?.message?.order?.items)
+        console.log("confirmRequest?.message?.order?.items--items->",items)
         const orderData = {
             billing : confirmRequest?.message?.order?.billing ?? {},
-            items : confirmRequest?.message?.order?.items ?? [],
+            items : confirmRequest?.message?.order?.items ?? items,
             transactionId : confirmRequest?.context?.transaction_id ?? '',
             quote : confirmRequest?.message?.order?.quote ?? {},
             fulfillments : confirmRequest?.message?.order?.fulfillments ?? [],
@@ -2257,7 +2253,7 @@ class ProductService {
         //let detailedQoute = confirmRequest.message.order.quote
         //confirmData["order_items"] = orderItems
         console.log("confirmData----->",confirmData)
-        confirmData.items = qouteItems;
+        //confirmData.items = qouteItems;
         confirmData.order_id = orderId
         confirmData.orderId = orderId
         confirmData.transaction_id = confirmRequest.context.transaction_id
@@ -2278,18 +2274,37 @@ class ProductService {
         let result = await httpRequest.send();
 
 
+        //TAX tags
+       let baptag =  confirmRequest.message.order.tags.find((data)=>{return data.code === "bap_terms"})
+       let bpptag =  confirmRequest.message.order.tags.find((data)=>{return data.code === "bpp_terms"})
 
+        console.log({baptag})
+        console.log({bpptag})
+        //add fields for MSN and ISN
+        bpptag.list.push({
+            "code":"np_type",
+            "value":"MSN"
+        })
+
+        bpptag.list.push({
+            "code":"provider_tax_number",
+            "value":org.providerDetail.PAN.PAN
+        })
+
+        let tags = []
+        tags.push(baptag)
+        tags.push(bpptag)
 
         //update fulfillments
 
         const productData = await getConfirm({
-            qouteItems: qouteItems,
+            qouteItems: confirmData.items,
             detailedQoute: detailedQoute,
             context: confirmRequest.context,
             message: confirmRequest.message,
             logisticData: logisticData,
             fulfillments:confirmRequest?.message?.order?.fulfillments,
-            tags:confirmRequest.message.order.tags
+            tags:tags
         });
 
 
