@@ -44,6 +44,11 @@ router.post('/v1/orders/:orderId/cancel',
     // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
     orderController.cancel,
 );
+router.post('/v1/orders/:orderId/cancelOrder',
+    // authentication.middleware(),
+    // authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    orderController.cancelOrder,
+);
 
 router.post('/v1/orders/:orderId/item/cancel',
     // authentication.middleware(),

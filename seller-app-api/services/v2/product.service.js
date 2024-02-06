@@ -1878,9 +1878,9 @@ class ProductService {
         let confirm = {}
         let httpRequest = new HttpRequest(
             serverUrl,
-            `/api/v1/orders/${cancelRequest.message.order_id}/ondcGet`,
-            'GET',
-            {},
+            `/api/v1/orders/${cancelRequest.message.order_id}/cancelOrder`,
+            'POST',
+            {cancellation_reason_id:cancelRequest.message.cancellation_reason_id,initiatedBy:cancelRequest.context.bap_id},
             {}
         );
 
@@ -1888,17 +1888,17 @@ class ProductService {
 
         let updateOrder = result.data
 
-        updateOrder.state =logisticData.message.order.state
-        updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
-
-        //update order level state
-        httpRequest = new HttpRequest(
-            serverUrl,
-            `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
-            'PUT',
-            {data:updateOrder},
-            {}
-        );
+        // updateOrder.state =logisticData.message.order.state
+        // updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
+        //
+        // //update order level state
+        // httpRequest = new HttpRequest(
+        //     serverUrl,
+        //     `/api/v1/orders/${result.data.orderId}/ondcUpdate`,
+        //     'PUT',
+        //     {data:updateOrder},
+        //     {}
+        // );
 
         let updateResult = await httpRequest.send();
 
