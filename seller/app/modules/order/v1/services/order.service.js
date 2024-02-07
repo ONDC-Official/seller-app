@@ -674,7 +674,7 @@ class OrderService {
             updatedFulfillment.id= cancelRequest.id;
             updatedFulfillment.tags =[];
             // updatedFulfillment.tags.push(cancelRequest.request.tags[0]);
-            updatedFulfillment.tags.push(qouteTrails);
+            updatedFulfillment.tags= qouteTrails;
             //updatedFulfillment.organization =order.organization;
 
 
@@ -725,7 +725,7 @@ class OrderService {
             //add cancellation reason
             order.cancellation=
                 {
-                    'cancelled_by':cancelRequest?.context?.bppId,
+                    'cancelled_by':cancelRequest?.context?.bppId??'ref-app-seller-staging-v2.ondc.org',
                     'reason':
                         {
                             'id':`${data.cancellation_reason_id}`
@@ -854,7 +854,7 @@ class OrderService {
             updatedFulfillment.id= cancelRequest.id;
             updatedFulfillment.tags =[];
             // updatedFulfillment.tags.push(cancelRequest.request.tags[0]);
-            updatedFulfillment.tags.push(qouteTrails);
+            updatedFulfillment.tags =qouteTrails;
             //updatedFulfillment.organization =order.organization;
 
 
@@ -897,7 +897,7 @@ class OrderService {
             order.fulfillments.push(deliveryFulfillment);
 
             //2. append qoute trail
-            //order.quote = await this.updateQoute(order.quote,data.quantity,data.id);
+            order.quote = await this.updateQoute(order.quote,data.quantity,data.id);
             // await order.save();
             //TODO:Uncomment this
             await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote,state:order.state});
