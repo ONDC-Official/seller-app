@@ -258,6 +258,21 @@ export async function mapAgricultureData(data) {
                 org.storeDetails.logo
             ]
         }
+        let orgFulfillments = org.storeDetails?.fulfillments ?? []
+        orgFulfillments = orgFulfillments.map((fulfillment)=>{
+            if(fulfillment.type === 'delivery'){
+                fulfillment.type = 'Delivery'
+                fulfillment.id = '1'
+            }else if(fulfillment.type === 'pickup'){
+                fulfillment.type = 'Self-Pickup'
+                fulfillment.id = '2'
+            }else{
+                fulfillment.type = 'Delivery and Self-Pickup'
+                fulfillment.id = '3'
+            }
+            return fulfillment;
+        })
+        orgFulfillments = orgFulfillments.filter((data)=> data.id !== '3')
         bppProviders.push({
             "id": org._id,
             "descriptor": {
@@ -313,7 +328,7 @@ export async function mapAgricultureData(data) {
             ],
             "ttl": "PT24H",
             "items": productAvailable,
-            "fulfillments":org.storeDetails?.fulfillments??[],
+            "fulfillments":orgFulfillments,
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
