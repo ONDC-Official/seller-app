@@ -1545,8 +1545,15 @@ class ProductService {
         console.log({updateOrder});
         updateOrder.items = items;
         updateOrder.order_id = updateOrder.orderId;
-        // updateOrder.created_at = updateOrder.createdAt;
-        // updateOrder.updated_at = updateOrder.updatedAt;
+
+        //TODO: this is hard coded for now
+        updateOrder.documents =
+        [
+            {
+                "url":"https://invoice_url",
+                "label":"Invoice"
+            }
+        ]
 
         const productData = await getStatus({
             context: statusRequest.context,

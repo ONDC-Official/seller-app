@@ -286,6 +286,7 @@ exports.getStatus = async (data) => {
                  "id" :  data.updateOrder.order_id,
                  "created_at":data.updateOrder.createdAt, //TODO: should not change
                  "updated_at":data.updateOrder.updatedAt,
+                 "documents":data.updateOrder.documents
             }
         }
     }
