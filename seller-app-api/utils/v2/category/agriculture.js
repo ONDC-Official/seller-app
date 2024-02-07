@@ -256,6 +256,18 @@ export async function mapAgricultureData(data) {
             "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
+            ],
+            "tags":[
+                {
+                    "code":"bpp_terms",
+                    "list":
+                    [
+                    {
+                        "code":"np_type",
+                        "value":"MSN"
+                    }
+                    ]
+                }
             ]
         }
         let orgFulfillments = org.storeDetails?.fulfillments ?? []
