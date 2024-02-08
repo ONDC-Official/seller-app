@@ -116,6 +116,17 @@ class OrderController {
             next(error);
         }
     }
+    async cancelOrder(req, res, next) {
+        try {
+            const params = req.params;
+            const product = await orderService.cancelOrder(params.orderId,req.body);
+            return res.send(product);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
     async cancelItems(req, res, next) {
         try {
             try {

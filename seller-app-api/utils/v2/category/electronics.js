@@ -179,7 +179,7 @@ export async function mapElectronicsData(data) {
             }
             variantGroupSequence=variantGroupSequence+1;
             const customizationDetails = items.customizationDetails;
-            if(customizationDetails && customizationDetails.customizationGroups.length === 0){
+            if(Object.keys(customizationDetails).length === 0){
                 let item = itemSchema({...items, org: org},customMenuData)
                 productAvailable.push(item)
             }else{
@@ -253,8 +253,35 @@ export async function mapElectronicsData(data) {
             "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
+            ],
+            "tags":[
+                {
+                    "code":"bpp_terms",
+                    "list":
+                    [
+                    {
+                        "code":"np_type",
+                        "value":"MSN"
+                    }
+                    ]
+                }
             ]
         }
+        let orgFulfillments = org.storeDetails?.fulfillments ?? []
+        orgFulfillments = orgFulfillments.map((fulfillment)=>{
+            if(fulfillment.type === 'delivery'){
+                fulfillment.type = 'Delivery'
+                fulfillment.id = '1'
+            }else if(fulfillment.type === 'pickup'){
+                fulfillment.type = 'Self-Pickup'
+                fulfillment.id = '2'
+            }else{
+                fulfillment.type = 'Delivery and Self-Pickup'
+                fulfillment.id = '3'
+            }
+            return fulfillment;
+        })
+        orgFulfillments = orgFulfillments.filter((data)=> data.id !== '3')
         bppProviders.push({
             "id": org._id,
             "descriptor": {
@@ -310,16 +337,7 @@ export async function mapElectronicsData(data) {
             ],
             "ttl": "PT24H",
             "items": productAvailable,
-            "fulfillments":
-                [
-                    {
-                        "contact":
-                            {
-                                "phone": org.storeDetails.supportDetails.mobile,
-                                "email": org.storeDetails.supportDetails.email
-                            }
-                    }
-                ],
+            "fulfillments":orgFulfillments,
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
@@ -394,13 +412,12 @@ export async function mapElectronicsDataUpdate(data){
         let productAvailable = []
         for (let items of org.items) {
             const customizationDetails = items.customizationDetails;
-            
-            if(customizationDetails && customizationDetails.customizationGroups.length === 0){
+            if(Object.keys(customizationDetails).length === 0){
                 let item = itemSchema({...items, org: org},[])
                 productAvailable.push(item)
             }else{
-                const customizationGroups = customizationDetails.customizationGroups;
                 let customGroup = [];
+                const customizationGroups = customizationDetails.customizationGroups;
                 for(const customizationGroup of customizationGroups){
                     let groupObj = {
                         code: "id",
@@ -454,6 +471,44 @@ function itemSchema(items,customMenuData) {
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const categoryIds = getcategoryIds(items,customMenuData);
     const org = items.org;
+    let priceData ={
+        currency: "INR",
+        value: `${items.MRP}`,
+        maximum_value: `${items?.maxMRP ?? items.MRP}`
+    };
+    if(items.maxMRP && items.maxDefaultMRP){
+        let itemtags = [
+          {
+            code:'range',
+            list:
+            [
+              {
+                code:'lower',
+                value:`${items.MRP}`
+              },
+              {
+                code:'upper',
+                value:`${items.maxMRP}`
+              }
+            ]
+          },
+          {
+            code:'default_selection',
+            list:
+            [
+              {
+                code:'value',
+                value:`${items.MRP}`
+              },
+              {
+                code:'maximum_value',
+                value:`${items.maxDefaultMRP}`
+              }
+            ]
+          }
+        ];
+        priceData.tags = itemtags;
+    }
     let item = {
         "id": items._id,
         "time": {
@@ -476,18 +531,16 @@ function itemSchema(items,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
-        "price": {
-            "currency": "INR",
-            "value": `${items.MRP}`,
-            "maximum_value": `${items.MRP}`
-        },
+        "price": priceData,
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
@@ -541,6 +594,44 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
     const allowedStatutoryReq = FIELD_ALLOWED_BASED_ON_PROTOCOL_KEY[items.productSubcategory1];
     const categoryIds = getcategoryIds(items,customMenuData);
     const org = items.org;
+    let priceData ={
+        currency: "INR",
+        value: `${items.MRP}`,
+        maximum_value: `${items?.maxMRP ?? items.MRP}`
+    };
+    if(items.maxMRP && items.maxDefaultMRP){
+        let itemtags = [
+          {
+            code:'range',
+            list:
+            [
+              {
+                code:'lower',
+                value:`${items.MRP}`
+              },
+              {
+                code:'upper',
+                value:`${items.maxMRP}`
+              }
+            ]
+          },
+          {
+            code:'default_selection',
+            list:
+            [
+              {
+                code:'value',
+                value:`${items.MRP}`
+              },
+              {
+                code:'maximum_value',
+                value:`${items.maxDefaultMRP}`
+              }
+            ]
+          }
+        ];
+        priceData.tags = itemtags;
+    }
     let item = {
         "id": items._id,
         "time": {
@@ -563,18 +654,16 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
-        "price": {
-            "currency": "INR",
-            "value": `${items.MRP}`,
-            "maximum_value": `${items.MRP}`
-        },
+        "price": priceData,
         "category_ids":categoryIds ?? [],
         "category_id": items.productSubcategory1 ?? "NA",
         "location_id": org.storeDetails?.location._id ?? "0",
@@ -676,7 +765,7 @@ function customizationSchema(customizations,item) {
         "id":customizations._id,
         "descriptor":
         {
-          "name":customizations.name
+          "name":customizations.productName
         },
         "quantity":
         {
@@ -690,20 +779,20 @@ function customizationSchema(customizations,item) {
           },
           "available":
           {
-            "count":`${customizations.available}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? 99 : 0}`
           },
           "maximum":
           {
-            "count":`${customizations.maximum}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? customizations?.maxAllowedQty : 0}`
           }
         },
         "price":
         {
           "currency":"INR",
-          "value":`${customizations.price}`,
-          "maximum_value":`${customizations.price}`
+          "value":`${customizations.MRP}`,
+          "maximum_value":`${customizations.MRP}`
         },
-        "category_id":item.productSubcategory1 ?? "NA",
+        "category_id":item.productCategory ?? "NA",
         "related":true,
         "tags":customizationTag
       };

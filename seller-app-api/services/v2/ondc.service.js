@@ -22,10 +22,9 @@ class OndcService {
 
             const order = payload;
             const selectMessageId = payload.context.message_id;
-
             this.postSearchRequest(order, selectMessageId)
 
-            return {}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
@@ -55,46 +54,14 @@ class OndcService {
             let totalPrice = 0
             let itemData = {};
             for (let item of payload.message.order.items) {
-                let tags = item.tags;
-                if (tags && tags.length > 0) {
-                    let tagData = tags.find((tag) => {
-                        return tag.code === 'type'
-                    })
-                    let tagTypeData = tagData.list.find((tagType) => {
-                        return tagType.code === 'type'
-                    })
-                    itemType = tagTypeData.value;
-                    if (itemType === 'customization') {
-                        resultData = itemData?.customizationDetails?.customizations.find((row) => {
-                            return row._id === item.id
-                        })
-                        if (resultData) {
-
-                            if (resultData) {
-                                let price = resultData?.price * item.quantity.count
-                                totalPrice += price
-                            }
-                        }
-                    } else {
-                        resultData = await productService.getForOndc(item.id)
-                        if (Object.keys(resultData).length > 0) {
-
-                            if (resultData?.commonDetails) {
-                                let price = resultData?.commonDetails?.MRP * item.quantity.count
-                                totalPrice += price
-                            }
-
-                        }
-                    }
-
-                } else {
-                    resultData = await productService.getForOndc(item.id)
-                    if (Object.keys(resultData).length > 0) {
-
-                        if (resultData?.commonDetails) {
-                            let price = resultData?.commonDetails?.MRP * item.quantity.count
-                            totalPrice += price
-                        }
+                resultData = await productService.getForOndc(item.id)
+                if (Object.keys(resultData).length > 0) {
+                    if (resultData?.commonDetails) {
+                        let price = resultData?.commonDetails?.MRP * item.quantity.count
+                        totalProductValue += price
+                    }else{
+                        let price = resultData?.MRP * item.quantity.count
+                        totalProductValue += price
                     }
                 }
             }
@@ -274,7 +241,7 @@ class OndcService {
             //process select request and send it to protocol layer
             this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId)
 
-            return searchRequest
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
@@ -829,7 +796,7 @@ class OndcService {
 
             this.postInitRequest(initRequest, logisticsMessageId, initMessageId)
 
-            return {'status': 'ACK'}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             logger.error('error', `[Ondc Service] build init request :`, {error: err.stack, message: err.message});
             console.log(err)
@@ -1087,7 +1054,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": logistics.context.city,
                     "country": "IND",
-                    "timestamp": contextTimestamp
+                    "timestamp": contextTimestamp,
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -1227,7 +1195,7 @@ class OndcService {
             this.postConfirmRequest(confirmRequest, logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 
-            return {status: "ACK"}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             throw err;
         }
@@ -1416,7 +1384,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -1431,7 +1400,7 @@ class OndcService {
             this.postTrackRequest(trackRequest, logisticsMessageId, selectMessageId)
             // }, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             throw err;
         }
@@ -1549,7 +1518,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -1564,7 +1534,7 @@ class OndcService {
             this.postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             throw err;
         }
@@ -1622,7 +1592,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -1716,16 +1687,17 @@ class OndcService {
                 "context": {
                     "domain": "nic2004:60232",
                     "action": "cancel",
-                    "core_version": "1.1.0",
+                    "core_version": "1.2.0",
                     "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BPP_URI,
+                    "bap_uri": config.get("sellerConfig").BAP_URI,
                     "bpp_id": logistics.context.bpp_id,//STORED OBJECT
                     "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
                     "transaction_id": confirmRequest.logisticsTransactionId,
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order_id": order.orderId,
@@ -1778,7 +1750,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080", //TODO: take it from request
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message": {
                     "order": {
@@ -1842,7 +1815,7 @@ class OndcService {
             //process select request and send it to protocol layer
             this.postUpdateRequestV2(searchRequest, null, updateMessageId)
 
-            return {status: 'ACK'}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             throw err;
         }
@@ -2238,7 +2211,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {
@@ -2254,7 +2228,7 @@ class OndcService {
             this.postCancelRequest(trackRequest, logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return {"message": {"ack": {"status": "ACK"}}}
         } catch (err) {
             throw err;
         }
@@ -2636,7 +2610,8 @@ class OndcService {
                     "message_id": logisticsMessageId,
                     "city": "std:080",
                     "country": "IND",
-                    "timestamp": new Date()
+                    "timestamp": new Date(),
+                    "ttl": "PT30S"
                 },
                 "message":
                     {

@@ -402,7 +402,7 @@ class ProductController {
                                     region: region
                                 });
 
-                                const uploadedImage = await s3.upload({
+                                await s3.upload({
                                     Bucket: bucket,
                                     Key: keyName,
                                     Body: blob
@@ -459,6 +459,90 @@ class ProductController {
         }
     }
 
+    //customization funcs
+
+    async createCustomization(req, res, next){
+        try {
+            const data = req.body;
+            data.organization = req.user.organization;
+            
+            const result = await productService.createCustomization(data, req.user);
+            return res.send(result);
+        } catch (error) {
+            console.log('[CustomizationController] [create] Error -', error);
+            next(error);
+        }
+    }
+    async getCustomization(req, res, next) {
+        try {
+            const { name, organization } = req.query;
+            const offset = parseInt(req.query.offset) || 0;
+            const limit = parseInt(req.query.limit) || 10;
+
+            const params = {
+                name,
+                organization,
+                offset,
+                limit
+            };
+
+            const customizations = await productService.getCustomization(params,req.user);
+            return res.json(customizations);
+        } catch (error) {
+            console.log('[CustomizationController] [getCustomization] Error:', error);
+            next(error);
+        }
+    }
+
+    async updateCustomization(req, res, next) {
+        try {
+            const { customizationId } = req.params;
+            const updatedDetails = req.body;
+            //console.log("UPDATED", updatedDetails);
+    
+            const updateResult = await productService.updateCustomization(updatedDetails, req.user, customizationId);
+            //console.log("RESULT", updateResult);
+    
+            if (updateResult) {
+                return res.status(200).json({ success: true, message: 'Customizations updated successfully.' });
+            } else {
+                return res.status(400).json({ success: false, message: 'Failed to update customizations.' });
+            }
+        } catch (error) {
+            console.log('[CustomizationController] [updateCustomization] Error -', error);
+            next(error);
+        }
+    }
+    
+    async deleteCustomization(req, res, next) {
+        try {
+            const { customizationId } = req.params;
+            const deleteResult = await productService.deleteCustomization(customizationId, req.user);
+    
+            if (deleteResult && deleteResult.success) {
+                return res.status(200).json({ success: true, message: 'Customization deleted successfully.', deletedCustomization: deleteResult.deletedCustomization });
+            } else {
+                return res.status(404).json({ success: false, message: 'Failed to delete customization or customization not found.' });
+            }
+        } catch (error) {
+            console.log('[CustomizationController] [deleteCustomization] Error -', error);
+            next(error);
+        }
+    }
+    
+    async getCustomizationById(req, res, next) {
+        try {
+            const currentUser = req.user;
+            const { customizationId } = req.params;
+    
+            const customization = await productService.getCustomizationById(customizationId, currentUser);
+    
+            return res.send(customization);
+        } catch (err) {
+            console.error('[CustomizationController] [getCustomizationById] Error:', err);
+            next(err);
+        }
+    }
 
 }
 
