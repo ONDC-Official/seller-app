@@ -147,7 +147,7 @@ exports.getSelect = async (data) => {
                     {
                         type:"DOMAIN-ERROR",
                         code:"40002",
-                        message:"Item quantity unavailable"
+                        message:JSON.stringify(data.notInStockError)
                     }}
 
         }
@@ -229,7 +229,7 @@ exports.getInit = async (data) => {
         "message":  {
             "order": {
                 "provider":{id:data.message.order.provider.id},
-                "provider_location": {id:data.message.order.provider.locations[0].id},
+                // "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
                 "fulfillments": data.message.order.fulfillments,
@@ -286,6 +286,7 @@ exports.getStatus = async (data) => {
                  "id" :  data.updateOrder.order_id,
                  "created_at":data.updateOrder.createdAt, //TODO: should not change
                  "updated_at":data.updateOrder.updatedAt,
+                 "documents":data.updateOrder.documents
             }
         }
     }
@@ -390,9 +391,17 @@ exports.getCancel = async (data) => {
         "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
+                "provider":{"id":data.updateOrder.organization},
                 "state":data.updateOrder.state,
-                "id" :  data.updateOrder.id,
-                "tags":{cancellation_reason_id:data.updateOrder.cancellation_reason_id}
+                "items": data.updateOrder.items,
+                "billing": data.updateOrder.billing,
+                "fulfillments": data.updateOrder.fulfillments,
+                "quote":  data.updateOrder.quote,
+                "payment": data.updateOrder.payment,
+                "id" :  data.updateOrder.orderId,
+                "created_at":data.updateOrder.createdAt, //TODO: should not change
+                "updated_at":context.timestamp,
+                "cancellation":data.updateOrder.cancellation
             }
         }
     }

@@ -82,9 +82,9 @@
   },
   "sellerConfig": {
     "BPP_ID": "sellerapp-staging.datasyndicate.in",
-    "BPP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
+    "BPP_URI": "https://7e3b-2401-4900-1c5d-2b13-814b-de08-9df3-b44e.ngrok-free.app",
     "BAP_ID": "sellerapp-staging.datasyndicate.in",
-    "BAP_URI": "https://6607-2402-e280-3e33-24e-7533-b3a7-881b-4166.in.ngrok.io",
+    "BAP_URI": "https://7e3b-2401-4900-1c5d-2b13-814b-de08-9df3-b44e.ngrok-free.app",
     "storeOpenSchedule": {
       "time": {
         "days": "1,2,3,4,5,6,7",

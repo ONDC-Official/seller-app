@@ -254,8 +254,35 @@ export async function mapHomenDecorData(data) {
             "long_desc": org.name,
             "images": [
                 org.storeDetails.logo
+            ],
+            "tags":[
+                {
+                    "code":"bpp_terms",
+                    "list":
+                    [
+                    {
+                        "code":"np_type",
+                        "value":"MSN"
+                    }
+                    ]
+                }
             ]
         }
+        let orgFulfillments = org.storeDetails?.fulfillments ?? []
+        orgFulfillments = orgFulfillments.map((fulfillment)=>{
+            if(fulfillment.type === 'delivery'){
+                fulfillment.type = 'Delivery'
+                fulfillment.id = '1'
+            }else if(fulfillment.type === 'pickup'){
+                fulfillment.type = 'Self-Pickup'
+                fulfillment.id = '2'
+            }else{
+                fulfillment.type = 'Delivery and Self-Pickup'
+                fulfillment.id = '3'
+            }
+            return fulfillment;
+        })
+        orgFulfillments = orgFulfillments.filter((data)=> data.id !== '3')
         bppProviders.push({
             "id": org._id,
             "descriptor": {
@@ -312,16 +339,7 @@ export async function mapHomenDecorData(data) {
             ],
             "ttl": "PT24H",
             "items": productAvailable,
-            "fulfillments":
-                [
-                    {
-                        "contact":
-                            {
-                                "phone": org.storeDetails.supportDetails.mobile,
-                                "email": org.storeDetails.supportDetails.email
-                            }
-                    }
-                ],
+            "fulfillments":orgFulfillments,
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
@@ -516,11 +534,13 @@ function itemSchema(items,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
         "price": priceData,
@@ -636,11 +656,13 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                     "value": `${items.UOMValue}`
                 }
             },
-            "available": {
-                "count": `${items.quantity}`
+            "available":
+            {
+                "count": `${(items?.quantity) ? 99 : 0}`
             },
-            "maximum": {
-                "count": (items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`
+            "maximum":
+            {
+                "count": `${(items?.quantity) ? ((items.quantity<=items.maxAllowedQty)?`${items.quantity}`:`${items.maxAllowedQty}`) : 0}`
             }
         },
         "price":priceData,
@@ -745,7 +767,7 @@ function customizationSchema(customizations,item) {
         "id":customizations._id,
         "descriptor":
         {
-          "name":customizations.name
+          "name":customizations.productName
         },
         "quantity":
         {
@@ -759,11 +781,11 @@ function customizationSchema(customizations,item) {
           },
           "available":
           {
-            "count":`${customizations.quantity}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? 99 : 0}`
           },
           "maximum":
           {
-            "count":`${customizations.maxAllowedQty}` ?? 'NA'
+              "count": `${(customizations?.quantity) ? customizations?.maxAllowedQty : 0}`
           }
         },
         "price":
@@ -772,7 +794,7 @@ function customizationSchema(customizations,item) {
           "value":`${customizations.MRP}`,
           "maximum_value":`${customizations.MRP}`
         },
-        "category_id":item.productSubcategory1 ?? "NA",
+        "category_id":item.productCategory ?? "NA",
         "related":true,
         "tags":customizationTag
       };

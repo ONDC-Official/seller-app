@@ -11,6 +11,7 @@ import { Categories, SubCategories, Attributes } from '../../../../lib/utils/cat
 import Organization from '../../../authentication/models/organization.model';
 import s3 from '../../../../lib/utils/s3Utils';
 import MESSAGES from '../../../../lib/utils/messages';
+import MappedCity from '../../../../lib/utils/mappedCityCode';
 import { BadRequestParameterError, DuplicateRecordFoundError, NoRecordFoundError } from '../../../../lib/errors';
 import HttpRequest from '../../../../lib/utils/HttpRequest';
 import {mergedEnvironmentConfig} from '../../../../config/env.config';
@@ -216,9 +217,15 @@ class ProductService {
     async searchIncrementalPull(params,category) {
         try {
             let query={};
-
-            console.log('params------->',params);
-            const orgs = await Organization.find({},).lean();
+            let orgs;
+            if(params.city){
+                const cityCode = params.city.split(':')[1];
+                let cityData = MappedCity(cityCode);
+                cityData = cityData.map((data)=> data.Pincode );
+                orgs = await Organization.find({ 'storeDetails.address.area_code': {$in:cityData }}).lean();
+            }else{
+                orgs = await Organization.find({},).lean();
+            }
             let products = [];
             for(const org of orgs){
                 let productData = [];

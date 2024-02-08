@@ -321,10 +321,10 @@ class CustomizationService {
                         for(const group of data.groups){
                             customizationObj={
                                 _id: customization._id,
-                                name: customization.productName,
+                                productName: customization.productName,
                                 MRP: customization.MRP,
-                                parent: groupId,
-                                child: group.child,
+                                parentId: groupId,
+                                childId: group.child,
                                 quantity: customization.quantity,
                                 maxAllowedQty: customization.maxAllowedQty,
                                 UOMValue: customization.UOMValue,
