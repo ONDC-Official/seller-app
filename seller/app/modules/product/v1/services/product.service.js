@@ -200,6 +200,12 @@ class ProductService {
                             let imageData = await s3.getSignedUrlForRead({path:image});
                             images.push(imageData.url);
                         }
+                        if(product.backImage){
+                            let imageData = await s3.getSignedUrlForRead({path:product.backImage});
+                            product.backImage =imageData.url;
+                        }else{
+                            product.backImage ='';
+                        }
                         product.images = images;
                     }
                     org.items = data;
@@ -225,7 +231,7 @@ class ProductService {
                 orgs = await Organization.find({ 'storeDetails.address.area_code': {$in:cityData }}).lean();
             }else if(params.city==='*'){
                 orgs = await Organization.find({},).lean();
-                console.log({orgs})
+                console.log({orgs});
             }
             let products = [];
             for(const org of orgs){
@@ -257,6 +263,16 @@ class ProductService {
                             let imageData = await s3.getSignedUrlForRead({path:image});
                             images.push(imageData.url);
                         }
+                        product.images = images;
+                        // for(const image of productDetails.backImage){
+                        if(productDetails.backImage){
+                            let imageData = await s3.getSignedUrlForRead({path:productDetails.backImage});
+                            productDetails.backImage =imageData.url;
+                        }else{
+                            productDetails.backImage ='';
+                        }
+
+                        // }
                         product.images = images;
                         let attributeData =[];
                         const attributes = await ProductAttribute.find({product:product._id});
@@ -383,6 +399,12 @@ class ProductService {
                 for(const image of product.images){
                     let data = await s3.getSignedUrlForRead({path:image});
                     images.push(data);
+                }
+                if(product.backImage){
+                    let imageData = await s3.getSignedUrlForRead({path:product.backImage});
+                    product.backImage =imageData.url;
+                }else{
+                    product.backImage ='';
                 }
                 product.images = images;
             }
