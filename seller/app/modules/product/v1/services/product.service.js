@@ -359,6 +359,13 @@ class ProductService {
                 }
                 product.images = images;
             }
+            if(product.backImage ){
+                let data = await s3.getSignedUrlForRead({path:product.backImage});
+                // images.push(data);
+                product.backImage = data;
+            }else{
+                product.backImage = '';
+            }
             const attributes = await ProductAttribute.find({product:productId,organization:currentUser.organization}); 
             let attributeObj = {};
             for(const attribute of attributes){
