@@ -218,13 +218,14 @@ class ProductService {
         try {
             let query={};
             let orgs;
-            if(params.city){
+            if(params.city!=='*'){
                 const cityCode = params.city.split(':')[1];
                 let cityData = MappedCity(cityCode);
                 cityData = cityData.map((data)=> data.Pincode );
                 orgs = await Organization.find({ 'storeDetails.address.area_code': {$in:cityData }}).lean();
-            }else{
+            }else if(params.city==='*'){
                 orgs = await Organization.find({},).lean();
+                console.log({orgs})
             }
             let products = [];
             for(const org of orgs){
@@ -237,6 +238,12 @@ class ProductService {
                 // query.type = 'item'; // filter to fetch only items
                 if(category){
                     query.productCategory ={ $regex: '.*' + category + '.*' };
+                }
+                if(params.city==='*'){
+                    query.updatedAt = {
+                        $gte: new Date(params.startTime),
+                        $lt: new Date(params.endTime)
+                    };
                 }
                 // query.productName = {$regex: params.message.intent.item.descriptor.name,$options: 'i'}
                 //let product = await Product.findOne({_id:productId,organization:currentUser.organization}).populate('variantGroup').lean();

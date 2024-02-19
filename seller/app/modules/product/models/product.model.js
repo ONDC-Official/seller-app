@@ -1,5 +1,6 @@
 import mongoose from'mongoose';
 import { uuid } from 'uuidv4';
+import Joi from "joi";
 const productSchema = new mongoose.Schema({
     _id:{
         type: String, 
@@ -59,8 +60,8 @@ const productSchema = new mongoose.Schema({
     monthYearOfManufacturePackingImport:{type:String},
     importerFSSAILicenseNo:{type:String},
     brandOwnerFSSAILicenseNo:{type:String},
-    customizationGroupId: { type: String, ref: 'CustomizationGroup'}
-
+    customizationGroupId: { type: String, ref: 'CustomizationGroup'},
+    backImage: {type:String}
 },{  
     strict: true,
     timestamps:true

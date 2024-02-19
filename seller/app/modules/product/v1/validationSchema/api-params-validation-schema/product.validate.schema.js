@@ -50,7 +50,8 @@ module.exports = {
                 barcode: Joi.number(),
                 images: Joi.array(),
                 type: Joi.string(),
-                customizationGroupId: Joi.string().allow('')
+                customizationGroupId: Joi.string().allow(''),
+                backImage: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             customizationDetails: Joi.object({
@@ -103,6 +104,7 @@ module.exports = {
                 brandOwnerFSSAILicenseNo:Joi.string().allow(''),
                 customizationGroupId: Joi.string(),
                 type: Joi.string(),
+                backImage: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             variantSpecificDetails: Joi.array().items(
@@ -177,6 +179,7 @@ module.exports = {
                 images: Joi.array(),
                 customizationGroupId: Joi.string().allow(''),
                 type: Joi.string(),
+                backImage: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             customizationDetails: Joi.object({
@@ -228,7 +231,8 @@ module.exports = {
                 importerFSSAILicenseNo:Joi.string().allow(''),
                 brandOwnerFSSAILicenseNo:Joi.string().allow(''),
                 customizationGroupId: Joi.string().allow(''),
-                type: Joi.string()
+                type: Joi.string(),
+                backImage: Joi.string().allow('')
             }),
             commonAttributesValues: Joi.object(),
             variantSpecificDetails: Joi.array().items(
