@@ -2,12 +2,13 @@ import {v4 as uuidv4} from 'uuid';
 import config from "../../lib/config";
 import HttpRequest from "../../utils/HttpRequest";
 import {InitRequest, ConfirmRequest, SelectRequest} from '../../models'
-import {getProductUpdate} from "../../utils/v2/schemaMapping";
+import {getProductsIncr, getProductUpdate} from "../../utils/v2/schemaMapping";
 import {domainNameSpace} from "../../utils/constants";
 import ProductService from './product.service'
 
 const productService = new ProductService();
 import logger from '../../lib/logger'
+import {SearchRequest} from "../../models";
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
@@ -2369,35 +2370,46 @@ class OndcService {
         }
     }
 
-    async buildItemUpdate(statusRequest) {
+    async buildItemUpdate(changeditem) {
 
         try {
-            const org = await productService.getOrgForOndc(statusRequest.organization)
+            const org = await productService.getOrgForOndc(changeditem.organization)
 
             let category = domainNameSpace.find((cat) => {
-                return cat.name === statusRequest.productCategory
+                return cat.name === changeditem.productCategory
             })
-            let context = {
-                "domain": category.domain,
-                "country": "IND",
-                "city": "std:080",
-                "action": "on_search",
-                "core_version": "1.2.0",
-                "bap_id": "ref-app-buyer-dev-internal.ondc.org",
-                "bap_uri": "https://ref-app-buyer-dev-internal.ondc.org/protocol/v1",
-                "bpp_uri": "https://ref-app-seller-dev-internal.ondc.org",
-                "transaction_id": "323e2894-82b9-4577-bf7a-19bd85a5dcdf",
-                "message_id": "bf1104c9-0ad3-4bcf-b45d-d74c38ea4764",
-                "timestamp": new Date(),
-                "bpp_id": "ref-app-seller-dev-internal.ondc.org",
-                "ttl": "PT30S"
+
+            console.log({statusRequest: changeditem})
+            changeditem.images = changeditem.images.map((item)=>{return item.url})
+            let searchRequests =  await SearchRequest.findAll({where:{mode:'start',domain:category.domain}})
+
+            for(let searchRequest of searchRequests){
+
+                let context = {
+                    "domain": category.domain,
+                    "country": "IND",
+                    "city": searchRequest.searchRequest.context.city,
+                    "action": "on_search",
+                    "core_version": "1.2.0",
+                    "bap_id": searchRequest.bapId,
+                    "bap_uri": searchRequest.searchRequest.context.bap_uri,
+                    "bpp_uri": searchRequest.searchRequest.context.bpp_uri,
+                    "transaction_id": searchRequest.transactionId,
+                    "message_id": searchRequest.messageId,
+                    "timestamp": new Date(),
+                    "bpp_id": searchRequest.searchRequest.context.bpp_id,
+                    "ttl": "PT30S"
+                }
+                let data = {
+                    products: [{...org.providerDetail, items: [changeditem]}],
+                    customMenu: [],
+                }
+                let productSchema = await getProductsIncr({data, context});
+                await this.postItemUpdateRequest(productSchema[0]);
+
             }
-            let data = {
-                products: [{...org.providerDetail, items: [statusRequest]}],
-                customMenu: [],
-            }
-            let productSchema = await getProductUpdate({data, context});
-            await this.postItemUpdateRequest(productSchema);
+            console.log({searchRequests})
+
 
         } catch (e) {
             console.log(e)
@@ -2511,12 +2523,11 @@ class OndcService {
 
     }
 
-    //return track response to protocol layer
     async postItemUpdateRequest(statusResponse) {
         try {
             console.log('itemdata------------------------------------------>')
             console.log({itemdata: statusResponse})
-            let headers = {};
+            let  headers ={"X-ONDC-Search-Response":'inc'}
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_search`,
