@@ -379,9 +379,10 @@ class OndcService {
         try {
             // let org = await productService.getOrgForOndc(payload.message.order.provider.id);
             let searchResponse = await productService.search(searchRequest, searchMessageId)
-            if (searchResponse.length > 0) {
-                for (let onsearch of searchResponse) {
-                    await this.postSearchResponse(onsearch);
+            console.log("===earchResponse.productData.length",searchResponse.productData.length)
+            if (searchResponse.productData.length > 0) {
+                for (let onsearch of searchResponse.productData) {
+                    await this.postSearchResponse(onsearch,searchResponse.type);
                 }
             }
 
@@ -466,12 +467,17 @@ class OndcService {
     }
 
     //return select response to protocol layer
-    async postSearchResponse(searchResponse) {
+    async postSearchResponse(searchResponse,type) {
         try {
 
             logger.info('info', `[Ondc Service] post http select response : `, searchResponse);
-
             let headers = {};
+            if(type==='incr'){
+                headers ={"X-ONDC-Search-Response":'inc'}
+            }else {
+                headers ={"X-ONDC-Search-Response":'full'}
+            }
+
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_search`,

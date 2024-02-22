@@ -128,7 +128,7 @@ class ProductService {
 
                 // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-                console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
 
             }else if(searchRequest.type==='incr' && searchRequest.mode!=='start'&& searchRequest.mode!=='stop'){
                     //time based incr search
@@ -151,13 +151,14 @@ class ProductService {
 
                 // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-                console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
 
             }
 
+            console.log({searchRequest})
             //destroy older search request with start
             if(searchRequest.mode=='start'){
-                console.log({searchRequest})
+
                 await searchRequest.save();
             }else if(searchRequest.mode=='stop'){
                 await SearchRequest.destroy({where:{
@@ -169,8 +170,11 @@ class ProductService {
             }
 
 
-            return productData
+            console.log({productData, type:searchRequest.type})
+
+            return {productData, type:searchRequest.type}
         }catch (e) {
+            console.log("error",e.stackTrace)
             console.log(e)
         }
 
