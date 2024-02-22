@@ -559,12 +559,44 @@ class OrderService {
             let itemToBeUpdated= data.breakup.find(x => x['@ondc/org/item_id'] ===item);
 
             console.log({itemToBeUpdated});
+            console.log({quantity});
+            console.log({item});
             let priceToReduce = parseFloat(itemToBeUpdated.item.price.value)*quantity;
             itemToBeUpdated['@ondc/org/item_quantity'].count=itemToBeUpdated['@ondc/org/item_quantity'].count-quantity;
             itemToBeUpdated['price'].value=''+(parseFloat(itemToBeUpdated['price'].value)-priceToReduce);
             data.breakup[itemIndex] = itemToBeUpdated;
 
             data.price.value = ''+(parseFloat(data.price.value) -priceToReduce);
+            console.log(data)
+            return data;
+        }catch (e) {
+            throw e;
+        }
+    }
+    async updateQouteToZero(data,quantity,item){
+        try{
+
+            let itemIndex = data.breakup.findIndex(x => x['@ondc/org/item_id'] ===item);
+            let itemToBeUpdated= data.breakup.find(x => x['@ondc/org/item_id'] ===item);
+            let priceToReduce = parseFloat(itemToBeUpdated.item.price.value)*quantity;
+            itemToBeUpdated['@ondc/org/item_quantity'].count=itemToBeUpdated['@ondc/org/item_quantity'].count*quantity;
+            itemToBeUpdated['price'].value=''+(parseFloat(itemToBeUpdated['price'].value)*priceToReduce);
+            data.breakup[itemIndex] = itemToBeUpdated;
+
+            // //update delivery charge
+            // let itemIndex1 = data.breakup.findIndex(x => x['@ondc/org/item_type'] ==='delivery');
+            // let itemToBeUpdated1= data.breakup.find(x => x['@ondc/org/item_type'] ==='delivery');
+            //
+            // console.log({itemToBeUpdated1});
+            // console.log({quantity});
+            // console.log({item});
+            // let priceToReduce1 = parseFloat(itemToBeUpdated1.price.value)*quantity;
+            // itemToBeUpdated1['@ondc/org/item_quantity'].count=itemToBeUpdated1['@ondc/org/item_quantity'].count*quantity;
+            // itemToBeUpdated1['price'].value=''+(parseFloat(itemToBeUpdated1['price'].value)*priceToReduce1);
+            // data.breakup[itemIndex1] = itemToBeUpdated1;
+
+            data.price.value = ''+(parseFloat(data.price.value) *0);
+            console.log(data)
             return data;
         }catch (e) {
             throw e;
@@ -802,6 +834,8 @@ class OrderService {
             // order.items.push(cancelledItem);
 
             let qouteTrails = [];
+
+            console.log("order.items------------>",order.items)
             let newItemsWithNewFulfillmentId = [];
             for(let itemToBeUpdated of order.items) {
                 //get product price
@@ -835,11 +869,12 @@ class OrderService {
 
                 const newItems =JSON.parse(JSON.stringify(itemToBeUpdated));
                 let oldItems = JSON.parse(JSON.stringify(itemToBeUpdated));
+                oldItems.quantity.count = 0;
                 oldItems.fulfillment_id = cancelRequest.id;
                 newItemsWithNewFulfillmentId.push(oldItems);
 
-                newItems.quantity.count = 0;
-                newItemsWithNewFulfillmentId.push(newItems);
+                // newItems.quantity.count = 0;
+                // newItemsWithNewFulfillmentId.push(newItems);
             }
             order.items=newItemsWithNewFulfillmentId;
             // cancelRequest.quote_trail = qouteTrail;
@@ -897,7 +932,10 @@ class OrderService {
             order.fulfillments.push(deliveryFulfillment);
 
             //2. append qoute trail
-            order.quote = await this.updateQoute(order.quote,data.quantity,data.id);
+            for(let itemToBeUpdated of order.items) {
+                order.quote = await this.updateQouteToZero(order.quote,0,itemToBeUpdated.id);
+            }
+
             // await order.save();
             //TODO:Uncomment this
             await Order.findOneAndUpdate({orderId:orderId},{items:order.items,fulfillments:order.fulfillments,quote:order.quote,state:order.state});
