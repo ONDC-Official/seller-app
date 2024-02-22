@@ -2627,19 +2627,16 @@ class ProductService {
                     //     totalPrice += price
                     // }
 
+                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
+                        let errorObj = {item_id:`${item.id}`,error:'40002'};
+                        notInStockError.push(errorObj)
+                    }
+
                     if (itemData.maxAllowedQty < item.quantity.count) {
                         isQtyAvailable  = false
                         item.quantity.count = itemData.maxAllowedQty;
                     }
 
-                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
-                        let errorObj = {item_id:`${item.id}`,error:'40002'};
-                        notInStockError.push(errorObj)
-                    }
-                    if(itemData.quantity < item.quantity.count){
-                        isQtyAvailable  = false
-                        item.quantity.count = itemData.quantity;
-                    }
 
                     if (itemData) {
                         let price = itemData?.MRP * item.quantity.count
@@ -2647,6 +2644,9 @@ class ProductService {
                     }
                     console.log({itemData})
                     console.log({isQtyAvailable})
+                    console.log("itemData.quantity",itemData.quantity)
+                    console.log("item.quantity.count",item.quantity.count)
+                    console.log({notInStockError})
                     let qouteItemsDetails = {
                         "@ondc/org/item_id": item.id,
                         "@ondc/org/item_quantity": {
