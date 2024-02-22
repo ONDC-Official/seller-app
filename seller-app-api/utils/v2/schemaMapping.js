@@ -3,16 +3,16 @@ import {v4 as uuidv4} from "uuid";
 const config = require("../../lib/config");
 const logger = require("../../lib/logger");
 const {domainNameSpace} = require("../constants");
-import {mapGroceryData,mapGroceryDataUpdate} from './category/grocery';
-import {mapFashionData,mapFashionDataUpdate} from './category/fashion'
-import {mapFnBData,mapFnBDataUpdate} from './category/fnb';
-import {mapElectronicsData,mapElectronicsDataUpdate} from './category/electronics';
-import {mapHealthnWellnessData,mapHealthnWellnessDataUpdate} from './category/health&wellness';
-import {mapHomenDecorData,mapHomenDecorDataUpdate} from './category/home&decor';
-import {mapAppliancesData,mapAppliancesDataUpdate} from './category/appliances';
-import {mapBPCData,mapBPCDataUpdate} from './category/bpc';
-import {mapAgricultureData,mapAgricultureDataUpdate} from './category/agriculture';
-import {mapToysnGamesData,mapToysnGamesDataUpdate} from './category/toys&games';
+import {mapGroceryData, mapGroceryDataIncr, mapGroceryDataUpdate} from './category/grocery';
+import {mapFashionData,mapFashionDataUpdate,mapFashionDataIncr} from './category/fashion'
+import {mapFnBData,mapFnBDataUpdate,mapFnBDataIncr} from './category/fnb';
+import {mapElectronicsData,mapElectronicsDataIncr,mapElectronicsDataUpdate} from './category/electronics';
+import {mapHealthnWellnessData,mapHealthnWellnessDataIncr,mapHealthnWellnessDataUpdate} from './category/health&wellness';
+import {mapHomenDecorData,mapHomenDecorDataIncr,mapHomenDecorDataUpdate} from './category/home&decor';
+import {mapAppliancesData,mapAppliancesDataIncr,mapAppliancesDataUpdate} from './category/appliances';
+import {mapBPCData,mapBPCDataIncr,mapBPCDataUpdate} from './category/bpc';
+import {mapAgricultureData,mapAgricultureDataIncr,mapAgricultureDataUpdate} from './category/agriculture';
+import {mapToysnGamesData,mapToysnGamesDataIncr,mapToysnGamesDataUpdate} from './category/toys&games';
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
 
@@ -64,6 +64,61 @@ exports.getProducts = async (data) => {
         }
         case 'Toys & Games': {
             mappedCatalog = await mapToysnGamesData(data);
+            break;
+        }
+    }
+    return mappedCatalog;
+
+}
+
+exports.getProductsIncr = async (data) => {
+
+    //check category and forward request to specific category mapper
+
+    let mappedCatalog = []
+    let category = domainNameSpace.find((cat)=>{
+        return cat.domain === data.context.domain
+    })
+
+    switch (category.name){
+        case 'Grocery': {
+            mappedCatalog = await mapGroceryDataIncr(data);
+            break;
+        }
+        case 'Fashion': {
+            mappedCatalog = await mapFashionDataIncr(data);
+            break;
+        }
+        case 'F&B': {
+            mappedCatalog = await mapFnBDataIncr(data);
+            break;
+        }
+        case 'Electronics': {
+            mappedCatalog = await mapElectronicsDataIncr(data);
+            break;
+        }
+        case 'Health & Wellness': {
+            mappedCatalog = await mapHealthnWellnessDataIncr(data);
+            break;
+        }
+        case 'Home & Decor': {
+            mappedCatalog = await mapHomenDecorDataIncr(data);
+            break;
+        }
+        case 'Appliances': {
+            mappedCatalog = await mapAppliancesDataIncr(data);
+            break;
+        }
+        case 'BPC': {
+            mappedCatalog = await mapBPCDataIncr(data);
+            break;
+        }
+        case 'Agriculture': {
+            mappedCatalog = await mapAgricultureDataIncr(data);
+            break;
+        }
+        case 'Toys & Games': {
+            mappedCatalog = await mapToysnGamesDataIncr(data);
             break;
         }
     }

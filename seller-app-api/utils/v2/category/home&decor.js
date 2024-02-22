@@ -571,7 +571,23 @@ function itemSchema(items,customMenuData) {
                         "value": items.countryOfOrigin ?? 'NA'
                     }
                 ]
-            },{
+            },
+            {
+                "code":"image",
+                "list":
+                    [
+                        {
+                            "code":"type",
+                            "value":"back_image"
+                        },
+                        {
+                            "code":"url",
+                            "value":items.backImage??""
+                        }
+                    ]
+
+            },
+            {
                 "code":"type",
                 "list":[
                     {
@@ -698,6 +714,21 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                 "code":"custom_group",
                 "list":customGroup
                 
+            },
+            {
+                "code":"image",
+                "list":
+                    [
+                        {
+                            "code":"type",
+                            "value":"back_image"
+                        },
+                        {
+                            "code":"url",
+                            "value":items.backImage??""
+                        }
+                    ]
+
             },
             {
                 "code": "origin", //TODO: Implementation pending

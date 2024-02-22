@@ -571,7 +571,23 @@ function itemSchema(items,customMenuData) {
                         "value": items.countryOfOrigin ?? 'NA'
                     }
                 ]
-            },{
+            },
+            {
+                "code":"image",
+                "list":
+                    [
+                        {
+                            "code":"type",
+                            "value":"back_image"
+                        },
+                        {
+                            "code":"url",
+                            "value":items.backImage??""
+                        }
+                    ]
+
+            },
+            {
                 "code":"type",
                 "list":[
                     {
@@ -708,6 +724,21 @@ function itemSchemaWithCustomGroup(items,customGroup,customMenuData) {
                         "value": items.countryOfOrigin ?? 'NA'
                     }
                 ]
+            },
+            {
+                "code":"image",
+                "list":
+                    [
+                        {
+                            "code":"type",
+                            "value":"back_image"
+                        },
+                        {
+                            "code":"url",
+                            "value":items.backImage??""
+                        }
+                    ]
+
             },
             {
                 "code": "attribute",
