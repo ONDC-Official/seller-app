@@ -406,6 +406,169 @@ export async function mapElectronicsData(data) {
 
 }
 
+
+
+export async function mapElectronicsDataIncr(data) {
+
+    let orgCatalogs = []
+    data.context.timestamp = new Date();
+
+    for (const org of data?.data?.products) {
+        let index = 1;
+        let menuData=[];
+        const customMenuData = org?.menu;
+        let bppDetails = {}
+        let bppProviders = []
+        let tags = []
+        let categories = [];
+        let categoryLists = [];
+        let tagCatList =[];
+        let variantGroupSequence = 1
+        let productAvailable = []
+        org.storeDetails.address.street = org.storeDetails.address.locality
+        delete org.storeDetails.address.locality
+        delete org.storeDetails.address.building
+        delete org.storeDetails.address.country
+
+        for (let items of org.items) {
+            if (items.variantGroup) {
+                if(categoryLists.indexOf(items.variantGroup._id)===-1){
+                    categoryLists.push(items.variantGroup._id)
+                    if (items.variantGroup.variationOn === 'UOM') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        category.tags.push({
+                            "code": "attr",
+                            "list": [
+                                {
+                                    "code": "name",
+                                    "value": 'item.quantity.unitized.measure'
+                                },
+                                {
+                                    "code": "seq",
+                                    "value": '1'
+                                }
+                            ]
+                        });
+                        categories.push(category);
+                        variantGroupSequence += 1;
+                    } else if (items.variantGroup.variationOn === 'ATTRIBUTES') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        for (let i = 0; i < items.variantGroup.name.length; i++) {
+                            category.tags.push({
+                                "code": "attr",
+                                "list": [
+                                    {
+                                        "code": "name",
+                                        "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                    },
+                                    {
+                                        "code": "seq",
+                                        "value": `${i + 1}`
+                                    }
+                                ]
+                            });
+                        }
+                        categories.push(category);
+                        variantGroupSequence += 1;
+                    }
+                }
+            }
+            let tagCatExist = tagCatList.find((data)=>{
+                return items.productSubcategory1 === data.category
+            });
+            if(!tagCatExist){
+                tagCatList.push({category:items.productSubcategory1});
+            }
+            if(menuData && menuData.length >0 && index ===1){
+                for(const menu of menuData){
+                    categories.push(menu)
+                }
+                index += 1;
+            }
+            const customizationDetails = items.customizationDetails;
+            let item = itemSchema({...items, org: org},customMenuData)
+            productAvailable.push(item)
+        }
+        bppDetails = {
+            "name": org.name,
+            "symbol": org.storeDetails.logo,
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
+            "images": [
+                org.storeDetails.logo
+            ],
+            "tags":[
+                {
+                    "code":"bpp_terms",
+                    "list":
+                        [
+                            {
+                                "code":"np_type",
+                                "value":"MSN"
+                            }
+                        ]
+                }
+            ]
+        }
+        let orgFulfillments = org.storeDetails?.fulfillments ?? []
+        bppProviders.push({
+            "id": org._id,
+            "items": productAvailable,
+            //"@ondc/org/fssai_license_no": org.FSSAI
+        })
+        let context = data.context
+        context.bpp_id = BPP_ID
+        context.bpp_uri = BPP_URI
+        context.action = 'on_search'
+        const schema = {
+            "context": {...context},
+            "message": {
+                "catalog": {
+                    "bpp/providers": bppProviders
+                }
+            }
+        }
+        orgCatalogs.push(schema)
+
+    }
+
+    return orgCatalogs
+
+}
+
+
 export async function mapElectronicsDataUpdate(data){
     let itemObjData = {}; 
     for (const org of data?.data?.products) {
