@@ -535,6 +535,8 @@ class ProductService {
                 {}
             );
 
+            httpRequest.send();
+
             return;
 
         } catch (err) {

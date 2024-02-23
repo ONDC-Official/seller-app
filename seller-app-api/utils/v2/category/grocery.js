@@ -343,32 +343,57 @@ export async function mapGroceryData(data) {
                 //"@ondc/org/fssai_license_no": org.FSSAI
             })
             for(const tagCat of tagCatList){
-                tags.push(
-                    {
-                        "code": "serviceability",
-                        "list": [
-                            {
-                                "code": "location",
-                                "value": org.storeDetails?.location._id ?? "0"
-                            },
-                            {
-                                "code": "category",
-                                "value": tagCat.category
-                            },
-                            {
-                                "code": "type",
-                                "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                            },
-                            {
-                                "code": "unit",
-                                "value": "country"
-                            },
-                            {
-                                "code": "value",
-                                "value": "IND"
-                            }
-                        ]
-                })
+
+                let serviceability =                    {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails?.location._id ?? "0"
+                        },
+                        {
+                            "code": "category",
+                            "value": tagCat.category
+                        },
+
+                    ]
+                }
+
+                // if(org.storeDetails.locationAvailabilityPANIndia || org.storeDetails.location_availability==='pan_india'){
+                    serviceability.list.push(
+                        {
+                            "code": "type",
+                            "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        },
+                        {
+                            "code": "value",
+                            "value": "IND"
+                        }
+                    )
+                // }else if(org.storeDetails.location_availability === 'custom_area'){
+                //         //map lat long in json format
+                //     console.log("-----org.storeDetails.custom_area--------",org.storeDetails.custom_area)
+                //     serviceability.list.push( {
+                //         "code":"type",
+                //         "value":"13"
+                //     },
+                //     {
+                //         "code":"unit",
+                //         "value":"polygon"
+                //     },
+                //     {
+                //         "code":"val",
+                //         "value":"{\"type\": \"FeatureCollection\", \"features\": [{\"type\": \"Feature\", \"properties\": {}, \"geometry\": {\"coordinates\": [[[77.17557124364345, 28.675927920960092], [77.12873700880397, 28.600972470604688], [77.44693431021358, 28.54532578327904], [77.17557124364345, 28.675927920960092]]], \"type\": \"Polygon\"}}]}"
+                //
+                //     }
+                //     )
+                // }
+
+                tags.push(serviceability)
             }
         let context = data.context
         context.bpp_id = BPP_ID
@@ -764,7 +789,7 @@ function itemSchema(items,customMenuData) {
                 "code": "veg_nonveg",
                 "list": [
                     {
-                        "code": items.isVegetarian ? 'veg' : 'nonveg',
+                        "code": items.isVegetarian ? 'veg' : 'non_veg',
                         "value": items.isVegetarian ? 'yes' : 'yes'
                     }
                 ]

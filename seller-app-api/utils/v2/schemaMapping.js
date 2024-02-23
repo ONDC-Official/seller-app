@@ -283,7 +283,14 @@ exports.getInit = async (data) => {
         "context": {...context,timestamp:new Date()},
         "message":  {
             "order": {
-                "provider":{id:data.message.order.provider.id},
+                "provider":{id:data.message.order.provider.id,
+                    "locations":
+                        [
+                            {
+                                "id":data.message.order.provider.locations[0].id
+                            }
+                        ]
+                },
                 // "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
@@ -366,8 +373,9 @@ exports.getUpdate = async (data) => {
     context.bpp_id =BPP_ID
     context.bpp_uri =BPP_URI
     context.action ='on_update'
+    context.timestamp =new Date()
     const schema = {
-        "context": {...context,timestamp:new Date()},
+        "context": {...context},
         "message":  {
             "order": {
                 "provider":{"id":data.updateOrder.organization},
@@ -404,8 +412,9 @@ exports.getUpdateItem = async (data) => {
     context.bpp_uri =BPP_URI
     context.action ='on_update'
     context.message_id = uuidv4()
+    let timestamp= new Date()
     const schema = {
-        "context": {...context,timestamp:new Date()},
+        "context": {...context,timestamp},
         "message":  {
             "order": {
                 "provider":{"id":data.updateOrder.organization},
@@ -417,7 +426,7 @@ exports.getUpdateItem = async (data) => {
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.orderId,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":context.timestamp,
+                "updated_at":timestamp, //TODO: updated_at
             }
         }
     }
@@ -442,8 +451,9 @@ exports.getCancel = async (data) => {
     context.bpp_id =BPP_ID
     context.bpp_uri =BPP_URI
     context.action ='on_cancel'
+    let timestamp= new Date()
     const schema = {
-        "context": {...context,timestamp:new Date()},
+        "context": {...context,timestamp},
         "message":  {
             "order": {
                 "provider":{"id":data.updateOrder.organization},
@@ -455,7 +465,7 @@ exports.getCancel = async (data) => {
                 "payment": data.updateOrder.payment,
                 "id" :  data.updateOrder.orderId,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":context.timestamp,
+                "updated_at":timestamp,
                 "cancellation":data.updateOrder.cancellation
             }
         }

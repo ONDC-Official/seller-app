@@ -128,7 +128,7 @@ class ProductService {
 
                 // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-                console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
 
             }else if(searchRequest.type==='incr' && searchRequest.mode!=='start'&& searchRequest.mode!=='stop'){
                     //time based incr search
@@ -151,13 +151,14 @@ class ProductService {
 
                 // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-                console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
 
             }
 
+            console.log({searchRequest})
             //destroy older search request with start
             if(searchRequest.mode=='start'){
-                console.log({searchRequest})
+
                 await searchRequest.save();
             }else if(searchRequest.mode=='stop'){
                 await SearchRequest.destroy({where:{
@@ -169,8 +170,11 @@ class ProductService {
             }
 
 
-            return productData
+            console.log({productData, type:searchRequest.type})
+
+            return {productData, type:searchRequest.type}
         }catch (e) {
+            console.log("error",e.stackTrace)
             console.log(e)
         }
 
@@ -2623,19 +2627,16 @@ class ProductService {
                     //     totalPrice += price
                     // }
 
+                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
+                        let errorObj = {item_id:`${item.id}`,error:'40002'};
+                        notInStockError.push(errorObj)
+                    }
+
                     if (itemData.maxAllowedQty < item.quantity.count) {
                         isQtyAvailable  = false
                         item.quantity.count = itemData.maxAllowedQty;
                     }
 
-                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
-                        let errorObj = {item_id:`${item.id}`,error:'40002'};
-                        notInStockError.push(errorObj)
-                    }
-                    if(itemData.quantity < item.quantity.count){
-                        isQtyAvailable  = false
-                        item.quantity.count = itemData.quantity;
-                    }
 
                     if (itemData) {
                         let price = itemData?.MRP * item.quantity.count
@@ -2643,6 +2644,9 @@ class ProductService {
                     }
                     console.log({itemData})
                     console.log({isQtyAvailable})
+                    console.log("itemData.quantity",itemData.quantity)
+                    console.log("item.quantity.count",item.quantity.count)
+                    console.log({notInStockError})
                     let qouteItemsDetails = {
                         "@ondc/org/item_id": item.id,
                         "@ondc/org/item_quantity": {
