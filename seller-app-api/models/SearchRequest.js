@@ -24,6 +24,22 @@ module.exports = (sequelize, DataTypes) => {
         onSearchResponse:{
             type: DataTypes.JSONB,
             allowNull: true
+        },
+        searchRequest:{
+            type: DataTypes.JSONB,
+            allowNull: true
+        },
+        type:{
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        requestTime:{
+            type: DataTypes.JSONB,
+            allowNull: true
+        },
+        mode:{
+            type: DataTypes.STRING,
+            allowNull: true
         }
 
     }, {

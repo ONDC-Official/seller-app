@@ -1,5 +1,5 @@
 import HttpRequest from '../../utils/HttpRequest';
-import {getProducts,getUpdateItem,getUpdate,getProductUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
+import {getProducts,getProductsIncr,getUpdateItem,getUpdate,getProductUpdate, getSelect, getInit, getConfirm, getTrack, getSupport,getStatus,getCancel} from "../../utils/v2/schemaMapping";
 import {domainNameSpace} from "../../utils/constants";
 import {ConfirmRequest, InitRequest, SelectRequest , SearchRequest} from "../../models";
 import logger from "../../lib/logger";
@@ -83,25 +83,98 @@ class ProductService {
                 };
                return false;
             }
-            let httpRequest = new HttpRequest(
-                serverUrl,
-                `/api/v1/products/search/increamentalPull/${category.name}?city=${requestQuery?.context?.city ?? ''}`, //TODO: allow $like query
-                'get',
-                headers
-            );
 
-            let result = await httpRequest.send();
+            //save search request
 
-            logger.log('info', `[Product Service] search product : result :`, result.data);
+            let searchRequest = new SearchRequest();
+            searchRequest.domain = requestQuery.context.domain;
+            searchRequest.bapId = requestQuery.context.bap_id;
+            searchRequest.messageId = requestQuery.context.message_id;
+            searchRequest.transactionId = requestQuery.context.transaction_id;
+            searchRequest.searchRequest = requestQuery;
+            let requestType = requestQuery.message.intent?.tags?.find((data)=>data.code==="catalog_inc")??null
+            console.log({requestType})
+            if(requestType){
+                searchRequest.type = 'incr';
+                //check if its push or pull
+                let mode = requestType.list.find((data)=>data.code ==='mode')
+                console.log({mode})
+                if(mode){
+                    searchRequest.mode= mode.value
+                }else{
+                    searchRequest.requestTime = requestType.list
+                }
 
-            const productData= {} = await getProducts({data: result.data, context: requestQuery.context}); //should return org specific array of responses
+            }else{
+                searchRequest.type = 'fullpull';
+            }
 
-           // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
 
-           console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
 
-            return productData
+            let productData = []
+            if(searchRequest.type==='fullpull'){
+                let httpRequest = new HttpRequest(
+                    serverUrl,
+                    `/api/v1/products/search/increamentalPull/${category.name}?city=${requestQuery?.context?.city ?? ''}`, //TODO: allow $like query
+                    'get',
+                    headers
+                );
+
+                let result = await httpRequest.send();
+
+                logger.log('info', `[Product Service] search product : result :`, result.data);
+
+                productData= {} = await getProducts({data: result.data, context: requestQuery.context}); //should return org specific array of responses
+
+                // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
+
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+
+            }else if(searchRequest.type==='incr' && searchRequest.mode!=='start'&& searchRequest.mode!=='stop'){
+                    //time based incr search
+                    console.log(searchRequest.requestTime)
+                let startTime = searchRequest.requestTime.find((data)=>data.code==="start_time").value
+                let endTime = searchRequest.requestTime.find((data)=>data.code==="end_time").value
+
+                let httpRequest = new HttpRequest(
+                    serverUrl,
+                    `/api/v1/products/search/increamentalPull/${category.name}?city=${requestQuery?.context?.city ?? ''}&startTime=${startTime}&endTime=${endTime}`, //TODO: allow $like query
+                    'get',
+                    headers
+                );
+
+                let result = await httpRequest.send();
+
+                logger.log('info', `[Product Service] search product : result :`, result.data);
+
+                productData= {} = await getProductsIncr({data: result.data, context: requestQuery.context}); //should return org specific array of responses
+
+                // logger.log('info', `[Product Service]0search product transformed: result :`, productData);
+
+                // console.log("On_Search Response Payload ---=============>",JSON.stringify(productData));
+
+            }
+
+            console.log({searchRequest})
+            //destroy older search request with start
+            if(searchRequest.mode=='start'){
+
+                await searchRequest.save();
+            }else if(searchRequest.mode=='stop'){
+                await SearchRequest.destroy({where:{
+                        domain : requestQuery.context.domain,
+                        bapId : requestQuery.context.bap_id,
+                        messageId : requestQuery.context.message_id,
+                        transactionId : requestQuery.context.transaction_id
+                    }})
+            }
+
+
+            console.log({productData, type:searchRequest.type})
+
+            return {productData, type:searchRequest.type}
         }catch (e) {
+            console.log("error",e.stackTrace)
             console.log(e)
         }
 
@@ -2554,19 +2627,16 @@ class ProductService {
                     //     totalPrice += price
                     // }
 
+                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
+                        let errorObj = {item_id:`${item.id}`,error:'40002'};
+                        notInStockError.push(errorObj)
+                    }
+
                     if (itemData.maxAllowedQty < item.quantity.count) {
                         isQtyAvailable  = false
                         item.quantity.count = itemData.maxAllowedQty;
                     }
 
-                    if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
-                        let errorObj = {item_id:`${item.id}`,error:'40002'};
-                        notInStockError.push(errorObj)
-                    }
-                    if(itemData.quantity < item.quantity.count){
-                        isQtyAvailable  = false
-                        item.quantity.count = itemData.quantity;
-                    }
 
                     if (itemData) {
                         let price = itemData?.MRP * item.quantity.count
@@ -2574,6 +2644,9 @@ class ProductService {
                     }
                     console.log({itemData})
                     console.log({isQtyAvailable})
+                    console.log("itemData.quantity",itemData.quantity)
+                    console.log("item.quantity.count",item.quantity.count)
+                    console.log({notInStockError})
                     let qouteItemsDetails = {
                         "@ondc/org/item_id": item.id,
                         "@ondc/org/item_quantity": {

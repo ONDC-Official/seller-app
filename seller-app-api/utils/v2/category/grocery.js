@@ -164,6 +164,7 @@ export async function mapGroceryData(data) {
                         categories.push(category);
                         variantGroupSequence += 1;
                     }
+
                 }
             }
             let tagCatExist = tagCatList.find((data)=>{
@@ -342,32 +343,57 @@ export async function mapGroceryData(data) {
                 //"@ondc/org/fssai_license_no": org.FSSAI
             })
             for(const tagCat of tagCatList){
-                tags.push(
-                    {
-                        "code": "serviceability",
-                        "list": [
-                            {
-                                "code": "location",
-                                "value": org.storeDetails?.location._id ?? "0"
-                            },
-                            {
-                                "code": "category",
-                                "value": tagCat.category
-                            },
-                            {
-                                "code": "type",
-                                "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
-                            },
-                            {
-                                "code": "unit",
-                                "value": "country"
-                            },
-                            {
-                                "code": "value",
-                                "value": "IND"
-                            }
-                        ]
-                })
+
+                let serviceability =                    {
+                    "code": "serviceability",
+                    "list": [
+                        {
+                            "code": "location",
+                            "value": org.storeDetails?.location._id ?? "0"
+                        },
+                        {
+                            "code": "category",
+                            "value": tagCat.category
+                        },
+
+                    ]
+                }
+
+                // if(org.storeDetails.locationAvailabilityPANIndia || org.storeDetails.location_availability==='pan_india'){
+                    serviceability.list.push(
+                        {
+                            "code": "type",
+                            "value": "12" //Enums are "10" - hyperlocal, "11" - intercity, "12" - pan-India
+                        },
+                        {
+                            "code": "unit",
+                            "value": "country"
+                        },
+                        {
+                            "code": "value",
+                            "value": "IND"
+                        }
+                    )
+                // }else if(org.storeDetails.location_availability === 'custom_area'){
+                //         //map lat long in json format
+                //     console.log("-----org.storeDetails.custom_area--------",org.storeDetails.custom_area)
+                //     serviceability.list.push( {
+                //         "code":"type",
+                //         "value":"13"
+                //     },
+                //     {
+                //         "code":"unit",
+                //         "value":"polygon"
+                //     },
+                //     {
+                //         "code":"val",
+                //         "value":"{\"type\": \"FeatureCollection\", \"features\": [{\"type\": \"Feature\", \"properties\": {}, \"geometry\": {\"coordinates\": [[[77.17557124364345, 28.675927920960092], [77.12873700880397, 28.600972470604688], [77.44693431021358, 28.54532578327904], [77.17557124364345, 28.675927920960092]]], \"type\": \"Polygon\"}}]}"
+                //
+                //     }
+                //     )
+                // }
+
+                tags.push(serviceability)
             }
         let context = data.context
         context.bpp_id = BPP_ID
@@ -393,6 +419,166 @@ export async function mapGroceryData(data) {
                             }
                         ],
                     "bpp/descriptor": bppDetails,
+                    "bpp/providers": bppProviders
+                }
+            }
+        }
+        orgCatalogs.push(schema)
+
+    }
+
+    return orgCatalogs
+
+}
+
+export async function mapGroceryDataIncr(data) {
+
+    let orgCatalogs = []
+    data.context.timestamp = new Date();
+
+    for (const org of data?.data?.products) {
+        let index = 1;
+        let menuData=[];
+        const customMenuData = org?.menu;
+        let bppDetails = {}
+        let bppProviders = []
+        let tags = []
+        let categories = [];
+        let categoryLists = [];
+        let tagCatList =[];
+        let variantGroupSequence = 1
+        let productAvailable = []
+        org.storeDetails.address.street = org.storeDetails.address.locality
+        delete org.storeDetails.address.locality
+        delete org.storeDetails.address.building
+        delete org.storeDetails.address.country
+
+        for (let items of org.items) {
+            if (items.variantGroup) {
+                if(categoryLists.indexOf(items.variantGroup._id)===-1){
+                    categoryLists.push(items.variantGroup._id)
+                    if (items.variantGroup.variationOn === 'UOM') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        category.tags.push({
+                            "code": "attr",
+                            "list": [
+                                {
+                                    "code": "name",
+                                    "value": 'item.quantity.unitized.measure'
+                                },
+                                {
+                                    "code": "seq",
+                                    "value": '1'
+                                }
+                            ]
+                        });
+                        categories.push(category);
+                        variantGroupSequence += 1;
+                    } else if (items.variantGroup.variationOn === 'ATTRIBUTES') {
+                        let category = {
+                            "id": items.variantGroup._id,
+                            "descriptor": {
+                                "name": 'Variant Group ' + variantGroupSequence//Fixme: name should be human readable
+                            },
+                            "tags": [
+                                {
+                                    "code": "type",
+                                    "list": [
+                                        {
+                                            "code": "type",
+                                            "value": "variant_group"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                        for (let i = 0; i < items.variantGroup.name.length; i++) {
+                            category.tags.push({
+                                "code": "attr",
+                                "list": [
+                                    {
+                                        "code": "name",
+                                        "value": `item.tags.attribute.${items.variantGroup.name[i]}`
+                                    },
+                                    {
+                                        "code": "seq",
+                                        "value": `${i + 1}`
+                                    }
+                                ]
+                            });
+                        }
+                        categories.push(category);
+                        variantGroupSequence += 1;
+                    }
+                }
+            }
+            let tagCatExist = tagCatList.find((data)=>{
+                return items.productSubcategory1 === data.category
+            });
+            if(!tagCatExist){
+                tagCatList.push({category:items.productSubcategory1});
+            }
+            if(menuData && menuData.length >0 && index ===1){
+                for(const menu of menuData){
+                    categories.push(menu)
+                }
+                index += 1;
+            }
+            const customizationDetails = items.customizationDetails;
+                let item = itemSchema({...items, org: org},customMenuData)
+                productAvailable.push(item)
+        }
+        bppDetails = {
+            "name": org.name,
+            "symbol": org.storeDetails.logo,
+            "short_desc": org.name, //TODO: mark this for development
+            "long_desc": org.name,
+            "images": [
+                org.storeDetails.logo
+            ],
+            "tags":[
+                {
+                    "code":"bpp_terms",
+                    "list":
+                    [
+                    {
+                        "code":"np_type",
+                        "value":"MSN"
+                    }
+                    ]
+                }
+            ]
+        }
+        let orgFulfillments = org.storeDetails?.fulfillments ?? []
+        bppProviders.push({
+                "id": org._id,
+                "items": productAvailable,
+                //"@ondc/org/fssai_license_no": org.FSSAI
+            })
+        let context = data.context
+        context.bpp_id = BPP_ID
+        context.bpp_uri = BPP_URI
+        context.action = 'on_search'
+        const schema = {
+            "context": {...context},
+            "message": {
+                "catalog": {
                     "bpp/providers": bppProviders
                 }
             }
@@ -585,10 +771,25 @@ function itemSchema(items,customMenuData) {
                 ]
             },
             {
+                "code":"image",
+                "list":
+                    [
+                        {
+                            "code":"type",
+                            "value":"back_image"
+                        },
+                        {
+                            "code":"url",
+                            "value":items.backImage??""
+                        }
+                    ]
+
+            },
+            {
                 "code": "veg_nonveg",
                 "list": [
                     {
-                        "code": items.isVegetarian ? 'veg' : 'nonveg',
+                        "code": items.isVegetarian ? 'veg' : 'non_veg',
                         "value": items.isVegetarian ? 'yes' : 'yes'
                     }
                 ]

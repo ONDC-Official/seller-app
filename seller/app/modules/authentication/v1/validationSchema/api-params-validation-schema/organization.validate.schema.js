@@ -84,7 +84,9 @@ module.exports = {
             storeTiming:Joi.object(),
             radius:Joi.object(),
             logisticsBppId:Joi.string().allow(''),
-            logisticsDeliveryType:Joi.string().allow('')
+            logisticsDeliveryType:Joi.string().allow(''),
+            location_availability:Joi.string().allow(''),
+            custom_area : Joi.array(),
         });
     },
     updateStoreDetails:()=>{
@@ -112,7 +114,9 @@ module.exports = {
             storeTiming:Joi.object(),
             radius:Joi.object(),
             logisticsBppId:Joi.string().allow(''),
-            logisticsDeliveryType:Joi.string().allow('')
+            logisticsDeliveryType:Joi.string().allow(''),
+            location_availability:Joi.string().allow(''),
+            custom_area : Joi.array(),
         });
     },
     get:()=>{
