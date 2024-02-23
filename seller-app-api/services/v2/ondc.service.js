@@ -615,7 +615,9 @@ class OndcService {
                             "updated_at": contextTimeStamp
                         },
                         "payment": {
-                            "@ondc/org/settlement_details": []//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                            "type":'POST-FULFILLMENT',
+                            "@ondc/org/collection_amount": "0",
+                            // "collected_by": "BPP"//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
                         }
                     }
 
