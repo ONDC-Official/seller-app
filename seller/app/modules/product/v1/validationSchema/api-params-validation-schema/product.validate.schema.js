@@ -117,6 +117,7 @@ module.exports = {
                     purchasePrice: Joi.number(),
                     barcode: Joi.number(),
                     images: Joi.array(),
+                    backImage: Joi.string().allow('')
                 })
             ),
             variationOn: Joi.string(),
@@ -245,6 +246,7 @@ module.exports = {
                     purchasePrice: Joi.number(),
                     barcode: Joi.number(),
                     images: Joi.array(),
+                    backImage: Joi.string().allow('')
                 }),
             ),
         });
