@@ -339,7 +339,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 12000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -859,7 +859,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildInitRequest(logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 3000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1289,7 +1289,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1446,7 +1446,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildTrackRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2013,7 +2013,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, statusRequest);
                 this.buildStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2053,7 +2053,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildUpdateRequest(orderData, logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 3000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2132,7 +2132,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildUpdateItemRequest(orderData, logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 3000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2183,7 +2183,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildOrderStatusRequest(orderData, logisticsMessageId, selectMessageId)
-            }, 5000); //TODO move to config
+            }, 3000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2273,7 +2273,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildCancelRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2310,7 +2310,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, cancelRequest);
                 this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2682,7 +2682,7 @@ class OndcService {
             setTimeout(() => {
                 logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
                 this.buildSupportRequest(logisticsMessageId, selectMessageId)
-            }, 10000); //TODO move to config
+            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
