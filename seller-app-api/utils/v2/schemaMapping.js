@@ -387,7 +387,7 @@ exports.getUpdate = async (data) => {
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.id,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":context.timestamp,
+                "updated_at":data.updateOrder.updatedAt,
             }
         }
     }
@@ -465,7 +465,7 @@ exports.getCancel = async (data) => {
                 "payment": data.updateOrder.payment,
                 "id" :  data.updateOrder.orderId,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":timestamp,
+                "updated_at":data.updateOrder.updatedAt,
                 "cancellation":data.updateOrder.cancellation
             }
         }
