@@ -468,11 +468,11 @@ class OrderService {
                 console.log({updatedFulfillment});
                 //1. append item list with this item id and fulfillment id
                 let item = returnRequest.request.tags[0].list.find(x => x.code === 'item_id').value;
-                let quantity = returnRequest.request.tags[0].list.find(x => x.code === 'item_quantity').value;
+                let quantity = parseInt(returnRequest.request.tags[0].list.find(x => x.code === 'item_quantity').value);
 
                 let itemIndex = order.items.findIndex(x => x.id ===item);
                 let itemToBeUpdated= order.items.find(x => x.id ===item);
-                itemToBeUpdated.quantity.count = itemToBeUpdated.quantity.count - parseInt(quantity);
+                itemToBeUpdated.quantity.count = parseInt(itemToBeUpdated.quantity.count) - parseInt(quantity);
                 order.items[itemIndex] = itemToBeUpdated; //Qoute needs to be updated here.
 
                 //get product price

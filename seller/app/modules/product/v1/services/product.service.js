@@ -97,6 +97,7 @@ class ProductService {
                     productObj.purchasePrice = productVariant.purchasePrice;
                     productObj.HSNCode = productVariant.HSNCode;
                     productObj.images = productVariant.images;
+                    productObj.backImage = productVariant.backImage;
                     await Product.updateOne({_id:productVariant._id,organization:currentUser.organization},productObj);
                     let varientAttributes = productVariant.varientAttributes;
                     let attributeObj = {

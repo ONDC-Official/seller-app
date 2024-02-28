@@ -3,6 +3,7 @@ import {getProducts,getProductsIncr,getUpdateItem,getUpdate,getProductUpdate, ge
 import {domainNameSpace} from "../../utils/constants";
 import {ConfirmRequest, InitRequest, SelectRequest , SearchRequest} from "../../models";
 import logger from "../../lib/logger";
+import {v4 as uuidv4} from "uuid";
 
 var config = require('../../lib/config');
 const serverUrl = config.get("seller").serverUrl
@@ -1968,6 +1969,14 @@ class ProductService {
 
         let updateOrder = result.data
 
+        updateOrder.cancellation =  {
+            "cancelled_by":cancelRequest.context.bap_id,
+            "reason":
+            {
+                "id":cancelRequest.message.cancellation_reason_id
+            }
+        }
+
         // updateOrder.state =logisticData.message.order.state
         // updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
         //
@@ -2040,7 +2049,7 @@ class ProductService {
         //updateOrder.items = items;
         //updateOrder.id = cancelData.order_id;
         const productData = await getCancel({
-            context: cancelData.context,
+            context: {message_id:uuidv4(), ...cancelData.context},
             updateOrder:cancelData.message.order
         });
 

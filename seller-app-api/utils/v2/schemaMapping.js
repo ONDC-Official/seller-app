@@ -294,7 +294,7 @@ exports.getInit = async (data) => {
                 // "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
-                "fulfillments": data.message.order.fulfillments,
+                "fulfillments": {...data.message.order.fulfillments,tracking:false},
                 "quote":{
                     "price":data.totalPrice,
                     "breakup": data.detailedQoute,
@@ -387,7 +387,7 @@ exports.getUpdate = async (data) => {
                 "payment": data.updateOrder.payment,
                  "id" :  data.updateOrder.id,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":context.timestamp,
+                "updated_at":data.updateOrder.updatedAt,
             }
         }
     }
@@ -465,7 +465,7 @@ exports.getCancel = async (data) => {
                 "payment": data.updateOrder.payment,
                 "id" :  data.updateOrder.orderId,
                 "created_at":data.updateOrder.createdAt, //TODO: should not change
-                "updated_at":timestamp,
+                "updated_at":data.updateOrder.updatedAt,
                 "cancellation":data.updateOrder.cancellation
             }
         }
