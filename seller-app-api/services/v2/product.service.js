@@ -1621,13 +1621,16 @@ class ProductService {
         updateOrder.order_id = updateOrder.orderId;
 
         //TODO: this is hard coded for now
-        updateOrder.documents =
-        [
-            {
-                "url":"https://invoice_url",
-                "label":"Invoice"
-            }
-        ]
+        //invoice must be provided from "Order-picked-up" state
+        if(deliveryFullfillment.state.descriptor.code !== 'pending' || deliveryFullfillment.state.descriptor.code !== 'Agent-assigned'){
+            updateOrder.documents =
+                [
+                    {
+                        "url":"https://invoice_url",
+                        "label":"Invoice"
+                    }
+                ]
+        }
 
         const productData = await getStatus({
             context: statusRequest.context,
