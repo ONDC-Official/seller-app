@@ -2651,6 +2651,7 @@ class ProductService {
                                 if(group){
                                     errorObj.customization_group_id =group.list[0].value
                                 }
+                                errorObj.dynamic_item_id = item.parent_item_id
                             }else{
                                 errorObj.item_id =`${item.id}`
                             }
