@@ -294,7 +294,7 @@ exports.getInit = async (data) => {
                 // "provider_location": {id:data.message.order.provider.locations[0].id},
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,
-                "fulfillments": data.message.order.fulfillments,
+                "fulfillments": {...data.message.order.fulfillments,tracking:false},
                 "quote":{
                     "price":data.totalPrice,
                     "breakup": data.detailedQoute,

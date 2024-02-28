@@ -1968,6 +1968,14 @@ class ProductService {
 
         let updateOrder = result.data
 
+        updateOrder.cancellation =  {
+            "cancelled_by":cancelRequest.context.bap_id,
+            "reason":
+            {
+                "id":cancelRequest.message.cancellation_reason_id
+            }
+        }
+
         // updateOrder.state =logisticData.message.order.state
         // updateOrder.cancellation_reason_id =cancelRequest.message.cancellation_reason_id
         //
