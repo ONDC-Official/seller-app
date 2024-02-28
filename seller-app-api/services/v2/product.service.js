@@ -2638,6 +2638,23 @@ class ProductService {
 
                     if(itemData.quantity < item.quantity.count || itemData.maxAllowedQty < item.quantity.count){
                         let errorObj = {item_id:`${item.id}`,error:'40002'};
+                        if(item.parent_item_id){
+                            errorObj = {error:'40002'};
+                            if(itemData.type!=='item'){//customisation
+                                errorObj.customization_id =`${item.id}`
+                                let group = item.tags.find((data)=>{
+                                    return data.code == 'parent'
+                                })
+                                if(group){
+                                    errorObj.customization_group_id =group.list[0].value
+                                }
+                            }else{
+                                errorObj.item_id =`${item.id}`
+                            }
+
+                        }else{
+                            errorObj = {item_id:`${item.id}`,error:'40002'};
+                        }
                         notInStockError.push(errorObj)
                     }
 

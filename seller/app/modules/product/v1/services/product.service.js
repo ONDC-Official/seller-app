@@ -307,7 +307,9 @@ class ProductService {
                         let menuObj ={
                             id:menu._id,
                             name:menu.name,
-                            seq:menu.seq
+                            seq:menu.seq,
+                            shortDescription:menu.shortDescription,
+                            longDescription:menu.longDescription
                         };
                         for(const image of menu.images){
                             let imageData = await s3.getSignedUrlForRead({path:image});
