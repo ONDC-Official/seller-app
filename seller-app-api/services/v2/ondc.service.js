@@ -1,14 +1,14 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import config from "../../lib/config";
 import HttpRequest from "../../utils/HttpRequest";
-import {InitRequest, ConfirmRequest, SelectRequest} from '../../models'
-import {getProductsIncr, getProductUpdate} from "../../utils/v2/schemaMapping";
-import {domainNameSpace} from "../../utils/constants";
+import { InitRequest, ConfirmRequest, SelectRequest } from '../../models'
+import { getProductsIncr, getProductUpdate } from "../../utils/v2/schemaMapping";
+import { domainNameSpace } from "../../utils/constants";
 import ProductService from './product.service'
 
 const productService = new ProductService();
 import logger from '../../lib/logger'
-import {SearchRequest} from "../../models";
+import { SearchRequest } from "../../models";
 
 const BPP_ID = config.get("sellerConfig").BPP_ID
 const BPP_URI = config.get("sellerConfig").BPP_URI
@@ -25,7 +25,7 @@ class OndcService {
             const selectMessageId = payload.context.message_id;
             this.postSearchRequest(order, selectMessageId)
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
@@ -44,6 +44,7 @@ class OndcService {
 
             let storeLocationEnd = {}
             let totalProductValue = 0
+            let searchRequest = {}
             // for (let items of payload.message.order.items) {
             //     const product = await productService.getForOndc(items.id)
             //     console.log("product---->", product);
@@ -60,7 +61,7 @@ class OndcService {
                     if (resultData?.commonDetails) {
                         let price = resultData?.commonDetails?.MRP * item.quantity.count
                         totalProductValue += price
-                    }else{
+                    } else {
                         let price = resultData?.MRP * item.quantity.count
                         totalProductValue += price
                     }
@@ -68,6 +69,7 @@ class OndcService {
             }
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
+            const onNetworkLogistic = org.providerDetail.storeDetails?.onNetworkLogistic ?? true;
 
             if (org.providerDetail.storeDetails) {
                 storeLocationEnd = {
@@ -81,75 +83,76 @@ class OndcService {
             let category = domainNameSpace.find((cat) => {
                 return cat.domain === payload.context.domain
             })
-
-            const searchRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "country": "IND",
-                    "city": payload.context.city,
-                    "action": "search",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "transaction_id": uuidv4(),
-                    "message_id": logisticsMessageId,
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
-                "message": {
-                    "intent": {
-                        "category": {
-                            "id": org.providerDetail.storeDetails.logisticsDeliveryType ?? 'Immediate Delivery'
-                        },
-                        "provider": {
-                            "time": { //TODO: fix this from store timing
-                                "days": "1,2,3,4,5,6,7",
-                                "schedule": {
-                                    "holidays": []
+            if (onNetworkLogistic) {
+                searchRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "country": "IND",
+                        "city": payload.context.city,
+                        "action": "search",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "transaction_id": uuidv4(),
+                        "message_id": logisticsMessageId,
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                    "message": {
+                        "intent": {
+                            "category": {
+                                "id": org.providerDetail.storeDetails.logisticsDeliveryType ?? 'Immediate Delivery'
+                            },
+                            "provider": {
+                                "time": { //TODO: fix this from store timing
+                                    "days": "1,2,3,4,5,6,7",
+                                    "schedule": {
+                                        "holidays": []
+                                    },
+                                    "duration": "PT30M",
+                                    "range": {
+                                        "start": "1100",
+                                        "end": "2200"
+                                    }
                                 },
-                                "duration": "PT30M",
-                                "range": {
-                                    "start": "1100",
-                                    "end": "2200"
-                                }
+                            },
+                            "fulfillment": {
+                                "type": "Prepaid",
+                                "start": {
+                                    "location": storeLocationEnd
+                                },
+                                "end": payload.message.order.fulfillments[0].end
+                            },
+                            "payment": {
+                                "type": "POST-FULFILLMENT",
+                                "@ondc/org/collection_amount": `${totalProductValue}`
+                            },
+                            "@ondc/org/payload_details": { //TODO: This is hard coded
+                                "weight": {
+                                    "unit": "kilogram",
+                                    "value": 5
+                                },
+                                "dimensions": {
+                                    "length": {
+                                        "unit": "centimeter",
+                                        "value": 15
+                                    },
+                                    "breadth": {
+                                        "unit": "centimeter",
+                                        "value": 10
+                                    },
+                                    "height": {
+                                        "unit": "centimeter",
+                                        "value": 10
+                                    }
+                                },
+                                "category": category.name,
+                                "value": {
+                                    "currency": "INR",
+                                    "value": `${totalPrice}`
+                                },
+                                "dangerous_goods": false
                             }
-                        },
-                        "fulfillment": {
-                            "type": "Delivery",
-                            "start": {
-                                "location": storeLocationEnd
-                            },
-                            "end": payload.message.order.fulfillments[0].end
-                        },
-                        "payment": {
-                            "type": "POST-FULFILLMENT",
-                            "@ondc/org/collection_amount": `${totalProductValue}`
-                        },
-                        "@ondc/org/payload_details": { //TODO: This is hard coded
-                            "weight": {
-                                "unit": "kilogram",
-                                "value": 5
-                            },
-                            "dimensions": {
-                                "length": {
-                                    "unit": "centimeter",
-                                    "value": 15
-                                },
-                                "breadth": {
-                                    "unit": "centimeter",
-                                    "value": 10
-                                },
-                                "height": {
-                                    "unit": "centimeter",
-                                    "value": 10
-                                }
-                            },
-                            "category": category.name,
-                            "value": {
-                                "currency": "INR",
-                                "value": `${totalPrice}`
-                            },
-                            "dangerous_goods": false
                         }
                     }
                 }
@@ -240,9 +243,9 @@ class OndcService {
             //     }
             // }
             //process select request and send it to protocol layer
-            this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId)
+            this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistic)
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             logger.error('error', `[Ondc Service] search logistics payload - search logistics payload : param :`, err);
             throw err;
@@ -252,7 +255,7 @@ class OndcService {
     async orderSelectWithoutlogistic(payload = {}, req = {}) {
         try {
             const items = payload.message.order.items
-            console.log({items})
+            console.log({ items })
             logger.log('info', `[Ondc Service] search logistics payload : param :`, payload);
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4();
@@ -310,43 +313,46 @@ class OndcService {
         }
     }
 
-    async postSelectRequest(searchRequest, logisticsMessageId, selectMessageId) {
+    async postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistic) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistic) {
+                try {
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/search`,
+                        'POST',
+                        searchRequest,
+                        headers
+                    );
 
-            try {
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/search`,
-                    'POST',
-                    searchRequest,
-                    headers
-                );
 
+                    await httpRequest.send();
 
-                await httpRequest.send();
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                    this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildSelectRequest(logisticsMessageId, selectMessageId)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
 
-    async buildSelectRequest(logisticsMessageId, selectMessageId) {
+    async buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic) {
 
         try {
             logger.log('info', `[Ondc Service] search logistics payload - build select request : param :`, {
@@ -356,7 +362,7 @@ class OndcService {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
-            let selectResponse = await productService.productSelect(logisticsResponse)
+            let selectResponse = await productService.productSelect(logisticsResponse, onNetworkLogistic)
             //3. post to protocol layer
             await this.postSelectResponse(selectResponse);
 
@@ -380,10 +386,10 @@ class OndcService {
         try {
             // let org = await productService.getOrgForOndc(payload.message.order.provider.id);
             let searchResponse = await productService.search(searchRequest, searchMessageId)
-            console.log("===earchResponse.productData.length",searchResponse.productData.length)
+            console.log("===earchResponse.productData.length", searchResponse.productData.length)
             if (searchResponse.productData.length > 0) {
                 for (let onsearch of searchResponse.productData) {
-                    await this.postSearchResponse(onsearch,searchResponse.type);
+                    await this.postSearchResponse(onsearch, searchResponse.type);
                 }
             }
 
@@ -397,7 +403,7 @@ class OndcService {
     async getLogistics(logisticsMessageId, retailMessageId, type) {
         try {
 
-            logger.log('info', `[Ondc Service] get logistics : param :`, {logisticsMessageId, retailMessageId, type});
+            logger.log('info', `[Ondc Service] get logistics : param :`, { logisticsMessageId, retailMessageId, type });
 
             let headers = {};
             let query = ''
@@ -457,7 +463,6 @@ class OndcService {
             );
 
             let result = await httpRequest.send();
-
             return result.data
 
         } catch (e) {
@@ -468,15 +473,15 @@ class OndcService {
     }
 
     //return select response to protocol layer
-    async postSearchResponse(searchResponse,type) {
+    async postSearchResponse(searchResponse, type) {
         try {
 
             logger.info('info', `[Ondc Service] post http select response : `, searchResponse);
             let headers = {};
-            if(type==='incr'){
-                headers ={"X-ONDC-Search-Response":'inc'}
-            }else {
-                headers ={"X-ONDC-Search-Response":'full'}
+            if (type === 'incr') {
+                headers = { "X-ONDC-Search-Response": 'inc' }
+            } else {
+                headers = { "X-ONDC-Search-Response": 'full' }
             }
 
             let httpRequest = new HttpRequest(
@@ -536,10 +541,10 @@ class OndcService {
                         }
                     },
                     contact:
-                        {
-                            phone: org.providerDetail.storeDetails.supportDetails.mobile,
-                            email: org.providerDetail.storeDetails.supportDetails.email
-                        }
+                    {
+                        phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                        email: org.providerDetail.storeDetails.supportDetails.email
+                    }
                 }
             }
 
@@ -615,7 +620,7 @@ class OndcService {
                             "updated_at": contextTimeStamp
                         },
                         "payment": {
-                            "type":'POST-FULFILLMENT',
+                            "type": 'POST-FULFILLMENT',
                             "@ondc/org/collection_amount": "0",
                             // "collected_by": "BPP"//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
                         }
@@ -805,9 +810,9 @@ class OndcService {
 
             this.postInitRequest(initRequest, logisticsMessageId, initMessageId)
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
-            logger.error('error', `[Ondc Service] build init request :`, {error: err.stack, message: err.message});
+            logger.error('error', `[Ondc Service] build init request :`, { error: err.stack, message: err.message });
             console.log(err)
             return err
         }
@@ -822,9 +827,9 @@ class OndcService {
             const initRequest = await productService.initV2(payload);
             this.postInitRequest(initRequest, logisticsMessageId, initMessageId)
 
-            return {'status': 'ACK'}
+            return { 'status': 'ACK' }
         } catch (err) {
-            logger.error('error', `[Ondc Service] build init request :`, {error: err.stack, message: err.message});
+            logger.error('error', `[Ondc Service] build init request :`, { error: err.stack, message: err.message });
             console.log(err)
             return err
         }
@@ -869,7 +874,7 @@ class OndcService {
     async buildInitRequest(logisticsMessageId, initMessageId) {
 
         try {
-            logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId, initMessageId});
+            logger.log('info', `[Ondc Service] build init request :`, { logisticsMessageId, initMessageId });
 
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'init')
@@ -882,7 +887,7 @@ class OndcService {
             await this.postInitResponse(selectResponse);
 
         } catch (err) {
-            logger.error('error', `[Ondc Service] build init request :`, {error: err.stack, message: err.message});
+            logger.error('error', `[Ondc Service] build init request :`, { error: err.stack, message: err.message });
             return err
         }
     }
@@ -908,7 +913,7 @@ class OndcService {
             return result.data
 
         } catch (err) {
-            logger.error('error', `[Ondc Service] post init request :`, {error: err.stack, message: err.message});
+            logger.error('error', `[Ondc Service] post init request :`, { error: err.stack, message: err.message });
             return err
         }
 
@@ -960,10 +965,10 @@ class OndcService {
                         }
                     },
                     contact:
-                        {
-                            phone: org.providerDetail.storeDetails.supportDetails.mobile,
-                            email: org.providerDetail.storeDetails.supportDetails.email
-                        },
+                    {
+                        phone: org.providerDetail.storeDetails.supportDetails.mobile,
+                        email: org.providerDetail.storeDetails.supportDetails.email
+                    },
                     person: {
                         name: org.providerDetail.name //TODO: missing from curent impl
                     }
@@ -973,10 +978,10 @@ class OndcService {
 
             // const logisticsOrderId = uuidv4();
 
-            let end = {...order.fulfillments[0].end}
+            let end = { ...order.fulfillments[0].end }
 
             end.location.address.locality = end.location.address.locality ?? end.location.address.street
-            end.person = {name: end.location.address.name}
+            end.person = { name: end.location.address.name }
 
             //const isInvalidItem =false
             // let itemDetails = []
@@ -1204,7 +1209,7 @@ class OndcService {
             this.postConfirmRequest(confirmRequest, logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             throw err;
         }
@@ -1218,7 +1223,7 @@ class OndcService {
             this.postConfirmRequestV2(searchRequest, logisticsMessageId, selectMessageId)
             //}, 10000); //TODO move to config
 
-            return {status: "ACK"}
+            return { status: "ACK" }
         } catch (err) {
             throw err;
         }
@@ -1397,9 +1402,9 @@ class OndcService {
                     "ttl": "PT30S"
                 },
                 "message":
-                    {
-                        "order_id": confirmRequest.orderId,//payload.message.order_id,
-                    }
+                {
+                    "order_id": confirmRequest.orderId,//payload.message.order_id,
+                }
 
             }
 
@@ -1409,7 +1414,7 @@ class OndcService {
             this.postTrackRequest(trackRequest, logisticsMessageId, selectMessageId)
             // }, 5000); //TODO move to config
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             throw err;
         }
@@ -1531,9 +1536,9 @@ class OndcService {
                     "ttl": "PT30S"
                 },
                 "message":
-                    {
-                        "order_id": confirmRequest.orderId,
-                    }
+                {
+                    "order_id": confirmRequest.orderId,
+                }
 
             }
 
@@ -1543,7 +1548,7 @@ class OndcService {
             this.postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
             //}, 5000); //TODO move to config
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             throw err;
         }
@@ -1566,7 +1571,7 @@ class OndcService {
             this.postStatusResponse(statusResponse);
 
 
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
             throw err;
         }
@@ -1661,13 +1666,13 @@ class OndcService {
             }
 
 
-            payload = {message: {order: order}, context: confirmRequest.confirmRequest.context}
+            payload = { message: { order: order }, context: confirmRequest.confirmRequest.context }
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
             this.postUpdateOrderStatusRequest(payload, trackRequest, logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
             throw err;
         }
@@ -1714,7 +1719,7 @@ class OndcService {
                 }
             }
 
-            payload = {message: {order: order}, context: confirmRequest.confirmRequest.context}
+            payload = { message: { order: order }, context: confirmRequest.confirmRequest.context }
 
             console.log("payload-------------->", payload);
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
@@ -1722,7 +1727,7 @@ class OndcService {
             this.postSellerCancelRequest(payload, trackRequest, logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
 
             console.log("err--->", err);
@@ -1802,13 +1807,13 @@ class OndcService {
             }
 
 
-            payload = {message: {order: order}, context: confirmRequest.confirmRequest.context}
+            payload = { message: { order: order }, context: confirmRequest.confirmRequest.context }
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
             this.postUpdateRequest(payload, trackRequest, logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
             throw err;
         }
@@ -1824,7 +1829,7 @@ class OndcService {
             //process select request and send it to protocol layer
             this.postUpdateRequestV2(searchRequest, null, updateMessageId)
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             throw err;
         }
@@ -1947,15 +1952,15 @@ class OndcService {
             // }
 
 
-// <<<<<<< v1.2.0-LSP
-//             payload = {
-//                 message: {order: order},
-//                 context: {...confirmRequest.confirmRequest.context, message_id: uuidv4()}
-//             };
-// =======
+            // <<<<<<< v1.2.0-LSP
+            //             payload = {
+            //                 message: {order: order},
+            //                 context: {...confirmRequest.confirmRequest.context, message_id: uuidv4()}
+            //             };
+            // =======
             payload = {
-                message: {order: order},
-                context: {...confirmRequest?.confirmRequest?.context, message_id: uuidv4()}
+                message: { order: order },
+                context: { ...confirmRequest?.confirmRequest?.context, message_id: uuidv4() }
             };
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
@@ -1963,7 +1968,7 @@ class OndcService {
             this.postUpdateItemRequest(payload, {}, logisticsMessageId, selectMessageId);
             //}, 5000); //TODO move to config
 
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
             throw err;
         }
@@ -1976,7 +1981,7 @@ class OndcService {
             if (Object.keys(result).length > 0) {
                 this.postItemUpdate(result);
             }
-            return {status: 'ACK'}
+            return { status: 'ACK' }
         } catch (err) {
             throw err;
         }
@@ -2224,10 +2229,10 @@ class OndcService {
                     "ttl": "PT30S"
                 },
                 "message":
-                    {
-                        "order_id": confirmRequest.orderId,
-                        "cancellation_reason_id": payload.message.cancellation_reason_id
-                    }
+                {
+                    "order_id": confirmRequest.orderId,
+                    "cancellation_reason_id": payload.message.cancellation_reason_id
+                }
 
             }
 
@@ -2237,7 +2242,7 @@ class OndcService {
             this.postCancelRequest(trackRequest, logisticsMessageId, selectMessageId)
             //}, 5000); //TODO move to config
 
-            return {"message": {"ack": {"status": "ACK"}}}
+            return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
             throw err;
         }
@@ -2381,11 +2386,11 @@ class OndcService {
                 return cat.name === changeditem.productCategory
             })
 
-            console.log({statusRequest: changeditem})
-            changeditem.images = changeditem.images.map((item)=>{return item.url})
-            let searchRequests =  await SearchRequest.findAll({where:{mode:'start',domain:category.domain}})
+            console.log({ statusRequest: changeditem })
+            changeditem.images = changeditem.images.map((item) => { return item.url })
+            let searchRequests = await SearchRequest.findAll({ where: { mode: 'start', domain: category.domain } })
 
-            for(let searchRequest of searchRequests){
+            for (let searchRequest of searchRequests) {
 
                 let context = {
                     "domain": category.domain,
@@ -2403,14 +2408,14 @@ class OndcService {
                     "ttl": "PT30S"
                 }
                 let data = {
-                    products: [{...org.providerDetail, items: [changeditem]}],
+                    products: [{ ...org.providerDetail, items: [changeditem] }],
                     customMenu: [],
                 }
-                let productSchema = await getProductsIncr({data, context});
+                let productSchema = await getProductsIncr({ data, context });
                 await this.postItemUpdateRequest(productSchema[0]);
 
             }
-            console.log({searchRequests})
+            console.log({ searchRequests })
 
 
         } catch (e) {
@@ -2528,8 +2533,8 @@ class OndcService {
     async postItemUpdateRequest(statusResponse) {
         try {
             console.log('itemdata------------------------------------------>')
-            console.log({itemdata: statusResponse})
-            let  headers ={"X-ONDC-Search-Response":'inc'}
+            console.log({ itemdata: statusResponse })
+            let headers = { "X-ONDC-Search-Response": 'inc' }
             let httpRequest = new HttpRequest(
                 config.get("sellerConfig").BPP_URI,
                 `/protocol/v1/on_search`,
@@ -2633,9 +2638,9 @@ class OndcService {
                     "ttl": "PT30S"
                 },
                 "message":
-                    {
-                        "ref_id": selectRequest.transactionId,
-                    }
+                {
+                    "ref_id": selectRequest.transactionId,
+                }
 
             }
 
@@ -2745,10 +2750,10 @@ class OndcService {
                     "label": "close",
                     "timestamp": new Date(),
                     "range":
-                        {
-                            "start": data?.storeTiming?.colsed?.from,
-                            "end": data?.storeTiming?.colsed?.to
-                        }
+                    {
+                        "start": data?.storeTiming?.colsed?.from,
+                        "end": data?.storeTiming?.colsed?.to
+                    }
                 }
             } else if (data.updateType === 'disabled') {
                 time = {
@@ -2758,51 +2763,6 @@ class OndcService {
             }
             let payload = {
                 "context":
-                    {
-                        "domain": category.domain,
-                        "action": "on_search",
-                        "country": "IND",
-                        "city": "std:080",
-                        "core_version": "1.2.0",
-                        "bap_id": "ref-app-buyer-dev-internal.ondc.org",
-                        "bap_uri": "https://ref-app-buyer-dev-internal.ondc.org/protocol/v1",
-                        "bpp_uri": "https://ref-app-seller-dev-internal.ondc.org",
-                        "transaction_id": "323e2894-82b9-4577-bf7a-19bd85a5dcdf",
-                        "message_id": "bf1104c9-0ad3-4bcf-b45d-d74c38ea4764",
-                        "timestamp": new Date(),
-                        "ttl": "PT30S"
-                    },
-                "message":
-                    {
-                        "catalog":
-                            {
-                                "bpp/providers":
-                                    [
-                                        {
-                                            "id": data.organization,
-                                            "locations":
-                                                [
-                                                    {
-                                                        "id": data.locationId,
-                                                        "time": time
-                                                    }
-                                                ]
-                                        }
-                                    ]
-                            }
-                    }
-            }
-            this.postItemUpdateRequest(payload);
-        }
-        return {success: true};
-    }
-
-    async notifyOrgUpdate(data) {
-        let category = domainNameSpace.find((cat) => {
-            return cat.name === data.category
-        })
-        let payload = {
-            "context":
                 {
                     "domain": category.domain,
                     "action": "on_search",
@@ -2817,26 +2777,71 @@ class OndcService {
                     "timestamp": new Date(),
                     "ttl": "PT30S"
                 },
-            "message":
+                "message":
                 {
                     "catalog":
-                        {
-                            "bpp/providers":
-                                [
-                                    {
-                                        "id": data.organization,
-                                        "time":
+                    {
+                        "bpp/providers":
+                            [
+                                {
+                                    "id": data.organization,
+                                    "locations":
+                                        [
                                             {
-                                                "label": "disable",
-                                                "timestamp": new Date()
+                                                "id": data.locationId,
+                                                "time": time
                                             }
-                                    }
-                                ]
-                        }
+                                        ]
+                                }
+                            ]
+                    }
                 }
+            }
+            this.postItemUpdateRequest(payload);
+        }
+        return { success: true };
+    }
+
+    async notifyOrgUpdate(data) {
+        let category = domainNameSpace.find((cat) => {
+            return cat.name === data.category
+        })
+        let payload = {
+            "context":
+            {
+                "domain": category.domain,
+                "action": "on_search",
+                "country": "IND",
+                "city": "std:080",
+                "core_version": "1.2.0",
+                "bap_id": "ref-app-buyer-dev-internal.ondc.org",
+                "bap_uri": "https://ref-app-buyer-dev-internal.ondc.org/protocol/v1",
+                "bpp_uri": "https://ref-app-seller-dev-internal.ondc.org",
+                "transaction_id": "323e2894-82b9-4577-bf7a-19bd85a5dcdf",
+                "message_id": "bf1104c9-0ad3-4bcf-b45d-d74c38ea4764",
+                "timestamp": new Date(),
+                "ttl": "PT30S"
+            },
+            "message":
+            {
+                "catalog":
+                {
+                    "bpp/providers":
+                        [
+                            {
+                                "id": data.organization,
+                                "time":
+                                {
+                                    "label": "disable",
+                                    "timestamp": new Date()
+                                }
+                            }
+                        ]
+                }
+            }
         }
         this.postItemUpdateRequest(payload);
-        return {success: true};
+        return { success: true };
     }
 
 }
