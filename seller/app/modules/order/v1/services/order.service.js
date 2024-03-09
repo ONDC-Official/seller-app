@@ -276,7 +276,7 @@ class OrderService {
             let fulfillment = await Fulfillment.findOne({ id: payload.fulfillmentId }).lean();
             //check for fulfillment type 
 
-            if (fulfillment.request.type !== 'delivery') {
+            if (fulfillment.request.type !== 'Delivery') {
                 throw new ConflictError(MESSAGES.STATUS_UPDATE_PREVENT)
             }
             //check for order state sequence check
@@ -1033,7 +1033,7 @@ class OrderService {
             //updatedFulfillment.organization =order.organization;
 
 
-            let deliveryFulfillment = order.fulfillments.find((data) => { return data.type === 'delivery'; });
+            let deliveryFulfillment = order.fulfillments.find((data) => { return data.type === 'Delivery'; });
 
             deliveryFulfillment.tags =
                 [

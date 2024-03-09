@@ -1393,34 +1393,37 @@ class OndcService {
             //const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+            let org = await productService.getOrgForOndc(confirmRequest.providerId);
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
+            let trackRequest = {}
+            if (onNetworkLogistics) {
+                trackRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "action": "track",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id": confirmRequest.logisticsTransactionId,
+                        "message_id": logisticsMessageId,
+                        "city": "std:080",
+                        "country": "IND",
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                    "message":
+                    {
+                        "order_id": confirmRequest.orderId,//payload.message.order_id,
+                    }
 
-            const trackRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "track",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080",
-                    "country": "IND",
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
-                "message":
-                {
-                    "order_id": confirmRequest.orderId,//payload.message.order_id,
                 }
-
             }
-
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-            this.postTrackRequest(trackRequest, logisticsMessageId, selectMessageId)
+            this.postTrackRequest(trackRequest, logisticsMessageId, selectMessageId, onNetworkLogistics)
             // }, 5000); //TODO move to config
 
             return { "message": { "ack": { "status": "ACK" } } }
@@ -1430,51 +1433,54 @@ class OndcService {
     }
 
 
-    async postTrackRequest(searchRequest, logisticsMessageId, selectMessageId) {
+    async postTrackRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
 
-            try {
-
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/track`,
-                    'POST',
-                    searchRequest,
-                    headers
-                );
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/track`,
+                        'POST',
+                        searchRequest,
+                        headers
+                    );
 
 
-                await httpRequest.send();
+                    await httpRequest.send();
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
+
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                    this.buildTrackRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildTrackRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildTrackRequest(logisticsMessageId, selectMessageId)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
 
-    async buildTrackRequest(logisticsMessageId, initMessageId) {
+    async buildTrackRequest(logisticsMessageId, initMessageId, onNetworkLogistics) {
 
         try {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'track')
             //2. if data present then build select response
 
-            let selectResponse = await productService.productTrack(logisticsResponse)
+            let selectResponse = await productService.productTrack(logisticsResponse, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postTrackResponse(selectResponse);
@@ -1698,7 +1704,8 @@ class OndcService {
                     retailOrderId: payload.data.orderId
                 }
             })
-
+            let org = await productService.getOrgForOndc(confirmRequest.providerId);
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
             const logistics = confirmRequest.selectedLogistics;
 
             const order = payload.data;
@@ -1707,35 +1714,36 @@ class OndcService {
 
             const selectMessageId = uuidv4();
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
-
-            const trackRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "cancel",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080", //TODO: take it from request
-                    "country": "IND",
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
-                "message": {
-                    "order_id": order.orderId,
-                    "cancellation_reason_id": order.cancellation_reason_id
+            let trackRequest = {}
+            if (onNetworkLogistics) {
+                trackRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "action": "cancel",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id": confirmRequest.logisticsTransactionId,
+                        "message_id": logisticsMessageId,
+                        "city": "std:080", //TODO: take it from request
+                        "country": "IND",
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                    "message": {
+                        "order_id": order.orderId,
+                        "cancellation_reason_id": order.cancellation_reason_id
+                    }
                 }
             }
-
             payload = { message: { order: order }, context: confirmRequest.confirmRequest.context }
 
             console.log("payload-------------->", payload);
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-            this.postSellerCancelRequest(payload, trackRequest, logisticsMessageId, selectMessageId)
+            this.postSellerCancelRequest(payload, trackRequest, logisticsMessageId, selectMessageId, onNetworkLogistics)
             //}, 5000); //TODO move to config
 
             return { status: 'ACK' }
@@ -2306,37 +2314,40 @@ class OndcService {
         }
     }
 
-    async postSellerCancelRequest(cancelData, cancelRequest, logisticsMessageId, selectMessageId) {
+    async postSellerCancelRequest(cancelData, cancelRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
 
-            try {
-
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/cancel`,
-                    'POST',
-                    cancelRequest,
-                    headers
-                );
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/cancel`,
+                        'POST',
+                        cancelRequest,
+                        headers
+                    );
 
 
-                await httpRequest.send();
+                    await httpRequest.send();
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
+
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, cancelRequest);
+                    this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId, onNetworkLogistics)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, cancelRequest);
-                this.buildSellerCancelRequest(cancelData, logisticsMessageId, selectMessageId)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2482,14 +2493,14 @@ class OndcService {
         }
     }
 
-    async buildSellerCancelRequest(cancelData, logisticsMessageId, initMessageId) {
+    async buildSellerCancelRequest(cancelData, logisticsMessageId, initMessageId, onNetworkLogistics) {
 
         try {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'cancel')
             //2. if data present then build select response
 
-            let statusResponse = await productService.productSellerCancel(cancelData, logisticsResponse)
+            let statusResponse = await productService.productSellerCancel(cancelData, logisticsResponse, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postSellerCancelResponse(statusResponse);

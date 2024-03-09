@@ -1544,13 +1544,25 @@ class ProductService {
     }
 
 
-    async productTrack(requestQuery) {
+    async productTrack(requestQuery, onNetworkLogistics) {
 
         const trackRequest = requestQuery.retail_track[0]//select first select request
-        const logisticData = requestQuery.logistics_on_track[0]
+        let trackingData = {}
+        if (onNetworkLogistics) {
+            trackingData = requestQuery.logistics_on_track[0]
+        } else {
+            trackingData = {
+                "message": {
+                    "tracking":
+                    {
+                        "status": "inactive",
+                    }
+                }
+            }
+        }
         const productData = await getTrack({
             context: trackRequest.context,
-            logisticData: logisticData
+            logisticData: trackingData
         });
 
         return productData
@@ -1584,8 +1596,8 @@ class ProductService {
 
         console.log("result-->", result);
         let updateOrder = result.data
-        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'delivery');
-        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'delivery');
+        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'Delivery');
+        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'Delivery');
         if (onNetworkLogistics) {
             if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
                 updateOrder.state = 'Created'
@@ -1692,8 +1704,8 @@ class ProductService {
         let result = await httpRequest.send();
 
         let updateOrder = result.data
-        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'delivery');
-        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'delivery');
+        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'Delivery');
+        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'Delivery');
 
         let fulfillmentHistory = ''
         if (deliveryFullfillment.state.descriptor.code === 'Order-picked-up') {
@@ -2108,7 +2120,7 @@ class ProductService {
         return productData
     }
 
-    async productSellerCancel(cancelData, requestQuery) {
+    async productSellerCancel(cancelData, requestQuery, onNetworkLogistics) {
 
         const cancelRequest = requestQuery.retail_cancel[0]//select first select request
         const logisticData = requestQuery.logistics_on_cancel[0]
@@ -2130,7 +2142,7 @@ class ProductService {
 
         let updateOrder = result.data
 
-        updateOrder.state = logisticData?.message?.order?.state
+        updateOrder.state = onNetworkLogistics ? logisticData?.message?.order?.state : 'Cancelled';
         updateOrder.cancellation_reason_id = cancelData.message.order.cancellation_reason_id
 
         //update order level state
