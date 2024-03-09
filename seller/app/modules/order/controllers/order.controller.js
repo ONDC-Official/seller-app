@@ -20,8 +20,8 @@ class OrderController {
     async list(req, res, next) {
         try {
             const query = req.query;
-            query.offset = parseInt(query.offset??0);
-            query.limit = parseInt(query.limit??100);
+            query.offset = parseInt(query.offset?? 0);
+            query.limit = parseInt(query.limit?? 100);
             query.organization = req.user.organization;
             const products = await orderService.list(query);
             return res.send(products);
@@ -71,6 +71,18 @@ class OrderController {
             next(error);
         }
     }
+
+    async updateOrderFulfillmentStatus(req, res, next) {
+        try {
+            const params = req.params;
+            const order = await orderService.updateOrderFulfillmentStatus(params.orderId,req.body);
+            return res.send(order);
+        } catch (error) {
+            console.log('[OrderController] [ijcjdsn] Error -', error);
+            next(error);
+        }
+    }
+    
     async getONDC(req, res, next) {
         try {
             const params = req.params;
@@ -82,6 +94,20 @@ class OrderController {
             next(error);
         }
     }
+
+    async getONDCFulfillmentHistory(req, res, next) {
+        try {
+            const query = req.query;
+            const params = req.params;
+            const fulfillmentHistory = await orderService.getONDCFulfillmentHistory(params.fulfillmentId, query);
+            return res.send(fulfillmentHistory);
+
+        } catch (error) {
+            console.log('[OrderController] [get] Error -', error);
+            next(error);
+        }
+    }
+
     async update(req, res, next) {
         try {
             const params = req.params;

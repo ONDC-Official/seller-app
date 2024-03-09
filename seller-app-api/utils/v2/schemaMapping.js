@@ -527,8 +527,8 @@ exports.getConfirm = async (data) => {
         "context": {...context},
         "message":  {
             "order": {
-                "id":data.message.order.order_id,
-                "state":"Accepted",
+                "id": data.message.order.order_id,
+                "state": data.message.order.state,
                 "provider": data.message.order.provider,
                 "items": data.qouteItems,
                 "billing": data.message.order.billing,

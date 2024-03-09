@@ -46,6 +46,8 @@ const MESSAGES = {
     SEQ_CHILD_ERROR: 'Cannot update seq value to a value less than the seq value of a child group.',
     SE_NEXTGROUP_ERROR: 'Cannot update seq value to a value greater than or equal to the seq value of the next group.',
     CUSTOMIZATION_GROUP_NOT_EXISTS: 'We couldn\'t find the customization group with given details',
+    STATUS_UPDATE_NOT_ALLOWED : 'You can not update fulfillment status',
+    STATUS_UPDATE_PREVENT : 'Unable to update fulfillment status for given type'
 
 };
 

@@ -4,7 +4,7 @@ import { domainNameSpace } from "../../utils/constants";
 import { ConfirmRequest, InitRequest, SelectRequest, SearchRequest } from "../../models";
 import logger from "../../lib/logger";
 import { v4 as uuidv4 } from "uuid";
-
+import moment from "moment"
 var config = require('../../lib/config');
 const serverUrl = config.get("seller").serverUrl
 const BPP_ID = config.get("sellerConfig").BPP_ID
@@ -1421,6 +1421,18 @@ class ProductService {
         return result.data
     }
 
+    async ondcGetFulfillmentHistory(fulfillmentId, orderId, state) {
+        let headers = {};
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/fulfillment/history/${fulfillmentId}/ondcGet?orderId=${orderId}&state=${state}`,
+            'get',
+            headers
+        );
+        let result = await httpRequest.send();
+        return result.data
+    }
+
     async ondcGetForUpdate(id) {
 
         let headers = {};
@@ -1544,11 +1556,11 @@ class ProductService {
         return productData
     }
 
-    async productStatus(requestQuery, statusRequest = {}, unsoliciated, payload) {
+    async productStatus(requestQuery, statusRequest = {}, unsoliciated, payload, onNetworkLogistics) {
 
         if (!unsoliciated) {
             console.log("in eif")
-            statusRequest = requestQuery.retail_status[0];//select first select request
+            statusRequest = requestQuery.retail_status[0];
         } else {
             console.log("in else")
             statusRequest = payload;
@@ -1572,37 +1584,50 @@ class ProductService {
 
         console.log("result-->", result);
         let updateOrder = result.data
+        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'delivery');
+        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'delivery');
+        if (onNetworkLogistics) {
+            if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
+                updateOrder.state = 'Created'
+            } else {
+                updateOrder.state = logisticData.message.order.state
+            }
 
-        if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
-            updateOrder.state = 'Created'
-        } else {
-            updateOrder.state = logisticData.message.order.state
+            //updateOrder.state =logisticData.message.order.state
+
+            //TODO: find fulfillment where type is delivery
+
+            deliveryFullfillment.state = logisticData.message.order.fulfillments[0].state
         }
-
-        //updateOrder.state =logisticData.message.order.state
-
-        //TODO: find fulfillment where type is delivery
-
-        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'Delivery');
-        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'Delivery');
-        deliveryFullfillment.state = logisticData.message.order.fulfillments[0].state
-
+        let fulfillmentHistory = ''
         if (deliveryFullfillment.state.descriptor.code === 'Order-picked-up') {
             //set start.timestamp ie. picked up timing
-            deliveryFullfillment.start.time.timestamp = logisticData.message.order?.fulfillments[0].start?.time?.timestamp ?? ""
+            if (onNetworkLogistics) {
+                deliveryFullfillment.start.time.timestamp = logisticData.message.order?.fulfillments[0].start?.time?.timestamp ?? ""
+            } else {
+                fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-picked-up')
+                deliveryFullfillment.start.time = { timestamp: fulfillmentHistory?.updatedAt }
+
+            }
         }
         if (deliveryFullfillment.state.descriptor.code === 'Order-delivered') {
             //set end.timestamp ie. delivered timing
-            //deliveryFullfillment.start.time = deliveryFullfillment.start.time
-            deliveryFullfillment.end.time.timestamp = logisticData.message.order?.fulfillments[0].end?.time?.timestamp ?? ""
+            //deliveryFullfillment.start.time.timestamp = deliveryFullfillment.start.time
+            if (onNetworkLogistics) {
+                deliveryFullfillment.end.time.timestamp = logisticData.message.order?.fulfillments[0].end?.time?.timestamp ?? ""
+            } else {
+                fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-delivered')
+                deliveryFullfillment.end.time = { timestamp: fulfillmentHistory?.updatedAt }
+            }
         }
-
-        deliveryFullfillment.agent = logisticData.message.order?.fulfillments[0].agent
-        deliveryFullfillment.vehicle = logisticData.message.order?.fulfillments[0].vehicle
+        if (onNetworkLogistics) {
+            deliveryFullfillment.agent = logisticData.message.order?.fulfillments[0].agent
+            deliveryFullfillment.vehicle = logisticData.message.order?.fulfillments[0].vehicle
+        }
         updateOrder.fulfillments[deliveryFullfillmentIndex] = deliveryFullfillment;
 
-        console.log("logisticData.message.order.fulfillments[0].state--->", logisticData.message.order.fulfillments[0].state)
-        console.log("llogisticData.message.order.state--->", logisticData.message.order.state)
+        console.log("logisticData.message.order.fulfillments[0].state--->", logisticData?.message.order.fulfillments[0].state)
+        console.log("llogisticData.message.order.state--->", logisticData?.message.order.state)
         //update order level state
         httpRequest = new HttpRequest(
             serverUrl,
@@ -1620,16 +1645,14 @@ class ProductService {
                 item.tags = { status: 'Cancelled' };
             }
             // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
-            item.fulfillment_id = logisticData.message.order.fulfillments[0].id
+            item.fulfillment_id = onNetworkLogistics ? logisticData.message.order.fulfillments[0].id : 'F1'
             delete item.state
             return item;
         });
-
         console.log("items----->", items);
         console.log({ updateOrder });
         updateOrder.items = items;
         updateOrder.order_id = updateOrder.orderId;
-
         //TODO: this is hard coded for now
         //invoice must be provided from "Order-picked-up" state
         if (deliveryFullfillment.state.descriptor.code !== 'pending' || deliveryFullfillment.state.descriptor.code !== 'Agent-assigned') {
@@ -1644,6 +1667,70 @@ class ProductService {
 
         const productData = await getStatus({
             context: statusRequest.context,
+            updateOrder: updateOrder
+        });
+
+        return productData
+    }
+
+    async productStatusUnsoliciated(payload = {}) {
+
+        const confirmRequest = await ConfirmRequest.findOne({
+            where: {
+                retailOrderId: payload.message.order_id
+            }
+        })
+
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${payload.message.order_id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        let updateOrder = result.data
+        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'delivery');
+        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'delivery');
+
+        let fulfillmentHistory = ''
+        if (deliveryFullfillment.state.descriptor.code === 'Order-picked-up') {
+            //set start.timestamp ie. picked up timing
+            fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-picked-up')
+            deliveryFullfillment.start.time = { timestamp: fulfillmentHistory?.updatedAt }
+        }
+        if (deliveryFullfillment.state.descriptor.code === 'Order-delivered') {
+            fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-delivered')
+            deliveryFullfillment.end.time = { timestamp: fulfillmentHistory?.updatedAt }
+        }
+        updateOrder.fulfillments[deliveryFullfillmentIndex] = deliveryFullfillment;
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${payload.message.order_id}/ondcUpdate`,
+            'PUT',
+            { data: updateOrder },
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        updateOrder.order_id = updateOrder.orderId;
+        //TODO: this is hard coded for now
+        //invoice must be provided from "Order-picked-up" state
+        if (deliveryFullfillment.state.descriptor.code !== 'pending' || deliveryFullfillment.state.descriptor.code !== 'Agent-assigned') {
+            updateOrder.documents =
+                [
+                    {
+                        "url": "https://invoice_url",
+                        "label": "Invoice"
+                    }
+                ]
+        }
+        const productData = await getStatus({
+            context: confirmRequest.confirmRequest.context,
             updateOrder: updateOrder
         });
 
@@ -1964,7 +2051,7 @@ class ProductService {
         return productData
     }
 
-    async productCancel(requestQuery) {
+    async productCancel(requestQuery, onNetworkLogistics) {
 
         const cancelRequest = requestQuery.retail_cancel[0]//select first select request
         const logisticData = requestQuery.logistics_on_cancel[0]
@@ -2083,7 +2170,7 @@ class ProductService {
     }
 
 
-    async productConfirm(requestQuery) {
+    async productConfirm(requestQuery, onNetworkLogistics) {
 
         //get search criteria
         // const items = requestQuery.message.order.items
@@ -2197,10 +2284,15 @@ class ProductService {
         // confirmData.state = confirmData.id
         confirmData.transaction_id = confirmRequest.context.transaction_id
 
-        if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
-            confirmData.state = 'Created'
+        if (onNetworkLogistics) {
+            if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
+                confirmData.state = 'Created'
+            } else {
+                confirmData.state = logisticData.message.order.state
+            }
         } else {
-            confirmData.state = logisticData.message.order.state
+            confirmData.state = 'Created'
+
         }
 
         //delete confirmData.id
@@ -2223,7 +2315,6 @@ class ProductService {
                 }
             }
         }
-
         confirmRequest.message.order.fulfillments[0].start = storeLocationEnd
         confirmRequest.message.order.fulfillments[0].tracking = true;
         confirmRequest.message.order.fulfillments[0].state = {
@@ -2231,26 +2322,35 @@ class ProductService {
                 "code": "Pending"
             }
         }
-        // let today = new Date()
-        // let tomorrow = new Date()
-        // let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
-        confirmRequest.message.order.fulfillments[0].start.time = logisticData.message.order.fulfillments[0].start.time
-        confirmRequest.message.order.fulfillments[0].end.time = logisticData.message.order.fulfillments[0].end.time
+        if (onNetworkLogistics) {
+            // let today = new Date()
+            // let tomorrow = new Date()
+            // let endDate = new Date(tomorrow.setDate(today.getDate() + 1))
+            confirmRequest.message.order.fulfillments[0].start.time = logisticData.message.order.fulfillments[0].start.time
+            confirmRequest.message.order.fulfillments[0].end.time = logisticData.message.order.fulfillments[0].end.time
 
 
-        let selectRequest = await SelectRequest.findOne({
-            where: { transactionId: confirmRequest.context.transaction_id },
-            order: [
-                ['createdAt', 'DESC']
-            ]
-        });
-        let logisticProvider = selectRequest.selectedLogistics;
+            let selectRequest = await SelectRequest.findOne({
+                where: { transactionId: confirmRequest.context.transaction_id },
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            });
+            let logisticProvider = selectRequest.selectedLogistics;
 
-        //select request for this
-        confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"] = logisticProvider.message.catalog["bpp/descriptor"].name //TODO: hard coded
-        // confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
-
-
+            //select request for this
+            confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"] = logisticProvider.message.catalog["bpp/descriptor"].name //TODO: hard coded
+            // confirmRequest.message.order.payment["@ondc/org/buyer_app_finder_fee_type"]='Percentage' //TODO: hard coded
+        } else {
+            const currentMillis = Date.now();
+            const deliveryTAT = moment.duration(org.providerDetail.storeDetails.deliveryTime).asMilliseconds();
+            const endTime = moment(currentMillis + deliveryTAT);
+            const formattedEndTime = endTime.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+            const formattedStartTime = moment(currentMillis).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+            confirmRequest.message.order.fulfillments[0].start.time = formattedEndTime
+            confirmRequest.message.order.fulfillments[0].end.time = formattedStartTime
+            confirmRequest.message.order.fulfillments[0]["@ondc/org/provider_name"] = org.providerDetail.name
+        }
 
         confirmRequest.message.provider = { ...confirmRequest.message.provider, "rateable": true }
 
@@ -2338,18 +2438,18 @@ class ProductService {
         savedLogistics.packaging = "0"//TODO: select packaging option
         savedLogistics.providerId = confirmRequest.message.order.provider.id//TODO: select from items provider id
         savedLogistics.retailOrderId = confirmRequest?.message?.order.id
-        savedLogistics.orderId = logisticData.message.order.id
+        savedLogistics.orderId = logisticData?.message.order.id
         savedLogistics.selectedLogistics = logisticData
         savedLogistics.confirmRequest = requestQuery.retail_confirm[0]
         savedLogistics.onConfirmRequest = productData
-        savedLogistics.logisticsTransactionId = logisticData.context.transaction_id
+        savedLogistics.logisticsTransactionId = logisticData?.context.transaction_id ?? ''
 
         await savedLogistics.save();
         return productData
     }
 
 
-    async productInit(requestQuery) {
+    async productInit(requestQuery, onNetworkLogistics) {
 
         try {
             //get search criteria
@@ -2369,7 +2469,7 @@ class ProductService {
             let itemType = ''
             let resultData;
             let itemData = {};
-
+            let deliveryCharges = {}
             let org = await this.getOrgForOndc(initData.message.order.provider.id);
 
             let paymentDetails = {
@@ -2391,16 +2491,27 @@ class ProductService {
             }
 
             //select logistic based on criteria-> for now first one will be picked up
-            let deliveryCharges = {
-                "title": "Delivery charges",
-                "@ondc/org/title_type": "delivery",
-                "@ondc/org/item_id": items[0].fulfillment_id,
-                "price": {
-                    "currency": '' + logisticData.message.order.quote.price.currency,
-                    "value": '' + logisticData.message.order.quote.price.value
+            if (onNetworkLogistics) {
+                deliveryCharges = {
+                    "title": "Delivery charges",
+                    "@ondc/org/title_type": "delivery",
+                    "@ondc/org/item_id": items[0].fulfillment_id,
+                    "price": {
+                        "currency": '' + logisticData.message.order.quote.price.currency,
+                        "value": '' + logisticData.message.order.quote.price.value
+                    }
+                }//TODO: need to map all items in the catalog to find out delivery charges
+            } else {
+                deliveryCharges = {
+                    "title": "Delivery charges",
+                    "@ondc/org/title_type": "delivery",
+                    "@ondc/org/item_id": 1,
+                    "price": {
+                        "currency": 'INR',
+                        "value": '0'
+                    }
                 }
-            }//TODO: need to map all items in the catalog to find out delivery charges
-
+            }
             let qouteItemsDetails;
             for (let item of items) {
                 resultData = await this.getForOndc(item.id)
@@ -2468,8 +2579,11 @@ class ProductService {
                 qouteItems.push(item)
                 // detailedQoute.push(qouteItemsDetails)
             }
-
-            totalPrice = this.formatToTwoDecimalPlaces(logisticData.message.order.quote.price.value) + this.formatToTwoDecimalPlaces(totalPrice)
+            if (onNetworkLogistics) {
+                totalPrice = this.formatToTwoDecimalPlaces(logisticData?.message.order.quote.price.value) + this.formatToTwoDecimalPlaces(totalPrice)
+            } else {
+                totalPrice = this.formatToTwoDecimalPlaces(totalPrice)
+            }
             let totalPriceObj = { value: "" + totalPrice, currency: "INR" }
 
             detailedQoute.push(deliveryCharges);
@@ -2548,10 +2662,9 @@ class ProductService {
             savedLogistics.packaging = "0"//TODO: select packaging option
             savedLogistics.providerId = initData.message.order.provider.id
             savedLogistics.selectedLogistics = logisticData
-            savedLogistics.logisticsTransactionId = logisticData.context.transaction_id
+            savedLogistics.logisticsTransactionId = logisticData?.context.transaction_id ?? ''
             savedLogistics.initRequest = requestQuery.retail_init[0]
             savedLogistics.onInitResponse = productData
-
             await savedLogistics.save();
 
             return productData
@@ -2562,7 +2675,7 @@ class ProductService {
     }
 
 
-    async productSelect(requestQuery, onNetworkLogistic) {
+    async productSelect(requestQuery, onNetworkLogistics) {
         try {
 
             let savedLogistics = new SelectRequest();
@@ -2578,7 +2691,7 @@ class ProductService {
             let logisticProvider = {}
             const org = await this.getOrgForOndc(selectData.message.order.provider.id);
 
-            if (onNetworkLogistic) {
+            if (onNetworkLogistics) {
                 let logisticsToSelect = config.get("sellerConfig").LOGISTICS_BAP_ID
                 if (org.providerDetail.storeDetails.logisticsBppId) {
                     logisticsToSelect = org.providerDetail.storeDetails.logisticsBppId
@@ -2720,7 +2833,7 @@ class ProductService {
                 } else {
                     isValidItem = false;
                 }
-                if (isServiceable && onNetworkLogistic) {
+                if (isServiceable && onNetworkLogistics) {
 
                     let fulfillment = logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element) => { return element.type === 'Delivery' });
                     deliveryType = logisticProvider.message.catalog["bpp/providers"][0].items.find((element) => { return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id });
@@ -2741,7 +2854,7 @@ class ProductService {
             let fulfillments = []
 
 
-            if (isServiceable && deliveryType && onNetworkLogistic) {
+            if (isServiceable && deliveryType && onNetworkLogistics) {
                 //select logistic based on criteria-> for now first one will be picked up
                 deliveryCharges = {
                     "title": "Delivery charges",
@@ -2784,10 +2897,9 @@ class ProductService {
                             }
                         }
                     }]
-            } else if (!onNetworkLogistic) {
+            } else if (!onNetworkLogistics) {
 
                 //get org name from provider id
-
                 deliveryCharges = {
                     "title": "Delivery charges",
                     "@ondc/org/title_type": "delivery",
@@ -2799,11 +2911,11 @@ class ProductService {
                 }
                 fulfillments = [
                     {
-                        "id": '1',
+                        "id": 'F1',
                         "@ondc/org/provider_name": org.providerDetail.name,//TODO: merchant name
                         "tracking": false, //Hard coded
                         "@ondc/org/category": org.providerDetail?.storeDetails?.logisticsDeliveryType ?? config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE,
-                        "@ondc/org/TAT": "P1D",
+                        "@ondc/org/TAT": org.providerDetail.storeDetails.deliveryTime,
                         "provider_id": selectData.message.order.provider.id,
                         "type": "Delivery",
                         //TODO - need to add delivery duration
@@ -2827,11 +2939,11 @@ class ProductService {
                 }
                 fulfillments = [
                     {
-                        "id": '1',
+                        "id": 'F1',
                         "@ondc/org/provider_name": org.providerDetail.name,//TODO: merchant name
                         "tracking": false, //Hard coded
                         "@ondc/org/category": org.providerDetail?.storeDetails?.logisticsDeliveryType ?? config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE,
-                        "@ondc/org/TAT": "P1D",
+                        "@ondc/org/TAT": org.providerDetail.storeDetails.deliveryTime,
                         "provider_id": selectData.message.order.provider.id,
                         "type": "Delivery",
                         "state":
@@ -2840,7 +2952,7 @@ class ProductService {
                             {
                                 "code": "Serviceable"//Hard coded
                             }
-                        }, 
+                        },
                         end: selectData.message.order.fulfillments[0].end
                     }]
             }

@@ -69,7 +69,7 @@ class OndcService {
             }
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
-            const onNetworkLogistic = org.providerDetail.storeDetails?.onNetworkLogistic ?? true;
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
 
             if (org.providerDetail.storeDetails) {
                 storeLocationEnd = {
@@ -83,7 +83,7 @@ class OndcService {
             let category = domainNameSpace.find((cat) => {
                 return cat.domain === payload.context.domain
             })
-            if (onNetworkLogistic) {
+            if (onNetworkLogistics) {
                 searchRequest = {
                     "context": {
                         "domain": "nic2004:60232",
@@ -243,7 +243,7 @@ class OndcService {
             //     }
             // }
             //process select request and send it to protocol layer
-            this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistic)
+            this.postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics)
 
             return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
@@ -313,11 +313,11 @@ class OndcService {
         }
     }
 
-    async postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistic) {
+    async postSelectRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
-            if (onNetworkLogistic) {
+            if (onNetworkLogistics) {
                 try {
                     let headers = {};
                     let httpRequest = new HttpRequest(
@@ -341,10 +341,10 @@ class OndcService {
                 //async post request
                 setTimeout(() => {
                     logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                    this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic)
+                    this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
                 }, 4000); //TODO move to config
             } else {
-                this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic)
+                this.buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
@@ -352,7 +352,7 @@ class OndcService {
         }
     }
 
-    async buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistic) {
+    async buildSelectRequest(logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             logger.log('info', `[Ondc Service] search logistics payload - build select request : param :`, {
@@ -362,7 +362,7 @@ class OndcService {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, selectMessageId, 'select')
             //2. if data present then build select response
-            let selectResponse = await productService.productSelect(logisticsResponse, onNetworkLogistic)
+            let selectResponse = await productService.productSelect(logisticsResponse, onNetworkLogistics)
             //3. post to protocol layer
             await this.postSelectResponse(selectResponse);
 
@@ -520,11 +520,10 @@ class OndcService {
             //          logger.log('info', `[Ondc Service] old select request :`,selectRequest);
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
-
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
             const logistics = selectRequest?.selectedLogistics ?? ''; //TODO empty for now
-
             console.log("selectRequest---->", selectRequest);
-            console.log("selectRequest---->", logistics.message.catalog);
+            console.log("selectRequest---->", logistics?.message?.catalog);
             let storeLocationEnd = {}
             if (org.providerDetail.storeDetails) {
                 storeLocationEnd = {
@@ -554,78 +553,79 @@ class OndcService {
             const initMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
             const contextTimeStamp = new Date()
+            let initRequest = {}
+            if (onNetworkLogistics) {
+                let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element) => {
+                    return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE
+                });// TODO commented for now for logistic
 
 
-            let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element) => {
-                return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE
-            });// TODO commented for now for logistic
+                let fulfillment = logistics.message.catalog["bpp/providers"][0].fulfillments.find((element) => {
+                    return element.type === 'Delivery'
+                });
+                deliveryType = logistics.message?.catalog["bpp/providers"][0].items.find((element) => {
+                    return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id
+                });
+                // deliveryType = logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === org.providerDetail.storeDetails.logisticsDeliveryType});
+
+                // item.fulfillment_id = fulfillment.id //TODO: revisit for item level status
 
 
-            let fulfillment = logistics.message.catalog["bpp/providers"][0].fulfillments.find((element) => {
-                return element.type === 'Delivery'
-            });
-            deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element) => {
-                return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id
-            });
-            // deliveryType = logisticProvider.message.catalog["bpp/providers"][0].fulfillments.find((element)=>{return element.type === org.providerDetail.storeDetails.logisticsDeliveryType});
+                //let deliveryType = payload.message.order.items
 
-            // item.fulfillment_id = fulfillment.id //TODO: revisit for item level status
-
-
-            //let deliveryType = payload.message.order.items
-
-            const initRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "country": "IND",
-                    "city": payload.context.city, //TODO: take city from retail context
-                    "action": "init",
-                    "core_version": "1.2.0",
-                    "bap_id": BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics?.context?.bpp_id, //STORED OBJECT TODO static for now
-                    "bpp_uri": logistics?.context?.bpp_uri, //STORED OBJECT TODO static for now
-                    "transaction_id": logistics?.context?.transaction_id, //TODO static for now
-                    "message_id": logisticsMessageId,
-                    "timestamp": contextTimeStamp,
-                    "ttl": "PT30S"
-                },
-                "message": {
-                    "order": {
-                        "provider": {
-                            "id": logistics.message.catalog["bpp/providers"][0].id
-                        },
-                        "items": [deliveryType],
-                        "fulfillments": [{
-                            "id": fulfillment.id,
-                            "type": 'Delivery',
-                            "start": storeLocationEnd,
-                            "end": order.fulfillments[0].end
-                        }],
-                        "billing": { //TODO: discuss whos details should go here buyer or seller
-                            "name": order.billing.name,
-                            "address": {
-                                "name": order.billing.address.name,
-                                "building": order.billing.address.building,
-                                "locality": order.billing.address.locality,
-                                "city": order.billing.address.city,
-                                "state": order.billing.address.state,
-                                "country": order.billing.address.country,
-                                "area_code": order.billing.address.area_code
+                initRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "country": "IND",
+                        "city": payload.context.city, //TODO: take city from retail context
+                        "action": "init",
+                        "core_version": "1.2.0",
+                        "bap_id": BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics?.context?.bpp_id, //STORED OBJECT TODO static for now
+                        "bpp_uri": logistics?.context?.bpp_uri, //STORED OBJECT TODO static for now
+                        "transaction_id": logistics?.context?.transaction_id, //TODO static for now
+                        "message_id": logisticsMessageId,
+                        "timestamp": contextTimeStamp,
+                        "ttl": "PT30S"
+                    },
+                    "message": {
+                        "order": {
+                            "provider": {
+                                "id": logistics.message?.catalog["bpp/providers"][0].id
                             },
-                            "tax_number": org.providerDetail.GSTN.GSTN ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
-                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
-                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
-                            "created_at": contextTimeStamp,
-                            "updated_at": contextTimeStamp
-                        },
-                        "payment": {
-                            "type": 'POST-FULFILLMENT',
-                            "@ondc/org/collection_amount": "0",
-                            // "collected_by": "BPP"//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                            "items": [deliveryType],
+                            "fulfillments": [{
+                                "id": fulfillment.id,
+                                "type": 'Delivery',
+                                "start": storeLocationEnd,
+                                "end": order.fulfillments[0].end
+                            }],
+                            "billing": { //TODO: discuss whos details should go here buyer or seller
+                                "name": order.billing.name,
+                                "address": {
+                                    "name": order.billing.address.name,
+                                    "building": order.billing.address.building,
+                                    "locality": order.billing.address.locality,
+                                    "city": order.billing.address.city,
+                                    "state": order.billing.address.state,
+                                    "country": order.billing.address.country,
+                                    "area_code": order.billing.address.area_code
+                                },
+                                "tax_number": org.providerDetail.GSTN.GSTN ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
+                                "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                                "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                                "created_at": contextTimeStamp,
+                                "updated_at": contextTimeStamp
+                            },
+                            "payment": {
+                                "type": 'POST-FULFILLMENT',
+                                "@ondc/org/collection_amount": "0",
+                                // "collected_by": "BPP"//order.payment['@ondc/org/settlement_details'] //TODO: need details of prepaid transactions to be settle for seller
+                            }
                         }
-                    }
 
+                    }
                 }
             }
             //  {
@@ -808,7 +808,7 @@ class OndcService {
             // }
             //logger.log('info', `[Ondc Service] build init request :`, {logisticsMessageId,initMessageId: initMessageId});
 
-            this.postInitRequest(initRequest, logisticsMessageId, initMessageId)
+            this.postInitRequest(initRequest, logisticsMessageId, initMessageId, onNetworkLogistics)
 
             return { "message": { "ack": { "status": "ACK" } } }
         } catch (err) {
@@ -836,42 +836,45 @@ class OndcService {
     }
 
 
-    async postInitRequest(searchRequest, logisticsMessageId, selectMessageId) {
+    async postInitRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/init`,
+                        'POST',
+                        searchRequest,
+                        headers
+                    );
 
-            try {
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/init`,
-                    'POST',
-                    searchRequest,
-                    headers
-                );
 
+                    await httpRequest.send();
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
 
-                await httpRequest.send();
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                    this.buildInitRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
+                }, 3000); //TODO move to config
+            } else {
+                this.buildInitRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildInitRequest(logisticsMessageId, selectMessageId)
-            }, 3000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
         }
     }
 
-    async buildInitRequest(logisticsMessageId, initMessageId) {
+    async buildInitRequest(logisticsMessageId, initMessageId, onNetworkLogistics) {
 
         try {
             logger.log('info', `[Ondc Service] build init request :`, { logisticsMessageId, initMessageId });
@@ -881,7 +884,7 @@ class OndcService {
 
             //2. if data present then build select response
             logger.log('info', `[Ondc Service] build init request - get logistics response :`, logisticsResponse);
-            let selectResponse = await productService.productInit(logisticsResponse)
+            let selectResponse = await productService.productInit(logisticsResponse, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postInitResponse(selectResponse);
@@ -947,6 +950,7 @@ class OndcService {
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
 
             let org = await productService.getOrgForOndc(payload.message.order.provider.id);
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
 
             console.log("org details ---", org)
             let storeLocationEnd = {}
@@ -1043,170 +1047,172 @@ class OndcService {
                 // }
                 itemDetails.push(details)
             }
+            let confirmRequest = {}
+            if (onNetworkLogistics) {
+                let fulfillment = selectRequest.selectedLogistics.message.catalog["bpp/providers"][0].fulfillments.find((element) => {
+                    return element.type === 'Delivery'
+                });
+                let deliveryType = selectRequest.selectedLogistics.message.catalog["bpp/providers"][0].items.find((element) => {
+                    return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id
+                });
 
-            let fulfillment = selectRequest.selectedLogistics.message.catalog["bpp/providers"][0].fulfillments.find((element) => {
-                return element.type === 'Delivery'
-            });
-            let deliveryType = selectRequest.selectedLogistics.message.catalog["bpp/providers"][0].items.find((element) => {
-                return element.category_id === org.providerDetail.storeDetails.logisticsDeliveryType && element.fulfillment_id === fulfillment.id
-            });
 
-
-            // let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});// let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
-            // let deliveryType = payload.message.order.items //TODO commented above for now
-            const contextTimestamp = new Date()
-            const confirmRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "confirm",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": initRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": logistics.context.city,
-                    "country": "IND",
-                    "timestamp": contextTimestamp,
-                    "ttl": "PT30S"
-                },
-                "message": {
-                    "order": {
-                        "id": payload.message.order.id,
-                        "state": "Created",
-                        "provider": initRequest.selectedLogistics.message.order.provider,
-                        "items": [
-                            deliveryType
-                        ],
-                        "quote": initRequest.selectedLogistics.message.order.quote,
-                        "fulfillments": [
-                            {
-                                "id": order.fulfillments[0].id,
-                                "type": "Delivery",
-                                "start": storeLocationEnd,
-                                "end": end,
-                                "tags": [
-                                    {
-                                        "code": "state",
-                                        "list": [
-                                            {
-                                                "code": "ready_to_ship",
-                                                "value": "yes"
-                                            }
-                                        ]
+                // let deliveryType = selectRequest.selectedLogistics.message.catalog['bpp/providers'][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE});// let deliveryType = logistics.message.catalog["bpp/providers"][0].items.find((element)=>{return element.category_id === config.get("sellerConfig").LOGISTICS_DELIVERY_TYPE}); TODO commented for now for logistic
+                // let deliveryType = payload.message.order.items //TODO commented above for now
+                const contextTimestamp = new Date()
+                confirmRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "action": "confirm",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id": initRequest.logisticsTransactionId,
+                        "message_id": logisticsMessageId,
+                        "city": logistics.context.city,
+                        "country": "IND",
+                        "timestamp": contextTimestamp,
+                        "ttl": "PT30S"
+                    },
+                    "message": {
+                        "order": {
+                            "id": payload.message.order.id,
+                            "state": "Created",
+                            "provider": initRequest.selectedLogistics.message.order.provider,
+                            "items": [
+                                deliveryType
+                            ],
+                            "quote": initRequest.selectedLogistics.message.order.quote,
+                            "fulfillments": [
+                                {
+                                    "id": order.fulfillments[0].id,
+                                    "type": "Delivery",
+                                    "start": storeLocationEnd,
+                                    "end": end,
+                                    "tags": [
+                                        {
+                                            "code": "state",
+                                            "list": [
+                                                {
+                                                    "code": "ready_to_ship",
+                                                    "value": "yes"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "code": "rto_action",
+                                            "list": [
+                                                {
+                                                    "code": "return_to_origin",
+                                                    "value": "yes"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "billing": {
+                                ...payload.message.order.billing,
+                                "tax_number": org.providerDetail.GSTN.GSTN ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
+                                "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
+                                "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                                "created_at": contextTimestamp,
+                                "updated_at": contextTimestamp
+                            },
+                            "payment": {
+                                "type": "POST-FULFILLMENT",
+                                "@ondc/org/collection_amount": "0",
+                                "collected_by": "BPP"
+                            },
+                            "@ondc/org/linked_order": {
+                                "items": itemDetails,
+                                "provider": {
+                                    "descriptor": {
+                                        "name": org.providerDetail.name
                                     },
-                                    {
-                                        "code": "rto_action",
-                                        "list": [
-                                            {
-                                                "code": "return_to_origin",
-                                                "value": "yes"
-                                            }
-                                        ]
+                                    address: {
+                                        area_code: org.providerDetail.storeDetails.address.area_code,
+                                        name: org.providerDetail.name,
+                                        building: org.providerDetail.storeDetails.address.building,
+                                        locality: org.providerDetail.storeDetails.address.locality,
+                                        city: org.providerDetail.storeDetails.address.city,
+                                        state: org.providerDetail.storeDetails.address.state,
+                                        country: org.providerDetail.storeDetails.address.country
                                     }
-                                ]
-                            }
-                        ],
-                        "billing": {
-                            ...payload.message.order.billing,
-                            "tax_number": org.providerDetail.GSTN.GSTN ?? "27ACTPC1936E2ZN", //FIXME: take GSTN no
-                            "phone": org.providerDetail.storeDetails.supportDetails.mobile, //FIXME: take provider details
-                            "email": org.providerDetail.storeDetails.supportDetails.email, //FIXME: take provider details
+                                },
+                                "order": {
+                                    "id": order.id,
+                                    "weight": {
+                                        "unit": "kilogram",
+                                        "value": 5
+                                    },
+                                    "dimensions": {
+                                        "length": {
+                                            "unit": "centimeter",
+                                            "value": 15
+                                        },
+                                        "breadth": {
+                                            "unit": "centimeter",
+                                            "value": 10
+                                        },
+                                        "height": {
+                                            "unit": "centimeter",
+                                            "value": 10
+                                        }
+                                    }
+                                }
+                            },
+                            "tags": [
+                                {
+                                    "code": "bpp_terms",
+                                    "list": [
+                                        {
+                                            "code": "max_liability",
+                                            "value": "2"
+                                        },
+                                        {
+                                            "code": "max_liability_cap",
+                                            "value": "10000"
+                                        },
+                                        {
+                                            "code": "mandatory_arbitration",
+                                            "value": "false"
+                                        },
+                                        {
+                                            "code": "court_jurisdiction",
+                                            "value": "Chanigarh"
+                                        },
+                                        {
+                                            "code": "delay_interest",
+                                            "value": "1000"
+                                        },
+                                        {
+                                            "code": "static_terms",
+                                            "value": "https://github.com/ONDC-Official/protocol-network-extension/discussions/79"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "code": "bap_terms",
+                                    "list": [
+                                        {
+                                            "code": "accept_bpp_terms",
+                                            "value": "Y"
+                                        }
+                                    ]
+                                }
+                            ],
                             "created_at": contextTimestamp,
                             "updated_at": contextTimestamp
-                        },
-                        "payment": {
-                            "type": "POST-FULFILLMENT",
-                            "@ondc/org/collection_amount": "0",
-                            "collected_by": "BPP"
-                        },
-                        "@ondc/org/linked_order": {
-                            "items": itemDetails,
-                            "provider": {
-                                "descriptor": {
-                                    "name": org.providerDetail.name
-                                },
-                                address: {
-                                    area_code: org.providerDetail.storeDetails.address.area_code,
-                                    name: org.providerDetail.name,
-                                    building: org.providerDetail.storeDetails.address.building,
-                                    locality: org.providerDetail.storeDetails.address.locality,
-                                    city: org.providerDetail.storeDetails.address.city,
-                                    state: org.providerDetail.storeDetails.address.state,
-                                    country: org.providerDetail.storeDetails.address.country
-                                }
-                            },
-                            "order": {
-                                "id": order.id,
-                                "weight": {
-                                    "unit": "kilogram",
-                                    "value": 5
-                                },
-                                "dimensions": {
-                                    "length": {
-                                        "unit": "centimeter",
-                                        "value": 15
-                                    },
-                                    "breadth": {
-                                        "unit": "centimeter",
-                                        "value": 10
-                                    },
-                                    "height": {
-                                        "unit": "centimeter",
-                                        "value": 10
-                                    }
-                                }
-                            }
-                        },
-                        "tags": [
-                            {
-                                "code": "bpp_terms",
-                                "list": [
-                                    {
-                                        "code": "max_liability",
-                                        "value": "2"
-                                    },
-                                    {
-                                        "code": "max_liability_cap",
-                                        "value": "10000"
-                                    },
-                                    {
-                                        "code": "mandatory_arbitration",
-                                        "value": "false"
-                                    },
-                                    {
-                                        "code": "court_jurisdiction",
-                                        "value": "Chanigarh"
-                                    },
-                                    {
-                                        "code": "delay_interest",
-                                        "value": "1000"
-                                    },
-                                    {
-                                        "code": "static_terms",
-                                        "value": "https://github.com/ONDC-Official/protocol-network-extension/discussions/79"
-                                    }
-                                ]
-                            },
-                            {
-                                "code": "bap_terms",
-                                "list": [
-                                    {
-                                        "code": "accept_bpp_terms",
-                                        "value": "Y"
-                                    }
-                                ]
-                            }
-                        ],
-                        "created_at": contextTimestamp,
-                        "updated_at": contextTimestamp
+                        }
                     }
-                }
 
+                }
             }
             logger.info('info', `[Ondc Service] post init request :confirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequestconfirmRequest`, confirmRequest);
-            this.postConfirmRequest(confirmRequest, logisticsMessageId, selectMessageId)
+            this.postConfirmRequest(confirmRequest, logisticsMessageId, selectMessageId, onNetworkLogistics)
             //}, 10000); //TODO move to config
 
             return { "message": { "ack": { "status": "ACK" } } }
@@ -1265,36 +1271,39 @@ class OndcService {
         }
     }
 
-    async postConfirmRequest(searchRequest, logisticsMessageId, selectMessageId) {
+    async postConfirmRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
 
-            try {
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/confirm`,
+                        'POST',
+                        searchRequest,
+                        headers
+                    );
 
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/confirm`,
-                    'POST',
-                    searchRequest,
-                    headers
-                );
+                    await httpRequest.send();
 
-                await httpRequest.send();
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                    this.buildConfirmRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildConfirmRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildConfirmRequest(logisticsMessageId, selectMessageId)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -1302,14 +1311,14 @@ class OndcService {
     }
 
 
-    async buildConfirmRequest(logisticsMessageId, initMessageId) {
+    async buildConfirmRequest(logisticsMessageId, initMessageId, onNetworkLogistics) {
 
         try {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'confirm')
             //2. if data present then build select response
 
-            let selectResponse = await productService.productConfirm(logisticsResponse)
+            let selectResponse = await productService.productConfirm(logisticsResponse, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postConfirmResponse(selectResponse);
@@ -1514,38 +1523,41 @@ class OndcService {
             })
 
             const logistics = confirmRequest.selectedLogistics;
+            let org = await productService.getOrgForOndc(confirmRequest.providerId);
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
 
             //const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+            let statusRequest = {}
+            if (onNetworkLogistics) {
+                statusRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "action": "status",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id": confirmRequest.logisticsTransactionId,
+                        "message_id": logisticsMessageId,
+                        "city": "std:080",
+                        "country": "IND",
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                    "message":
+                    {
+                        "order_id": confirmRequest.orderId,
+                    }
 
-            const statusRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "status",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080",
-                    "country": "IND",
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
-                "message":
-                {
-                    "order_id": confirmRequest.orderId,
                 }
 
             }
-
-
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-            this.postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
+            this.postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload, onNetworkLogistics)
             //}, 5000); //TODO move to config
 
             return { "message": { "ack": { "status": "ACK" } } }
@@ -1553,7 +1565,6 @@ class OndcService {
             throw err;
         }
     }
-
 
     async orderStatusWithoutLogistics(payload = {}, req = {}, unsoliciated = false) {
         try {
@@ -1988,37 +1999,40 @@ class OndcService {
     }
 
 
-    async postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload) {
+    async postStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
 
-            try {
-
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/status`,
-                    'POST',
-                    statusRequest,
-                    headers
-                );
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/status`,
+                        'POST',
+                        statusRequest,
+                        headers
+                    );
 
 
-                await httpRequest.send();
+                    await httpRequest.send();
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
+
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, statusRequest);
+                    this.buildStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload, onNetworkLogistics)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, statusRequest);
-                this.buildStatusRequest(statusRequest, logisticsMessageId, selectMessageId, unsoliciated, payload)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2207,39 +2221,43 @@ class OndcService {
             })
 
             const logistics = confirmRequest.selectedLogistics;
+            let org = await productService.getOrgForOndc(confirmRequest.providerId);
+            const onNetworkLogistics = org.providerDetail.storeDetails?.onNetworkLogistics ?? true;
 
             //const order = payload.message.order;
             const selectMessageId = payload.context.message_id;
             const logisticsMessageId = uuidv4(); //TODO: in future this is going to be array as packaging for single select request can be more than one
+            let trackRequest = {};
+            if (onNetworkLogistics) {
+                trackRequest = {
+                    "context": {
+                        "domain": "nic2004:60232",
+                        "action": "cancel",
+                        "core_version": "1.2.0",
+                        "bap_id": config.get("sellerConfig").BPP_ID,
+                        "bap_uri": config.get("sellerConfig").BAP_URI,
+                        "bpp_id": logistics.context.bpp_id,//STORED OBJECT
+                        "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
+                        "transaction_id": confirmRequest.logisticsTransactionId,
+                        "message_id": logisticsMessageId,
+                        "city": "std:080",
+                        "country": "IND",
+                        "timestamp": new Date(),
+                        "ttl": "PT30S"
+                    },
+                    "message":
+                    {
+                        "order_id": confirmRequest.orderId,
+                        "cancellation_reason_id": payload.message.cancellation_reason_id
+                    }
 
-            const trackRequest = {
-                "context": {
-                    "domain": "nic2004:60232",
-                    "action": "cancel",
-                    "core_version": "1.2.0",
-                    "bap_id": config.get("sellerConfig").BPP_ID,
-                    "bap_uri": config.get("sellerConfig").BAP_URI,
-                    "bpp_id": logistics.context.bpp_id,//STORED OBJECT
-                    "bpp_uri": logistics.context.bpp_uri, //STORED OBJECT
-                    "transaction_id": confirmRequest.logisticsTransactionId,
-                    "message_id": logisticsMessageId,
-                    "city": "std:080",
-                    "country": "IND",
-                    "timestamp": new Date(),
-                    "ttl": "PT30S"
-                },
-                "message":
-                {
-                    "order_id": confirmRequest.orderId,
-                    "cancellation_reason_id": payload.message.cancellation_reason_id
                 }
-
             }
 
 
             // setTimeout(this.getLogistics(logisticsMessageId,selectMessageId),3000)
             //setTimeout(() => {
-            this.postCancelRequest(trackRequest, logisticsMessageId, selectMessageId)
+            this.postCancelRequest(trackRequest, logisticsMessageId, selectMessageId, onNetworkLogistics)
             //}, 5000); //TODO move to config
 
             return { "message": { "ack": { "status": "ACK" } } }
@@ -2248,37 +2266,40 @@ class OndcService {
         }
     }
 
-    async postCancelRequest(searchRequest, logisticsMessageId, selectMessageId) {
+    async postCancelRequest(searchRequest, logisticsMessageId, selectMessageId, onNetworkLogistics) {
 
         try {
             //1. post http to protocol/logistics/v1/search
+            if (onNetworkLogistics) {
+                try {
 
-            try {
-
-                let headers = {};
-                let httpRequest = new HttpRequest(
-                    config.get("sellerConfig").BPP_URI,
-                    `/protocol/logistics/v1/cancel`,
-                    'POST',
-                    searchRequest,
-                    headers
-                );
+                    let headers = {};
+                    let httpRequest = new HttpRequest(
+                        config.get("sellerConfig").BPP_URI,
+                        `/protocol/logistics/v1/cancel`,
+                        'POST',
+                        searchRequest,
+                        headers
+                    );
 
 
-                await httpRequest.send();
+                    await httpRequest.send();
 
-            } catch (e) {
-                logger.error('error', `[Ondc Service] post http select response : `, e);
-                return e
+                } catch (e) {
+                    logger.error('error', `[Ondc Service] post http select response : `, e);
+                    return e
+                }
+
+                //2. wait async to fetch logistics responses
+
+                //async post request
+                setTimeout(() => {
+                    logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
+                    this.buildCancelRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
+                }, 4000); //TODO move to config
+            } else {
+                this.buildCancelRequest(logisticsMessageId, selectMessageId, onNetworkLogistics)
             }
-
-            //2. wait async to fetch logistics responses
-
-            //async post request
-            setTimeout(() => {
-                logger.log('info', `[Ondc Service] search logistics payload - timeout : param :`, searchRequest);
-                this.buildCancelRequest(logisticsMessageId, selectMessageId)
-            }, 4000); //TODO move to config
         } catch (e) {
             logger.error('error', `[Ondc Service] post http select response : `, e);
             return e
@@ -2322,7 +2343,7 @@ class OndcService {
         }
     }
 
-    async buildStatusRequest(statusRequest, logisticsMessageId, initMessageId, unsoliciated, payload) {
+    async buildStatusRequest(statusRequest, logisticsMessageId, initMessageId, unsoliciated, payload, onNetworkLogistics) {
 
         try {
             //1. look up for logistics
@@ -2330,7 +2351,7 @@ class OndcService {
             //2. if data present then build select response
 
             console.log("statusRequest-----build>", statusRequest);
-            let statusResponse = await productService.productStatus(logisticsResponse, statusRequest, unsoliciated, payload)
+            let statusResponse = await productService.productStatus(logisticsResponse, statusRequest, unsoliciated, payload, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postStatusResponse(statusResponse);
@@ -2443,14 +2464,14 @@ class OndcService {
     }
 
 
-    async buildCancelRequest(logisticsMessageId, initMessageId) {
+    async buildCancelRequest(logisticsMessageId, initMessageId, onNetworkLogistics) {
 
         try {
             //1. look up for logistics
             let logisticsResponse = await this.getLogistics(logisticsMessageId, initMessageId, 'cancel')
             //2. if data present then build select response
 
-            let statusResponse = await productService.productCancel(logisticsResponse)
+            let statusResponse = await productService.productCancel(logisticsResponse, onNetworkLogistics)
 
             //3. post to protocol layer
             await this.postCancelResponse(statusResponse);

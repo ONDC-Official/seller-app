@@ -58,7 +58,9 @@ const organizationSchema = new mongoose.Schema({ //Users who has login ability s
         storeTiming:{type:Object},
         radius:{type:Object},
         logisticsBppId:{type:String},
-        logisticsDeliveryType:{type:String}
+        logisticsDeliveryType:{type:String},
+        deliveryTime: {type:String},
+        onNetworkLogistics:{type:Boolean}
     },
     createdBy:{type:String}
 },{  
