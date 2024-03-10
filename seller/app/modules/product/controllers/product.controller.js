@@ -14,6 +14,7 @@ import { commonKeys, templateKeys } from '../../../lib/utils/constants';
 import { mergedValidation } from '../../../lib/utils/bulkUploadValidaton';
 import { mergerdAttributeValidation } from '../../../lib/utils/bulkUploadAttributeValidation';
 import { templateAttributeKeys } from '../../../lib/utils/commonAttribute';
+import HttpRequest from "../../../lib/utils/HttpRequest";
 
 class ProductController {
 
@@ -538,6 +539,30 @@ class ProductController {
             const customization = await productService.getCustomizationById(customizationId, currentUser);
     
             return res.send(customization);
+        } catch (err) {
+            console.error('[CustomizationController] [getCustomizationById] Error:', err);
+            next(err);
+        }
+    }
+
+    async getCaasSearchResults(req, res, next) {
+        try {
+
+            console.log("req.query---------------",req.query)
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                'http://api.catalogus.in',
+                'api/hub/search?'+`domain=${req.query.domain}&barcode_type=${req.query.barcode_type}&barcode=${req.query.barcode}`,
+                'GET',
+                {},
+                {Authorization:`Bearer ${process.env.BHASHI_KEYS}`}
+            );
+
+            let results = await httpRequest.send();
+
+            console.log('results--->',results);
+
+            return res.send({data:results.data});
         } catch (err) {
             console.error('[CustomizationController] [getCustomizationById] Error:', err);
             next(err);

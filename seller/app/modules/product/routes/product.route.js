@@ -140,4 +140,9 @@ router.get('/v1/product/customization/:customizationId',
     productController.getCustomizationById
 );
 
+router.get('/v1/product/caas/search',
+    // authentication.middleware(),
+    productController.getCaasSearchResults
+);
+
 module.exports = router;
