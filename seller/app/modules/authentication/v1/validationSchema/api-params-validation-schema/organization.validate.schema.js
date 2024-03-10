@@ -85,6 +85,8 @@ module.exports = {
             radius:Joi.object(),
             logisticsBppId:Joi.string().allow(''),
             logisticsDeliveryType:Joi.string().allow(''),
+            onNetworkLogistics: Joi.boolean(),
+            deliveryTime: Joi.string(),
             location_availability:Joi.string().allow(''),
             custom_area : Joi.array(),
         });
@@ -115,6 +117,8 @@ module.exports = {
             radius:Joi.object(),
             logisticsBppId:Joi.string().allow(''),
             logisticsDeliveryType:Joi.string().allow(''),
+            deliveryTime: Joi.string(),
+            onNetworkLogistics: Joi.boolean(),
             location_availability:Joi.string().allow(''),
             custom_area : Joi.array(),
         });
