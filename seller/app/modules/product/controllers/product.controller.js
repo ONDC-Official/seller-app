@@ -327,31 +327,6 @@ class ProductController {
                         row.isCancellable = false;
                     }
 
-                    // Determine the category and set the protocolKey accordingly
-                    let protocolKey = null; // Set the default protocolKey
-                    if (category === 'Food and Beverages') {
-                        protocolKey = '@ondc/org/mandatory_reqs_veggies_fruits';
-                    } else if (category === 'Fashion') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Electronics') {
-                        protocolKey = '';
-                    } else if (category === 'Grocery') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Home and Kitchen') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Health and Wellness') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Beauty and Personal Care') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Appliances') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    }
-                    // Modify the row object to include the protocolKey
-                    row.productSubcategory1 = JSON.stringify({
-                        value: (row.productSubcategory1).toLowerCase().replace(/\s+/g, '_'),
-                        key: row.productSubcategory1,
-                        protocolKey: protocolKey
-                    });
                     row.productCategory = category;
 
                     // Validate common attributes separately
