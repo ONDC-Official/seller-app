@@ -63,4 +63,7 @@ router.post('/client/update',
 router.post('/client/support',
     ondcController.orderSupport);
 
+router.post('/client/logistics/:type',
+    ondcController.logisticsUnsoliciatedHandler);
+
 export default router;
