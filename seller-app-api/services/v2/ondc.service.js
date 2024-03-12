@@ -2688,6 +2688,46 @@ class OndcService {
         }
     }
 
+    async logisticsUnsoliciatedHandler(payload = {}, req = {}) {
+        try {
+
+            console.log({payload})
+            console.log({req})
+
+            let requestQuery = {}
+
+            const confirmRequest = await ConfirmRequest.findOne({
+                where: {
+                    retailOrderId: payload.message.order.id
+                }
+            })
+
+            requestQuery.retail_status = [confirmRequest.confirmRequest]
+            console.log("confirmRequest.onConfirmResponse",confirmRequest.confirmRequest)
+
+            requestQuery.logistics_on_status = [payload]
+            payload.message.order_id = payload.message.order.id
+            payload.context = confirmRequest.confirmRequest.context
+            if (req.type === 'on_status') {
+                let on_statusResponse = await productService.productStatusUnsoliciatedLogistics(requestQuery,  {}, true, payload, true)
+
+                //3. post to protocol layer
+                await this.postStatusResponse(on_statusResponse);
+            }
+                if (req.type == 'on_cancel') {
+
+                }
+
+                return 'ACK'
+            }
+        catch
+            (err)
+            {
+                throw err;
+            }
+        }
+
+
 
     async postSupportRequest(searchRequest, logisticsMessageId, selectMessageId) {
 

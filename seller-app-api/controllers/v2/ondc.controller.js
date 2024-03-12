@@ -164,6 +164,16 @@ class OndcController {
         });
     }
 
+    logisticsUnsoliciatedHandler(req, res, next) {
+        // const currentUserAccessToken = res.get('currentUserAccessToken');
+
+        ondcService.logisticsUnsoliciatedHandler(req.body,req.params, req).then(data => {
+            res.json(data);
+        }).catch((err) => {
+            next(err);
+        });
+    }
+
 
 }
 

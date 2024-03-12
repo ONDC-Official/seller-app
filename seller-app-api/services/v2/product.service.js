@@ -1685,6 +1685,123 @@ class ProductService {
         return productData
     }
 
+    async productStatusUnsoliciatedLogistics(requestQuery, statusRequest = {}, unsoliciated, payload, onNetworkLogistics) {
+
+        if (!unsoliciated) {
+            console.log("in eif")
+            statusRequest = requestQuery.retail_status[0];
+        } else {
+            console.log("in else")
+            statusRequest = payload;
+
+        }
+
+        console.log("statusRequest---->", statusRequest.context)
+
+        const logisticData = requestQuery.logistics_on_status[0]
+
+        let confirm = {}
+        let httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcGet`,
+            'GET',
+            {},
+            {}
+        );
+
+        let result = await httpRequest.send();
+
+        console.log("result-->", result);
+        let updateOrder = result.data
+        let deliveryFullfillmentIndex = updateOrder.fulfillments.findIndex(x => x.type === 'Delivery');
+        let deliveryFullfillment = updateOrder.fulfillments.find(x => x.type === 'Delivery');
+        if (onNetworkLogistics) {
+            if (logisticData.message.order.fulfillments[0].state?.descriptor?.code === 'Pending') {
+                updateOrder.state = 'Created'
+            } else {
+                updateOrder.state = logisticData.message.order.state
+            }
+
+            //updateOrder.state =logisticData.message.order.state
+
+            //TODO: find fulfillment where type is delivery
+
+            deliveryFullfillment.state = logisticData.message.order.fulfillments[0].state
+        }
+        let fulfillmentHistory = ''
+        if (deliveryFullfillment.state.descriptor.code === 'Order-picked-up') {
+            //set start.timestamp ie. picked up timing
+            if (onNetworkLogistics) {
+                deliveryFullfillment.start.time.timestamp = logisticData.message.order?.fulfillments[0].start?.time?.timestamp ?? ""
+            } else {
+                fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-picked-up')
+                deliveryFullfillment.start.time = { timestamp: fulfillmentHistory?.updatedAt }
+
+            }
+        }
+        if (deliveryFullfillment.state.descriptor.code === 'Order-delivered') {
+            //set end.timestamp ie. delivered timing
+            //deliveryFullfillment.start.time.timestamp = deliveryFullfillment.start.time
+            if (onNetworkLogistics) {
+                deliveryFullfillment.end.time.timestamp = logisticData.message.order?.fulfillments[0].end?.time?.timestamp ?? ""
+            } else {
+                fulfillmentHistory = await this.ondcGetFulfillmentHistory(deliveryFullfillment.id, updateOrder.orderId, 'Order-delivered')
+                deliveryFullfillment.end.time = { timestamp: fulfillmentHistory?.updatedAt }
+            }
+        }
+        if (onNetworkLogistics) {
+            deliveryFullfillment.agent = logisticData.message.order?.fulfillments[0].agent
+            deliveryFullfillment.vehicle = logisticData.message.order?.fulfillments[0].vehicle
+        }
+        updateOrder.fulfillments[deliveryFullfillmentIndex] = deliveryFullfillment;
+
+        console.log("logisticData.message.order.fulfillments[0].state--->", logisticData?.message.order.fulfillments[0].state)
+        console.log("llogisticData.message.order.state--->", logisticData?.message.order.state)
+        //update order level state
+        httpRequest = new HttpRequest(
+            serverUrl,
+            `/api/v1/orders/${statusRequest.message.order_id}/ondcUpdate`,
+            'PUT',
+            { data: updateOrder },
+            {}
+        );
+
+        let updateResult = await httpRequest.send();
+
+        //update item level fulfillment status
+        let items = updateOrder.items.map((item) => {
+            if (item.state == 'Cancelled') {
+                item.tags = { status: 'Cancelled' };
+            }
+            // item.tags={status:logisticData.message.order.fulfillments[0].state?.descriptor?.code};
+            item.fulfillment_id = onNetworkLogistics ? logisticData.message.order.fulfillments[0].id : 'F1'
+            delete item.state
+            return item;
+        });
+        console.log("items----->", items);
+        console.log({ updateOrder });
+        updateOrder.items = items;
+        updateOrder.order_id = updateOrder.orderId;
+        //TODO: this is hard coded for now
+        //invoice must be provided from "Order-picked-up" state
+        if (deliveryFullfillment.state.descriptor.code !== 'pending' || deliveryFullfillment.state.descriptor.code !== 'Agent-assigned') {
+            updateOrder.documents =
+                [
+                    {
+                        "url": "https://invoice_url",
+                        "label": "Invoice"
+                    }
+                ]
+        }
+
+        const productData = await getStatus({
+            context: statusRequest.context,
+            updateOrder: updateOrder
+        });
+
+        return productData
+    }
+
     async productStatusUnsoliciated(payload = {}) {
 
         const confirmRequest = await ConfirmRequest.findOne({
