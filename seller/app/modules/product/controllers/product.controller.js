@@ -519,6 +519,54 @@ class ProductController {
             next(err);
         }
     }
+    async uploadPublicUrl(req, res, next) {
+        try {
+
+            let images = req.body.urls;
+            let imageUrls =[];
+            for (const img of images) {
+                var keyName = req?.user?.organization + '/' + 'productImages' + '/' + uuid();
+                const region = mergedEnvironmentConfig.s3.region;
+                const bucket = mergedEnvironmentConfig.s3.bucket;
+
+                const imageURL = img;
+                let res;
+                try {
+                    res = await fetch(imageURL);
+                } catch (e) {
+                    console.log(e);
+                }
+
+                if (res) {
+                    console.log('mime--->', res);
+
+                    let extention = imageURL.split('.').slice(-1)[0];
+                    keyName = keyName + '.' + extention;
+                    const blob = await res.buffer();
+                    const s3 = new AWS.S3({
+                        useAccelerateEndpoint: true,
+                        region: region
+                    });
+
+                    await s3.upload({
+                        Bucket: bucket,
+                        Key: keyName,
+                        Body: blob
+                    }).promise();
+
+                    //console.log("uploaded image --->",uploadedImage);
+
+                    imageUrls.push(keyName);
+                }
+
+            }
+
+            return res.send(imageUrls);
+        } catch (err) {
+            console.error('[CustomizationController] [getCustomizationById] Error:', err);
+            next(err);
+        }
+    }
 
     async getCaasSearchResults(req, res, next) {
         try {
