@@ -25,11 +25,11 @@ router.get('/v1/orders/:orderId',
     orderController.get,
 );
 
-// router.post('/v1/orders/:orderId/status', //Accepted only
-//     authentication.middleware(),
-//     authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
-//     orderController.updateOrderStatus,
-// );
+router.post('/v1/orders/:orderId/status', //Accepted only
+    authentication.middleware(),
+    authorisation.middleware({roles: [SYSTEM_ROLE.ORG_ADMN]}),
+    orderController.updateOrderStatus,
+);
 
 router.post('/v1/orders/:orderId/fulfillment/status', //Accepted only
     // authentication.middleware(),

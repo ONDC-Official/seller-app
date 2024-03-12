@@ -6,6 +6,18 @@ exports.templateAttributeKeys = {
         'preference', 'formulation',
         'skinType', 'brand'
     ],
+    appliances: [
+        'brandModel', 'colour',
+        'colourName', 'type',
+        'specialFeature', 'includes',
+        'refurbished', 'energyRating',
+        'battery', 'powerInput',
+        'warranty', 'extendedWarranty',
+        'installationDetail', 'wattage',
+        'voltage'],
+    grocery: [
+        'brand'
+    ],
     electronics: [
         'brand', 'model',
         'modelYear', 'color',
@@ -19,9 +31,7 @@ exports.templateAttributeKeys = {
         'osType', 'osVersion',
         'connectivity', 'formFactor',
         'compatibleDevices', 'specialFeature',
-        'includes', 'weight',
-        'length', 'breadth',
-        'height', 'refurbrished'
+        'includes', 'refurbrished'
     ],
     healthandwellness: [
         'brand', 'prescriptionRequired',
@@ -30,9 +40,7 @@ exports.templateAttributeKeys = {
     homeandkitchen: [
         'brand', 'color',
         'colorName', 'material',
-        'size', 'weight',
-        'length', 'breadth',
-        'height', 'model',
+        'size', 'model',
         'assemblyRequired', 'careInstructions',
         'specialFeatures'
     ],
@@ -45,8 +53,6 @@ exports.templateAttributeKeys = {
         'colorName', 'sportType',
         'baseMetal', 'plating',
         'careInstructions', 'washType',
-        'weight', 'length',
-        'breadth', 'height',
         'features', 'fabricFinish',
         'material', 'materialFinish',
         'pattern', 'occasion',
@@ -73,5 +79,8 @@ exports.templateAttributeKeys = {
         'ornamentation', 'coverage', 'padding',
         'seam', 'waistBand', 'sustainability',
         'handcrafted', 'craftmark',
+    ],
+    foodandbeverages : [
+        
     ]
 };
