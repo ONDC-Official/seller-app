@@ -14,6 +14,7 @@ import { commonKeys, templateKeys } from '../../../lib/utils/constants';
 import { mergedValidation } from '../../../lib/utils/bulkUploadValidaton';
 import { mergerdAttributeValidation } from '../../../lib/utils/bulkUploadAttributeValidation';
 import { templateAttributeKeys } from '../../../lib/utils/commonAttribute';
+import HttpRequest from "../../../lib/utils/HttpRequest";
 
 class ProductController {
 
@@ -326,31 +327,6 @@ class ProductController {
                         row.isCancellable = false;
                     }
 
-                    // Determine the category and set the protocolKey accordingly
-                    let protocolKey = null; // Set the default protocolKey
-                    if (category === 'Food and Beverages') {
-                        protocolKey = '@ondc/org/mandatory_reqs_veggies_fruits';
-                    } else if (category === 'Fashion') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Electronics') {
-                        protocolKey = '';
-                    } else if (category === 'Grocery') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Home and Kitchen') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Health and Wellness') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Beauty and Personal Care') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    } else if (category === 'Appliances') {
-                        protocolKey = '@ondc/org/statutory_reqs_packaged_commodities';
-                    }
-                    // Modify the row object to include the protocolKey
-                    row.productSubcategory1 = JSON.stringify({
-                        value: (row.productSubcategory1).toLowerCase().replace(/\s+/g, '_'),
-                        key: row.productSubcategory1,
-                        protocolKey: protocolKey
-                    });
                     row.productCategory = category;
 
                     // Validate common attributes separately
@@ -538,6 +514,78 @@ class ProductController {
             const customization = await productService.getCustomizationById(customizationId, currentUser);
     
             return res.send(customization);
+        } catch (err) {
+            console.error('[CustomizationController] [getCustomizationById] Error:', err);
+            next(err);
+        }
+    }
+    async uploadPublicUrl(req, res, next) {
+        try {
+
+            let images = req.body.urls;
+            let imageUrls =[];
+            for (const img of images) {
+                var keyName = req?.user?.organization + '/' + 'productImages' + '/' + uuid();
+                const region = mergedEnvironmentConfig.s3.region;
+                const bucket = mergedEnvironmentConfig.s3.bucket;
+
+                const imageURL = img;
+                let res;
+                try {
+                    res = await fetch(imageURL);
+                } catch (e) {
+                    console.log(e);
+                }
+
+                if (res) {
+                    console.log('mime--->', res);
+
+                    // let extention = imageURL.split('.').slice(-1)[0];
+                    keyName = keyName //+ '.' + extention;
+                    const blob = await res.buffer();
+                    const s3 = new AWS.S3({
+                        useAccelerateEndpoint: true,
+                        region: region
+                    });
+
+                    await s3.upload({
+                        Bucket: bucket,
+                        Key: keyName,
+                        Body: blob
+                    }).promise();
+
+                    //console.log("uploaded image --->",uploadedImage);
+
+                    imageUrls.push(keyName);
+                }
+
+            }
+
+            return res.send(imageUrls);
+        } catch (err) {
+            console.error('[CustomizationController] [getCustomizationById] Error:', err);
+            next(err);
+        }
+    }
+
+    async getCaasSearchResults(req, res, next) {
+        try {
+
+            console.log("req.query---------------",req.query)
+            //notify client to update order status ready to ship to logistics
+            let httpRequest = new HttpRequest(
+                'http://api.catalogus.in',
+                'api/hub/search?'+`domain=${req.query.domain}&barcode_type=${req.query.barcode_type}&barcode=${req.query.barcode}`,
+                'GET',
+                {},
+                {Authorization:`Bearer ${process.env.BHASHI_KEYS}`}
+            );
+
+            let results = await httpRequest.send();
+
+            console.log('results--->',results);
+
+            return res.send({data:results.data});
         } catch (err) {
             console.error('[CustomizationController] [getCustomizationById] Error:', err);
             next(err);

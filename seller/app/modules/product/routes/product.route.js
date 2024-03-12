@@ -140,4 +140,14 @@ router.get('/v1/product/customization/:customizationId',
     productController.getCustomizationById
 );
 
+router.post('/v1/product/upload/publicUrl',
+    authentication.middleware(),
+    productController.uploadPublicUrl
+);
+
+router.get('/v1/product/caas/search',
+    authentication.middleware(),
+    productController.getCaasSearchResults
+);
+
 module.exports = router;

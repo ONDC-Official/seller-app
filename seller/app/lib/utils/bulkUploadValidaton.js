@@ -33,7 +33,7 @@ const categoryValidation = {
 
 export const mergedValidation = (category) => {
     let commonDetails = Joi.object({
-        productCode: Joi.string().required(),
+        productCode: Joi.any().required(),
         productName: Joi.string().required(),
         HSNCode: Joi.string(),
         fulfilmentId: Joi.number(),

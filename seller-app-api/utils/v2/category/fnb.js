@@ -342,7 +342,7 @@ export async function mapFnBData(data) {
             "tags": tags,
             //"@ondc/org/fssai_license_no": org.FSSAI
         })
-        for(const tagCat of tagCatList){
+        // for(const tagCat of tagCatList){
             tags.push(
                 {
                     "code": "serviceability",
@@ -353,7 +353,7 @@ export async function mapFnBData(data) {
                         },
                         {
                             "code": "category",
-                            "value": tagCat.category
+                            "value": 'F&B'
                         },
                         {
                             "code": "type",
@@ -369,7 +369,50 @@ export async function mapFnBData(data) {
                         }
                     ]
             })
-        }
+        // }
+
+        const fulfillments = org.storeDetails.fulfillments;
+        fulfillments?.forEach((fulfillment) => {
+            fulfillment?.storeTimings?.forEach((storeTiming) => {
+                storeTiming?.timings?.forEach((timing) => {
+                    const timingList = [];
+                    timingList.push({
+                        code: "type",
+                        value: fulfillment.type === "Delivery" ? "Delivery" : "Self-Pickup"
+                    });
+
+                    timingList.push({
+                        code: "location",
+                        value: org.storeDetails?.location._id ?? "L1"
+                    });
+
+                    timingList.push({
+                        code: "day_from",
+                        value: storeTiming.daysRange.from.toString()
+                    });
+                    timingList.push({
+                        code: "day_to",
+                        value: storeTiming.daysRange.to.toString()
+                    });
+
+                    timingList.push({
+                        code: "time_from",
+                        value: timing.from.replace(":", "")
+                    });
+                    timingList.push({
+                        code: "time_to",
+                        value: timing.to.replace(":", "")
+                    });
+
+                    const tagsObject = {
+                        code: "timing",
+                        list: timingList // Use timingList directly
+                    };
+
+                    tags.push(tagsObject);
+                });
+            });
+        });
 
         let context = data.context
         context.bpp_id = BPP_ID

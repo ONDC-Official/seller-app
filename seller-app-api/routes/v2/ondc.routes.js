@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import OndcController from '../../controllers/v2/ondc.controller';
 import { authentication } from '../../middlewares';
 
@@ -35,6 +35,9 @@ router.post('/client/track',
 router.post('/client/status',
     ondcController.orderStatus);
 
+router.post('/client/unsoliciated/status',
+    ondcController.orderStatusUnsoliciated);
+
 router.post('/client/status/cancel',
     ondcController.orderCancelFromSeller);
 
@@ -59,5 +62,8 @@ router.post('/client/update',
 
 router.post('/client/support',
     ondcController.orderSupport);
+
+router.post('/client/logistics/:type',
+    ondcController.logisticsUnsoliciatedHandler);
 
 export default router;
