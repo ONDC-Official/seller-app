@@ -5,5 +5,4 @@ export const OrderFulfillmentStatusMapping = [
     { fulfillmentStatus: "Order-picked-up", orderStatus: "In-progress", seq: 4 },
     { fulfillmentStatus: "Out-for-delivery", orderStatus: "In-progress", seq: 5 },
     { fulfillmentStatus: "Order-delivered", orderStatus: "Completed", seq: 6 },
-    { fulfillmentStatus: "Cancelled", orderStatus: "Cancelled", seq: 7 },
 ]
