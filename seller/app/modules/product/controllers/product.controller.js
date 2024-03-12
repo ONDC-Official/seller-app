@@ -540,8 +540,8 @@ class ProductController {
                 if (res) {
                     console.log('mime--->', res);
 
-                    let extention = imageURL.split('.').slice(-1)[0];
-                    keyName = keyName + '.' + extention;
+                    // let extention = imageURL.split('.').slice(-1)[0];
+                    keyName = keyName //+ '.' + extention;
                     const blob = await res.buffer();
                     const s3 = new AWS.S3({
                         useAccelerateEndpoint: true,

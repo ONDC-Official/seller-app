@@ -146,7 +146,7 @@ router.post('/v1/product/upload/publicUrl',
 );
 
 router.get('/v1/product/caas/search',
-    // authentication.middleware(),
+    authentication.middleware(),
     productController.getCaasSearchResults
 );
 
